@@ -17,31 +17,26 @@
                 <td><label class="control-label">Raison Sociale </label></td>
                 <td><input type="text" name="raison_sociale" ngModel="" class="form-control" required/></td>
               </tr -->
-            
             <tr>
               <td><label class="control-label">Nom de Shipper </label></td>
-              <td><input type="text" name="nom" ngModel="" class="form-control" required/></td>
-            </tr>
-            <tr>
               <td><label class="control-label">Raison Sociale </label></td>
-              <td><input type="text" name="raison_sociale" ngModel="" class="form-control" required/></td>
-            </tr>
-            <tr>
               <td><label class="control-label">En Affaire de </label></td>
+            </tr>
+            <tr>
+              <td><input type="text" name="nom" ngModel="" class="form-control" required/></td>
+              <td><input type="text" name="raison_sociale" ngModel="" class="form-control" required/></td>
               <td><input type="text" name="depuis" ngModel="" class="form-control" required/></td>
-            </tr>
+            </tr>            
             <tr>
-              <td><label class="control-label">Email </label></td>
-              <td><input type="email" name="email" ngModel="" class="form-control" required/></td>
-            </tr>
-            <tr>
-              <td><label class="control-label">Tel </label></td>
-              <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
-            </tr>
-            <tr>
-              <td><label class="control-label">Fax </label></td>
-              <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
-            </tr>
+                <td><label class="control-label">Email </label></td>
+                <td><label class="control-label">Tel </label></td>
+                <td><label class="control-label">Fax </label></td>              
+              </tr>
+              <tr>
+                <td><input type="email" name="email" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
+              </tr>                  
             <tr>
                 <td><label class="control-label">Numero </label></td>
                 <td><label class="control-label">Rue</label></td>
@@ -62,42 +57,39 @@
                 <td><input type="text" name="province" ngModel="" class="form-control" required/></td>
                 <td><input type="text" name="num" ngModel="" class="form-control" required/></td>
               </tr>
-              <tr>Personne a contact</tr>
+              <tr><p></p> <p></p> Personne a contact</tr>
               <tr>
-                  <td><label class="control-label">Nom </label></td>
-                  <td><label class="control-label">Prenom</label></td>
-                  <td><label class="control-label">Fonction</label></td>
+                <td><label class="control-label">Nom </label></td>
+                <td><label class="control-label">Prenom</label></td>
+                <td><label class="control-label">Fonction</label></td>
               </tr>
               <tr>                
-                  <td><input type="text" name="c_nom" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="prenom" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="fonction" ngModel="" class="form-control" required/></td>
-                </tr>
-                <tr>    
-                    <td><label class="control-label">Email </label></td>
-                    <td><label class="control-label">Tel</label></td>
-                    <td><label class="control-label">Fax</label></td>
-                  </tr>              
-                <tr>  
-                  <td><input type="text" name="email" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
-                </tr>
-              <tr>
-                  <td><label class="control-label">Creer login name </label></td>
-                  <td><input type="text" name="username" ngModel="" class="form-control" required/></td>
-                </tr>
-            <tr>
-              <td><label class="control-label">Creer Password </label></td>
-              <td><input type="password" name="password" ngModel="" class="form-control" required/></td>
-            </tr>  
-            <tr>
-                <td><label class="control-label">Confirmer Password </label></td>
-                <td><input type="password" name="re_password" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="c_nom" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="prenom" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="fonction" ngModel="" class="form-control" required/></td>
               </tr>
-            <!-- tr><td>Vous devez sasir une adresse </td><td><button routerLink="/register" class="btn btn-ok">Entrer votre adresse</button></td></tr>
-            <tr><td>Personnes a contact </td><td><button routerLink="/register" class="btn btn-ok">Entrer personne contact</button></td></tr>
-            <tr><td></td></tr -->
+              <tr>    
+                <td><label class="control-label">Email </label></td>
+                <td><label class="control-label">Tel</label></td>
+                <td><label class="control-label">Fax</label></td>
+              </tr>              
+              <tr>  
+                <td><input type="text" name="email" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
+              </tr>
+              <tr><p></p> <p></p> Creer votre Login</tr>
+              <tr>    
+                <td><label class="control-label">Login name </label></td>
+                <td><label class="control-label">Password </label></td>
+                <td><label class="control-label">Confirmer Password </label></td>
+              </tr>              
+              <tr>  
+                <td><input type="text" name="username" ngModel="" class="form-control" required/></td>
+                <td><input type="password" name="password" ngModel="" class="form-control" required/></td>
+                <td><input type="password" name="re_password" ngModel="" class="form-control" required/></td>
+              </tr>              
+            <p></p><p></p>
             <tr>
               <td></td><td><button routerLink="/register" class="btn btn-success">OK</button></td>
             </tr>  
