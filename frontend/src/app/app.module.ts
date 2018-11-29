@@ -10,10 +10,11 @@ import {Routes, RouterModule} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { AuthenticationService } from 'src/services/authentication.service';
-import { LogoutComponent } from './logout/logout.component';
+//import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
+  //{path:"login", component:LogoutComponent},
   {path:"tasks", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},
   {path:"register", component:RegistrationComponent},
@@ -27,7 +28,7 @@ const appRoutes:Routes=[
     TasksComponent,
     NewTaskComponent,
     RegistrationComponent,
-    LogoutComponent
+    //LogoutComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule
