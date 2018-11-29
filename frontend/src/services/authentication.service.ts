@@ -28,6 +28,15 @@ export class AuthenticationService{
           return this.http.get(this.host+"/tasks", {headers:new HttpHeaders({'Authorization':this.jwToken})});
       }
 
+      getShippers(){
+        //if(this.jwToken==null) this.loadTonken() // we don't need the authorization for access to shipper
+        return this.http.get(this.host+"/shippers");//, {headers:new HttpHeaders({'Authorization':this.jwToken})});
+      }
+
+      createShipper(){
+
+      }
+
       logout(): any {
         localStorage.removeItem('tonken');
         this.jwToken=null;

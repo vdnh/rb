@@ -10,16 +10,25 @@ import { Router } from '@angular/router';
 export class TasksComponent implements OnInit {
 
   tasks:any;
+  shippers:any;
 
   constructor(private authService:AuthenticationService, private router:Router) { }
 
   ngOnInit() {
+    //*
     this.authService.getTasks()
     .subscribe(data=>{
       this.tasks=data;
       console.log(this.tasks);
     }, err=>{
       //this.authService.logout();
+      this.router.navigateByUrl('/login');
+    });
+    //*/
+    this.authService.getShippers()
+    .subscribe(shippers=>{this.shippers=shippers;
+    console.log(this.shippers);
+    }, err=>{
       this.router.navigateByUrl('/login');
     });
   }

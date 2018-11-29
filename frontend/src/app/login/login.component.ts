@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);
         this.router.navigateByUrl('/tasks');
-        this.authService.getTasks();
+        //this.authService.getTasks();
     },
       err=>{
         this.mode=1;

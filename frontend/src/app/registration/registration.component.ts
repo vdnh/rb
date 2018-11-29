@@ -12,7 +12,7 @@ export class RegistrationComponent implements OnInit {
   ngOnInit() {
   }
 
-  onLogin(dataForm){
+  onRegister(dataForm){
     //this.dataService.login(dataForm)
     //.subscribe(resp=>{
         //let jwtToken=resp.headers.get('Authorization');

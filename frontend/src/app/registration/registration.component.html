@@ -1,22 +1,11 @@
 <div class="container">
   <div class="col-md-6 col-md-offset-3">
-    <div class="panel panel-primary">
-      <!-- table>
-          <tr><td> </td> <td> </td> <td><div class="panel-heading">Registration</div></td></tr>        
-      </table -->  
+    <div class="panel panel-primary">        
       <div>Pour registrer, veuillez bien remplir vos coordomees dessous.</div>    
         <p></p><p></p><p></p><p></p>
         <div class="panel-body">
           <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
-            <table>
-              <!-- tr>
-                <td><label class="control-label">Nom de Shipper </label></td>
-                <td><input type="text" name="nom" ngModel="" class="form-control" required/></td>
-              </tr>
-              <tr>
-                <td><label class="control-label">Raison Sociale </label></td>
-                <td><input type="text" name="raison_sociale" ngModel="" class="form-control" required/></td>
-              </tr -->
+            <table>              
             <tr>
               <td><label class="control-label">Nom de Shipper </label></td>
               <td><label class="control-label">Raison Sociale </label></td>
@@ -64,9 +53,9 @@
                 <td><label class="control-label">Fonction</label></td>
               </tr>
               <tr>                
-                <td><input type="text" name="c_nom" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="prenom" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="fonction" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="c_nom" ngModel="" class="form-control"/></td>
+                <td><input type="text" name="prenom" ngModel="" class="form-control"/></td>
+                <td><input type="text" name="fonction" ngModel="" class="form-control"/></td>
               </tr>
               <tr>    
                 <td><label class="control-label">Email </label></td>
@@ -74,9 +63,9 @@
                 <td><label class="control-label">Fax</label></td>
               </tr>              
               <tr>  
-                <td><input type="text" name="email" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="email" ngModel="" class="form-control"/></td>
+                <td><input type="text" name="tel" ngModel="" class="form-control"/></td>
+                <td><input type="text" name="fax" ngModel="" class="form-control"/></td>
               </tr>
               <tr><p></p> <p></p> Creer votre Login</tr>
               <tr>    
@@ -91,7 +80,7 @@
               </tr>              
             <p></p><p></p>
             <tr>
-              <td></td><td><button routerLink="/register" class="btn btn-success">OK</button></td>
+              <td></td><td><button class="btn btn-success" [disabled]="!f.form.valid" >OK</button></td>
             </tr>  
           </table>            
           </form>
