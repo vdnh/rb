@@ -1,15 +1,20 @@
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-primary">        
-        <div>Calculation le prix sugere</div>    
-          <p></p><p></p><p></p><p></p>
+        <div>Calculation le prix sugere</div>
+        <p></p><p></p><p></p><p></p>
+        <div><button (click)="changeUnite()">Changer votre unite </button></div>              
+        <p></p><p></p>
           <div class="panel-body">
             <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
               <table>              
               <tr>
-                <td><label class="control-label">Longueur (en pouce)</label></td>
-                <td><label class="control-label">Largeur (en pouce)</label></td>
-                <td><label class="control-label">Hauteur (en pouce)</label></td>
+                <td *ngIf="mode==1"><label class="control-label">Longueur (en pouce)</label></td>
+                <td *ngIf="mode==2"><label class="control-label">Longueur (en cm)</label></td>
+                <td *ngIf="mode==1"><label class="control-label">Largeur (en pouce)</label></td>
+                <td *ngIf="mode==2"><label class="control-label">Largeur (en cm)</label></td>
+                <td *ngIf="mode==1"><label class="control-label">Hauteur (en pouce)</label></td>
+                <td *ngIf="mode==2"><label class="control-label">Hauteur (en cm)</label></td>
               </tr>
               <tr>
                 <td><input type="number" [(ngModel)]="longeur" name="longeur" class="form-control"/></td>
@@ -17,7 +22,8 @@
                 <td><input type="number" [(ngModel)]="hauteur" name="hauteur" class="form-control"/></td>
               </tr>            
               <tr>
-                  <td><label class="control-label">Poids (en lbs)</label></td>
+                  <td *ngIf="mode==1"><label class="control-label">Poids (en lbs)</label></td>
+                  <td *ngIf="mode==2"><label class="control-label">Poids (en kg)</label></td>
                   <td><label class="control-label">Valeur </label></td>
                   <td><label class="control-label">Distance (en km)</label></td>              
                 </tr>
