@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class RegistrationComponent implements OnInit {
 
   //user: User = new User();
-  shipperUrl ='http://localhost:8080/shippers';
+  shipperUrl ='http://localhost:8080/shippers/';
   shipper : Shipper = new Shipper();
   constructor(private http:HttpClient) { }
 
@@ -27,7 +27,10 @@ export class RegistrationComponent implements OnInit {
 
   createShipper(){
     console.log(this.shipper)
-    return this.http.post<Shipper>(this.shipperUrl, this.shipper);
+    return this.http.post<Shipper>(this.shipperUrl, this.shipper)
+    .subscribe( data => {
+      alert("Shipper created successfully.");
+    });
   }
   onRegister(shipper:Shipper){
     //this.dataService.login(dataForm)
