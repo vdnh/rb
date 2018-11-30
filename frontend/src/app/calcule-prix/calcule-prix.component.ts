@@ -8,13 +8,16 @@ import { Component, OnInit } from '@angular/core';
 export class CalculePrixComponent implements OnInit {
 
   // les details de marchandise
-  longueur:number=0.00;
+  longeur:number=0.00;
   largeur:number=0.00;
   hauteur:number=0.00;
   poids:number=0.00;
   valeur:number=0.00;
   distance:number=0.00;
 
+  heurs_supl:number=0.00;
+
+  totalPoints:number=0.00;
   // le prix sugere
   prix:number=0.00;
 
@@ -22,9 +25,93 @@ export class CalculePrixComponent implements OnInit {
 
   ngOnInit() {
   }
-  onOk(){
-    this.prix=this.longueur + this.largeur + this.hauteur + this.poids + this.valeur + this.distance;
+  
+  // calcule le pointage de poids (en lbs)
+  poidsPointage(poids:number){
+    if (poids>0 && poids<=10000)    
+      return 1;
+    if (poids>10000 && poids<=20000)    
+      return 2;
+    if (poids>20000 && poids<=30000)    
+      return 3;
+    if (poids>30000 && poids<=40000)    
+      return 4;
+    if (poids>40000 )    
+      return 5;    
+    return 0;        
+  }
+
+  // calcule le pointage de longueur (en pouce)
+  longeurPointage(longeur:number){
+    if (longeur>0 && longeur<=120)    
+      return 1;
+    if (longeur>121 && longeur<=240)    
+      return 2;
+    if (longeur>240 && longeur<=360)    
+      return 3;
+    if (longeur>360 && longeur<=480)    
+      return 4;
+    if (longeur>480 )    
+      return 5;
+    return 0;            
+  }
+
+  // calcule le pointage de largeur (en pouce)
+  largeurPointage(largeur:number){
+    if (largeur>0 && largeur<=48)    
+      return 1;
+    if (largeur>48 && largeur<=102)    
+      return 2;
+    if (largeur>102 && largeur<=120)    
+      return 4;
+    if (largeur>120 && largeur<=144)    
+      return 6;
+    if (largeur>144)   // on va ajouter encore des paremes
+      return 6;
+    return 0;            
+  }
+
+  // calcule le pointage de hauteur (en pouce)
+  hauteurPointage(hauteur:number){
+    if (hauteur>0 && hauteur<=92)    
+      return 1;
+    if (hauteur>92 && hauteur<=120)    
+      return 2;
+    if (hauteur>120)  // on va ajouter encore des paremes  
+      return 4;   
+    return 0;            
+  }
+
+  // prix depart
+  prixDepart(totalPoints:number){
+    
+    return 250.00;
+  }
+  prixDistance(totalPoints:number){
+    
+    return 250.00;
+  }
+  prixToile(totalPoints:number){
+    
+    return 250.00;
+  }
+  prixAttendre(totalPoints:number){
+    
+    return 0.00;
+  }
+  prixSuplement(totalPoints:number, heurs_supl:number){
+    
+    return 0.00;
+  }
+  onOk(){    
+    this.totalPoints = this.longeurPointage(this.longeur) + this.largeurPointage(this.largeur) + this.hauteurPointage(this.hauteur) 
+      + this.poidsPointage(this.poids) + this.valeur + this.distance;
+    
+    this.prix = this.prixDepart(this.totalPoints) + this.prixDistance(this.totalPoints) + this.prixToile(this.totalPoints)
+      + this.prixAttendre(this.totalPoints) + this.prixSuplement(this.totalPoints, this.heurs_supl);
+
   }
   
+
 
 }

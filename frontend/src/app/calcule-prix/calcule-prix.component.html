@@ -7,19 +7,19 @@
             <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
               <table>              
               <tr>
-                <td><label class="control-label">Longueur </label></td>
-                <td><label class="control-label">Largeur</label></td>
-                <td><label class="control-label">Hauteur </label></td>
+                <td><label class="control-label">Longueur (en pouce)</label></td>
+                <td><label class="control-label">Largeur (en pouce)</label></td>
+                <td><label class="control-label">Hauteur (en pouce)</label></td>
               </tr>
               <tr>
-                <td><input type="number" [(ngModel)]="longueur" name="longueur" class="form-control"/></td>
+                <td><input type="number" [(ngModel)]="longeur" name="longeur" class="form-control"/></td>
                 <td><input type="number" [(ngModel)]="largeur" name="largeur" class="form-control"/></td>
                 <td><input type="number" [(ngModel)]="hauteur" name="hauteur" class="form-control"/></td>
               </tr>            
               <tr>
-                  <td><label class="control-label">Poids </label></td>
+                  <td><label class="control-label">Poids (en lbs)</label></td>
                   <td><label class="control-label">Valeur </label></td>
-                  <td><label class="control-label">Distamce </label></td>              
+                  <td><label class="control-label">Distance (en km)</label></td>              
                 </tr>
                 <tr>
                   <td><input type="number" [(ngModel)]="poids" name="poids" class="form-control"/></td>
@@ -79,6 +79,7 @@
                   <td><input type="password" name="re_password" ngModel="" class="form-control" required/></td>
                 </tr -->              
               <p></p><p></p>
+              <tr><td></td><td>Total de points : </td><td> {{totalPoints}} </td></tr>
               <tr><td></td><td>Prix sugere : </td><td> {{prix}} </td></tr>
               <tr>
                 <td></td><td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >OK</button></td>
