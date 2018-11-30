@@ -12,9 +12,9 @@
               <td><label class="control-label">En Affaire de </label></td>
             </tr>
             <tr>
-              <td><input type="text" name="nom" ngModel="" class="form-control" required/></td>
-              <td><input type="text" name="raison_sociale" ngModel="" class="form-control" required/></td>
-              <td><input type="text" name="depuis" ngModel="" class="form-control" required/></td>
+              <td><input [(ngModel)]="shipper.nom" placeholder="nom de shipper" name="nom" class="form-control" id="nom" required/></td>
+              <td><input [(ngModel)]="shipper.raison_sociale" placeholder="raison sociale" name="raison_sociale" class="form-control" required/></td>
+              <td><input [(ngModel)]="shipper.depuis" placeholder="en affaire depuis" name="depuis" class="form-control" required/></td>
             </tr>            
             <tr>
                 <td><label class="control-label">Email </label></td>
@@ -22,9 +22,9 @@
                 <td><label class="control-label">Fax </label></td>              
               </tr>
               <tr>
-                <td><input type="email" name="email" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="tel" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="fax" ngModel="" class="form-control" required/></td>
+                <td><input type="email" name="email" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="tel" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="fax" ngModel="" class="form-control" /></td>
               </tr>                  
             <tr>
                 <td><label class="control-label">Numero </label></td>
@@ -32,9 +32,9 @@
                 <td><label class="control-label">Code postal </label></td>
             </tr>
             <tr>                
-                <td><input type="text" name="num" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="rue" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="code_postal" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="num" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="rue" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="code_postal" ngModel="" class="form-control" /></td>
               </tr>
               <tr>    
                   <td><label class="control-label">Ville </label></td>
@@ -42,9 +42,9 @@
                   <td><label class="control-label">Pays </label></td>
                 </tr>              
               <tr>  
-                <td><input type="text" name="ville" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="province" ngModel="" class="form-control" required/></td>
-                <td><input type="text" name="num" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="ville" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="province" ngModel="" class="form-control" /></td>
+                <td><input type="text" name="num" ngModel="" class="form-control" /></td>
               </tr>
               <tr><p></p> <p></p> Personne a contact</tr>
               <tr>
@@ -74,13 +74,20 @@
                 <td><label class="control-label">Confirmer Password </label></td>
               </tr>              
               <tr>  
-                <td><input type="text" name="username" ngModel="" class="form-control" required/></td>
-                <td><input type="password" name="password" ngModel="" class="form-control" required/></td>
-                <td><input type="password" name="re_password" ngModel="" class="form-control" required/></td>
+                <td><input type="text" name="username" ngModel="" class="form-control" /></td>
+                <td><input type="password" name="password" ngModel="" class="form-control" /></td>
+                <td><input type="password" name="re_password" ngModel="" class="form-control" /></td>
               </tr>              
             <p></p><p></p>
+            <!-- div class="form-group">
+              <label for="lastName">Last Name:</label>
+             <input [(ngModel)]="user.lastName" placeholder="Last name" name="lastName" class="form-control" id="lastName">
+            </div>
+          
+            <button class="btn btn-success" (click)="createUser()">Create</button-->
+
             <tr>
-              <td></td><td><button class="btn btn-success" [disabled]="!f.form.valid" >OK</button></td>
+              <td></td><td><button class="btn btn-success" (click)="createShipper()" [disabled]="!f.form.valid" >OK</button></td>
             </tr>  
           </table>            
           </form>

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {Shipper} from '../model/shipper'
+import { from } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-registration',
@@ -7,12 +10,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegistrationComponent implements OnInit {
 
-  constructor() { }
+  //user: User = new User();
+  shipperUrl ='http://localhost:8080/shippers';
+  shipper : Shipper = new Shipper();
+  constructor(private http:HttpClient) { }
 
   ngOnInit() {
   }
+/*
+  createUser(): void {
+    this.userService.createUser(this.user)
+        .subscribe( data => {
+          alert("User created successfully.");
+        });
+  };//*/
 
-  onRegister(dataForm){
+  createShipper(){
+    console.log(this.shipper)
+    return this.http.post<Shipper>(this.shipperUrl, this.shipper);
+  }
+  onRegister(shipper:Shipper){
     //this.dataService.login(dataForm)
     //.subscribe(resp=>{
         //let jwtToken=resp.headers.get('Authorization');
