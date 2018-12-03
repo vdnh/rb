@@ -25,16 +25,17 @@
                 <td><input type="email" name="email" ngModel="" class="form-control" /></td>
                 <td><input type="text" name="tel" ngModel="" class="form-control" /></td>
                 <td><input type="text" name="fax" ngModel="" class="form-control" /></td>
-              </tr>                  
+              </tr>  
+              <!--Adresse-->                
             <tr>
                 <td><label class="control-label">Numero </label></td>
                 <td><label class="control-label">Rue</label></td>
                 <td><label class="control-label">Code postal </label></td>
             </tr>
             <tr>                
-                <td><input type="text" name="num" ngModel="" class="form-control" /></td>
-                <td><input type="text" name="rue" ngModel="" class="form-control" /></td>
-                <td><input type="text" name="code_postal" ngModel="" class="form-control" /></td>
+                <td><input [(ngModel)]="adresse.num" placeholder="numero" name="num" class="form-control" required/></td>
+                <td><input [(ngModel)]="adresse.rue" placeholder="nom de la rue" name="rue" class="form-control" required/></td>
+                <td><input [(ngModel)]="adresse.code_postal" placeholder="code postal" name="code_postal" class="form-control" required/></td>
               </tr>
               <tr>    
                   <td><label class="control-label">Ville </label></td>
@@ -53,9 +54,9 @@
                 <td><label class="control-label">Fonction</label></td>
               </tr>
               <tr>                
-                <td><input type="text" name="c_nom" ngModel="" class="form-control"/></td>
-                <td><input type="text" name="prenom" ngModel="" class="form-control"/></td>
-                <td><input type="text" name="fonction" ngModel="" class="form-control"/></td>
+                <td><input [(ngModel)]="contact.nom" placeholder="nom" name="c_nom" class="form-control" required/></td>
+                <td><input [(ngModel)]="contact.prenom" placeholder="nom" name="prenom" class="form-control" required/></td>
+                <td><input [(ngModel)]="contact.fonction" placeholder="fonction" name="fonction" class="form-control" required/></td>
               </tr>
               <tr>    
                 <td><label class="control-label">Email </label></td>

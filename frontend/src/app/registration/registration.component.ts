@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {Shipper} from '../model/shipper'
 import { from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+//import { Address } from 'cluster';
+import { Adresse } from '../model/adresse';
+import { Contact } from '../model/contact';
 
 @Component({
   selector: 'app-registration',
@@ -12,7 +15,12 @@ export class RegistrationComponent implements OnInit {
 
   //user: User = new User();
   shipperUrl ='http://localhost:8080/shippers/';
+  adresseUrl ='http://localhost:8080/adresses/';
+  contactUrl ='http://localhost:8080/contacts/';
   shipper : Shipper = new Shipper();
+  adresse : Adresse = new Adresse();
+  contact : Contact = new Contact();
+
   constructor(private http:HttpClient) { }
 
   ngOnInit() {
@@ -30,8 +38,30 @@ export class RegistrationComponent implements OnInit {
     return this.http.post<Shipper>(this.shipperUrl, this.shipper)
     .subscribe( data => {
       alert("Shipper created successfully.");
+      //alert(data.toString());
+      this.shipper = data;
+      alert("shipper id : "+this.shipper.id)
+      this.createAdresse();
+      this.createContact();
     });
   }
+
+  createAdresse(){
+    console.log(this.adresse)
+    return this.http.post<Adresse>(this.adresseUrl, this.adresse)
+    .subscribe( data => {
+      alert("Adresse created successfully.");
+    });
+  }
+
+  createContact(){
+    console.log(this.contact)
+    return this.http.post<Contact>(this.contactUrl, this.contact)
+    .subscribe( data => {
+      alert("Contact created successfully.");
+    });
+  }
+
   onRegister(shipper:Shipper){
     //this.dataService.login(dataForm)
     //.subscribe(resp=>{

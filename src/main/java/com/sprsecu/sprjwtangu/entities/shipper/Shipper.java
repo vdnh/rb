@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Shipper {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id_shipper;
     private String nom;
     private String raison_sociale;
