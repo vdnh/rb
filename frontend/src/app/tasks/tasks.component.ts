@@ -11,10 +11,20 @@ export class TasksComponent implements OnInit {
 
   tasks:any;
   shippers:any;
+  who:string="Who";
 
   constructor(private authService:AuthenticationService, private router:Router) { }
 
   ngOnInit() {
+    //this.who=
+    this.authService.getUserInfo()
+    .subscribe(data=>{
+      this.tasks=data;
+      console.log(this.tasks)
+    }, err=>{
+      console.log("I don't know who you are!!");
+      //this.router.navigateByUrl('/login');  
+    })
     //*
     this.authService.getTasks()
     .subscribe(data=>{
@@ -25,12 +35,14 @@ export class TasksComponent implements OnInit {
       this.router.navigateByUrl('/login');
     });
     //*/
+    /*
     this.authService.getShippers()
     .subscribe(shippers=>{this.shippers=shippers;
     console.log(this.shippers);
     }, err=>{
       this.router.navigateByUrl('/login');
     });
+    //*/
   }
 
 }

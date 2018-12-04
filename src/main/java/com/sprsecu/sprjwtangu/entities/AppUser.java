@@ -35,7 +35,7 @@ public class AppUser {
     
     @JsonIgnore
     public String getPassword(){
-        System.out.println("Here is your password : " + this.password);
+        System.out.println("AppUser.class -- Here is your password : " + this.password);
         return this.password;
     }
     @JsonSetter

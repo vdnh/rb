@@ -40,7 +40,8 @@ export class RegistrationComponent implements OnInit {
       alert("Shipper created successfully.");
       //alert(data.toString());
       this.shipper = data;
-      alert("shipper id : "+this.shipper.id)
+      //alert("shipper id : "+this.shipper.id)
+      console.log(this.shipper);
       this.createAdresse();
       this.createContact();
     });

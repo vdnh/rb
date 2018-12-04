@@ -44,7 +44,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new RuntimeException(ex);
         }
         System.out.println("**********");
-        System.out.println("User : " + user.toString());
+        System.out.println("JWTAuthentication.class -- User : " + user.toString());
         System.out.println("**********");
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
