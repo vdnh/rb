@@ -12,6 +12,8 @@ export class TasksComponent implements OnInit {
   tasks:any;
   shippers:any;
   who:string="Who";
+  varMap:string= "https://www.google.com/maps?q=45.568806,+-73.918333";
+  varMap2:string= "https://www.google.com/maps?q=45.569234,+-73.918440";
 
   constructor(private authService:AuthenticationService, private router:Router) { }
 
@@ -44,5 +46,13 @@ export class TasksComponent implements OnInit {
     });
     //*/
   }
+  myWindow: any;
+  onPress(){
+    //this.myWindow.close();
+    this.myWindow = window.open(this.varMap, "googleWindow");
+    //this.myWindow.close();
+    //window.close("googleWindow");
+  }
+  
 
 }
