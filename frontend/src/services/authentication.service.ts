@@ -25,7 +25,12 @@ export class AuthenticationService{
 
     getUserInfo(){
         //return this.http.post(this.hostUserInfo, this.userName, { observe: 'response' });
-        return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})});
+        return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})}); 
+        //, {'Content-Type':'text/plain'}
+        /*console.log("This is textTemp : "+ textTemp.subscribe(data=>{
+            console.log(data);
+        }));//*/
+        //return textTemp;
     }
 
     saveTonken(jwtToken: string): any {

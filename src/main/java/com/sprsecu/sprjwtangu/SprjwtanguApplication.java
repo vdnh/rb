@@ -76,10 +76,11 @@ public class SprjwtanguApplication implements CommandLineRunner{
         roleRepository.findAll().forEach(r -> {
             System.out.println("Role : " + r.getRoleName());
         });
-        
-        Stream.of("shipper","transporter").forEach(u -> {
+        //*/
+        /*//
+        Stream.of("shipper1","shipper2").forEach(u -> {
             accountService.saveUser(new AppUser(null, u, u, null));
-            accountService.addRoleToUser(u, u.toUpperCase());
+            accountService.addRoleToUser(u, "SHIPPER");
             //userRepository.save(new AppUser(null, u, u, null));
         });
         //accountService.addRoleToUser("shipper", "SHIPPER");

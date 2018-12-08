@@ -11,7 +11,7 @@ export class TasksComponent implements OnInit {
 
   tasks:any;
   shippers:any;
-  who:string="Who";
+  who:string="Shipper01";
   varMap:string= "https://www.google.com/maps?q=45.568806,+-73.918333";
   varMap2:string= "https://www.google.com/maps?q=45.569234,+-73.918440";
 
@@ -19,14 +19,19 @@ export class TasksComponent implements OnInit {
 
   ngOnInit() {
     //this.who=
-    this.authService.getUserInfo()
+    this.authService.getUserInfo().subscribe(data=>{
+      console.log("Role name : "+ data.toString())
+    },err=>{
+      console.log("Role name : null")
+    })
+    /*
     .subscribe(data=>{
-      this.tasks=data;
-      console.log(this.tasks)
+      this.who=data.toString();
+      console.log(this.who)
     }, err=>{
       console.log("I don't know who you are!!");
       //this.router.navigateByUrl('/login');  
-    })
+    })//*/
     //*
     this.authService.getTasks()
     .subscribe(data=>{
