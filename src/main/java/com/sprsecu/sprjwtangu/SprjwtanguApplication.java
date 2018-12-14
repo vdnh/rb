@@ -1,11 +1,11 @@
 package com.sprsecu.sprjwtangu;
 
 import com.sprsecu.sprjwtangu.dao.RoleRepository;
-import com.sprsecu.sprjwtangu.dao.TaskRepository;
+//import com.sprsecu.sprjwtangu.dao.TaskRepository;
 import com.sprsecu.sprjwtangu.dao.UserRepository;
 import com.sprsecu.sprjwtangu.entities.AppRole;
 import com.sprsecu.sprjwtangu.entities.AppUser;
-import com.sprsecu.sprjwtangu.entities.Task;
+//import com.sprsecu.sprjwtangu.entities.Task;
 import com.sprsecu.sprjwtangu.services.AccountService;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class SprjwtanguApplication implements CommandLineRunner{
-    @Autowired
-    private TaskRepository taskRepository;
+    //@Autowired
+    //private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired

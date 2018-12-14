@@ -1,0 +1,110 @@
+<div class="container spacer">
+  <div class="panel panel-primary" *ngIf="mode==1">
+    <div class="panel-heading">Edit Shipper - ID : {{shipper.id}}</div>
+      <div class="panel-body">
+              <table class="table table-striped">
+                      <tr>
+                        <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.nom" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
+                        <td><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.tel" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.fax" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td>
+                      </tr>
+                      <tr><td colspan="2"><strong>Adresses</strong></td></tr>
+                      <tr>
+                          <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
+                      </tr>
+                      <tr *ngFor="let adresse of adresses">
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
+                          <td><button class="btn btn-primary" (click)="deleteAdress(contact.id)">Delete</button></td>
+                      </tr>            
+                      <tr><td colspan="2"><strong>Ajouter d'adresse</strong></td></tr>     
+                      <tr>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                            
+                          <td><button class="btn btn-primary" (click)="addAdresse()">Add</button></td>
+                      </tr>                                    
+                      <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
+                      <tr>
+                        <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                      </tr>
+                      <tr *ngFor="let contact of contacts">
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td>
+                        <td><button class="btn btn-primary" (click)="deleteContact(contact.id)">Delete</button></td>
+                      </tr>   
+                      <tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr>     
+                      <tr>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td>
+                          <td><button class="btn btn-primary" (click)="addContact()">Add</button></td>
+                      </tr>   
+              </table>            
+       
+          <table> 
+              <td><button class="btn btn-primary" (click)="saveShipper()">Ok - Modifier Shipper</button></td>
+              <td><button class="btn btn-primary" routerLink="/shippers">Quit</button></td> 
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>                  
+          </table>
+      <!--/div-->
+      </div>   
+</div>
+
+<div class="panel panel-primary" *ngIf="mode==2">
+      <div class="panel-heading">Confirmation</div>
+        <div class="panel-body">
+          <table class="table table-striped">
+              <tr>
+                  <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+              </tr>
+              <tr>
+                  <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.depuis}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td><td>{{shipper.photo}}</td>
+              </tr>
+              <tr><td colspan="2"><strong>Adresse</strong></td></tr>
+              <tr>
+                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+              </tr>     
+              <tr *ngFor="let adresse of adresses">
+                  <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+              </tr>                                         
+              <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
+              <tr>
+                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+              </tr>
+              <tr *ngFor="let contact of contacts">
+                  <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+              </tr>                
+          </table>
+              <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/shippers">Ok</button></div>
+          <!--/div-->
+        </div>   
+  </div>
+
+</div>
