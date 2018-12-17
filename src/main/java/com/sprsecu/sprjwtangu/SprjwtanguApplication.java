@@ -89,5 +89,11 @@ public class SprjwtanguApplication implements CommandLineRunner{
             System.out.println("User : "+u.getUsername()+" - Role : "+u.getRoles().toString());
         });
         //*/
+        /*
+        Stream.of("user","manager","shipper","transporter").forEach(u -> {
+            accountService.saveUser(new AppUser(null, u, u, null));
+            accountService.addRoleToUser(u, u.toUpperCase());
+            //userRepository.save(new AppUser(null, u, u, null));
+        });//*/
     }
 }

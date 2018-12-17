@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Router } from '@angular/router';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);
         this.router.navigateByUrl('/tasks');
+        //AppComponent.log=2;
         //this.authService.getTasks();
     },
       err=>{

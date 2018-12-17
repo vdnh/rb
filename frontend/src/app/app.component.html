@@ -1,9 +1,11 @@
 <p></p>
 <div class="container">
-  <button routerLink="/login" class="btn btn-default">Login</button>     
-  <button routerLink="/tasks" class="btn btn-default">Tasks</button>
-  <button routerLink="/register" class="btn btn-default">Registration</button>
-  <button routerLink="/calcule-prix" class="btn btn-default">Estimation le prix </button>
+  <button routerLink="/login" class="btn btn-link">Login</button>     
+  <button routerLink="/tasks" class="btn btn-link">Propos</button>
+  <button routerLink="/shippers" class="btn btn-link">Shippers</button>
+  <button routerLink="/transporters" class="btn btn-link">Transporters</button>
+  <button (click)="logout()" class="btn btn-link">Logout</button>
+  <!--button routerLink="/calcule-prix" class="btn btn-default">Estimation le prix </button-->
   <p></p>
   <router-outlet></router-outlet>
 </div>

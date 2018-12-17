@@ -22,7 +22,7 @@ export class NewShipperComponent implements OnInit {
   }
 
   saveShipper(){
-    this.shippersService.saveShippers(this.shipper).subscribe(data=>{
+    this.shippersService.saveShippers(this.shipper).subscribe((data:Shipper)=>{
       this.mode=2;
       this.shipper=data;
       this.contact.id_shipper=this.shipper.id;
@@ -38,14 +38,14 @@ export class NewShipperComponent implements OnInit {
   }
 
   saveContact(){
-    this.contactsService.saveContacts(this.contact).subscribe(data1=>{
+    this.contactsService.saveContacts(this.contact).subscribe((data:Contact)=>{
     }, err=>{
       console.log(err);
     })    
   }
 
   saveAdresse(){
-    this.adressesService.saveAdresses(this.adresse).subscribe(data=>{
+    this.adressesService.saveAdresses(this.adresse).subscribe((data:Adresse)=>{
 
     }, err=>{
       console.log(err);

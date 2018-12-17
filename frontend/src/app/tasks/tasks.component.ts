@@ -7,11 +7,12 @@ import { Router } from '@angular/router';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css']
 })
-export class TasksComponent implements OnInit {
-
+export class TasksComponent implements OnInit 
+{
+//*
   tasks:any;
   shippers:any;
-  who:string="Shipper01";
+  who:string="CamionExample";
   varMap:string= "https://www.google.com/maps?q=45.568806,+-73.918333";
   varMap2:string= "https://www.google.com/maps?q=45.569234,+-73.918440";
 
@@ -32,15 +33,14 @@ export class TasksComponent implements OnInit {
       console.log("I don't know who you are!!");
       //this.router.navigateByUrl('/login');  
     })//*/
-    //*
-    this.authService.getTasks()
-    .subscribe(data=>{
+    /*
+    this.authService.getTasks().subscribe(data=>{
       this.tasks=data;
       console.log(this.tasks);
-    }, err=>{
+      }, err=>{
       //this.authService.logout();
       this.router.navigateByUrl('/login');
-    });
+      });
     //*/
     /*
     this.authService.getShippers()

@@ -1,3 +1,36 @@
-<p>
-  transporters works!
-</p>
+<div class="container">
+  <button routerLink="/register" class="btn btn-info">Registration</button>&nbsp;&nbsp;&nbsp;
+  <button routerLink="/calcule-prix" class="btn btn-info">Estimation le prix </button>
+  <p></p>
+</div>
+
+<div class="container spacer">
+  <div class="panel panel-primary">
+    <div class="panel-heading">Liste des transporters</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label for="Mot cle : "></label>
+        <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+      </div>
+      <table class="table table-striped">
+        <tr>
+          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Edit</th><th>Delete</th>
+        </tr>
+        <tr *ngFor="let t of pageTransporter.content">
+            <td>{{t.nom}}</td><td>{{t.raison_sociale}}</td><td>{{t.email}}</td><td>{{t.tel}}</td>
+            <td><a class="spacer font-size:30px text-decoration:underline" (click)="gotoDetailTransporter(t.id)">Edit</a></td>
+            <td><a (click)="deleteTransporter(t.id)">Delete</a></td>
+        </tr>
+      </table>
+      <div class="container">
+        <ul class="nav nav-pills"><strong>page: </strong>
+          <li *ngFor="let p of pages; let i=index">
+               <a class="spacer clickable" (click)="gotoPage(i)"> <strong>{{i}}</strong> </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>

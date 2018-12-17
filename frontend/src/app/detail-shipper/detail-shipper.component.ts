@@ -31,18 +31,18 @@ export class DetailShipperComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.shippersService.getDetailShipper(this.id).subscribe(data=>{
+    this.shippersService.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
       this.mode=1;
     }, err=>{
       console.log(err);
     });
-    this.contactsService.contactsDeShipper(this.id).subscribe(data=>{
+    this.contactsService.contactsDeShipper(this.id).subscribe((data:Array<Contact>)=>{
       this.contacts=data;
     }, err=>{
       console.log(err);
     });
-    this.adressesService.adressesDeShipper(this.id).subscribe(data=>{
+    this.adressesService.adressesDeShipper(this.id).subscribe((data:Array<Adresse>)=>{
       this.adresses=data;
       // this.adresses.forEach(a=>{
       //   console.log("Adress : "+a.num+" "+a.rue )
@@ -83,8 +83,7 @@ export class DetailShipperComponent implements OnInit {
   }
 
   deleteContact(id:number){
-    this.contactsService.deleteContact(id)
-    .subscribe(data=>{
+    this.contactsService.deleteContact(id).subscribe(data=>{
       alert("Contact : "+this.addcontact.nom+" a ete supprime.");
       this.refresh();
     }, err=>{

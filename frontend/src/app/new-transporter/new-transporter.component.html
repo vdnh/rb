@@ -1,3 +1,80 @@
-<p>
-  new-transporter works!
-</p>
+<div class="container spacer">
+  <div class="panel panel-primary" *ngIf="mode==1">
+    <div class="panel-heading">Nouveau Transporter</div>
+      <div class="panel-body">
+            <table class="table table-striped">
+                    <tr>
+                      <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                    </tr>
+                    <tr>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+                      <td><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td>
+                    </tr>
+                    <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+                    <tr>
+                      <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
+                    </tr>
+                    <tr>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
+                    </tr>                        
+                    <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
+                    <tr>
+                      <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                    </tr>
+                    <tr>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td>
+                    </tr>        
+            </table>          
+  
+        <div> <button class="btn btn-primary" (click)="saveTransporter()">Save</button></div>
+      </div>   
+</div>
+
+<div class="panel panel-primary" *ngIf="mode==2">
+    <div class="panel-heading">Confirmation</div>
+      <div class="panel-body">
+        <div>
+            <table class="table table-striped">
+                <tr>
+                  <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                </tr>
+                <tr>
+                  <td>{{transporter.nom}}</td><td>{{transporter.raison_sociale}}</td><td>{{transporter.email}}</td><td>{{transporter.tel}}</td><td>{{transporter.fax}}</td>
+                </tr>
+                <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+                <tr>
+                  <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
+                </tr>
+                <tr>
+                  <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+                </tr>
+                <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
+                <tr>
+                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                </tr>
+                <tr>
+                    <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+                </tr>        
+            </table>            
+          <div> <button class="btn btn-primary" (click)="mode=1">Nouveau Transporter</button></div>
+        </div>
+      </div>   
+</div>
+
+</div>

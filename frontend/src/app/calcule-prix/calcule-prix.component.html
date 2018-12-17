@@ -1,13 +1,13 @@
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-primary">        
-        <div>Calculation le prix sugere</div>
+        <div><strong> Calculation le prix sugere </strong></div>
         <p></p><p></p><p></p><p></p>
-        <div><button (click)="changeUnite()">Changer votre unite </button></div>              
+        <div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div>              
         <p></p><p></p>
           <div class="panel-body">
             <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
-              <table>              
+              <table class="table table-striped">              
               <tr>
                 <td *ngIf="mode==1"><label class="control-label">Longueur (en pouce)</label></td>
                 <td *ngIf="mode==2"><label class="control-label">Longueur (en cm)</label></td>
@@ -89,6 +89,7 @@
               <tr><td></td><td>Prix sugere : </td><td> {{prix}} </td></tr>
               <tr>
                 <td></td><td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >OK</button></td>
+                <td></td><td><button  routerLink="/transporters" class="btn btn-primary">Find Matching Transporters</button></td>
               </tr>  
             </table>            
             </form>

@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'CTS';
+  //static log=1;
+  logout(){
+    localStorage.clear();
+    //this.log=1;
+    window.open("http://localhost:4200/login")
+    window.close();
+  }
 }

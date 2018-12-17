@@ -16,26 +16,36 @@ export class TransportersService{
 
 
     getTransporters(motCle:string, page:number, size:number){
+        this.loadTonken();
+        /*
         return this.http.get(this.adServer+":8080/chercherTransporters?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res => res.json()));
+        //.pipe(map(res => res.json()));//*/
+        return this.http.get(this.adServer+":8080/chercherTransporters?mc="+motCle+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res =>{
+            return res;
+        }))
     }
 
     saveTransporters(transporter:Transporter){
+        this.loadTonken();
         return this.http.post(this.adServer+":8080/transporters",transporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res => res.json()));
+        .pipe(map(res => {return res}));
     }
 
     getDetailTransporter(id:number){
+        this.loadTonken();
         return this.http.get(this.adServer+":8080/transporters/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res => res.json()));
+        .pipe(map(res => {return res}));
     }
 
     deleteTransporter(id:number){
+        this.loadTonken();
         return this.http.delete(this.adServer+":8080/transporters/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res=>res.json()));
+        //.pipe(map(res => {return res}));
     }
 }

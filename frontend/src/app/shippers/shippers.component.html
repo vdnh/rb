@@ -1,10 +1,16 @@
+<div class="container">
+  <button routerLink="/register" class="btn btn-info">Registration</button>&nbsp;&nbsp;&nbsp;
+  <button routerLink="/calcule-prix" class="btn btn-info">Estimation le prix </button>
+  <p></p>
+</div>
+<!---->
 <div class="container spacer">
   <div class="panel panel-primary">
     <div class="panel-heading">Liste des Shippers</div>
     <div class="panel-body">
       <div class="form-group">
         <label for="Mot cle : "></label>
-        <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>
+        <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="chercher()">Chercher</button>
       </div>
       <table class="table table-striped">
@@ -28,3 +34,4 @@
   </div>
 
 </div>
+<!---->
