@@ -4,8 +4,10 @@
       <strong>Bad credentials ...</strong>
     </div>
       <div class="panel panel-primary">
-          <div class="panel-heading">Bonjour, veuillez identifier vous.</div>
+          <div> <h4>  <strong> Bienvenue au CTS Transport Resolution </strong> </h4></div>
           <p></p><p></p><p></p>
+          <div class="panel-heading">Veuillez vous identifier.</div>
+          <p></p><p></p>
           <div class="panel-body">
             <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
               <div class="form-group">
@@ -17,7 +19,7 @@
                 <input type="password" name="password" ngModel="" class="form-control" required/>
             </div>
             <button type="submit" class="btn btn-danger">Login</button>
-            <button routerLink="/register" class="btn btn-success">Register</button>
+            <button type="reset" class="btn btn-success">Reset</button>
             </form>
           </div>
         </div>

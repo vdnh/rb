@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,11 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'CTS';
-  //static log=1;
+  constructor(private router:Router) { }
   logout(){
     localStorage.clear();
     //this.log=1;
-    window.open("http://localhost:4200/login")
-    window.close();
+    //window.open("http://192.168.0.131")
+    this.router.navigateByUrl('/login');
+    //window.close();
   }
 }

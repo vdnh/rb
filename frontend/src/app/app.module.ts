@@ -21,6 +21,7 @@ import { NewTransporterComponent } from './new-transporter/new-transporter.compo
 import { DetailTransporterComponent } from './detail-transporter/detail-transporter.component';
 import { DetailShipperComponent } from './detail-shipper/detail-shipper.component';
 import { NewShipperComponent } from './new-shipper/new-shipper.component';
+//import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
@@ -52,6 +53,7 @@ const appRoutes:Routes=[
     DetailTransporterComponent,
     DetailShipperComponent,
     NewShipperComponent,
+    //MapComponent,
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule

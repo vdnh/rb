@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 //import "rxjs/Rx";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 //import {JwtHelper} from '@auth0/angular-jwt'
 
 @Injectable()
 export class AuthenticationService{
   
-    private host:string="http://localhost:8080";
-    private hostUserInfo:string="http://localhost:8080/userInfo/";
+    private host:string="http://192.168.0.131:8080";
+    private hostUserInfo:string="http://localhost:8080/users/";
     private jwToken=null;
     private roles:Array<any>=[];
     private userName : string = "";
@@ -24,13 +25,8 @@ export class AuthenticationService{
     }
 
     getUserInfo(){
-        //return this.http.post(this.hostUserInfo, this.userName, { observe: 'response' });
-        return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})}); 
-        //, {'Content-Type':'text/plain'}
-        /*console.log("This is textTemp : "+ textTemp.subscribe(data=>{
-            console.log(data);
-        }));//*/
-        //return textTemp;
+        return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res})); 
     }
 
     saveTonken(jwtToken: string): any {

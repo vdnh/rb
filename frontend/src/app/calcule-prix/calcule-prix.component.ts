@@ -141,13 +141,15 @@ export class CalculePrixComponent implements OnInit {
   }
   onOk(){    
     this.totalPoints = this.longeurPointage(this.longeur, this.mode) + this.largeurPointage(this.largeur, this.mode) + this.hauteurPointage(this.hauteur, this.mode) 
-      + this.poidsPointage(this.poids, this.mode) + this.valeur + this.distance;
+      + this.poidsPointage(this.poids, this.mode); // + this.valeur + this.distance;
     
     this.prix = this.prixDepart(this.totalPoints) + this.prixDistance(this.totalPoints) + this.prixToile(this.totalPoints)
       + this.prixAttendre(this.totalPoints) + this.prixSuplement(this.totalPoints, this.heurs_supl);
 
   }
   
+  onRegister(f){
 
+  }
 
 }

@@ -112,7 +112,7 @@ export class DetailTransporterComponent implements OnInit {
   myWindow: any;
   onPress(){
     //this.myWindow.close();
-    this.myWindow = window.open("http://localhost:4201/", "Ma Carte");
+    this.myWindow = window.open("http://192.168.0.131:8088/", "Ma Carte");
     //this.myWindow.close();
     //window.close("googleWindow");
   }

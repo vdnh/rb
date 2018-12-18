@@ -8,88 +8,45 @@
           <div class="panel-body">
             <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
               <table class="table table-striped">              
-              <tr>
-                <td *ngIf="mode==1"><label class="control-label">Longueur (en pouce)</label></td>
-                <td *ngIf="mode==2"><label class="control-label">Longueur (en cm)</label></td>
-                <td *ngIf="mode==1"><label class="control-label">Largeur (en pouce)</label></td>
-                <td *ngIf="mode==2"><label class="control-label">Largeur (en cm)</label></td>
-                <td *ngIf="mode==1"><label class="control-label">Hauteur (en pouce)</label></td>
-                <td *ngIf="mode==2"><label class="control-label">Hauteur (en cm)</label></td>
+              <tr *ngIf="mode==1">
+                <td *ngIf="mode==1" ><label class="control-label">Longueur (en pouce)</label></td>                
+                <td *ngIf="mode==1"><label class="control-label">Largeur (en pouce)</label></td>                
+                <td *ngIf="mode==1"><label class="control-label">Hauteur (en pouce)</label></td>                
+              </tr>
+              <tr *ngIf="mode==2">                  
+                  <td *ngIf="mode==2"><label class="control-label">Longueur (en cm)</label></td>                  
+                  <td *ngIf="mode==2"><label class="control-label">Largeur (en cm)</label></td>                  
+                  <td *ngIf="mode==2"><label class="control-label">Hauteur (en cm)</label></td>  
               </tr>
               <tr>
                 <td><input type="number" [(ngModel)]="longeur" name="longeur" class="form-control"/></td>
                 <td><input type="number" [(ngModel)]="largeur" name="largeur" class="form-control"/></td>
                 <td><input type="number" [(ngModel)]="hauteur" name="hauteur" class="form-control"/></td>
               </tr>            
-              <tr>
+              <tr *ngIf="mode==1">
                   <td *ngIf="mode==1"><label class="control-label">Poids (en lbs)</label></td>
+                  <td><label class="control-label">Valeur </label></td>
+                  <td><label class="control-label">Distance (en km)</label></td>              
+              </tr>
+              <tr *ngIf="mode==2">
                   <td *ngIf="mode==2"><label class="control-label">Poids (en kg)</label></td>
                   <td><label class="control-label">Valeur </label></td>
                   <td><label class="control-label">Distance (en km)</label></td>              
-                </tr>
-                <tr>
+              </tr>
+              <tr>
                   <td><input type="number" [(ngModel)]="poids" name="poids" class="form-control"/></td>
                   <td><input type="number" [(ngModel)]="valeur" name="valeur" class="form-control"/></td>
                   <td><input type="number" [(ngModel)]="distance" name="distance" class="form-control"/></td>
-                </tr>                  
-              <!-- tr>
-                  <td><label class="control-label">Numero </label></td>
-                  <td><label class="control-label">Rue</label></td>
-                  <td><label class="control-label">Code postal </label></td>
-              </tr>
-              <tr>                
-                  <td><input type="text" name="num" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="rue" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="code_postal" ngModel="" class="form-control" required/></td>
-                </tr>
-                <tr>    
-                    <td><label class="control-label">Ville </label></td>
-                    <td><label class="control-label">Province/Etat </label></td>
-                    <td><label class="control-label">Pays </label></td>
-                  </tr>              
-                <tr>  
-                  <td><input type="text" name="ville" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="province" ngModel="" class="form-control" required/></td>
-                  <td><input type="text" name="num" ngModel="" class="form-control" required/></td>
-                </tr>
-                <tr><p></p> <p></p> Personne a contact</tr>
-                <tr>
-                  <td><label class="control-label">Nom </label></td>
-                  <td><label class="control-label">Prenom</label></td>
-                  <td><label class="control-label">Fonction</label></td>
-                </tr>
-                <tr>                
-                  <td><input type="text" name="c_nom" ngModel="" class="form-control"/></td>
-                  <td><input type="text" name="prenom" ngModel="" class="form-control"/></td>
-                  <td><input type="text" name="fonction" ngModel="" class="form-control"/></td>
-                </tr>
-                <tr>    
-                  <td><label class="control-label">Email </label></td>
-                  <td><label class="control-label">Tel</label></td>
-                  <td><label class="control-label">Fax</label></td>
-                </tr>              
-                <tr>  
-                  <td><input type="text" name="email" ngModel="" class="form-control"/></td>
-                  <td><input type="text" name="tel" ngModel="" class="form-control"/></td>
-                  <td><input type="text" name="fax" ngModel="" class="form-control"/></td>
-                </tr>
-                <tr><p></p> <p></p> Creer votre Login</tr>
-                <tr>    
-                  <td><label class="control-label">Login name </label></td>
-                  <td><label class="control-label">Password </label></td>
-                  <td><label class="control-label">Confirmer Password </label></td>
-                </tr>              
-                <tr>  
-                  <td><input type="text" name="username" ngModel="" class="form-control" required/></td>
-                  <td><input type="password" name="password" ngModel="" class="form-control" required/></td>
-                  <td><input type="password" name="re_password" ngModel="" class="form-control" required/></td>
-                </tr -->              
-              <p></p><p></p>
+              </tr>                  
+              
               <tr><td></td><td>Total de points : </td><td> {{totalPoints}} </td></tr>
               <tr><td></td><td>Prix sugere : </td><td> {{prix}} </td></tr>
               <tr>
-                <td></td><td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >OK</button></td>
-                <td></td><td><button  routerLink="/transporters" class="btn btn-primary">Find Matching Transporters</button></td>
+              <td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >OK</button></td>
+              <td></td>
+              <!--/tr>
+              <tr-->
+              <td><button  routerLink="/transporters" class="btn btn-primary">Find Matching Transporters</button></td>
               </tr>  
             </table>            
             </form>

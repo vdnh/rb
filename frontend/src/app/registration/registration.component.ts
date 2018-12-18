@@ -14,9 +14,9 @@ import { Contact } from '../model/contact';
 export class RegistrationComponent implements OnInit {
 
   //user: User = new User();
-  shipperUrl ='http://localhost:8080/shippers/';
-  adresseUrl ='http://localhost:8080/adresses/';
-  contactUrl ='http://localhost:8080/contacts/';
+  shipperUrl ='http://192.168.0.131:8080/shippers/';
+  adresseUrl ='http://192.168.0.131:8080/adresses/';
+  contactUrl ='http://192.168.0.131:8080/contacts/';
   shipper : Shipper = new Shipper();
   adresse : Adresse = new Adresse();
   contact : Contact = new Contact();
