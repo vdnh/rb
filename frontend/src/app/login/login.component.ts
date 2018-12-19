@@ -11,8 +11,8 @@ import {Role} from '../../model/model.role';
 })
 export class LoginComponent implements OnInit {
 
-  //mode:number=0;
-  roles:Array<Role>;
+  mode:number=0;  // to control password
+  role:string="";
 
   constructor(private authService:AuthenticationService, private router:Router) { }
 
@@ -21,21 +21,43 @@ export class LoginComponent implements OnInit {
 
   onLogin(dataForm){
     this.authService.login(dataForm)
-    .subscribe(resp=>{
+    .subscribe(resp=> {
         let jwtToken=resp.headers.get('Authorization');
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);        
-        this.authService.getUserInfo().subscribe((res:Array<Role>)=>{
-          this.roles = res
-        }, err=>{
+        //*
+        this.authService.getUserInfo().subscribe((res:Role)=>{
+          this.role = res.roleName;
+          console.log('Role is : '+this.role)
+          //AppComponent.mode=1;
+        }, err=>{          
           console.log(err);
-        })
+        });//*/
+        //this.authService.getUserInfo();
+        //this.role=this.authService.role;
+        //console.log('Role is : '+this.role);
         //if(this.roles.
-        this.router.navigateByUrl('/tasks');
+        //this.router.navigateByUrl('/tasks');
     },err=>{
+      this.mode=1; // appear the message bad password
       console.log(err);  
-    })
-
+    });
+    /*
+    this.authService.getUserInfo().subscribe((res:string)=>{
+      this.role = res;
+      console.log('Role is : '+this.role)
+    }, err=>{
+      console.log(err);
+    });//*/
+    //this.router.navigateByUrl('/tasks');
+    //console.log('One more time, Role is : '+this.role)
   }
 
+  logout(){
+    localStorage.clear();
+    this.router.navigateByUrl('/login');
+  }
+  test(){
+
+  }
 }

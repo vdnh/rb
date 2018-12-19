@@ -22,7 +22,16 @@ public class UserRestService {
     private AccountService accountService;
         
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-    public Collection<AppRole> getRole(@PathVariable String username){
-        return accountService.findUserByUsername(username).getRoles();
+    public AppRole getRole(@PathVariable String username){
+         Collection<AppRole> roles = accountService.findUserByUsername(username).getRoles();
+         if (roles.toString().contains("ADMIN"))
+                 return new AppRole(null, "ADMIN");
+         else if (roles.toString().contains("MANAGER"))
+                 return new AppRole(null, "MANAGER");
+         else if (roles.toString().contains("SHIPPER"))
+                 return new AppRole(null, "SHIPPER");
+         else if (roles.toString().contains("TRANSPORTER"))
+                 return new AppRole(null, "TRANSPORTER");
+         else return new AppRole(null, "WRONG");
     }    
 }

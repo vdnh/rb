@@ -20,36 +20,14 @@ export class TasksComponent implements OnInit
 
   ngOnInit() {
     //this.who=
+    /*
     this.authService.getUserInfo().subscribe(data=>{
       console.log("Role name : "+ data.toString())
     },err=>{
       console.log("Role name : null")
-    })
-    /*
-    .subscribe(data=>{
-      this.who=data.toString();
-      console.log(this.who)
-    }, err=>{
-      console.log("I don't know who you are!!");
-      //this.router.navigateByUrl('/login');  
     })//*/
-    /*
-    this.authService.getTasks().subscribe(data=>{
-      this.tasks=data;
-      console.log(this.tasks);
-      }, err=>{
-      //this.authService.logout();
-      this.router.navigateByUrl('/login');
-      });
-    //*/
-    /*
-    this.authService.getShippers()
-    .subscribe(shippers=>{this.shippers=shippers;
-    console.log(this.shippers);
-    }, err=>{
-      this.router.navigateByUrl('/login');
-    });
-    //*/
+    console.log("This is from task, must review to delete!!!")
+
   }
   myWindow: any;
   onPress(){

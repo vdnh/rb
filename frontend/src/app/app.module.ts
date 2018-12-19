@@ -21,12 +21,13 @@ import { NewTransporterComponent } from './new-transporter/new-transporter.compo
 import { DetailTransporterComponent } from './detail-transporter/detail-transporter.component';
 import { DetailShipperComponent } from './detail-shipper/detail-shipper.component';
 import { NewShipperComponent } from './new-shipper/new-shipper.component';
+import { TestComponent } from './shippers/test/test.component';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
-  {path:"tasks", component:TasksComponent},
+  {path:"propos", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},
   {path:"register", component:RegistrationComponent},
   {path:"calcule-prix", component:CalculePrixComponent},
@@ -36,7 +37,8 @@ const appRoutes:Routes=[
   {path: 'shippers', component: ShippersComponent},
   {path: 'new-shipper', component:  NewShipperComponent},
   {path: 'detail-shipper/:id', component:  DetailShipperComponent},
-  {path:"", redirectTo:"login", pathMatch:"full"}
+  {path: 'shippers/testlink', component:  TestComponent},
+  {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
 @NgModule({
@@ -53,6 +55,7 @@ const appRoutes:Routes=[
     DetailTransporterComponent,
     DetailShipperComponent,
     NewShipperComponent,
+    TestComponent,
     //MapComponent,
   ],
   imports: [
