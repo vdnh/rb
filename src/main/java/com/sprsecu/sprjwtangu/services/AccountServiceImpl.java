@@ -47,9 +47,9 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public AppUser findUserByUsername(String username) {
-        System.out.println("Before of find user by username");
+        //System.out.println("Before of find user by username");
         AppUser user= userRepository.findByUsername(username); 
-        System.out.println("Later of find user by username : "+user.getPassword());
+        //System.out.println("Later of find user by username : "+user.getPassword());
         return user;
     }
     

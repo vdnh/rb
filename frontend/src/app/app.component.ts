@@ -31,7 +31,7 @@ export class AppComponent {
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);
-          //AppComponent.mode=1;
+          this.mode=0;
         }, err=>{          
           console.log(err);
         });//*/

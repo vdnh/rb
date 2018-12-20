@@ -15,15 +15,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class Camion implements Serializable{
+public class ListDeRecherche implements Serializable{
     @Id @GeneratedValue
     private Long id;
-    private String nom;
-    private String plaque;
-    private Long longtitude;
-    private Long latitude;
-    private boolean status;
-    //private Long id_flat_bed; // point to camion flat_bed
-    //private Long id_camion_fermee;  // point to camion fermee
-    private Long id_transporter;
+    private String longueur;
+    private String largeur;
+    private String hauteur;
+    private String poids;
+    private String valeur;
+    private String distance;
+    private String origin;
+    private String destination;
+    private Long id_shipper;
 }
