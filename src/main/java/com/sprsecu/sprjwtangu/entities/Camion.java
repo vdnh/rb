@@ -23,7 +23,5 @@ public class Camion implements Serializable{
     private Long longtitude;
     private Long latitude;
     private boolean status;
-    //private Long id_flat_bed; // point to camion flat_bed
-    //private Long id_camion_fermee;  // point to camion fermee
     private Long id_transporter;
 }

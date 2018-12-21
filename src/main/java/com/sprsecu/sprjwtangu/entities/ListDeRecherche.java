@@ -1,9 +1,12 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,5 +29,8 @@ public class ListDeRecherche implements Serializable{
     private String distance;
     private String origin;
     private String destination;
+    @Temporal(TemporalType.DATE)
+    private Date dateRecherche;
+    private String typeCamion; // 1, 2, ... veut dire : camionFermee, flat_bed, ...
     private Long id_shipper;
 }
