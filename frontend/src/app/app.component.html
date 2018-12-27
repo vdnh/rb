@@ -1,9 +1,8 @@
 <p></p>
 <div class="container">
-  <div class="col-md-6 col-md-offset-3">
-    <div class="alert alert-danger" *ngIf="mode==1">
-        <strong>Bad credentials ...</strong>
-    </div>
+  <!--div class="col-md-18 col-md-offset-3"-->
+  
+  
     <div class="panel panel-primary" *ngIf="role==''">
            <!--button routerLink="/propos" class="btn btn-link">Propos</button-->
             <div> <h4>  <strong> Bienvenue au CTS Transport Resolution </strong> </h4>
@@ -11,6 +10,12 @@
                   <h6> <strong>Un outil performant pour simplifier des operations et diminuer des frais de transport.</strong></h6>
             </div>
             <p></p><p></p><p></p>
+            <div class="col-md-3 col-md-offset-3">
+              <div class="alert alert-danger" *ngIf="mode==1">
+                  <strong>Bad credentials ...</strong>
+              </div>
+            </div>
+          <div class="col-md-3 col-md-offset-3">
             <div class="panel-heading">Veuillez vous identifier.</div>
             <p></p><p></p>
             <div class="panel-body">
@@ -27,7 +32,8 @@
               <button type="reset" class="btn btn-success">Reset</button>
               </form>
             </div>
-    </div>
+      </div>
+  </div>
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
       <button routerLink="/shippers" class="btn btn-link">Shippers</button>          
@@ -69,5 +75,5 @@
         </div>
       </div>
     </footer>
-  </div>
+  <!--/div-->
 </div>

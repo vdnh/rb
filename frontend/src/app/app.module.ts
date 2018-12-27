@@ -22,6 +22,7 @@ import { DetailTransporterComponent } from './detail-transporter/detail-transpor
 import { DetailShipperComponent } from './detail-shipper/detail-shipper.component';
 import { NewShipperComponent } from './new-shipper/new-shipper.component';
 import { TestComponent } from './shippers/test/test.component';
+import { MapComponent } from './map/map.component';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -38,6 +39,7 @@ const appRoutes:Routes=[
   {path: 'new-shipper', component:  NewShipperComponent},
   {path: 'detail-shipper/:id', component:  DetailShipperComponent},
   {path: 'shippers/testlink', component:  TestComponent},
+  {path: 'map', component: MapComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -56,6 +58,7 @@ const appRoutes:Routes=[
     DetailShipperComponent,
     NewShipperComponent,
     TestComponent,
+    MapComponent,
     //MapComponent,
   ],
   imports: [

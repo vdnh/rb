@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Alert } from 'selenium-webdriver';
 import { Contact } from 'src/model/model.contact';
@@ -24,7 +24,7 @@ export class DetailTransporterComponent implements OnInit {
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
-    public adressesService:AdressesService){    
+    public adressesService:AdressesService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -112,7 +112,8 @@ export class DetailTransporterComponent implements OnInit {
   myWindow: any;
   onPress(){
     //this.myWindow.close();
-    this.myWindow = window.open("http://192.168.0.131:8088/", "Ma Carte");
+    //this.myWindow = window.open("http://192.168.0.131:8088/", "Ma Carte");
+    this.router.navigateByUrl("/map");
     //this.myWindow.close();
     //window.close("googleWindow");
   }
