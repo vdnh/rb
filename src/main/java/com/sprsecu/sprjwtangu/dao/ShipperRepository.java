@@ -13,5 +13,13 @@ import org.springframework.data.repository.query.Param;
  */
 public interface ShipperRepository  extends JpaRepository<Shipper, Long>{
     @Query("select s from Shipper s where s.nom like :x")
-    public Page<Shipper> chercher(@Param("x") String mc, Pageable pageable);    
+    public Page<Shipper> chercher(@Param("x") String mc, Pageable pageable);   
+    
+    //@Query("select s from Shipper s where s.login_name like :x")
+    //public Shipper findByLoginName(@Param("x") String login_name);
+    public Shipper findByLoginName(String loginName);
+    //public AppUser findByUsername(String username);    
+    //public Shipper findByEmail(String email);    
+    //email
+    
 }

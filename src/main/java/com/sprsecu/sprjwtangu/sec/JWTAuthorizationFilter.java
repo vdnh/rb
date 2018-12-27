@@ -44,7 +44,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
                     .setSigningKey(SecurityConstants.SECRET)
                     .parseClaimsJws(jwt.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getBody();
-            System.out.println("JWTAuthorizationFilter.class - claims info : "+claims.toString());
+            //System.out.println("JWTAuthorizationFilter.class - claims info : "+claims.toString());
             String username = claims.getSubject();
             ArrayList<Map<String, String>> roles= (ArrayList<Map<String, String>>) claims.get("roles");
             Collection<GrantedAuthority> authorities = new ArrayList<>();

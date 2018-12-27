@@ -38,9 +38,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             //Logger.getLogger(JWTAuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
-        System.out.println("**********");
-        System.out.println("JWTAuthentication.class -- User : " + user.toString());
-        System.out.println("**********");
+//        System.out.println("**********");
+//        System.out.println("JWTAuthentication.class -- User : " + user.toString());
+//        System.out.println("**********");
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(), 
@@ -53,15 +53,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletRequest request, HttpServletResponse response, 
             FilterChain chain, Authentication authResult) throws IOException, ServletException {
         
-        System.out.println("Before print Spring user!!!!! ");
+        //System.out.println("Before print Spring user!!!!! ");
         User springUser = (User) authResult.getPrincipal();
-        System.out.println("Spring User now is : "+springUser.toString() + " password: "+springUser.getPassword());
+        //System.out.println("Spring User now is : "+springUser.toString() + " password: "+springUser.getPassword());
         String jwtToken=Jwts.builder().setSubject(springUser.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis()+SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SecurityConstants.SECRET)
                 .claim("roles", springUser.getAuthorities())
                 .compact();
-        System.out.println("JWT Tonken is : "+jwtToken);
+        //System.out.println("JWT Tonken is : "+jwtToken);
         response.addHeader(SecurityConstants.HEADER_STRING,
                 SecurityConstants.TOKEN_PREFIX+jwtToken);
     }

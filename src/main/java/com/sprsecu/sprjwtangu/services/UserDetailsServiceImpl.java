@@ -25,11 +25,11 @@ public class UserDetailsServiceImpl implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user =  accountService.findUserByUsername(username);
-        System.out.println("Userdetailserviceimpl has made accountservice findbyusername");
+        //System.out.println("Userdetailserviceimpl has made accountservice findbyusername");
         if(user == null){
             //System.out.println("Not found : " + username);
-            System.out.println("I'm in runtime, and i give you this message. your user is wrong!");
-            Logger.getLogger(UserDetailsServiceImpl.class.getName()).log(Level.SEVERE, "I'm in runtime, and i give you this message. your user is wrong!");
+            //System.out.println("I'm in runtime, and i give you this message. your user is wrong!");
+            //Logger.getLogger(UserDetailsServiceImpl.class.getName()).log(Level.SEVERE, "I'm in runtime, and i give you this message. your user is wrong!");
             throw new UsernameNotFoundException(username);            
         }
         
@@ -37,10 +37,10 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         user.getRoles().forEach(r -> {
             authorities.add(new SimpleGrantedAuthority(r.getRoleName()));
         });
-        System.out.println("UserdetailServiceImpl Collection<GrantedAuthority> - authorities : " + authorities.toString());
+        //System.out.println("UserdetailServiceImpl Collection<GrantedAuthority> - authorities : " + authorities.toString());
         
         User userSpring = new User(user.getUsername(), user.getPassword(), authorities);
-        System.out.println("UserdetailServiceImpl - userSpring : " + userSpring.toString());
+        //System.out.println("UserdetailServiceImpl - userSpring : " + userSpring.toString());
         return userSpring;
     }
     

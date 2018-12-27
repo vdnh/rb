@@ -40,11 +40,37 @@ export class MapComponent implements OnInit {
 
   ngAfterContentInit() {
     let mapProp = {
-      center: new google.maps.LatLng(18.5793, 73.8143),
+      center: new google.maps.LatLng(45.568806, -73.918333),
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    
+    //this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
+
+    let location1 = new google.maps.LatLng(45.568874, -73.918333);
+    let marker = new google.maps.Marker({
+      position: location1,
+      map: this.map,
+      icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+      title: 'Camion 01'
+    });
+
+    let location2 = new google.maps.LatLng(45.569234, -73.918440);
+    let marker02 = new google.maps.Marker({
+      position: location2,
+      map: this.map,
+      icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+      title: 'Camion 02'
+    });
+
+    let location3 = new google.maps.LatLng(45.719947, -73.674694);
+    let marker03 = new google.maps.Marker({
+      position: location3,
+      map: this.map,
+      icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+      title: 'Camion 03'
+    });
 
   }
 
@@ -102,5 +128,4 @@ export class MapComponent implements OnInit {
 
     this.gmapElement.nativeElement.hidden = this.isHidden;
   }
-
 }

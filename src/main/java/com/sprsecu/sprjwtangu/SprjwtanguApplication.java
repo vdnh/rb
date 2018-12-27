@@ -95,5 +95,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
             accountService.addRoleToUser(u, u.toUpperCase());
             //userRepository.save(new AppUser(null, u, u, null));
         });//*/
+//        accountService.saveUser(new AppUser(null, "shipper01", "shipper01", null));
+//        accountService.addRoleToUser("shipper01", "SHIPPER");
     }
 }

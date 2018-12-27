@@ -1,6 +1,7 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,4 +28,7 @@ public class Transporter {
     private String email;
     private long tel;
     private String photo;    
+    @Column(unique = true)
+    private String loginName;
+    private String password;
 }

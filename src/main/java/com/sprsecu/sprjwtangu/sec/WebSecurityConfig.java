@@ -31,17 +31,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         /*
         auth.inMemoryAuthentication()
         .withUser("admin").password("password").roles("ADMIN","USER");//*/
-        System.out.println("Before auth.userDetailsService!!!!!");
-        Logger.getLogger("Before auth.userDetailsService!!!!! - By Logger");
+        //System.out.println("Before auth.userDetailsService!!!!!");
+        //Logger.getLogger("Before auth.userDetailsService!!!!! - By Logger");
         try {        
             auth.userDetailsService(userDetailsService)
                     .passwordEncoder(bCryptPasswordEncoder);
         } catch (Exception ex) {
-            System.out.println("Password is wrong!!!!!");
-            Logger.getLogger(WebSecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
+            //System.out.println("Password is wrong!!!!!");
+            //Logger.getLogger(WebSecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Logger.getLogger("After auth.userDetailsService!!!!! - By Logger");
-        System.out.println("Password is good!!!!!");
+        //Logger.getLogger("After auth.userDetailsService!!!!! - By Logger");
+        //System.out.println("Password is good!!!!!");
     }
     
     @Override

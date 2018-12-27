@@ -15,5 +15,6 @@ import org.springframework.data.repository.query.Param;
 public interface TransporterRepository extends JpaRepository<Transporter, Long>{
     @Query("select t from Transporter t where t.nom like :x")
     public Page<Transporter> chercher(@Param("x") String mc, Pageable pageable);
+    public Transporter findByLoginName(String loginName);
 }
 

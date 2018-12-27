@@ -66,4 +66,9 @@ public class TransporterRestService {
         return transporterRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
     }
     
+    @RequestMapping(value = "/transporterParLogin/{loginName}", method = RequestMethod.GET)
+    public Transporter transporterParLogin_name(@PathVariable String loginName)
+    {
+        return transporterRepository.findByLoginName(loginName);
+    }
 }

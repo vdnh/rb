@@ -32,6 +32,6 @@ public class UserRestService {
                  return new AppRole(null, "SHIPPER");
          else if (roles.toString().contains("TRANSPORTER"))
                  return new AppRole(null, "TRANSPORTER");
-         else return new AppRole(null, "WRONG");
+         else return new AppRole(null, "");
     }    
 }
