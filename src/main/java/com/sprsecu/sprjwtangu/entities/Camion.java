@@ -20,8 +20,11 @@ public class Camion implements Serializable{
     private Long id;
     private String nom;
     private String plaque;
+    private String type; // camionfermee, flatbed, ...
     private Long longtitude;
     private Long latitude;
-    private boolean status;
+    private boolean status; //en mission ou non
+    private String localDepart;
+    private String destination;
     private Long id_transporter;
 }

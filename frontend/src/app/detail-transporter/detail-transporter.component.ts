@@ -8,6 +8,8 @@ import { Contact } from 'src/model/model.contact';
 import { Adresse } from 'src/model/model.adresse';
 import { ContactsService } from '../../services/contacts.service';
 import { AdressesService } from '../../services/adresses.service';
+import { ServicesOffre } from 'src/model/model.servicesOffre';
+import { Camion } from 'src/model/model.camion';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -23,6 +25,9 @@ export class DetailTransporterComponent implements OnInit {
   adresses:Array<Adresse>;
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
+  servicesOffre:ServicesOffre=new ServicesOffre();
+  camions:Array<Camion>;
+  addcamion:Camion=new Camion(); // to add more camion
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
@@ -66,7 +71,9 @@ export class DetailTransporterComponent implements OnInit {
       }, err=>{
         console.log(err)
       })
-    });    
+    });
+    // must add the command of modify servicesoffre
+    // must add the command of modify camions   
   }
 
   addContact(){
@@ -108,7 +115,30 @@ export class DetailTransporterComponent implements OnInit {
       console.log(err);
     });
   }  
- 
+
+  addCamion(){
+    this.addcamion.id_transporter=this.id;
+    /*
+    this.adressesService.saveAdresses(this.addadresse).subscribe(data=>{
+      alert("Adresse added.");
+      this.refresh()
+    }, err=>{
+      console.log(err)
+    })//*/
+  }
+
+  deleteCamion(id:number){
+    /*
+    this.adressesService.deleteAdresse(id)
+    .subscribe(data=>{
+      alert("Adresse : "+this.addadresse.num+" a ete supprime.");
+      this.refresh();
+    }, err=>{
+      console.log(err);
+    });//*/
+  }  
+  
+
   myWindow: any;
   onPress(){
     //this.myWindow.close();

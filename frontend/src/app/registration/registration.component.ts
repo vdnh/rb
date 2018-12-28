@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {Shipper} from '../model/shipper'
+//import {Shipper} from '../model/shipper'
 import { from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 //import { Address } from 'cluster';
-import { Adresse } from '../model/adresse';
-import { Contact } from '../model/contact';
+//import { Adresse } from '../model/adresse';
+//import { Contact } from '../model/contact';
 
 @Component({
   selector: 'app-registration',
@@ -17,9 +17,9 @@ export class RegistrationComponent implements OnInit {
   shipperUrl ='http://192.168.0.131:8080/shippers/';
   adresseUrl ='http://192.168.0.131:8080/adresses/';
   contactUrl ='http://192.168.0.131:8080/contacts/';
-  shipper : Shipper = new Shipper();
-  adresse : Adresse = new Adresse();
-  contact : Contact = new Contact();
+  shipper : any; //Shipper = new Shipper();
+  adresse : any; //Adresse = new Adresse();
+  contact : any; //Contact = new Contact();
 
   constructor(private http:HttpClient) { }
 
@@ -35,7 +35,7 @@ export class RegistrationComponent implements OnInit {
 
   createShipper(){
     console.log(this.shipper)
-    return this.http.post<Shipper>(this.shipperUrl, this.shipper)
+    return this.http.post<any>(this.shipperUrl, this.shipper)
     .subscribe( data => {
       alert("Shipper created successfully.");
       //alert(data.toString());
@@ -49,7 +49,7 @@ export class RegistrationComponent implements OnInit {
 
   createAdresse(){
     console.log(this.adresse)
-    return this.http.post<Adresse>(this.adresseUrl, this.adresse)
+    return this.http.post<any>(this.adresseUrl, this.adresse)
     .subscribe( data => {
       alert("Adresse created successfully.");
     });
@@ -57,13 +57,13 @@ export class RegistrationComponent implements OnInit {
 
   createContact(){
     console.log(this.contact)
-    return this.http.post<Contact>(this.contactUrl, this.contact)
+    return this.http.post<any>(this.contactUrl, this.contact)
     .subscribe( data => {
       alert("Contact created successfully.");
     });
   }
 
-  onRegister(shipper:Shipper){
+  onRegister(shipper:any){
     //this.dataService.login(dataForm)
     //.subscribe(resp=>{
         //let jwtToken=resp.headers.get('Authorization');

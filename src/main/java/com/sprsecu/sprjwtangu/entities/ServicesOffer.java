@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ServicesOffer implements Serializable{
     @Id @GeneratedValue
     private Long id;    
-    private boolean entreposage_interieuse;
+    private boolean entreposage_interieur;
     private boolean entreposage_exterieur;
     private boolean service_transbordage;
     private boolean manutention;
