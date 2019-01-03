@@ -82,13 +82,13 @@
             <tr *ngFor="let camion of camions">
                 <td><input class="form-control" type="text" [(ngModel)]="camion.nom" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-                <td>
+                <!--td>
                     <select name="typecamion">
                         <option [ngvalue]="null" disabled>Type de camion</option>
                         <option [ngvalue]="camionFermee">Camion Fermee</option>
                         <option [ngvalue]="flatbed">Camion Flatbed</option>
                     </select>
-                </td>
+                </td-->
                 <td><input class="form-control" type="text" [(ngModel)]="camion.latitude" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.longtitude" /></td>
                 <td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>

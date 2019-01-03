@@ -1,3 +1,17 @@
-<p>
-  new-task works!
-</p>
+<select [(ngModel)]='nrSelect' class='form-control'>
+  <option value='47'>47</option>
+  <option value='46'>46</option>
+  <option value='45'>45</option>
+</select>
+<p></p><br>
+
+  <select [(ngModel)]='temp'>
+      <!--option [ngValue]="null">Choose a state</option-->
+    <option *ngFor="let state of states" [ngValue]="state">
+      {{ state.abbrev }}
+    </option>
+  </select>
+
+
+ <p>Form value: {{ form.value | json }}</p> 
+ <!-- {state: {name: 'New York', abbrev: 'NY'} } -->
