@@ -23,6 +23,7 @@ import { DetailShipperComponent } from './detail-shipper/detail-shipper.componen
 import { NewShipperComponent } from './new-shipper/new-shipper.component';
 import { TestComponent } from './shippers/test/test.component';
 import { MapComponent } from './map/map.component';
+import { FichTechniqueComponent } from './fich-technique/fich-technique.component';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -59,6 +60,7 @@ const appRoutes:Routes=[
     NewShipperComponent,
     TestComponent,
     MapComponent,
+    FichTechniqueComponent,
     //MapComponent,
   ],
   imports: [
