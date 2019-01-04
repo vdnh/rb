@@ -1,3 +1,195 @@
-<p>
-  fich-technique works!
-</p>
+<div class="container spacer">
+  <h3>Fiche de Technique</h3>
+  <div class="panel panel-primary">    
+    <div class="panel-body">
+      <table class="table table-striped">
+        <tr>
+          <th>Date Achat</th><th>Unite</th><th>Marque</th><th>Modele</th><th>Annee</th><th>Km</th><th>Couleur1</th><th>Code Couleur1</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="date" [(ngModel)]="fiche.dateAchat" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.numeroUnite" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.marque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.modele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.annee" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.km" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur1" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur1" /></td>
+        </tr>
+        <tr>
+          <th>Couleur2</th><th>Code Couleur2</th><th>Couleur3</th><th>Code Couleur3</th><th>Moteur</th><th>Transmition</th><th>Differentiel1 Type</th><th>Differentiel1 Capacite</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur2" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur2" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur3" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur3" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Type" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Capacite" /></td>
+        </tr>
+        <tr>
+          <th>Differentiel2 Type</th><th>Differentiel2 Capacite</th><th>Differentiel3 Type</th><th>Differentiel3 Capacite</th><th>Essieux Avant Type</th><th>Essieux Avant Capacite</th><th>Pneus Avant Modele</th><th>Pneus Avant Grandeur</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Type" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Capacite" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Type" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Capacite" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantType" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantCapacite" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantModele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantGrandeur" /></td>
+        </tr>        
+        <tr>
+          <th>Pneus Arriere Modele</th><th>Pneus Arriere Grandeur</th><th>PTO Modele</th><th>PTO Serie</th><th>Pompe Hydrolique Modele</th><th>Pompe Hydrolique Serie</th><th>FiltreHuile1er Marque</th><th>FiltreHuile1er Piece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArriereModele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArrieregrandeur" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoModele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoSerie" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueModele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueSerie" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erPiece" /></td>
+        </tr>     
+        <tr>
+          <th>FiltreHuile2em Marque</th><th>FiltreHuile2em Piece</th><th>FiltreHuile3em Marque</th><th>FiltreHuile3em Piece</th><th>FiltreFuel1er Marque</th><th>FiltreFuel1er Piece</th><th>FiltreFuel2em Marque</th><th>FiltreFuel2em Piece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emPiece" /></td>
+        </tr>                
+        <tr>
+          <th>FiltreHuile3em Marque</th><th>FiltreHuile3em Piece</th><th>FiltreAir1er Marque</th><th>FiltreAir1er Piece</th><th>FiltreAir2em Marque</th><th>FiltreAir2em Piece</th><th>FiltreAir3em Marque</th><th>FiltreAir3em Piece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emPiece" /></td>
+        </tr>        
+        <tr>
+          <th>FiltrePrestone1er Marque</th><th>FiltrePrestone1er Piece</th><th>FiltrePrestone2em Marque</th><th>FiltrePrestone2em Piece</th><th>FiltrePolene1er Marque</th><th>FiltrePolene1er Piece</th><th>FiltrePolene2em Marque</th><th>FiltrePolene2em Piece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emPiece" /></td>
+        </tr>        
+        <tr>
+          <th>FiltreHuile Hydrolique1er Marque</th><th>FiltreHuile Hydrolique1er Piece</th><th>FiltreHuile Hydrolique2em Marque</th><th>FiltreHuile Hydrolique2em Piece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erModele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emModele" /></td>
+        </tr>     
+        <tr>
+          <th>Huile Moteur</th><th>Huile Differentiel</th><th>Huile Transmition</th><th>HuileServo Direction</th><th>Huile Hydrolique</th><th>Prestone</th><th>Batterie Nombre</th><th>Batterie Amperage</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileMoteur" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileDifferentiel" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileTransmition" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileServoDirection" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileHydrolique" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.prestone" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieNombre" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieAmperage" /></td>
+        </tr>                   
+        <tr>
+          <th>Batterie Dimension</th><th>Alternateur Marque</th><th>Alternateur Piece</th><th>Demarreur Marque</th><th>Demarreur Piece</th><th>PhareAvant Marque</th><th>PhareAvant Piece</th><th>LumiaireArriere Marque</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieDimension" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArriereMarque" /></td>
+        </tr>                         
+        <tr>
+          <th>LumiaireArriere Piece</th><th>Clignotant Avant Marque</th><th>Clignotant Avant Piece</th><th>LumiaireHaut PareBrise Marque</th><th>LumiaireHaut PareBrise Piece</th><th>Essieux AvantFrein Marque</th><th>Essieux AvantFrein Piece</th><th>Essieux AvantDrum Marque</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArrierePiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBriseMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBrisePiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumMarque" /></td>
+        </tr>          
+        <tr>
+          <th>Essieux AvantDrum Piece</th><th>EssieuxAvant RouesType</th><th>EssieuxAvant RouesMarque</th><th>EssieuxAvant RouesPiece</th><th>EssieuxAvant BearingRouesMarque</th><th>EssieuxAvant BearingRouesPiece</th><th>EssieuxAvant BoosterMarque</th><th>EssieuxAvant BoosterPiece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesType" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterPiece" /></td>
+        </tr> 
+        <tr>
+          <th>EssieuxAvant CAMGaucheMarque</th><th>EssieuxAvant CAMGauchePiece</th><th>EssieuxAvant CAMDroiteMarque</th><th>EssieuxAvant CAMDroitePiece</th><th>EssieuxArriere FreinMarque</th><th>EssieuxArriere FreinPiece</th><th>EssieuxArriere DrumMarque</th><th>EssieuxArriere DrumPiece</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGaucheMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGauchePiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroiteMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroitePiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumPiece" /></td>
+        </tr>                                          
+        <tr>
+          <th>EssieuxArriere RouesType</th><th>EssieuxArriere RouesMarque</th><th>EssieuxArriere RouesPiece</th><th>EssieuxArriere BearingRouesMarque</th><th>EssieuxArriere BearingRouesPiece</th><th>EssieuxArriere BoosterMarque</th><th>EssieuxArriere BoosterPiece</th><th>EssieuxArriere CAMGaucheMarque</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesType" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterMarque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterPiece" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGaucheMarque" /></td>
+        </tr>
+        <tr>
+            <th>EssieuxArriere CAMGauchePiece</th><th>EssieuxArriere CAMDroiteMarque</th><th>EssieuxArriere CAMDroitePiece</th>
+          </tr>
+          <tr>
+            <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGauchePiece" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroiteMarque" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroitePiece" /></td>
+          </tr>        
+      </table>
+    </div>
+  </div>
+</div>

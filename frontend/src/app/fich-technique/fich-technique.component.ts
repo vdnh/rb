@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
+import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 
 @Component({
   selector: 'app-fich-technique',
@@ -7,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FichTechniqueComponent implements OnInit {
 
+  fiche:FichePhysiqueEntretien = new FichePhysiqueEntretien();
+  ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
   constructor() { }
 
   ngOnInit() {
