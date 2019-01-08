@@ -97,5 +97,17 @@ public class SprjwtanguApplication implements CommandLineRunner{
         });//*/
 //        accountService.saveUser(new AppUser(null, "shipper01", "shipper01", null));
 //        accountService.addRoleToUser("shipper01", "SHIPPER");
+    
+        // les tasks qui fonctionnent chaque 1 minute
+//        int i=0;
+//        System.out.println("Values List of i, i est initie : "+i);
+//        while(true){
+//            Thread.sleep(60000);
+//            System.out.println("voici : "+ i++);
+//        }
+        
+        // this thread run by side the main program, it check and send nessacery message to transporter 1 time per day 
+        Thread threadBySide = new ThreadBySide();
+        threadBySide.start();
     }
 }

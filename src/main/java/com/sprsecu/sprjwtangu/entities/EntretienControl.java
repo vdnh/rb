@@ -36,4 +36,6 @@ public class EntretienControl implements Serializable{
     private Long odo7Fait;
     private Date ent8Fait;
     private Long odo8Fait;    
+    private Date inspect01 = new Date("10-jul-2018");
+    //private Date inspect02 = new Date("10-jul-2018");
 }
