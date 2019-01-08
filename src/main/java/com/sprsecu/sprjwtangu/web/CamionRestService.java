@@ -67,8 +67,8 @@ public class CamionRestService {
     }    
     
     @RequestMapping(value = "/camionsDeTransporter", method = RequestMethod.GET)
-    public List<Camion> chercherCDT(@RequestParam(name = "id_transporter", defaultValue = "-1" ) Long id_transporter) 
+    public List<Camion> chercherCDT(@RequestParam(name = "idTransporter", defaultValue = "-1" ) Long idTransporter) 
     {
-        return camionRepository.camionsDeTransporter(id_transporter);
+        return camionRepository.camionsDeTransporter(idTransporter);
     }
 }

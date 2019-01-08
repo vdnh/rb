@@ -16,6 +16,6 @@ public interface CamionRepository  extends JpaRepository<Camion, Long>{
     @Query("select c from Camion c where c.plaque like :x")
     public Page<Camion> chercherPlaque(@Param("x") String mc, Pageable pageable);    
        
-    @Query("select c from Camion c where c.id_transporter = :x")
-    public List<Camion> camionsDeTransporter(@Param("x") Long id_transporter);
+    @Query("select c from Camion c where c.idTransporter = :x")
+    public List<Camion> camionsDeTransporter(@Param("x") Long idTransporter);
 }
