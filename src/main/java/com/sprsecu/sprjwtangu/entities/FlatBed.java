@@ -1,4 +1,4 @@
-package com.sprsecu.sprjwtangu.entities;
+ package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
