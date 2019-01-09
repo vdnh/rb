@@ -24,6 +24,8 @@ import { NewShipperComponent } from './new-shipper/new-shipper.component';
 import { TestComponent } from './shippers/test/test.component';
 import { MapComponent } from './map/map.component';
 import { FichTechniqueComponent } from './fich-technique/fich-technique.component';
+import { CamionComponent } from './camion/camion.component';
+import { CamionsService } from 'src/services/camions.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -62,13 +64,14 @@ const appRoutes:Routes=[
     TestComponent,
     MapComponent,
     FichTechniqueComponent,
+    CamionComponent,
     //MapComponent,
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
-    ShippersService, AdressesService],
+    ShippersService, AdressesService, CamionsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

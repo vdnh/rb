@@ -8,6 +8,7 @@ import { Contact } from 'src/model/model.contact';
 import { Adresse } from 'src/model/model.adresse';
 import { ContactsService } from '../../services/contacts.service';
 import { AdressesService } from '../../services/adresses.service';
+import { CamionsService } from '../../services/camions.service';
 import { ServicesOffre } from 'src/model/model.servicesOffre';
 import { Camion } from 'src/model/model.camion';
 
@@ -29,7 +30,7 @@ export class DetailTransporterComponent implements OnInit {
   camions:Array<Camion>;
   addcamion:Camion=new Camion(); // to add more camion
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
-    public adressesService:AdressesService, private router:Router){    
+    public adressesService:AdressesService, public camionsService:CamionsService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -53,6 +54,12 @@ export class DetailTransporterComponent implements OnInit {
     }, err=>{
       console.log();
     });    
+
+    this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      this.camions=data;
+    }, err=>{
+      console.log();
+    });
   }
   saveTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
@@ -117,10 +124,10 @@ export class DetailTransporterComponent implements OnInit {
   }  
 
   addCamion(){
-    this.addcamion.id_transporter=this.id;
-    /*
-    this.adressesService.saveAdresses(this.addadresse).subscribe(data=>{
-      alert("Adresse added.");
+    this.addcamion.idTransporter=this.id;
+    //*
+    this.camionsService.saveCamions(this.addcamion).subscribe(data=>{
+      alert("Camion added.");
       this.refresh()
     }, err=>{
       console.log(err)
@@ -128,10 +135,10 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   deleteCamion(id:number){
-    /*
-    this.adressesService.deleteAdresse(id)
+    //*
+    this.camionsService.deleteCamion(id)
     .subscribe(data=>{
-      alert("Adresse : "+this.addadresse.num+" a ete supprime.");
+      //alert("Camion : "+this.addadresse.num+" a ete supprime.");
       this.refresh();
     }, err=>{
       console.log(err);

@@ -77,18 +77,12 @@
             </tr>   
             <tr><td colspan="2"><strong>List de camions</strong></td></tr>
             <tr>
-                <th>Nom</th><th>Plaque</th><th>Type Camion</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
+                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
             </tr>
             <tr *ngFor="let camion of camions">
-                <td><input class="form-control" type="text" [(ngModel)]="camion.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-                <!--td>
-                    <select name="typecamion">
-                        <option [ngvalue]="null" disabled>Type de camion</option>
-                        <option [ngvalue]="camionFermee">Camion Fermee</option>
-                        <option [ngvalue]="flatbed">Camion Flatbed</option>
-                    </select>
-                </td-->
+                <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.latitude" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.longtitude" /></td>
                 <td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
@@ -98,8 +92,9 @@
             </tr>   
             <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     
             <tr>
-                <td><input class="form-control" type="text" [(ngModel)]="addcamion.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.unite" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.plaque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.latitude" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.longtitude" /></td>
                 <td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
@@ -162,11 +157,12 @@
                         </tr-->          
                         <tr><td colspan="2"><strong>List de Camions</strong></td></tr>
                         <tr>
-                            <th>Nom</th><th>Plaque</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
+                            <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
                         </tr>    
                         <tr *ngFor="let camion of camions">
-                            <td>{{addcamion.nom}}</td>
+                            <td>{{addcamion.unite}}</td>
                             <td>{{addcamion.plaque}}</td>
+                            <td>{{addcamion.marque}}</td>
                             <td>{{addcamion.latitude}}</td>
                             <td>{{addcamion.longtitude}}</td>
                             <td><input type="checkbox" [(ngModel)]="addcamion.status" disabled></td>

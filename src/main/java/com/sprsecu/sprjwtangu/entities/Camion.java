@@ -19,10 +19,12 @@ import lombok.NoArgsConstructor;
 public class Camion implements Serializable{
     @Id @GeneratedValue
     private Long id;
-    private String nom;
-    private String nIV; // numero identificatrion vehicule (numero serie)
+    private String unite; //numero unite
+    private String niv; // numero identificatrion vehicule (numero serie)
     private String plaque;
-    private String type; // remorque:1, semi-remorque:2, tracteur:3, camionfermee:4, flatbed:5, autres:6...
+    private String marque;
+    private String modele;
+    private String type; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
     private Long odometre; 
     private Date inspect01; // jj-mmm,  On fait l'inspection 2 fois chaque annee
     private Date inspect02; // jj-mmm
