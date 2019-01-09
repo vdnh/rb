@@ -3,6 +3,10 @@ package com.sprsecu.sprjwtangu.web;
 import com.sprsecu.sprjwtangu.dao.EntretienControlRepository;
 import com.sprsecu.sprjwtangu.entities.EntretienControl;
 import com.sprsecu.sprjwtangu.entities.MessagesConstants;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +63,7 @@ public class EntretienControlRestService {
         EntretienControl entretien = new EntretienControl();
         Long odoActual = id;
         Long odo=22000l;
+        Date date =Date.from(Instant.now());// new Date();
         entretien.setOdo1Fait(odo);
         entretien.setOdo2Fait(odo);
         entretien.setOdo3Fait(odo);
@@ -93,6 +98,17 @@ public class EntretienControlRestService {
         if((odoActual-entretien.getOdo1Fait())>=100000l)
             //System.out.println(MessagesConstants.ent8);       
             sb.append(MessagesConstants.ent8).append("\n");
+//        Calendar inspect01 = Calendar.getInstance();
+//        Calendar inspect02 = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+        if(((date.getTime()-entretien.getInspect01().getTime())/24/60/60/1000)>=152)
+            sb.append(MessagesConstants.inspec1).append(sdf.format(entretien.getInspect01())).append("\n");
+//        if(((date.getTime()-entretien.getInspect02().getTime())/24/60/60/1000)>=152)
+//            sb.append(MessagesConstants.inspec2).append("\n");
+        //System.out.println("the next inspection in : "+(date.getTime()-entretien.getInspect01().getTime())/24/60/60/1000); 
+        //System.out.println(entretien.getInspect01().getTime());
+        //System.out.println(entretien.getInspect02());
+        
         System.out.println(sb.toString());
         return entretien;
     }
