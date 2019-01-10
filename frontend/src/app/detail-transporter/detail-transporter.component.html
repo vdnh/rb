@@ -2,7 +2,7 @@
   <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-heading"> 
         <label> Edit transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </label>
-        <button class="btn btn-primary" (click)="onPress()">Voir les camions {{transporter.nom}} sur la carte</button>
+        <button class="btn btn-link" (click)="onPress()">Voir les camions {{transporter.nom}} sur la carte</button>
         <p></p>
     </div>
     <div class="panel-body">
@@ -30,7 +30,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
-                <td><button class="btn btn-primary" (click)="deleteAdress(contact.id)">Delete</button></td>
+                <td><button class="btn btn-link" (click)="deleteAdress(contact.id)">Delete</button></td>
             </tr>            
             <tr><td colspan="2"><strong>Ajouter d'adresse</strong></td></tr>     
             <tr>
@@ -40,7 +40,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                            
-                <td><button class="btn btn-primary" (click)="addAdresse()">Add</button></td>
+                <td><button class="btn btn-link" (click)="addAdresse()">Add</button></td>
             </tr>                                    
             <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
             <tr>
@@ -54,7 +54,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td>
-                <td><button class="btn btn-primary" (click)="deleteContact(contact.id)">Delete</button></td>
+                <td><button class="btn btn-link" (click)="deleteContact(contact.id)">Delete</button></td>
             </tr>   
             <tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr>     
             <tr>
@@ -65,7 +65,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td>
-                <td><button class="btn btn-primary" (click)="addContact()">Add</button></td>
+                <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
             </tr>   
             <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
             <tr>
@@ -88,7 +88,8 @@
                 <td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td>
-                <td><button class="btn btn-primary" (click)="deleteCamion(camion.id)">Delete</button></td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Edit</button></td>
+                <!--td><button class="btn btn-primary" (click)="deleteCamion(camion.id)">Delete</button></td-->
             </tr>   
             <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     
             <tr>
@@ -100,7 +101,7 @@
                 <td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td>
-                <td><button class="btn btn-primary" (click)="addCamion()">Add</button></td>
+                <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
             </tr>                    
         </table>                 
     </div>   
@@ -148,26 +149,19 @@
                           <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
                           <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
                         </tr>                    
-                        <!--tr>
-                            <td colspan="2"><input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>                            
-                            <td colspan="2"><input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
-                            <td><input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
-                            <td><input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
-                            <td><input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
-                        </tr-->          
                         <tr><td colspan="2"><strong>List de Camions</strong></td></tr>
                         <tr>
                             <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
                         </tr>    
                         <tr *ngFor="let camion of camions">
-                            <td>{{addcamion.unite}}</td>
-                            <td>{{addcamion.plaque}}</td>
-                            <td>{{addcamion.marque}}</td>
-                            <td>{{addcamion.latitude}}</td>
-                            <td>{{addcamion.longtitude}}</td>
-                            <td><input type="checkbox" [(ngModel)]="addcamion.status" disabled></td>
-                            <td>{{addcamion.localDepart}}</td>
-                            <td>{{addcamion.destination}}</td>                            
+                            <td>{{camion.unite}}</td>
+                            <td>{{camion.plaque}}</td>
+                            <td>{{camion.marque}}</td>
+                            <td>{{camion.latitude}}</td>
+                            <td>{{camion.longtitude}}</td>
+                            <td><input type="checkbox" [(ngModel)]="camion.status" disabled></td>
+                            <td>{{camion.localDepart}}</td>
+                            <td>{{camion.destination}}</td>                            
                         </tr>                                               
                     </table>
             <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/transporters">Ok</button></div>

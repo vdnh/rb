@@ -48,9 +48,6 @@ export class DetailTransporterComponent implements OnInit {
     });
     this.adressesService.adressesDeTransporter(this.id).subscribe((data:Array<Adresse>)=>{
       this.adresses=data;
-      // this.adresses.forEach(a=>{
-      //   console.log("Adress : "+a.num+" "+a.rue )
-      // })
     }, err=>{
       console.log();
     });    
@@ -75,6 +72,12 @@ export class DetailTransporterComponent implements OnInit {
     });    
     this.adresses.forEach(obj => {
       this.adressesService.saveAdresses(obj).subscribe(data=>{
+      }, err=>{
+        console.log(err)
+      })
+    });
+    this.camions.forEach(obj => {
+      this.camionsService.saveCamions(obj).subscribe(data=>{
       }, err=>{
         console.log(err)
       })
@@ -145,6 +148,10 @@ export class DetailTransporterComponent implements OnInit {
     });//*/
   }  
   
+  gotoDetailCamion(id:number){
+    //console.log('this is test of camion detail');
+    this.router.navigate(['camion',id]);
+  }
 
   myWindow: any;
   onPress(){
