@@ -6,7 +6,7 @@ export class FichePhysiqueEntretien {
     marque:string;
     modele:string;
     annee:string;
-    km:string;
+    km:number;
     couleur1:string;
     codeCouleur1:string;
     couleur2:string;

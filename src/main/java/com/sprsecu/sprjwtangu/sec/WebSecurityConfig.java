@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //
         
-        http.authorizeRequests().antMatchers("/login/**", "/shippers/**", "/transporters/**", "/contacts/**", "/adresses/**" ).permitAll(); //"/h2-console/**",  
+        http.authorizeRequests().antMatchers("/login/**", "/shippers/**", "/transporters/**", "/contacts/**", "/adresses/**", "/camions/**" ).permitAll(); //"/h2-console/**",  
         //http.authorizeRequests().antMatchers(HttpMethod.POST, "/tasks/**").hasAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated(); 
         

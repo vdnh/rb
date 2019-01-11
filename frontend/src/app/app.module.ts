@@ -26,6 +26,8 @@ import { MapComponent } from './map/map.component';
 import { FichTechniqueComponent } from './fich-technique/fich-technique.component';
 import { CamionComponent } from './camion/camion.component';
 import { CamionsService } from 'src/services/camions.service';
+import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
+import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -72,7 +74,7 @@ const appRoutes:Routes=[
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
-    ShippersService, AdressesService, CamionsService],
+    ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

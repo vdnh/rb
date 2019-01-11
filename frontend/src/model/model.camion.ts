@@ -7,7 +7,7 @@ export class Camion{
     modele:string;
     annee:string;
     type:string; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
-    odometre:number; 
+    odometre:number=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
     filHydrolique:number; // km a changer filtre hydrolique
     filAntigel:number; // km a changer filtre antigel
@@ -37,7 +37,7 @@ export class Camion{
     odo7Fait:number=0;
     ent8Fait:Date;
     odo8Fait:number=0;    
-    inspect01:Date; // = new Date("10-jul-2018");
+    //inspect01:Date; // = new Date("10-jul-2018");
     
     idFichePhysiqueEntretien:number; // faut creer une ligne dans la table FichePhysiqueEntretien parce que one to one
     idFichePhysiqueEntretienCont:number;  // faut creer une ligne dans la table FichePhysiqueEntretienCont parce que one to one

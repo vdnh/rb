@@ -11,6 +11,10 @@ import { AdressesService } from '../../services/adresses.service';
 import { CamionsService } from '../../services/camions.service';
 import { ServicesOffre } from 'src/model/model.servicesOffre';
 import { Camion } from 'src/model/model.camion';
+import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
+import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
+import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
+import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -29,8 +33,12 @@ export class DetailTransporterComponent implements OnInit {
   servicesOffre:ServicesOffre=new ServicesOffre();
   camions:Array<Camion>;
   addcamion:Camion=new Camion(); // to add more camion
+  fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
+  fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
+  
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
-    public adressesService:AdressesService, public camionsService:CamionsService, private router:Router){    
+    public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
+    public fichePhysiqueContsService:FichePhysiqueContsService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -129,12 +137,25 @@ export class DetailTransporterComponent implements OnInit {
   addCamion(){
     this.addcamion.idTransporter=this.id;
     //*
-    this.camionsService.saveCamions(this.addcamion).subscribe(data=>{
-      alert("Camion added.");
-      this.refresh()
+    this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+      this.addcamion=data;
+      this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
+      this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
+
+      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+        this.camions=data;
+      }, err=>{
+        console.log();
+      });
     }, err=>{
       console.log(err)
     })//*/
+      this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe(data=>{ console.log('fiche1 ok')}, err=>{
+        console.log(err)
+      });
+      this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe(data=>{console.log('fiche2 ok') }, err=>{
+        console.log(err)
+      });
   }
 
   deleteCamion(id:number){
