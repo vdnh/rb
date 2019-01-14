@@ -1,6 +1,6 @@
 export class FichePhysiqueEntretien {
     id:number;
-    idCamion:number;
+    id_camion:number;
     dateAchat:Date;
     numeroUnite:string;
     marque:string;

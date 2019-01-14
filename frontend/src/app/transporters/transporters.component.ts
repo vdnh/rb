@@ -46,12 +46,13 @@ export class TransportersComponent implements OnInit {
   deleteTransporter(id:number){
     this.transporterservice.deleteTransporter(id)
     .subscribe(data=>{
+      this.doSearch();
     }, err=>{
       console.log(err);
     });
-
+    /*
     this.gotoPage(this.currentPage);
-    alert("Avoir rafraichi apres delete!!");
+    alert("Avoir rafraichi apres delete!!");//*/
   }
 
 }

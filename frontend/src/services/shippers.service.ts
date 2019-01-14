@@ -67,6 +67,6 @@ export class ShippersService{
         this.loadTonken();
         return this.http.delete(this.adServer+":8080/shippers/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res=>res.json()));
+        .pipe(map(res=> {return res}));
     }
 }

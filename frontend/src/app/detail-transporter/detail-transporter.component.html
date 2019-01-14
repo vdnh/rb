@@ -1,12 +1,21 @@
 <div class="container spacer">
-  <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-heading"> 
-        <label> Edit transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </label>
+        <label> Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </label>
         <button class="btn btn-link" (click)="onPress()">Voir les camions {{transporter.nom}} sur la carte</button>
-        <p></p>
+        <br><br>
     </div>
+    <div>
+        <button class="btn btn-link" (click)="onCoordonnees()">Coordonnees</button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onCamions()">Camions</button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onTableau()">Tableau d'Entretiens</button>
+        <br><br>
+    </div>
+    <!--div *ngIf="modeCoordonnes==1">modeCoordonnes</div>  
+    <div *ngIf="modeCamions==1">modeCamions</div>
+    <div *ngIf="modeTableau==1">modeTableau</div-->
+  <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-body">
-        <table class="table table-striped table-sm table-responsive">
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeCoordonnes==1" >
             <tr>
                 <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
             </tr>
@@ -75,6 +84,9 @@
                 <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention"></td>
                 <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt"></td>
             </tr>   
+        </table>
+        
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
             <tr><td colspan="2"><strong>List de camions</strong></td></tr>
             <tr>
                 <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Latitude</th><th>Longtitude</th><th>En Mission</th><th>Local Depart</th><th>Destination</th>
@@ -103,7 +115,49 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td>
                 <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
             </tr>                    
-        </table>                 
+        </table>       
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeTableau==1">
+            <tr>
+                <th>Unite</th>
+                <th *ngFor="let camion of camions">{{camion.unite}}</th>
+            </tr>
+            <tr>
+                <th>Entretien 1</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo1Fait, 25000)}}" (click)="onEntretien01(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Entretien 2</th>       
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo2Fait, 50000)}}" (click)="onEntretien02(camion)">faire</button></th>         
+            </tr>            
+            <tr>
+                <th>Entretien 3</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo3Fait, 100000)}}" (click)="onEntretien03(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Entretien 4</th>          
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo4Fait, camion.filHydrolique)}}" (click)="onEntretien04(camion)">faire</button></th>      
+            </tr>
+            <tr>
+                <th>Entretien 5</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo5Fait, camion.filAntigel)}}"  (click)="onEntretien05(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Entretien 6</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo6Fait, camion.huileAntigel)}}"  (click)="onEntretien06(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Entretien 7</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo7Fait, camion.huileTransmission)}}" (click)="onEntretien07(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Entretien 8</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}" (click)="onEntretien08(camion)">faire</button></th>
+            </tr>
+            <tr>
+                <th>Inspection 6mois</th>                
+                <th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleurInspect(camion.inspect6m)}}"  (click)="onInspect6(camion)">faire</button></th>
+            </tr>
+        </table>          
     </div>   
     <div>
         <table class="table table-striped table-responsive"> 

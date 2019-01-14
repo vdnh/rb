@@ -46,6 +46,6 @@ export class TransportersService{
         this.loadTonken();
         return this.http.delete(this.adServer+":8080/transporters/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        //.pipe(map(res => {return res}));
+        .pipe(map(res => {return res}));
     }
 }
