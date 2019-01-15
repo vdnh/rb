@@ -14,6 +14,10 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 })
 export class CamionComponent implements OnInit {
 
+  modeInfos:number=0;
+  modeFiche:number=0;
+  modeEntretiens:number=0;
+
   camion:Camion=new Camion();
   id:number;
   //mode:number=1;
@@ -36,21 +40,11 @@ export class CamionComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.modeInfos=1;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
     await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
       this.camion=data;
-      //this.mode=1;
-      /* this.fichePhysiqueEntretien.idCamion=this.camion.id;
-      this.fichePhysiqueEntretienCont.idCamion=this.camion.id;
-      this.fichePhysiqueEntretien.numeroUnite=this.camion.unite;
-      this.fichePhysiqueEntretien.marque=this.camion.marque;
-      this.fichePhysiqueEntretien.modele=this.camion.modele;
-      this.fichePhysiqueEntretien.annee=this.camion.annee;
-      this.fichePhysiqueEntretien.km=this.camion.odometre;
-
-      this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe(data=>{ });
-      this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe(data=>{ }); */
-      //* 
-      //console.log('differene in : '+ (this.camion.odometre - this.camion.odo1Fait));
       this.couleur01=this.codeCouleur(this.camion.odo1Fait, 25000)
       this.couleur02=this.codeCouleur(this.camion.odo2Fait, 50000)
       this.couleur03=this.codeCouleur(this.camion.odo3Fait, 100000)
@@ -66,22 +60,22 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });
-    /*
-    this.couleur01=this.codeCouleur(this.camion.odometre, this.camion.odo1Fait);
-    this.couleur02=this.codeCouleur(this.camion.odometre, this.camion.odo2Fait);
-    this.couleur03=this.codeCouleur(this.camion.odometre, this.camion.odo3Fait);
-    this.couleur04=this.codeCouleur(this.camion.odometre, this.camion.odo4Fait);
-    this.couleur05=this.codeCouleur(this.camion.odometre, this.camion.odo5Fait);
-    this.couleur06=this.codeCouleur(this.camion.odometre, this.camion.odo6Fait);
-    this.couleur07=this.codeCouleur(this.camion.odometre, this.camion.odo7Fait);//*
-    //this.couleur08=this.codeCouleur(this.couleur08, this.camion.odo8Fait);
-    //*
-    console.log('out : '+this.couleur01 + this.couleur02+ this.couleur03+this.couleur04+this.couleur06+this.couleur05+this.couleur07+' test here: '
-    +this.codeCouleur(this.couleur08, this.camion.odo8Fait, this.camion.huileDifferentiel))
-    console.log('differene out : '+ this.camion.odometre+' - '+this.camion.odo1Fait)
-    //*/
   }
-
+  onInfos(){
+    this.modeInfos=1;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
+  }
+  onFiche(){
+    this.modeInfos=0;
+    this.modeFiche=1;
+    this.modeEntretiens=0;
+  }
+  onEntretiens(){
+    this.modeInfos=0;
+    this.modeFiche=0;
+    this.modeEntretiens=1;
+  }
   gotoDetailTransporter(id:number){
     this.router.navigate(['detail-transporter',id]);
   }
@@ -107,6 +101,9 @@ export class CamionComponent implements OnInit {
   }
   //*
   codeCouleur(odoFait:number, odoAFaire:number){
+    if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return "";
     if((this.camion.odometre-odoFait)<(odoAFaire-5000))
       return "btn-success";
     if((this.camion.odometre-odoFait)<odoAFaire)
@@ -114,15 +111,12 @@ export class CamionComponent implements OnInit {
     if((this.camion.odometre-odoFait)>=odoAFaire)
       return "btn-danger";
     
-      return "nothing";
+      return "";
   }
   //*/
   codeCouleurInspect(){
-    /*
-    Date date =Date.from(Instant.now());
-        if(((date.getTime()-entretien.getInspect01().getTime())/24/60/60/1000)>=152)
-            sb.append(MessagesConstants.inspec1).append(sdf.format(entretien.getInspect01())).append("<br>");
-    //*/        
+    if(this.camion.inspect6m==null)
+      return '';    
     let date = new Date();
     let days = (date.getTime() - new Date( this.camion.inspect6m).getTime())/24/60/60/1000;
     console.log("Nombre jours apres l'inspection : "+days)
@@ -131,31 +125,67 @@ export class CamionComponent implements OnInit {
     if (days>=152)
       return "btn-warning";
     if (days>=182)
-      return "btn-success";      
-    return "nothing"
+      return "btn-danger";      
+    return ""
   }
-  
-  onPress(){
-    this.router.navigateByUrl("/map");
+  codeText(odoFait:number, odoAFaire:number){
+    //console.log("I am called. And odoAFait : " + odoAFaire)
+    if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
+      return 'pas data';
+    if((this.camion.odometre-odoFait)<(odoAFaire-5000))
+      return "bon etat";
+    if((this.camion.odometre-odoFait)<odoAFaire)
+      return "warning";
+    if((this.camion.odometre-odoFait)>=odoAFaire)
+      return "danger";
+    return "";
+  }
+  codeTextInspect(){
+    if(this.camion.inspect6m==null)
+    {
+      return 'pas data';
+    }
+    let date = new Date();
+    let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
+    if (days<152)
+      return "bon etat";
+    if (days>=152)
+      return "warning";
+    if (days>=182)
+      return "danger";      
+    return ""
   }
 
-  async onEntretien01(){
+  disableButton(odoFait:number, odoAFaire:number) : boolean{
+    if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
+      return true;
+    if((this.camion.odometre-odoFait)<(odoAFaire-5000))
+      return true;
+    return false;
+  }
+  disableButtonInspect() : boolean{
+    if(this.camion.inspect6m==null)
+      return true;
+    let date = new Date();
+    let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
+    if (days<152)
+      return true;
+    return false;
+  }
+
+  onEntretien01(){
+    alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins");
     this.camion.odo1Fait=this.camion.odometre;
     this.camion.ent1Fait=new Date();
-    //this.saveCamion();
-    await this.camionsService.saveCamions(this.camion).subscribe(data=>{
-      //console.log("Entretien01 est fait.")
-      //this.refresh();
+    this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur01=this.codeCouleur(this.camion.odo1Fait, 25000);
-      //this.gotoDetailTransporter(this.camion.idTransporter);
     }, err=>{
       console.log(err);
     });
-    //console.log("onEntretien01")
-    //this.router.navigate(['camion',this.camion.id]);
   }
   
   onEntretien02(){
+    alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
     this.camion.odo2Fait=this.camion.odometre;
     this.camion.ent2Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -168,6 +198,7 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien03(){
+    alert("Entretien 3 - Changement filtre a polene");
     this.camion.odo3Fait=this.camion.odometre;
     this.camion.ent3Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -179,6 +210,7 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien04(){
+    alert("Entretien 4 - Changement filtre hydrolique");
     this.camion.odo4Fait=this.camion.odometre;
     this.camion.ent4Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
@@ -189,6 +221,7 @@ export class CamionComponent implements OnInit {
   }
   
   onEntretien05(){
+    alert("Entretien 5 - Changement filtre antigel");
     this.camion.odo5Fait=this.camion.odometre;
     this.camion.ent5Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -199,6 +232,7 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien06(){
+    alert("Entretien 6 - Changement huile antigel");
     this.camion.odo6Fait=this.camion.odometre;
     this.camion.ent6Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -209,6 +243,7 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien07(){
+    alert("Entretien 7 - Changement huile transmission");
     this.camion.odo7Fait=this.camion.odometre;
     this.camion.ent7Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -219,6 +254,7 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien08(){
+    alert("Entretien 8 - Changement huile differentiel");
     this.camion.odo8Fait=this.camion.odometre;
     this.camion.ent8Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -236,6 +272,9 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });
+  }
+  onPress(){
+    this.router.navigateByUrl("/map");
   }
   refresh(): void {
     //window.location.reload();

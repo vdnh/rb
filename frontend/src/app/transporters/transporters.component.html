@@ -15,12 +15,12 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Edit</th><th>Delete</th>
+          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th>
         </tr>
         <tr *ngFor="let t of pageTransporter.content">
             <td>{{t.nom}}</td><td>{{t.raison_sociale}}</td><td>{{t.email}}</td><td>{{t.tel}}</td>
-            <td><a class="spacer font-size:30px text-decoration:underline" (click)="gotoDetailTransporter(t.id)">Edit</a></td>
-            <td><a (click)="deleteTransporter(t.id)">Delete</a></td>
+            <td><button class="btn btn-link" (click)="gotoDetailTransporter(t.id)">Gerer</button></td>
+            <td><button class="btn btn-link" (click)="deleteTransporter(t.id)">Delete</button></td>
         </tr>
       </table>
       <div class="container">

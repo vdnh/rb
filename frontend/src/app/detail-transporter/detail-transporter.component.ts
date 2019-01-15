@@ -22,6 +22,11 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
   styleUrls: ['./detail-transporter.component.css']
 })
 export class DetailTransporterComponent implements OnInit {
+  camList:number=0;
+  camAdd:number=0;
+  coorInfos:number=0;
+  coorAddAdresse:number=0;
+  coorAddContact:number=0;
   modeCoordonnes:number=0;
   modeCamions:number=0;
   modeTableau:number=0;
@@ -51,6 +56,11 @@ export class DetailTransporterComponent implements OnInit {
       this.modeTableau=1;
       this.modeCamions=0;
       this.modeCoordonnes=0;
+      this.coorInfos=1;
+      this.coorAddAdresse=0;
+      this.coorAddContact=0;
+      this.camList=1;
+      this.camAdd=0;
     }, err=>{
       console.log(err);
     });
@@ -243,9 +253,34 @@ export class DetailTransporterComponent implements OnInit {
     this.modeCamions=0;
     this.modeCoordonnes=0;  
   }
-
+  onCoorInfos(){
+    this.coorInfos=1;
+    this.coorAddAdresse=0;
+    this.coorAddContact=0;
+  }
+  onCoorAddAdresse(){
+    this.coorInfos=0;
+    this.coorAddAdresse=1;
+    this.coorAddContact=0;
+  }
+  onCoorAddContact(){
+    this.coorInfos=0;
+    this.coorAddAdresse=0;
+    this.coorAddContact=1;
+  }
+  onCamList(){
+    this.camList=1;
+    this.camAdd=0;
+  }
+  onCamAdd(){
+    this.camList=0;
+    this.camAdd=1;
+  }
   codeCouleur(odometre, odoFait:number, odoAFaire:number){
-    console.log("I am called.")
+    //console.log("I am called. And odoAFait : " + odoAFaire)
+    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
     if((odometre-odoFait)<(odoAFaire-5000))
       return "btn-success";
     if((odometre-odoFait)<odoAFaire)
@@ -253,15 +288,12 @@ export class DetailTransporterComponent implements OnInit {
     if((odometre-odoFait)>=odoAFaire)
       return "btn-danger";
     
-      return "nothing";
+      return "";
   }
   //*/
   codeCouleurInspect(inspect6m:Date){
-    /*
-    Date date =Date.from(Instant.now());
-        if(((date.getTime()-entretien.getInspect01().getTime())/24/60/60/1000)>=152)
-            sb.append(MessagesConstants.inspec1).append(sdf.format(entretien.getInspect01())).append("<br>");
-    //*/        
+    if(inspect6m==null)
+      return '';    
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
     console.log("Date de derniere inspection : "+ inspect6m);
@@ -271,10 +303,56 @@ export class DetailTransporterComponent implements OnInit {
     if (days>=152)
       return "btn-warning";
     if (days>=182)
-      return "btn-success";      
-    return "nothing"
+      return "btn-danger";      
+    return ""
   }
+  codeText(odometre, odoFait:number, odoAFaire:number){
+    //console.log("I am called. And odoAFait : " + odoAFaire)
+    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+      return 'pas data';
+    if((odometre-odoFait)<(odoAFaire-5000))
+      return "bon etat";
+    if((odometre-odoFait)<odoAFaire)
+      return "warning";
+    if((odometre-odoFait)>=odoAFaire)
+      return "danger";
+    return "";
+  }
+  codeTextInspect(inspect6m:Date){
+    if(inspect6m==null)
+    {
+      return 'pas data';
+    }
+    let date = new Date();
+    let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
+    if (days<152)
+      return "bon etat";
+    if (days>=152)
+      return "warning";
+    if (days>=182)
+      return "danger";      
+    return ""
+  }
+  disableButton(odometre, odoFait:number, odoAFaire:number) : boolean{
+    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+      return true;
+    if((odometre-odoFait)<(odoAFaire-5000))
+      return true;
+    return false;
+  }
+  disableButtonInspect(inspect6m:Date) : boolean{
+    if(inspect6m==null)
+      return true;
+    let date = new Date();
+    let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
+    if (days<152)
+      return true;
+    return false;
+  }
+
   onEntretien01(camion:Camion){
+    let msg:string="test message\n test01 message\n test02 message\n";
+    alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins. "+ msg);
     camion.odo1Fait=camion.odometre;
     camion.ent1Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -289,6 +367,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien02(camion:Camion){
+    alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
     camion.odo2Fait=camion.odometre;
     camion.ent2Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -303,6 +382,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien03(camion:Camion){
+    alert("Entretien 3 - Changement filtre a polene");
     camion.odo3Fait=camion.odometre;
     camion.ent3Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -317,6 +397,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien04(camion:Camion){
+    alert("Entretien 4 - Changement filtre hydrolique");
     camion.odo4Fait=camion.odometre;
     camion.ent4Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -331,6 +412,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien05(camion:Camion){
+    alert("Entretien 5 - Changement filtre antigel");
     camion.odo5Fait=camion.odometre;
     camion.ent5Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -345,6 +427,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien06(camion:Camion){
+    alert("Entretien 6 - Changement huile antigel");
     camion.odo6Fait=camion.odometre;
     camion.ent6Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -359,6 +442,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien07(camion:Camion){
+    alert("Entretien 7 - Changement huile transmission");
     camion.odo7Fait=camion.odometre;
     camion.ent7Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -373,6 +457,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien08(camion:Camion){
+    alert("Entretien 7 - Changement huile transmission");
     camion.odo8Fait=camion.odometre;
     camion.ent8Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -387,6 +472,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onInspect6(camion:Camion){
+    alert("Entretien 8 - Changement huile differentiel");
     camion.inspect6m=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
