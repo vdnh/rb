@@ -16,28 +16,34 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
-                <th>Numero Unite</th><th>Modele</th><th>Marque</th><th>Plaque</th><th colspan="2">N.I.V</th><th>Annee</th><th>Type</th><th>Odometre</th>
+                <th>Numero Unite</th><th>Modele</th><th>Marque</th><th>Plaque</th>
             </tr>
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-                <td colspan="2"><input class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+            </tr>
+            <tr>
+                <th>N.I.V</th><th>Annee</th><th>Type</th><th>Odometre</th>
+            </tr>
+            <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.type" /></td>
                 <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
             </tr>
+
             <tr><th colspan="8">A definir - Kilometrage a faire des entretiens suivants : </th></tr>
             <tr>
-              <th>Hydrolique fil</th><th>Antigel fil</th><th>Antigel huile</th><th colspan="2">Transmission huile</th><th colspan="2">Differentiel huile</th>
+              <th>Hydrolique</th><th>Antigel-fil</th><th>Antigel-huile</th><th>Transmission</th><th>Differentiel</th>
             </tr>
             <tr>
               <td><input class="form-control" type="text" [(ngModel)]="camion.filHydrolique" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.filAntigel" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.huileAntigel" /></td>
-              <td colspan="2"><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
-              <td colspan="2"><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>              
+              <td><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>              
             </tr>
             <tr><th colspan="8">Les odometres de dernieres entretiens : </th></tr>
             <tr>
@@ -67,7 +73,7 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.latitude" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.longtitude" /></td>
               <td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
-              <td colspan="2"><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td>
             </tr>   
         </table>
