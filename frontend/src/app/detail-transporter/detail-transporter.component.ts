@@ -83,7 +83,8 @@ export class DetailTransporterComponent implements OnInit {
   }
   saveTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
-      this.mode=2;
+      //this.mode=2;
+      alert('Changement enregistre.');
     }, err=>{
       console.log(err);
     });
@@ -296,11 +297,11 @@ export class DetailTransporterComponent implements OnInit {
       return '';    
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
-    console.log("Date de derniere inspection : "+ inspect6m);
-    console.log("Nombre jours apres l'inspection : "+days)
+    //console.log("Date de derniere inspection : "+ inspect6m);
+    //console.log("Nombre jours apres l'inspection : "+days)
     if (days<152)
       return "btn-success";
-    if (days>=152)
+    if (days>=152 && days<182)
       return "btn-warning";
     if (days>=182)
       return "btn-danger";      
@@ -325,9 +326,10 @@ export class DetailTransporterComponent implements OnInit {
     }
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
+    console.log('days in codeTextInspect : '+days)
     if (days<152)
       return "bon etat";
-    if (days>=152)
+    if (days>=152 && days<182)
       return "warning";
     if (days>=182)
       return "danger";      
@@ -472,7 +474,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onInspect6(camion:Camion){
-    alert("Entretien 8 - Changement huile differentiel");
+    alert("Inspection aux 6 mois.");
     camion.inspect6m=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{

@@ -16,12 +16,12 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
-                <th>Numero Unite</th><th>Modele</th><th>Marque</th><th>Plaque</th>
+                <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th>
             </tr>
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
             </tr>
             <tr>
@@ -60,7 +60,7 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.odo8Fait" /></td>
             </tr>
             <tr>
-              <th colspan="8">Inspection aux 6 mois</th>
+              <th colspan="8">Derniere l'Inspection aux 6 mois</th>
             </tr>
             <tr>
               <td><input class="form-control" type="date" [(ngModel)]="camion.inspect6m" /></td>

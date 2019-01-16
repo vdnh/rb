@@ -1,14 +1,14 @@
 <div class="container spacer">
     <div class="panel-heading"> 
-        <label> Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </label>
+        <h2> Gerer Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
         <button class="btn btn-link" (click)="onPress()">Voir les camions {{transporter.nom}} sur la carte</button>
-        <br><br>
     </div>
     <div>
+    <h3>
         <button class="btn btn-link" (click)="onCoordonnees()">Coordonnees</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onCamions()">Camions</button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onCamions()">Liste de Camions</button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onTableau()">Tableau d'Entretiens</button>
-        <br><br>
+    </h3>
     </div>
     <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
     <div *ngIf="modeCamions==1">modeCamions</div>
@@ -23,7 +23,7 @@
             </tr>
             <div *ngIf="coorInfos==1">Coordonnee Infos 
             <tr>
-                <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
             </tr>
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
@@ -32,7 +32,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td>
+                <!--td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td-->
             </tr>
             <tr><td colspan="2"><strong>Adresses</strong></td></tr>
             <tr>
@@ -49,7 +49,7 @@
             </tr>            
             <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
             <tr>
-                <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
             </tr>
             <tr *ngFor="let contact of contacts">
                 <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
@@ -58,13 +58,15 @@
                 <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td>
+                <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
                 <td><button class="btn btn-link" (click)="deleteContact(contact.id)">Delete</button></td>
             </tr>   
             <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
             <tr>
-                <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue"></td>
-                <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur"></td>
+                <td colspan="2">Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue"></td>
+                <td colspan="2">Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur"></td>
+            </tr>
+            <tr>    
                 <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage"></td>
                 <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention"></td>
                 <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt"></td>
@@ -86,7 +88,7 @@
             </div>                                  
             <div *ngIf="coorAddContact==1">Add Contact
             <tr>
-                <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
             </tr>
             <!--tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr-->     
             <tr>
@@ -96,7 +98,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td>
+                <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
                 <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
             </tr>   
             </div>
@@ -104,11 +106,11 @@
         
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
             <tr>
-                <button class="btn btn-link" (click)="onCamList()">List de Camions</button>&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCamList()">Camions</button>&nbsp;&nbsp;
                 <button class="btn btn-link" (click)="onCamAdd()">Add Camion</button>
             </tr>
             <div *ngIf="camList==1">   
-            <tr><td colspan="2"><strong>List de camions</strong></td></tr>
+            <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
             <tr>
                 <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th>N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
@@ -148,7 +150,7 @@
         <table class="table table-striped table-sm table-responsive" *ngIf="modeTableau==1">
             <tr>
                 <th>Unite</th>
-                <th *ngFor="let camion of camions">{{camion.unite}}</th>
+                <th *ngFor="let camion of camions" style="text-align: center">{{camion.unite}}</th>
             </tr>
             <tr>
                 <th>Entretien 1</th>                
@@ -205,10 +207,10 @@
         <div class="panel-body">
                 <table class="table table-striped table-responsive">
                         <tr>
-                            <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>Photo</th>
+                            <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
                         </tr>
                         <tr>
-                            <td>{{transporter.nom}}</td><td>{{transporter.raison_sociale}}</td><td>{{transporter.depuis}}</td><td>{{transporter.email}}</td><td>{{transporter.tel}}</td><td>{{transporter.fax}}</td><td>{{transporter.photo}}</td>
+                            <td>{{transporter.nom}}</td><td>{{transporter.raison_sociale}}</td><td>{{transporter.depuis}}</td><td>{{transporter.email}}</td><td>{{transporter.tel}}</td><td>{{transporter.fax}}</td><!--td>{{transporter.photo}}</td-->
                         </tr>
                         <tr><td colspan="2"><strong>Adresse</strong></td></tr>
                         <tr>

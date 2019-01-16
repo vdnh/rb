@@ -118,11 +118,11 @@ export class CamionComponent implements OnInit {
     if(this.camion.inspect6m==null)
       return '';    
     let date = new Date();
-    let days = (date.getTime() - new Date( this.camion.inspect6m).getTime())/24/60/60/1000;
-    console.log("Nombre jours apres l'inspection : "+days)
+    let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
+    //console.log("Nombre jours apres l'inspection : "+days)
     if (days<152)
       return "btn-success";
-    if (days>=152)
+    if (days>=152 && days<182)
       return "btn-warning";
     if (days>=182)
       return "btn-danger";      
@@ -149,7 +149,7 @@ export class CamionComponent implements OnInit {
     let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
     if (days<152)
       return "bon etat";
-    if (days>=152)
+    if (days>=152 && days<182)
       return "warning";
     if (days>=182)
       return "danger";      
@@ -265,7 +265,7 @@ export class CamionComponent implements OnInit {
   }
 
   onInspect6(){
-    //this.camion.odo8Fait=this.camion.odometre;
+    alert('Inspection aux 6 mois.');
     this.camion.inspect6m=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur09=this.codeCouleurInspect();
