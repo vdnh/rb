@@ -177,24 +177,24 @@ export class DetailTransporterComponent implements OnInit {
       //console.log('test to see ');
       this.addcamion=data;
       console.log("data.id : "+ data.id)
-      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.id_camion)
-      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.id_camion)
-      this.fichePhysiqueEntretien.id_camion=this.addcamion.id;
-      this.fichePhysiqueEntretienCont.id_camion=this.addcamion.id;
+      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
+      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
+      this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
+      this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
       console.log("this.addCamion.id : "+ this.addcamion.id)
-      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.id_camion)
-      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.id_camion)
+      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
+      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
       }, err=>{
         console.log();
       });
       this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
-        console.log('fiche1 ok ' +  data.id_camion)}, err=>{
+        console.log('fiche1 ok ' +  data.idCamion)}, err=>{
         console.log(err)
       });
       this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
-        console.log('fiche2 ok ' +  data.id_camion) }, err=>{
+        console.log('fiche2 ok ' +  data.idCamion) }, err=>{
         console.log(err)
       });
     }, err=>{

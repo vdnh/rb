@@ -31,9 +31,11 @@ export class CamionComponent implements OnInit {
   couleur08:string="btn-warning";
   couleur09:string="btn-success";
 
-  // fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
-  // fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
-
+  //fiche:FichePhysiqueEntretien=new FichePhysiqueEntretien();
+  //ficheCont:FichePhysiqueEntretienCont=new FichePhysiqueEntretienCont();
+  fiche:FichePhysiqueEntretien = new FichePhysiqueEntretien();
+  ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
+  
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
   public fichePhysiqueContsService:FichePhysiqueContsService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
@@ -54,9 +56,56 @@ export class CamionComponent implements OnInit {
       this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission)
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
       this.couleur09=this.codeCouleurInspect();
-      console.log('in : '+this.couleur01+' ' + this.couleur02+' '+ this.couleur03+' '+this.couleur04+' '
-      +this.couleur05+' '+this.couleur06+' '+this.couleur07+' '+ this.couleur08+' '+ this.couleur09) 
-    //*/
+      this.fiche.idCamion=this.camion.id;
+      this.ficheCont.idCamion=this.camion.id;
+      console.log("camion.id : "+this.camion.id +" : "+this.camion.unite )
+      console.log("fiche.id_camion : "+this.fiche.idCamion)
+      console.log("ficheCont.id_camion : "+this.ficheCont.idCamion)
+      this.fichePhysiquesService.fichePhysiqueEntretienDeCamion(this.fiche.idCamion).subscribe((data:FichePhysiqueEntretien)=>{
+        this.fiche=data;
+        if(data!=null)
+          console.log("Existe fiche")
+        else{
+          console.log("pas de fiche")
+          this.fiche = new FichePhysiqueEntretien();
+          this.fiche.idCamion=this.camion.id;
+          console.log("fiche.id_camion : "+this.fiche.idCamion)     
+          //this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche) 
+          this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
+            this.fiche=data;
+            if(data!=null)
+              console.log("Existe fiche")
+            else
+              console.log("pas de fiche")            
+          }, err=>{
+            console.log()
+          })
+        }  
+      }, err=>{
+        console.log();
+      });
+      this.fichePhysiqueContsService.fichePhysiqueEntretienContDeCamion(this.ficheCont.idCamion).subscribe((data:FichePhysiqueEntretienCont)=>{
+        this.ficheCont=data;
+        if(data!=null)
+          console.log("Existe ficheCont")
+        else{
+          console.log("pas de ficheCont")
+          this.ficheCont = new FichePhysiqueEntretienCont();
+          this.ficheCont.idCamion=this.camion.id;
+          console.log("ficheCont.id_camion : "+this.ficheCont.idCamion);
+          this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+            this.ficheCont=data;
+            if(data!=null)
+              console.log("Existe ficheCont")
+            else
+              console.log("pas de ficheCont")            
+          }, err=>{
+            console.log()
+          })
+        }
+      }, err=>{
+        console.log();
+      });
     }, err=>{
       console.log(err);
     });
@@ -97,6 +146,24 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });
+    this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
+      this.fiche=data;
+      if(data!=null)
+        console.log("Existe fiche")
+      else
+        console.log("pas de fiche")            
+    }, err=>{
+      console.log()
+    })
+    this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+      this.ficheCont=data;
+      if(data!=null)
+        console.log("Existe fiche")
+      else
+        console.log("pas de fiche")            
+    }, err=>{
+      console.log()
+    })
     //this.gotoDetailTransporter(this.camion.idTransporter);
   }
   //*

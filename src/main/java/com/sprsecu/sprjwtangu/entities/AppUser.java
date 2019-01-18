@@ -32,6 +32,8 @@ public class AppUser {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<AppRole> roles = new ArrayList<>();
+    // to identify what shipper or what transporter  when we know his role
+    private Long idUser;
     
     @JsonIgnore
     public String getPassword(){

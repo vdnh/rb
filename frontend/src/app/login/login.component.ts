@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
 
   mode:number=0;  // to control password
   role:string="";
+  idUser:number=0;
 
   constructor(private authService:AuthenticationService, private router:Router) { }
 
@@ -28,7 +29,12 @@ export class LoginComponent implements OnInit {
         //*
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
-          console.log('Role is : '+this.role)
+          this.idUser=res.id;
+          console.log('Role is : '+this.role);
+          console.log('IdUser is : '+this.idUser);
+          if(this.role.includes('TRANSPORTER'))
+            //this.router.navigate(['detail-transporter',this.idUser]);
+            this.router.navigateByUrl('/detail-transporter/'+ this.idUser);
           //AppComponent.mode=1;
         }, err=>{          
           console.log(err);

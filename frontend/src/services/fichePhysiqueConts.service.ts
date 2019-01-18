@@ -20,7 +20,7 @@ export class FichePhysiqueContsService{
     
     fichePhysiqueEntretienContDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/fichePhysiqueEntretienConts?idCamion="+idCamion
+        return this.http.get(this.adServer+":8080/fichePhysiqueEntretienContDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

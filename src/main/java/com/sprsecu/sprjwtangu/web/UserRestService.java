@@ -23,15 +23,16 @@ public class UserRestService {
         
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     public AppRole getRole(@PathVariable String username){
+        AppUser user =  accountService.findUserByUsername(username);
          Collection<AppRole> roles = accountService.findUserByUsername(username).getRoles();
          if (roles.toString().contains("ADMIN"))
                  return new AppRole(null, "ADMIN");
          else if (roles.toString().contains("MANAGER"))
                  return new AppRole(null, "MANAGER");
          else if (roles.toString().contains("SHIPPER"))
-                 return new AppRole(null, "SHIPPER");
+                 return new AppRole(user.getIdUser(), "SHIPPER");
          else if (roles.toString().contains("TRANSPORTER"))
-                 return new AppRole(null, "TRANSPORTER");
+                 return new AppRole(user.getIdUser(), "TRANSPORTER");
          else return new AppRole(null, "");
     }    
 }

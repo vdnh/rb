@@ -152,26 +152,19 @@ public class SprjwtanguApplication implements CommandLineRunner{
      @Override 
      public void run() { 
       while (true) { 
-       try {
-           
-           //System.out.println("Hi from thread dans spring application");
+       try {           
+           System.out.println("Entretiens check");
+           /* activer pour vrai checker
            transporters=transporterRepository.findAll();
            transporters.forEach(transporter->{
-               if(EmailValidator.getInstance().isValid(transporter.getEmail()))
-               //try {
-                   //generateAndSendEmail(
-                   transporterEntretien(transporter);//, transporter.getEmail());
-//               } catch (MessagingException ex) {
-//                   Logger.getLogger(SprjwtanguApplication.class.getName()).log(Level.SEVERE, null, ex);
-//               }
-               //System.out.println("transporter email : "+ transporter.getEmail());
-               //System.out.println("Message entretiens : "+ transporterEntretien(transporter));
+               if(EmailValidator.getInstance().isValid(transporter.getEmail()))                                  
+                   transporterEntretien(transporter);
             });
-           Thread.sleep(86400000);
-        //handle the data 
+           //*/
+           Thread.sleep(86400000);                  
        } catch (Exception e) { 
         System.err.println("Error occurred:" + e); 
-       } 
+       }
       } 
      } 
     }); 

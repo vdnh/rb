@@ -1,6 +1,6 @@
 export class FichePhysiqueEntretienCont {
     id:number;
-    id_camion:number;
+    idCamion:number;
     huileMoteur:string;
     huileDifferentiel:string;
     huileTransmition:string;
