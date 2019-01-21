@@ -31,6 +31,11 @@ export class AppComponent {
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);
+          localStorage.setItem('userId', res.id.toString());
+          if(res.roleName.includes('TRANSPORTER'))          
+            this.router.navigateByUrl('/detail-transporter/'+ res.id);
+            if(res.roleName.includes('SHIPPER'))          
+            this.router.navigateByUrl('/detail-shipper/'+ res.id);
           this.mode=0;
         }, err=>{          
           console.log(err);

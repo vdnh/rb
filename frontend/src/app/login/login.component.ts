@@ -20,19 +20,19 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  onLogin(dataForm){
-    this.authService.login(dataForm)
+  async onLogin(dataForm){
+    await this.authService.login(dataForm)
     .subscribe(resp=> {
         let jwtToken=resp.headers.get('Authorization');
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);        
         //*
         this.authService.getUserInfo().subscribe((res:Role)=>{
-          this.role = res.roleName;
+          //this.role = res.roleName;
           this.idUser=res.id;
-          console.log('Role is : '+this.role);
+          //console.log('Role is : '+this.role);
           console.log('IdUser is : '+this.idUser);
-          if(this.role.includes('TRANSPORTER'))
+          if(res.roleName.includes('TRANSPORTER'))
             //this.router.navigate(['detail-transporter',this.idUser]);
             this.router.navigateByUrl('/detail-transporter/'+ this.idUser);
           //AppComponent.mode=1;

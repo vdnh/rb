@@ -193,7 +193,7 @@
     <div>
         <table class="table table-striped table-responsive"> 
             <td><button class="btn btn-primary" (click)="saveTransporter()">Ok - Modifier Transporter</button></td>
-            <td><button class="btn btn-primary" routerLink="/transporters">Quit</button></td> 
+            <td *ngIf='!quitButton.includes("TRANSPORTER")'><button class="btn btn-primary" routerLink="/transporters">Quit</button></td> 
             <td></td>
             <td></td>
             <td></td>

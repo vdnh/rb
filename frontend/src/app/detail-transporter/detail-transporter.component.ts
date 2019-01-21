@@ -22,6 +22,7 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
   styleUrls: ['./detail-transporter.component.css']
 })
 export class DetailTransporterComponent implements OnInit {
+  quitButton:string='';
   camList:number=0;
   camAdd:number=0;
   coorInfos:number=0;
@@ -51,6 +52,7 @@ export class DetailTransporterComponent implements OnInit {
 
   ngOnInit() {
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
+      this.quitButton=localStorage.getItem('role')
       this.transporter=data;
       this.mode=1;
       this.modeTableau=1;

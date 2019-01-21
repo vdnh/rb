@@ -67,7 +67,7 @@
        
           <table> 
               <td><button class="btn btn-primary" (click)="saveShipper()">Ok - Modifier Shipper</button></td>
-              <td><button class="btn btn-primary" routerLink="/shippers">Quit</button></td> 
+              <td *ngIf='!quitButton.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td> 
               <td></td>
               <td></td>
               <td></td>
