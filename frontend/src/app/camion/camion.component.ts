@@ -17,6 +17,7 @@ export class CamionComponent implements OnInit {
   modeInfos:number=0;
   modeFiche:number=0;
   modeEntretiens:number=0;
+  modeDefinirEnt:number=0;
 
   camion:Camion=new Camion();
   id:number;
@@ -45,11 +46,12 @@ export class CamionComponent implements OnInit {
     this.modeInfos=1;
     this.modeFiche=0;
     this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
     await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
       this.camion=data;
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, 25000)
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, 50000)
-      this.couleur03=this.codeCouleur(this.camion.odo3Fait, 100000)
+      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
+      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)
+      this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
       this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique)
       this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel)
       this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel)
@@ -114,16 +116,25 @@ export class CamionComponent implements OnInit {
     this.modeInfos=1;
     this.modeFiche=0;
     this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
   }
   onFiche(){
     this.modeInfos=0;
     this.modeFiche=1;
     this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
   }
   onEntretiens(){
     this.modeInfos=0;
     this.modeFiche=0;
     this.modeEntretiens=1;
+    this.modeDefinirEnt=0;
+  }
+  onDefinirEnt(){
+    this.modeInfos=0;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
+    this.modeDefinirEnt=1;
   }
   gotoDetailTransporter(id:number){
     this.router.navigate(['detail-transporter',id]);
@@ -134,9 +145,9 @@ export class CamionComponent implements OnInit {
   saveCamion(){
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.mode=2;
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, 25000)
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, 50000)
-      this.couleur03=this.codeCouleur(this.camion.odo3Fait, 100000)
+      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
+      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)
+      this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
       this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique)
       this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel)
       this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel)
@@ -245,7 +256,7 @@ export class CamionComponent implements OnInit {
     this.camion.odo1Fait=this.camion.odometre;
     this.camion.ent1Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, 25000);
+      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1);
     }, err=>{
       console.log(err);
     });
@@ -258,7 +269,7 @@ export class CamionComponent implements OnInit {
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.refresh();
       //this.gotoDetailTransporter(this.camion.idTransporter);
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, 50000);
+      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2);
     }, err=>{
       console.log(err);
     });
@@ -270,7 +281,7 @@ export class CamionComponent implements OnInit {
     this.camion.ent3Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.gotoDetailTransporter(this.camion.idTransporter);//this.refresh();
-      this.couleur03=this.codeCouleur(this.camion.odo3Fait, 100000)
+      this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
     }, err=>{
       console.log(err);
     });

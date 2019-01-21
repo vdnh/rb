@@ -9,6 +9,9 @@ export class Camion{
     type:string; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
     odometre:number=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
+    ent1:number=25000;
+    ent2:number=50000;
+    ent3:number=100000;
     filHydrolique:number; // km a changer filtre hydrolique
     filAntigel:number; // km a changer filtre antigel
     huileAntigel:number; // km a changer d'huile antigel

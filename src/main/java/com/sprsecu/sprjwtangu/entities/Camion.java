@@ -32,6 +32,9 @@ public class Camion implements Serializable{
     @Temporal(TemporalType.DATE)
     private Date inspect6m; // jj-mmm,  On fait l'inspection 2 fois chaque annee
     //private Date inspect02; // jj-mmm
+    private Long ent1 = 25000l;
+    private Long ent2 = 50000l;
+    private Long ent3 = 100000l;
     private Long filHydrolique; // km a changer filtre hydrolique
     private Long filAntigel; // km a changer filtre antigel
     private Long huileAntigel; // km a changer d'huile antigel
