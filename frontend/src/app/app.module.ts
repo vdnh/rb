@@ -28,6 +28,7 @@ import { CamionComponent } from './camion/camion.component';
 import { CamionsService } from 'src/services/camions.service';
 import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
+import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -74,7 +75,8 @@ const appRoutes:Routes=[
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
-    ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService],
+    ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
+    AutreEntretiensService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

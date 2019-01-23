@@ -253,60 +253,62 @@
                 </tr>  
         </table>
         <table class="table table-striped table-sm table-responsive" *ngIf="modeDefinirEnt==1">          
-          <tr><th colspan="5">A definir - Kilometrage a faire des entretiens suivants : </th></tr>
+          <!--tr><th colspan="3">A definir - Kilometrage a faire des entretiens suivants :</th><th></th><th></th><th></th></tr-->
           <tr>
-            <th>Entretiens</th><th>Kilometrage a faire</th><th colspan="5">Message</th>
+            <th>Entretiens</th><th>Kilometrage a faire</th><th colspan="5">Consignes</th>
           </tr>          
           <tr>
             <th>Entretien 1</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent1" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message01"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 2</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent2" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message02"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 3</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent3" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message03"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 4<br>Hydrolique</th><td><input class="form-control" type="text" [(ngModel)]="camion.filHydrolique" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message04"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 5<br>Antigel-fil</th><td><input class="form-control" type="text" [(ngModel)]="camion.filAntigel" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message05"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 6<br>Antigel-huile</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileAntigel" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message06"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 7<br>Transmission</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message07"></textarea></td>
           </tr>
           <tr>
             <th>Entretien 8<br>Differentiel</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>
-            <td colspan="5"><input class="form-control" type="text"/></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="camion.message08"></textarea></td>
           </tr>
-          <!--tr>
-            <th>Entretien 1</th><th>Entretien 2</th><th>Entretien 3</th><th>Entretien 4 - Hydrolique</th>
-          </tr>
+            <!--tr>
+                <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
+            </tr-->
+          <tr *ngFor="let entretien of entretiens">
+            <th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th>
+            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmTrage" /></td>
+            <td colspan="5"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
+            <!--td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td-->
+          </tr>           
+          <tr><td colspan="2"><strong>Ajouter d'entretien</strong></td></tr>   
           <tr>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.ent1" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.ent2" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.ent3" /></td>      
-            <td><input class="form-control" type="text" [(ngModel)]="camion.filHydrolique" /></td>      
-          </tr>
+            <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
+          </tr>  
           <tr>
-            <th>Entretien 5<br>Antigel-fil</th><th>Entretien 6<br>Antigel-huile</th><th>Entretien 7<br>Transmission</th><th>Entretien 8<br>Differentiel</th>
-          </tr>
-          <tr>            
-            <td><input class="form-control" type="text" [(ngModel)]="camion.filAntigel" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.huileAntigel" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>              
-          </tr-->
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmTrage" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="autreEntretien.message"></textarea></td>                
+            <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>
+          </tr>           
+
         </table>
         <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
             <tr><th colspan="8">Les Entretiens a faire (code couleur - vert : pas besoins, jaune : conseille, rouge : oblige) </th></tr>
@@ -322,6 +324,12 @@
               <td colspan="2"><button (click)="onEntretien07()" class="btn btn-sm {{couleur07}}" [disabled]="disableButton(camion.odo7Fait, camion.huileTransmission)">Entretien 7 {{codeText(camion.odo7Fait, camion.huileTransmission)}}</button></td>
               <td colspan="2"><button (click)="onEntretien08()" class="btn btn-sm {{couleur08}}" [disabled]="disableButton(camion.odo8Fait, camion.huileDifferentiel)">Entretien 8 {{codeText(camion.odo8Fait, camion.huileDifferentiel)}}</button></td>
             </tr>
+            <tr *ngFor="let entretien of entretiens">
+              <!--th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th-->
+              <!--td><button>{{entretien.nom}}</button></td-->
+              <td><button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button></td>
+            </tr>           
+    
             <tr>
               <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection aux 6 mois {{codeTextInspect()}}</button></td>
             </tr>

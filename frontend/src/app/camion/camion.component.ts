@@ -6,6 +6,8 @@ import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
 import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
+import { AutreEntretien } from 'src/model/model.autreEntretien';
+import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 
 @Component({
   selector: 'app-camion',
@@ -21,6 +23,10 @@ export class CamionComponent implements OnInit {
 
   camion:Camion=new Camion();
   id:number;
+
+  autreEntretien:AutreEntretien=new AutreEntretien(); // to add more entretien
+  entretiens:Array<AutreEntretien>; // liste autreEntretien
+
   //mode:number=1;
   couleur01:string="btn-danger";
   couleur02:string="btn-warning";
@@ -38,7 +44,7 @@ export class CamionComponent implements OnInit {
   ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
   
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
-  public fichePhysiqueContsService:FichePhysiqueContsService, private router:Router){    
+  public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -108,6 +114,12 @@ export class CamionComponent implements OnInit {
       }, err=>{
         console.log();
       });
+      this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
+        this.entretiens=data;
+      }, err=>{
+        console.log(err);
+      });
+      
     }, err=>{
       console.log(err);
     });
@@ -175,7 +187,12 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log()
     })
-    //this.gotoDetailTransporter(this.camion.idTransporter);
+    this.entretiens.forEach(obj => {
+      this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
+      }, err=>{
+        console.log(err)
+      })
+    });
   }
   //*
   codeCouleur(odoFait:number, odoAFaire:number){
@@ -358,5 +375,60 @@ export class CamionComponent implements OnInit {
     //window.location.reload();
     location.reload(true);
     //object.reload(forced)
+  }
+  deleteEntretien(id:number){
+    this.autreEntretiensService.deleteAutreEntretien(id)
+    .subscribe(data=>{
+      this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
+        this.entretiens=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log(err);
+    });
+  }
+  addEntretien(){
+    this.autreEntretien.idCamion=this.id;
+    this.autreEntretiensService.saveAutreEntretiens(this.autreEntretien).subscribe(data=>{
+      alert("Entretien added.");
+      this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
+        this.entretiens=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log(err)
+    })
+  }
+  onAutreEntretien(entretien:AutreEntretien){
+    alert("Entretien - "+entretien.nom);
+    entretien.odoFait=this.camion.odometre;
+    entretien.dateFait=new Date();
+    this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe((data:AutreEntretien)=>{
+      this.couleurAutreEntretien(entretien)
+    }, err=>{
+      console.log(err);
+    });
+  }
+  couleurAutreEntretien(entretien:AutreEntretien){
+    if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
+    //console.log('btn-danger" [disabled]="true');
+    return "";
+  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-5000))
+    return "btn-success";
+  if((this.camion.odometre-entretien.odoFait)<entretien.kmTrage)
+    return "btn-warning";
+  if((this.camion.odometre-entretien.odoFait)>=entretien.kmTrage)
+    return "btn-danger";
+  
+    return "";
+  }
+  disableButtonAutreEntretien(entretien:AutreEntretien){
+    if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
+    return true;
+  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-5000))
+    return true;
+  return false;
   }
 }

@@ -15,6 +15,9 @@ import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
 import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
+import { AutreEntretien } from 'src/model/model.autreEntretien';
+import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
+import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -43,10 +46,13 @@ export class DetailTransporterComponent implements OnInit {
   addcamion:Camion=new Camion(); // to add more camion
   fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
   fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
-  
+  arrayEnts : Array<AutreEntretien>=new Array<AutreEntretien>();
+  arrayArrayEnts:AutreEntretienList[] = []; //Array<AutreEntretien>[]=[];
+  //entsAutre:AutreEntretienList=new AutreEntretienList();
+
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
-    public fichePhysiqueContsService:FichePhysiqueContsService, private router:Router){    
+    public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -79,6 +85,41 @@ export class DetailTransporterComponent implements OnInit {
 
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
       this.camions=data;
+      //let entsAutre:AutreEntretienList=null;
+      //*
+      this.camions.forEach(async obj =>{
+        //let entsAutre:AutreEntretienList=new AutreEntretienList();
+        //entsAutre.unite="u-"+ obj.unite;
+        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
+          if(data!=null){
+            
+            let entsAutre:AutreEntretienList=new AutreEntretienList();
+            
+            entsAutre.entsList=data;
+            entsAutre.unite=obj.unite;
+            entsAutre.odometre=obj.odometre;
+            //console.log("this.tailArray(entsAutre) : "+this.tailArray(entsAutre));
+            /*data.forEach(d => {
+              let autreEntretien:AutreEntretien=new AutreEntretien();
+              autreEntretien=d;
+              autreEntretien.unite="u-"+ obj.unite;
+              this.arrayEnts.push(autreEntretien);
+            })  //*/          
+
+            //console.log("u-"+ obj.unite);
+            //console.log("this.entsAutre.unite :"+this.entsAutre.unite)
+            //console.log("this.entsAutre.length : " +  this.entsAutre.entsList.length)
+            //console.log("this.entsAutre[0].kmtrage : " +  this.entsAutre.entsList[0].kmTrage);
+            if(entsAutre.entsList.length != 0)
+              this.arrayArrayEnts.push(entsAutre);
+            //console.log("this.arrayArrayEnts.length : "+this.arrayArrayEnts.length);
+          }
+        }, err=>{
+          console.log(err)
+        })
+      }, err=>{
+
+      })//*/
     }, err=>{
       console.log();
     });
@@ -328,7 +369,7 @@ export class DetailTransporterComponent implements OnInit {
     }
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
-    console.log('days in codeTextInspect : '+days)
+    //console.log('days in codeTextInspect : '+days)
     if (days<152)
       return "bon etat";
     if (days>=152 && days<182)
@@ -488,8 +529,56 @@ export class DetailTransporterComponent implements OnInit {
       console.log(err);
     });
   }
-  /*
-  refresh(): void {
-    window.location.reload();
-  }//*/
+  async autreEntretiens(camion:Camion){
+    //let arrayEnts:Array<AutreEntretien>=null;
+    //if(camion!=null){
+      await this.autreEntretiensService.autreEntretienDeCamion(camion.id).subscribe((data:Array<AutreEntretien>)=>{
+        //if(data!=null)
+          this.arrayEnts= data;
+          //return data;
+      }, err=>{
+        console.log();
+     })
+    //}
+    //return this.arrayEnts;
+  }
+  toArray(answers:object){
+    return Object.keys(answers).map(key => answers[key])
+  }
+  traiteHtml(){
+    let html1:string;
+    let html2:string;
+    html1 = "<th>test from central"+"</th>";
+    html2 = "<td>td from program"+"</td>";
+    return html1+html2;
+  }
+  tailArray(a:AutreEntretienList){
+    return a.entsList.length
+  }
+  onAutreEntretien(entretien:AutreEntretien, odometre:number){
+    alert("Entretien : "+ entretien.nom);
+    entretien.odoFait=odometre;
+    entretien.dateFait=new Date();
+    this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe(data=>{
+      this.codeCouleur(odometre, entretien.odoFait, entretien.kmTrage)
+      /* this.camions.forEach(async obj =>{
+        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
+          if(data!=null){            
+            let entsAutre:AutreEntretienList=new AutreEntretienList();            
+            entsAutre.entsList=data;
+            entsAutre.unite=obj.unite;
+            entsAutre.odometre=obj.odometre;
+            if(entsAutre.entsList.length != 0)
+              this.arrayArrayEnts.push(entsAutre);
+          }
+        }, err=>{
+          console.log(err)
+        })
+      }, err=>{
+        console.log(err);
+      })          //*/
+    }, err=>{
+      console.log(err);
+    });
+  }
 }

@@ -1,6 +1,6 @@
 export class Camion{
     id:number=0;
-    unite:string;
+    unite:string="";
     plaque:string;
     marque:string; // camionfermee, flatbed, ...
     niv:string; // numero identificatrion vehicule (numero serie)
@@ -17,6 +17,14 @@ export class Camion{
     huileAntigel:number; // km a changer d'huile antigel
     huileTransmission:number; // km a changer d'huile transmission
     huileDifferentiel:number; // km a changer d'huile differentiel
+    message01:string="";
+    message02:string="";
+    message03:string="";
+    message04:string="";
+    message05:string="";
+    message06:string="";
+    message07:string="";
+    message08:string="";
     
     latitude:number=45.568806;
     longtitude:number=-73.918333;    

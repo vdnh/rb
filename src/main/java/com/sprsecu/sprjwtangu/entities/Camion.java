@@ -40,7 +40,15 @@ public class Camion implements Serializable{
     private Long huileAntigel; // km a changer d'huile antigel
     private Long huileTransmission; // km a changer d'huile transmission
     private Long huileDifferentiel; // km a changer d'huile differentiel
-
+    private String message01="";
+    private String message02="";
+    private String message03="";
+    private String message04="";
+    private String message05="";
+    private String message06="";
+    private String message07="";
+    private String message08="";
+    
     private Double longtitude;
     private Double latitude;
     private boolean status; //en mission ou non

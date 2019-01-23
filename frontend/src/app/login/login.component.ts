@@ -29,12 +29,12 @@ export class LoginComponent implements OnInit {
         //*
         this.authService.getUserInfo().subscribe((res:Role)=>{
           //this.role = res.roleName;
-          this.idUser=res.id;
+          //this.idUser=res.id;
           //console.log('Role is : '+this.role);
-          console.log('IdUser is : '+this.idUser);
-          if(res.roleName.includes('TRANSPORTER'))
+          //console.log('IdUser is : '+this.idUser);
+          //if(res.roleName.includes('TRANSPORTER'))
             //this.router.navigate(['detail-transporter',this.idUser]);
-            this.router.navigateByUrl('/detail-transporter/'+ this.idUser);
+            //this.router.navigateByUrl('/detail-transporter/'+ this.idUser);
           //AppComponent.mode=1;
         }, err=>{          
           console.log(err);
