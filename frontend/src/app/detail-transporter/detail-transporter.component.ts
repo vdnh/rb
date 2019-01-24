@@ -26,6 +26,8 @@ import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 })
 export class DetailTransporterComponent implements OnInit {
   quitButton:string='';
+  quebec511:number=1;
+  textQuebec511:string="Voir conditions de routes."
   camList:number=0;
   camAdd:number=0;
   coorInfos:number=0;
@@ -219,30 +221,34 @@ export class DetailTransporterComponent implements OnInit {
     await this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
       //console.log('test to see ');
       this.addcamion=data;
-      console.log("data.id : "+ data.id)
-      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
-      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
+      //console.log("data.id : "+ data.id)
+      //console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
+      //console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
       this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
       this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
-      console.log("this.addCamion.id : "+ this.addcamion.id)
-      console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
-      console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
+      //console.log("this.addCamion.id : "+ this.addcamion.id)
+      //console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
+      //console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
       }, err=>{
         console.log();
       });
       this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
-        console.log('fiche1 ok ' +  data.idCamion)}, err=>{
+        console.log('fiche1 ok ' +  data.idCamion)
+      }, err=>{
         console.log(err)
       });
       this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
-        console.log('fiche2 ok ' +  data.idCamion) }, err=>{
+        console.log('fiche2 ok ' +  data.idCamion) 
+      }, err=>{
         console.log(err)
       });
+      this.addcamion=new Camion();
     }, err=>{
       console.log(err)
     })//*/
+    
     /*
     this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe(data=>{ console.log('fiche1 ok')}, err=>{
         console.log(err)
@@ -281,6 +287,13 @@ export class DetailTransporterComponent implements OnInit {
     this.router.navigateByUrl("/map");
     //this.myWindow.close();
     //window.close("googleWindow");
+  }
+  onQuebec511(){
+    this.quebec511=-this.quebec511;
+    if (this.quebec511==-1)
+      this.textQuebec511="Cacher conditions de routes."
+    else
+    this.textQuebec511="Voir conditions de routes."
   }
   onCoordonnees(){
     this.modeTableau=0;

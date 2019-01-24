@@ -2,6 +2,10 @@
     <div class="panel-heading"> 
         <h2> Gerer Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
         <button class="btn btn-link" (click)="onPress()">Voir les camions {{transporter.nom}} sur la carte</button>
+        <button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button>
+        <iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" *ngIf="quebec511==-1">
+            <label>Referer Quebec 511</label>
+        </iframe>
     </div>
     <div>
     <h3>
