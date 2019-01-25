@@ -18,22 +18,24 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
-                <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th>
+                <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th>
             </tr>
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-            </tr>
-            <tr>
-                <th>N.I.V</th><th>Annee</th><th>Type</th><th>Odometre</th>
-            </tr>
-            <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+            </tr>
+            <tr>
+                <th>Annee</th><th>Type</th><th>Odometre</th><th>UniteMonitor</th><th>Monitor</th>
+            </tr>
+            <tr>                
                 <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.type" /></td>
                 <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.monitor" /></td>
             </tr>
             <tr><th colspan="8">Les odometres de dernieres entretiens : </th></tr>
             <tr>

@@ -18,4 +18,7 @@ public interface CamionRepository  extends JpaRepository<Camion, Long>{
        
     @Query("select c from Camion c where c.idTransporter = :x")
     public List<Camion> camionsDeTransporter(@Param("x") Long idTransporter);
+    
+    @Query("select c from Camion c where c.uniteMonitor like :x and c.monitor like :y")
+    public Camion camionMonitoring(@Param("x") String uniteMonitor, @Param("y") String monitor);
 }

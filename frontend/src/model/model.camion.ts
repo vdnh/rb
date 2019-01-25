@@ -1,6 +1,8 @@
 export class Camion{
     id:number=0;
     unite:string="";
+    uniteMonotor:string="";
+    monitor:string="";
     plaque:string;
     marque:string; // camionfermee, flatbed, ...
     niv:string; // numero identificatrion vehicule (numero serie)

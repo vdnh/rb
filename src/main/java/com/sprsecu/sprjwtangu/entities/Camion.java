@@ -22,6 +22,8 @@ public class Camion implements Serializable{
     @Id @GeneratedValue
     private Long id;
     private String unite; //numero unite
+    private String uniteMonitor;
+    private String monitor;
     private String plaque;
     private String marque;
     private String niv; // numero identificatrion vehicule (numero serie)

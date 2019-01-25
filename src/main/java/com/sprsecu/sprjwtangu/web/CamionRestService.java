@@ -71,4 +71,12 @@ public class CamionRestService {
     {
         return camionRepository.camionsDeTransporter(idTransporter);
     }
+    
+    @RequestMapping(value = "/camionMonitoring", method = RequestMethod.GET)
+    public Camion chercherCM(
+            @RequestParam(name = "uniteMonitor", defaultValue = "-1" ) String uniteMonitor,
+            @RequestParam(name = "monitor", defaultValue = "-1" ) String monitor) 
+    {
+        return camionRepository.camionMonitoring(uniteMonitor, monitor);
+    }
 }
