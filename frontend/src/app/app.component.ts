@@ -18,6 +18,15 @@ export class AppComponent {
     //*
     if (localStorage.getItem('role')!=null){
       this.role=localStorage.getItem('role');
+      if(this.role.includes('TRANSPORTER')) {         
+        this.router.navigateByUrl('/detail-transporter/'+ localStorage.getItem('userId'));
+        //localStorage.setItem('userId', res.id.toString());
+      }  
+      if(this.role.includes('SHIPPER')) {         
+        this.router.navigateByUrl('/detail-shipper/'+ localStorage.getItem('userId'));
+        //localStorage.setItem('userId', res.id.toString());
+      }
+      this.mode=0;
       //console.log("this role : "+this.role)
     }
     //*/
