@@ -12,6 +12,7 @@ import com.sprsecu.sprjwtangu.entities.AppUser;
 import com.sprsecu.sprjwtangu.entities.Camion;
 import com.sprsecu.sprjwtangu.entities.MessagesConstants;
 import com.sprsecu.sprjwtangu.entities.Transporter;
+import com.sprsecu.sprjwtangu.entities.UniteInfos;
 //import com.sprsecu.sprjwtangu.entities.Task;
 import com.sprsecu.sprjwtangu.services.AccountService;
 import java.text.SimpleDateFormat;
@@ -55,7 +56,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
     List<Transporter> transporters = new ArrayList<>();
     @Autowired
     private CamionRepository camionRepository;
-    List<Camion> camions = new ArrayList<>();
+    //List<Camion> camions = new ArrayList<>();
     
     public static void main(String[] args) {
             SpringApplication.run(SprjwtanguApplication.class, args);
@@ -148,28 +149,62 @@ public class SprjwtanguApplication implements CommandLineRunner{
             System.out.println("Message entretiens : "+ transporterEntretien(transporter));
         });
         //*/
-    Thread running = new Thread(new Runnable() { 
-     @Override 
-     public void run() { 
-      while (true) { 
-       try {           
-           System.out.println("Entretiens check");
-           /* activer pour vrai checker
-           transporters=transporterRepository.findAll();
-           transporters.forEach(transporter->{
-               if(EmailValidator.getInstance().isValid(transporter.getEmail()))                                  
-                   transporterEntretien(transporter);
-            });
-           //*/
-           Thread.sleep(86400000);                  
-       } catch (Exception e) { 
-        System.err.println("Error occurred:" + e); 
-       }
-      } 
-     } 
-    }); 
-
-    running.start(); 
+        
+        // Thread envoi message aux transporters
+        Thread envoiMsgThread = new Thread(() -> {
+            while (true) {
+                try {
+                    System.out.println("Entretiens check");
+                    /* activer pour vrai checker
+                    transporters=transporterRepository.findAll();
+                    transporters.forEach(transporter->{
+                    if(EmailValidator.getInstance().isValid(transporter.getEmail()))
+                    transporterEntretien(transporter);
+                    });
+                    //*/
+                    Thread.sleep(86400000); //1000*60*60*24 = 86400000 - 1 jour
+                } catch (Exception e) {
+                    System.err.println("Error occurred:" + e);
+                }
+            } 
+        }); 
+        
+        // Thread update odometre pour SOS Prestige
+        Thread updateOdoSOSPrestigeThread = new Thread(() -> {
+            System.out.println("Mettre a jour odometre des unites de SOS Prestige");
+            List<Camion> camions = new ArrayList<>();
+            camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
+            while (true) {
+                try {
+                    List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("http://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
+                    //System.out.println(listUnite.toString());
+                    camions.forEach(camion ->{
+                        listUnite.forEach(unite->{
+                            if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
+                                camion.setOdometre(new Float(unite.getOdometer()).longValue());
+                                camion.setLongtitude(new Double(unite.getLongitude()));
+                                camion.setLatitude(new Double(unite.getLatitude()));
+                                camionRepository.save(camion);
+                                //System.out.println("save camion unite monitor : "+camion.getUniteMonitor()+" unite : "+camion.getUnite()+" : "+unite.getOdometer());
+                            }
+                        });
+                    });
+                    /* activer pour vrai checker
+                    transporters=transporterRepository.findAll();
+                    transporters.forEach(transporter->{
+                    if(EmailValidator.getInstance().isValid(transporter.getEmail()))
+                    transporterEntretien(transporter);
+                    });
+                    //*/
+                    Thread.sleep(300000);  // 1000*60*5 = 300000 ms - 5 minutes
+                } catch (Exception e) {
+                    System.err.println("Error occurred:" + e);
+                }
+            } 
+        });
+        
+        envoiMsgThread.start();
+        updateOdoSOSPrestigeThread.start(); 
     }
     
         public void generateAndSendEmail(String emailBody, String email) throws AddressException, MessagingException {
@@ -202,12 +237,13 @@ public class SprjwtanguApplication implements CommandLineRunner{
 	transport.close();
     }
     public String transporterEntretien(Transporter transporter){
-        this.camions = camionRepository.camionsDeTransporter(transporter.getId());
+        List<Camion> camions = new ArrayList<>();
+        camions = camionRepository.camionsDeTransporter(transporter.getId());
         //System.out.println("Numero Unite : "+this.camions.size()+"<br>");
         //StringBuilder sb = new StringBuilder("");
         //if(this.camions.size()>0)            
             //this.camions.forEach(camion->{System.out.println("Je suis un camion."+camion.getInspect6m());});
-        this.camions.forEach(camion->{
+        camions.forEach(camion->{
             StringBuilder sb = new StringBuilder("");
             if(camion.getOdometre()!=null){ 
                 sb.append("Camion Unite : "+camion.getUnite()+"<br>");
