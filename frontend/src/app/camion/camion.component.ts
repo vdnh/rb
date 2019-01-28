@@ -226,28 +226,28 @@ export class CamionComponent implements OnInit {
   codeText(odoFait:number, odoAFaire:number){
     //console.log("I am called. And odoAFait : " + odoAFaire)
     if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
-      return 'pas data';
+      return 'pas-data';
     if((this.camion.odometre-odoFait)<(odoAFaire-5000))
-      return "bon etat";
+      return "bon-etat";
     if((this.camion.odometre-odoFait)<odoAFaire)
-      return "warning";
+      return "attention";
     if((this.camion.odometre-odoFait)>=odoAFaire)
-      return "danger";
+      return "urgent";
     return "";
   }
   codeTextInspect(){
     if(this.camion.inspect6m==null)
     {
-      return 'pas data';
+      return 'pas-data';
     }
     let date = new Date();
     let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
     if (days<152)
-      return "bon etat";
+      return "bon-etat";
     if (days>=152 && days<182)
-      return "warning";
+      return "attention";
     if (days>=182)
-      return "danger";      
+      return "urgent";      
     return ""
   }
 

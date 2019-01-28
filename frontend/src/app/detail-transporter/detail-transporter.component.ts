@@ -333,6 +333,50 @@ export class DetailTransporterComponent implements OnInit {
     this.camList=0;
     this.camAdd=1;
   }
+  codeCouleurEnt1(camion:Camion){
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.codeCouleurEnt2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
+      return '';
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo1Fait)<camion.ent1)
+      return "btn-warning";
+    if((camion.odometre-camion.odo1Fait)>=camion.ent1)
+      return "btn-danger";
+    
+      return "";
+  }
+  codeCouleurEnt2(camion:Camion){
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.codeCouleurEnt3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo2Fait)<camion.ent2)
+      return "btn-warning";
+    if((camion.odometre-camion.odo2Fait)>=camion.ent2)
+      return "btn-danger";
+    
+      return "";
+  }
+  codeCouleurEnt3(camion:Camion){
+    //console.log("I am called. And odoAFait : " + odoAFaire)
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo3Fait)<camion.ent3)
+      return "btn-warning";
+    if((camion.odometre-camion.odo3Fait)>=camion.ent3)
+      return "btn-danger";
+    
+      return "";
+  }
+
   codeCouleur(odometre, odoFait:number, odoAFaire:number){
     //console.log("I am called. And odoAFait : " + odoAFaire)
     if(odoAFaire==0 || odoAFaire==null || odometre==null)
@@ -363,34 +407,101 @@ export class DetailTransporterComponent implements OnInit {
       return "btn-danger";      
     return ""
   }
+  codeTextEnt1(camion:Camion){
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.codeTextEnt2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
+      return '';
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo1Fait)<camion.ent1)
+      return "attention";
+    if((camion.odometre-camion.odo1Fait)>=camion.ent1)
+      return "urgent";
+    
+      return "";
+  }
+  codeTextEnt2(camion:Camion){
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.codeTextEnt3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      return '';
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo2Fait)<camion.ent2)
+      return "attention";
+    if((camion.odometre-camion.odo2Fait)>=camion.ent2)
+      return "urgent";
+    
+      return "";
+  }
+  codeTextEnt3(camion:Camion){
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      return '';
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo3Fait)<camion.ent3)
+      return "attention";
+    if((camion.odometre-camion.odo3Fait)>=camion.ent3)
+      return "urgent";
+    
+      return "";
+  }
+
   codeText(odometre, odoFait:number, odoAFaire:number){
-    //console.log("I am called. And odoAFait : " + odoAFaire)
     if(odoAFaire==0 || odoAFaire==null || odometre==null)
-      return 'pas data';
+      return 'pas-data';
     if((odometre-odoFait)<(odoAFaire-5000))
-      return "bon etat";
+      return "bon-etat";
     if((odometre-odoFait)<odoAFaire)
-      return "warning";
+      return "attention";
     if((odometre-odoFait)>=odoAFaire)
-      return "danger";
+      return "urgent";
     return "";
   }
   codeTextInspect(inspect6m:Date){
     if(inspect6m==null)
     {
-      return 'pas data';
+      return 'pas-data';
     }
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
     //console.log('days in codeTextInspect : '+days)
     if (days<152)
-      return "bon etat";
+      return "bon-etat";
     if (days>=152 && days<182)
-      return "warning";
+      return "attention";
     if (days>=182)
-      return "danger";      
+      return "urgent";      
     return ""
   }
+
+  disableButton1(camion:Camion):boolean{
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.disableButton2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return true;
+    return false;
+  }
+  disableButton2(camion:Camion):boolean{
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.disableButton3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return true;
+    return false;
+  }
+  disableButton3(camion:Camion) : boolean{
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return true;
+    return false;
+  }
+
   disableButton(odometre, odoFait:number, odoAFaire:number) : boolean{
     if(odoAFaire==0 || odoAFaire==null || odometre==null)
       return true;
@@ -431,6 +542,7 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.saveCamions(camion).subscribe(data=>{
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
+        this.onEntretien01(camion)
       }, err=>{
         console.log();
       });    
@@ -446,6 +558,7 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.saveCamions(camion).subscribe(data=>{
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
+        this.onEntretien02(camion)
       }, err=>{
         console.log();
       });    

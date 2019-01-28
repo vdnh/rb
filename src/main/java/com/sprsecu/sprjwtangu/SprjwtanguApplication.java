@@ -211,12 +211,16 @@ public class SprjwtanguApplication implements CommandLineRunner{
             StringBuilder sb = new StringBuilder("");
             if(camion.getOdometre()!=null){ 
                 sb.append("Camion Unite : "+camion.getUnite()+"<br>");
+                /*
                 if(camion.getOdo1Fait()!=null && (camion.getOdometre()-camion.getOdo1Fait())>=20000l)
                     sb.append(MessagesConstants.ent1).append("<br>");
                 if(camion.getOdo2Fait()!=null && (camion.getOdometre()-camion.getOdo2Fait())>=45000l)
                     sb.append(MessagesConstants.ent2).append("<br>");
                 if(camion.getOdo3Fait()!=null && (camion.getOdometre()-camion.getOdo3Fait())>=95000l)
-                    sb.append(MessagesConstants.ent3).append("<br>");
+                    sb.append(MessagesConstants.ent3).append("<br>");//*/
+                sb.append(msgEnt1(camion));
+                sb.append(msgEnt2(camion));
+                sb.append(msgEnt3(camion));
                 if(camion.getOdo4Fait()!=null && camion.getFilHydrolique()!=null && camion.getFilHydrolique()>0 && (camion.getOdometre()-camion.getOdo4Fait())>=camion.getFilHydrolique()-5000)
                     sb.append(MessagesConstants.ent4).append("<br>");
                 if(camion.getOdo5Fait()!=null && camion.getFilAntigel()!=null && camion.getFilAntigel()>0 && (camion.getOdometre()-camion.getOdo5Fait())>=camion.getFilAntigel()-5000)
@@ -247,5 +251,22 @@ public class SprjwtanguApplication implements CommandLineRunner{
         //if(sb.indexOf("Entretien")==-1 && sb.indexOf("Inspection")==-1)
         return "";
         //return sb.toString();
+    }
+    public String  msgEnt1(Camion camion){
+        if(camion.getOdo1Fait()!=null && (camion.getOdometre()-camion.getOdo1Fait())>=camion.getEnt1()
+                && (camion.getOdo1Fait()!=camion.getOdo2Fait()))
+            return camion.getMessage01() + ("<br>");
+        return "";
+    }
+    public String  msgEnt2(Camion camion){
+        if(camion.getOdo2Fait()!=null && (camion.getOdometre()-camion.getOdo2Fait())>=camion.getEnt2()
+                && (camion.getOdo2Fait()!=camion.getOdo3Fait()))
+            return camion.getMessage01() + ("<br>")+camion.getMessage02();
+        return "";
+    }
+    public String  msgEnt3(Camion camion){
+        if(camion.getOdo3Fait()!=null && (camion.getOdometre()-camion.getOdo3Fait())>=camion.getEnt3())
+            return camion.getMessage01() + ("<br>")+camion.getMessage02()+("<br>")+camion.getMessage03();
+        return "";
     }
 }
