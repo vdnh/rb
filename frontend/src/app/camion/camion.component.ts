@@ -66,9 +66,9 @@ export class CamionComponent implements OnInit {
       this.couleur09=this.codeCouleurInspect();
       this.fiche.idCamion=this.camion.id;
       this.ficheCont.idCamion=this.camion.id;
-      console.log("camion.id : "+this.camion.id +" : "+this.camion.unite )
-      console.log("fiche.id_camion : "+this.fiche.idCamion)
-      console.log("ficheCont.id_camion : "+this.ficheCont.idCamion)
+      // console.log("camion.id : "+this.camion.id +" : "+this.camion.unite )
+      // console.log("fiche.id_camion : "+this.fiche.idCamion)
+      // console.log("ficheCont.id_camion : "+this.ficheCont.idCamion)
       this.fichePhysiquesService.fichePhysiqueEntretienDeCamion(this.fiche.idCamion).subscribe((data:FichePhysiqueEntretien)=>{
         this.fiche=data;
         if(data!=null)

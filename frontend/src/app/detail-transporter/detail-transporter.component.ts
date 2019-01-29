@@ -520,8 +520,8 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   onEntretien01(camion:Camion){
-    let msg:string="test message\n test01 message\n test02 message\n";
-    alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins. "+ msg);
+    //let msg:string="test message\n test01 message\n test02 message\n";
+    alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins. ");
     camion.odo1Fait=camion.odometre;
     camion.ent1Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{

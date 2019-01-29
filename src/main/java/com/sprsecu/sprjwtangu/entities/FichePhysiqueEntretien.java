@@ -83,4 +83,6 @@ public class FichePhysiqueEntretien implements Serializable{
     private String filtreHuileHydrolique1erModele;
     private String filtreHuileHydrolique2emMarque;
     private String filtreHuileHydrolique2emModele;
+    private String filtreAUreeMarque;
+    private String filtreAUreePiece;
 }

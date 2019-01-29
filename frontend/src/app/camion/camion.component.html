@@ -28,7 +28,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
             </tr>
             <tr>
-                <th>Annee</th><th>Type</th><th>Odometre</th><th>UniteMonitor</th><th>Monitor</th>
+                <th>Annee</th><th>Type</th><th>Odometre</th><th>UniteMonitor</th><th>Monitor</th><th>Mass Net</th>
             </tr>
             <tr>                
                 <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
@@ -36,6 +36,7 @@
                 <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.monitor" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.massNet" /></td>
             </tr>
             <tr><th colspan="8">Les odometres de dernieres entretiens : </th></tr>
             <tr>
@@ -159,13 +160,15 @@
                 <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emPiece" /></td>
               </tr>        
               <tr>
-                <th>FiltreHuile Hydrolique1er Marque</th><th>FiltreHuile Hydrolique1er Piece</th><th>FiltreHuile Hydrolique2em Marque</th><th>FiltreHuile Hydrolique2em Piece</th>
+                <th>FiltreHuile Hydrolique1er Marque</th><th>FiltreHuile Hydrolique1er Piece</th><th>FiltreHuile Hydrolique2em Marque</th><th>FiltreHuile Hydrolique2em Piece</th><th>FiltreAUree Marque</th><th>FiltreAUree Piece</th>
               </tr>
               <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erMarque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erModele" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emMarque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreeMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreePiece" /></td>
               </tr>     
               <tr>
                 <th>Huile Moteur</th><th>Huile Differentiel</th><th>Huile Transmition</th><th>HuileServo Direction</th><th>Huile Hydrolique</th><th>Prestone</th><th>Batterie Nombre</th><th>Batterie Amperage</th>

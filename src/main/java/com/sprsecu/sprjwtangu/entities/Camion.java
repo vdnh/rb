@@ -30,6 +30,7 @@ public class Camion implements Serializable{
     private String modele;
     private String annee;
     private String type; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
+    private String massNet;
     private Long odometre; 
     @Temporal(TemporalType.DATE)
     private Date inspect6m; // jj-mmm,  On fait l'inspection 2 fois chaque annee

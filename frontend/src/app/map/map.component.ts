@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { } from 'googlemaps';
+import { Camion } from 'src/model/model.camion';
+import { CamionsService } from 'src/services/camions.service';
 
 @Component({
   selector: 'app-map',
@@ -8,6 +10,9 @@ import { } from 'googlemaps';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
+  
+  camion:Camion=new Camion();
+  id:number=106;  // test wit truck 17 of transporter01
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
@@ -34,11 +39,24 @@ export class MapComponent implements OnInit {
 
   isHidden = false;
 
-  ngOnInit() {
+  constructor(public camionsService:CamionsService){
 
   }
 
+  async ngOnInit() {
+    await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
+      this.camion=data;
+      this.latitude = this.camion.latitude;
+      this.longitude= this.camion.longtitude
+      console.log('latitude : '+this.camion.latitude);
+      console.log('longtitude : '+this.camion.longtitude);
+    }, err=>{
+      console.log();
+    })
+  }
+
   ngAfterContentInit() {
+    //center: new google.maps.LatLng(this.camion.latitude, this.camion.longtitude),
     let mapProp = {
       center: new google.maps.LatLng(45.568806, -73.918333),
       zoom: 15,
@@ -48,22 +66,28 @@ export class MapComponent implements OnInit {
     
     //this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
 
-    let location1 = new google.maps.LatLng(45.568874, -73.918333);
+    //let location1 = new google.maps.LatLng(45.568874, -73.918333);
+    console.log('latitude : '+this.latitude);
+    console.log('longitude : '+this.longitude);
+    console.log('latitude : '+this.camion.latitude);
+    console.log('longtitude : '+this.camion.longtitude);
+    let location1 = new google.maps.LatLng(this.latitude, this.longitude);
     let marker = new google.maps.Marker({
       position: location1,
       map: this.map,
       icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
-      title: 'Camion 01'
+      title: 'Camion 17'
     });
 
+    //*
     let location2 = new google.maps.LatLng(45.569234, -73.918440);
     let marker02 = new google.maps.Marker({
       position: location2,
       map: this.map,
       icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
-      title: 'Camion 02'
+      title: 'Camion test'
     });
-
+    /*
     let location3 = new google.maps.LatLng(45.719947, -73.674694);
     let marker03 = new google.maps.Marker({
       position: location3,
@@ -71,6 +95,7 @@ export class MapComponent implements OnInit {
       icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
       title: 'Camion 03'
     });
+    //*/
 
   }
 

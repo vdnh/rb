@@ -61,4 +61,6 @@ export class FichePhysiqueEntretien {
     filtreHuileHydrolique1erModele:string;
     filtreHuileHydrolique2emMarque:string;
     filtreHuileHydrolique2emModele:string;
+    filtreAUreeMarque:string;
+    filtreAUreePiece:string;
 }
