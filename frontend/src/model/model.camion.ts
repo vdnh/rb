@@ -9,7 +9,7 @@ export class Camion{
     modele:string;
     annee:string;
     type:string; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
-    odometre:number=0; 
+    odometre:number; //=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
     ent1:number=25000;
     ent2:number=50000;
@@ -28,8 +28,8 @@ export class Camion{
     message07:string="";
     message08:string="";
     
-    latitude:number=45.568806;
-    longtitude:number=-73.918333;    
+    latitude:number; //=45.568806;
+    longtitude:number; //=-73.918333;    
     status:boolean=false;   // en mission ou non
     localDepart:string="";
     destination:string="";

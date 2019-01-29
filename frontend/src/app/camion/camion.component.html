@@ -315,9 +315,9 @@
         <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
             <tr><th colspan="8">Les Entretiens a faire (code couleur - vert : pas besoins, jaune : conseille, rouge : oblige) </th></tr>
             <tr>
-              <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton(camion.odo1Fait, 25000)">Entretien 1 {{codeText(camion.odo1Fait, 25000)}}</button></td>
-              <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton(camion.odo2Fait, 50000)">Entretien 2 {{codeText(camion.odo2Fait, 50000)}}</button></td>
-              <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton(camion.odo3Fait, 100000)">Entretien 3 {{codeText(camion.odo3Fait, 100000)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Entretien 1 {{codeTextEnt1(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton2(camion)">Entretien 2 {{codeTextEnt2(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton3(camion)">Entretien 3 {{codeTextEnt3(camion)}}</button></td>
               <td colspan="2"><button (click)="onEntretien04()" class="btn btn-sm {{couleur04}}" [disabled]="disableButton(camion.odo4Fait, camion.filHydrolique)">Entretien 4 {{codeText(camion.odo4Fait, camion.filHydrolique)}}</button></td>
             </tr>
             <tr>

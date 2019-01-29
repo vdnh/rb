@@ -155,14 +155,14 @@ public class SprjwtanguApplication implements CommandLineRunner{
             while (true) {
                 try {
                     System.out.println("Entretiens check");
-                    /* activer pour vrai checker
-                    transporters=transporterRepository.findAll();
-                    transporters.forEach(transporter->{
+                    //* activer pour vrai checker
+                    this.transporters=transporterRepository.findAll();
+                    this.transporters.forEach(transporter->{
                     if(EmailValidator.getInstance().isValid(transporter.getEmail()))
                     transporterEntretien(transporter);
                     });
                     //*/
-                    Thread.sleep(86400000); //1000*60*60*24 = 86400000 - 1 jour
+                    Thread.sleep(60000); //1000*60*60*24 = 86400000 - 1 jour
                 } catch (Exception e) {
                     System.err.println("Error occurred:" + e);
                 }
@@ -189,13 +189,6 @@ public class SprjwtanguApplication implements CommandLineRunner{
                             }
                         });
                     });
-                    /* activer pour vrai checker
-                    transporters=transporterRepository.findAll();
-                    transporters.forEach(transporter->{
-                    if(EmailValidator.getInstance().isValid(transporter.getEmail()))
-                    transporterEntretien(transporter);
-                    });
-                    //*/
                     Thread.sleep(300000);  // 1000*60*5 = 300000 ms - 5 minutes
                 } catch (Exception e) {
                     System.err.println("Error occurred:" + e);
@@ -231,12 +224,15 @@ public class SprjwtanguApplication implements CommandLineRunner{
 	//String emailBody = "Test email by vdnh JavaMail API example. " + "<br><br> Regards, <br>vdnh Admin";
         emailBody = emailBody + "<br> Regards, <br>Application CTS.COM";
 	generateMailMessage.setContent(emailBody, "text/html");
-	Transport transport = getMailSession.getTransport("smtp");
+	System.out.println(emailBody); // imprimer a la place de  email
+        /*
+        Transport transport = getMailSession.getTransport("smtp");
 	transport.connect("smtp.gmail.com", "vdnhmtl@gmail.com", "mickey&9");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-	transport.close();
+	transport.close();//*/
     }
     public String transporterEntretien(Transporter transporter){
+        System.out.println("Transporter : " + transporter.getNom());
         List<Camion> camions = new ArrayList<>();
         camions = camionRepository.camionsDeTransporter(transporter.getId());
         //System.out.println("Numero Unite : "+this.camions.size()+"<br>");
@@ -254,9 +250,9 @@ public class SprjwtanguApplication implements CommandLineRunner{
                     sb.append(MessagesConstants.ent2).append("<br>");
                 if(camion.getOdo3Fait()!=null && (camion.getOdometre()-camion.getOdo3Fait())>=95000l)
                     sb.append(MessagesConstants.ent3).append("<br>");//*/
-                sb.append(msgEnt1(camion));
-                sb.append(msgEnt2(camion));
-                sb.append(msgEnt3(camion));
+                sb.append(codeTextEnt1(camion));
+                sb.append(codeTextEnt2(camion));
+                sb.append(codeTextEnt3(camion));
                 if(camion.getOdo4Fait()!=null && camion.getFilHydrolique()!=null && camion.getFilHydrolique()>0 && (camion.getOdometre()-camion.getOdo4Fait())>=camion.getFilHydrolique()-5000)
                     sb.append(MessagesConstants.ent4).append("<br>");
                 if(camion.getOdo5Fait()!=null && camion.getFilAntigel()!=null && camion.getFilAntigel()>0 && (camion.getOdometre()-camion.getOdo5Fait())>=camion.getFilAntigel()-5000)
@@ -289,20 +285,60 @@ public class SprjwtanguApplication implements CommandLineRunner{
         //return sb.toString();
     }
     public String  msgEnt1(Camion camion){
-        if(camion.getOdo1Fait()!=null && (camion.getOdometre()-camion.getOdo1Fait())>=camion.getEnt1()
+        if(camion.getOdo1Fait()!=null && (camion.getOdometre()-camion.getOdo1Fait())>=camion.getEnt1()-5000
                 && (camion.getOdo1Fait()!=camion.getOdo2Fait()))
             return camion.getMessage01() + ("<br>");
-        return "";
+        return msgEnt2(camion);
     }
     public String  msgEnt2(Camion camion){
-        if(camion.getOdo2Fait()!=null && (camion.getOdometre()-camion.getOdo2Fait())>=camion.getEnt2()
+        if(camion.getOdo2Fait()!=null && (camion.getOdometre()-camion.getOdo2Fait())>=camion.getEnt2()-5000
                 && (camion.getOdo2Fait()!=camion.getOdo3Fait()))
             return camion.getMessage01() + ("<br>")+camion.getMessage02();
-        return "";
+        return msgEnt3(camion);
     }
     public String  msgEnt3(Camion camion){
-        if(camion.getOdo3Fait()!=null && (camion.getOdometre()-camion.getOdo3Fait())>=camion.getEnt3())
+        if(camion.getOdo3Fait()!=null && (camion.getOdometre()-camion.getOdo3Fait())>=camion.getEnt3()-5000)
             return camion.getMessage01() + ("<br>")+camion.getMessage02()+("<br>")+camion.getMessage03();
         return "";
     }
+    
+    public String codeTextEnt1(Camion camion){
+        System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
+        if(camion.getOdo1Fait()!=camion.getOdo2Fait())
+          return codeTextEnt2(camion);
+        if(camion.getEnt1()==0 || camion.getEnt1()==null || camion.getOdometre()==null)      
+          return "";
+        if((camion.getOdometre()-camion.getOdo1Fait())<(camion.getEnt1()-5000))
+          return "";
+        if((camion.getOdometre()-camion.getOdo1Fait())<camion.getEnt1())
+          return "Attention : " + camion.getMessage01();
+        if((camion.getOdometre()-camion.getOdo1Fait())>=camion.getEnt1())
+          return "Urgent : " + camion.getMessage01();
+        return "";
+    }
+    public String codeTextEnt2(Camion camion){
+        if(camion.getOdo1Fait()!=camion.getOdo2Fait())
+          return codeTextEnt3(camion);
+        if(camion.getEnt2()==0 || camion.getEnt2()==null || camion.getOdometre()==null)      
+          return "";
+        if((camion.getOdometre()-camion.getOdo2Fait())<(camion.getEnt2()-5000))
+          return "";
+        if((camion.getOdometre()-camion.getOdo2Fait())<camion.getEnt2())
+          return "Attention : " + camion.getMessage01()+ camion.getMessage02();
+        if((camion.getOdometre()-camion.getOdo2Fait())>=camion.getEnt2())
+          return "Urgent : " +  camion.getMessage01() + camion.getMessage02();
+        return "";
+    }
+  public String codeTextEnt3(Camion camion){
+    if(camion.getEnt3()==0 || camion.getEnt3()==null || camion.getOdometre()==null)
+      return "";
+    if((camion.getOdometre()-camion.getOdo3Fait())<(camion.getEnt3()-5000))
+      return "";
+    if((camion.getOdometre()-camion.getOdo3Fait())<camion.getEnt3())
+      return "Attention : " + camion.getMessage01()+ camion.getMessage02() + camion.getMessage03();
+    if((camion.getOdometre()-camion.getOdo3Fait())>=camion.getEnt3())
+      return "Urgent : " + camion.getMessage01()+ camion.getMessage02() + camion.getMessage03();
+    
+      return "";
+  }
 }

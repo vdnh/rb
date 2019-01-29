@@ -157,9 +157,9 @@ export class CamionComponent implements OnInit {
   saveCamion(){
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.mode=2;
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)
-      this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
+      this.couleur01=this.codeCouleurEnt1(this.camion)
+      this.couleur02=this.codeCouleurEnt2(this.camion)
+      this.couleur03=this.codeCouleurEnt3(this.camion)
       this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique)
       this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel)
       this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel)
@@ -195,6 +195,49 @@ export class CamionComponent implements OnInit {
     });
   }
   //*
+  codeCouleurEnt1(camion:Camion){
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.codeCouleurEnt2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
+      return '';
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo1Fait)<camion.ent1)
+      return "btn-warning";
+    if((camion.odometre-camion.odo1Fait)>=camion.ent1)
+      return "btn-danger";
+    
+      return "";
+  }
+  codeCouleurEnt2(camion:Camion){
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.codeCouleurEnt3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo2Fait)<camion.ent2)
+      return "btn-warning";
+    if((camion.odometre-camion.odo2Fait)>=camion.ent2)
+      return "btn-danger";
+    
+      return "";
+  }
+  codeCouleurEnt3(camion:Camion){
+    //console.log("I am called. And odoAFait : " + odoAFaire)
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return "btn-success";
+    if((camion.odometre-camion.odo3Fait)<camion.ent3)
+      return "btn-warning";
+    if((camion.odometre-camion.odo3Fait)>=camion.ent3)
+      return "btn-danger";
+    
+      return "";
+  }
   codeCouleur(odoFait:number, odoAFaire:number){
     if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
       //console.log('btn-danger" [disabled]="true');
@@ -223,6 +266,48 @@ export class CamionComponent implements OnInit {
       return "btn-danger";      
     return ""
   }
+  
+  codeTextEnt1(camion:Camion){
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.codeTextEnt2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
+      return '';
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo1Fait)<camion.ent1)
+      return "attention";
+    if((camion.odometre-camion.odo1Fait)>=camion.ent1)
+      return "urgent";
+    
+      return "";
+  }
+  codeTextEnt2(camion:Camion){
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.codeTextEnt3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      return '';
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo2Fait)<camion.ent2)
+      return "attention";
+    if((camion.odometre-camion.odo2Fait)>=camion.ent2)
+      return "urgent";
+    
+      return "";
+  }
+  codeTextEnt3(camion:Camion){
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      return '';
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return "bon-etat";
+    if((camion.odometre-camion.odo3Fait)<camion.ent3)
+      return "attention";
+    if((camion.odometre-camion.odo3Fait)>=camion.ent3)
+      return "urgent";
+    
+      return "";
+  }
+
   codeText(odoFait:number, odoAFaire:number){
     //console.log("I am called. And odoAFait : " + odoAFaire)
     if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null)
@@ -249,6 +334,32 @@ export class CamionComponent implements OnInit {
     if (days>=182)
       return "urgent";      
     return ""
+  }
+
+  disableButton1(camion:Camion):boolean{
+    if(camion.odo1Fait!=camion.odo2Fait)
+      return this.disableButton2(camion)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
+      return true;
+    return false;
+  }
+  disableButton2(camion:Camion):boolean{
+    if(camion.odo2Fait!=camion.odo3Fait)
+      return this.disableButton3(camion)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
+      return true;
+    return false;
+  }
+  disableButton3(camion:Camion) : boolean{
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+      return true;
+    if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
+      return true;
+    return false;
   }
 
   disableButton(odoFait:number, odoAFaire:number) : boolean{
@@ -286,6 +397,7 @@ export class CamionComponent implements OnInit {
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.refresh();
       //this.gotoDetailTransporter(this.camion.idTransporter);
+      this.onEntretien01();
       this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2);
     }, err=>{
       console.log(err);
@@ -298,6 +410,7 @@ export class CamionComponent implements OnInit {
     this.camion.ent3Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.gotoDetailTransporter(this.camion.idTransporter);//this.refresh();
+      this.onEntretien02();
       this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
     }, err=>{
       console.log(err);
