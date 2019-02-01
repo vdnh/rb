@@ -1,7 +1,7 @@
 export class Camion{
     id:number=0;
     unite:string="";
-    uniteMonotor:string="";
+    uniteMonitor:string="";
     monitor:string="";
     plaque:string;
     marque:string; // camionfermee, flatbed, ...
@@ -9,7 +9,7 @@ export class Camion{
     modele:string;
     annee:string;
     type:string; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
-    massNet:number=0;
+    massNet:string;
     odometre:number; //=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
     ent1:number=25000;

@@ -481,8 +481,8 @@ export class CamionComponent implements OnInit {
       console.log(err);
     });
   }
-  onPress(){
-    this.router.navigateByUrl("/map");
+  onPress(id:number){
+    this.router.navigate(['map', id]);
   }
   refresh(): void {
     //window.location.reload();

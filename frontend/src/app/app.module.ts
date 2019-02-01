@@ -29,6 +29,7 @@ import { CamionsService } from 'src/services/camions.service';
 import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
+import { MapFlotteComponent } from './map-flotte/map-flotte.component';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -45,7 +46,8 @@ const appRoutes:Routes=[
   {path: 'new-shipper', component:  NewShipperComponent},
   {path: 'detail-shipper/:id', component:  DetailShipperComponent},
   {path: 'shippers/testlink', component:  TestComponent},
-  {path: 'map', component: MapComponent},
+  {path: 'map/:id', component: MapComponent},
+  {path: 'map-flotte', component: MapFlotteComponent},
   {path: "fiche-technique", component: FichTechniqueComponent},
   {path: 'camion/:id', component:  CamionComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
@@ -69,6 +71,7 @@ const appRoutes:Routes=[
     MapComponent,
     FichTechniqueComponent,
     CamionComponent,
+    MapFlotteComponent,
     //MapComponent,
   ],
   imports: [

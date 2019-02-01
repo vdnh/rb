@@ -2,7 +2,7 @@
   <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
     <div class="panel-heading"> 
         <h2> Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; </h2>
-        <button class="btn btn-link" (click)="onPress()">Voir camion {{camion.unite}} sur la carte</button>
+        <button class="btn btn-link" (click)="onPress(camion.id)">Voir camion {{camion.unite}} sur la carte</button>
         <p></p>
     </div>
     <div>
@@ -28,15 +28,15 @@
                 <td><input class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
             </tr>
             <tr>
-                <th>Annee</th><th>Type</th><th>Odometre</th><th>UniteMonitor</th><th>Monitor</th><th>Mass Net</th>
+                <th>Annee</th><th>Type</th><th>Odometre</th><th>Mass Net</th><th>UniteMonitor</th><th>Monitor</th>
             </tr>
             <tr>                
                 <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.type" /></td>
                 <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="camion.monitor" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.massNet" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.monitor" /></td>                
             </tr>
             <tr><th colspan="8">Les odometres de dernieres entretiens : </th></tr>
             <tr>

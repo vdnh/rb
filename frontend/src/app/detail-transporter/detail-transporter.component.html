@@ -154,7 +154,11 @@
         <table class="table table-striped table-sm table-responsive" *ngIf="modeTableau==1">
             <tr>
                 <th>Unite</th>
-                <th *ngFor="let camion of camions" style="text-align: center">{{camion.unite}}</th>
+                <th *ngFor="let camion of camions" style="text-align: center">
+                    <button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">
+                        {{camion.unite}}
+                    </button>
+                </th>
             </tr>
             <tr>
                 <th>Entretien-1</th>                

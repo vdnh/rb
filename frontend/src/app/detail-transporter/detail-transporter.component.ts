@@ -284,7 +284,7 @@ export class DetailTransporterComponent implements OnInit {
   onPress(){
     //this.myWindow.close();
     //this.myWindow = window.open("http://192.168.0.131:8088/", "Ma Carte");
-    this.router.navigateByUrl("/map");
+    this.router.navigateByUrl("/map-flotte");
     //this.myWindow.close();
     //window.close("googleWindow");
   }

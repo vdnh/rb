@@ -5,18 +5,19 @@ import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
 import { Observable, timer, interval, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-//import 'rxjs/add/observable/interval';
+import { Transporter } from 'src/model/model.transporter';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  selector: 'app-map-flotte',
+  templateUrl: './map-flotte.component.html',
+  styleUrls: ['./map-flotte.component.css']
 })
-export class MapComponent implements OnInit {
-  
+export class MapFlotteComponent implements OnInit {
+
   subscription : Subscription;
-  
+  transporter:Transporter=new Transporter();
   camion:Camion=new Camion();
+  camions:Array<Camion>=new Array<Camion>();
   //id:number=265;  // test wit F550 of SOS - Yannick
   id:number=108;  // test wit Hino of SOS
   @ViewChild('gmap') gmapElement: any;
@@ -47,7 +48,7 @@ export class MapComponent implements OnInit {
 
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, private router:Router){
     
-    this.id=activatedRoute.snapshot.params['id'];      
+    //this.id=activatedRoute.snapshot.params['id'];      
     
     var numbers = timer(2000);
     numbers.subscribe(x =>{
@@ -167,4 +168,5 @@ export class MapComponent implements OnInit {
 
     this.gmapElement.nativeElement.hidden = this.isHidden;
   }
+
 }
