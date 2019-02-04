@@ -47,7 +47,7 @@ const appRoutes:Routes=[
   {path: 'detail-shipper/:id', component:  DetailShipperComponent},
   {path: 'shippers/testlink', component:  TestComponent},
   {path: 'map/:id', component: MapComponent},
-  {path: 'map-flotte', component: MapFlotteComponent},
+  {path: 'map-flotte/:id', component: MapFlotteComponent},
   {path: "fiche-technique", component: FichTechniqueComponent},
   {path: 'camion/:id', component:  CamionComponent},
   {path:"", redirectTo:"", pathMatch:"full"}

@@ -2,8 +2,8 @@
   <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
     <div class="panel-heading"> 
         <h2> Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; </h2>
-        <button class="btn btn-link" (click)="onPress(camion.id)">Voir camion {{camion.unite}} sur la carte</button>
-        <p></p>
+        <button class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
+        <br>
     </div>
     <div>
         <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
@@ -11,6 +11,15 @@
         <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a definir</button>
         <button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button>
     </div>
+    <div class="panel-body" *ngIf="carte==1">
+      <div class="col-md-12">
+        <div class="text-center">
+          <h3>
+            <div #gmap style="width:100%;height:500px" ></div>
+          </h3>
+        </div>
+      </div>
+    </div>    
     <div *ngIf="modeInfos==1">Infos</div>
     <div *ngIf="modeFiche==1"><h4>Fiche de Technique</h4></div>
     <div *ngIf="modeDefinirEnt==1"><h4>Entretiens a definir</h4></div>

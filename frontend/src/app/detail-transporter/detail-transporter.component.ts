@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 import { AutreEntretien } from 'src/model/model.autreEntretien';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { AutreEntretienList } from 'src/model/model.autreEntretienList';
+import { Subscription, timer, interval } from 'rxjs';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -25,6 +26,19 @@ import { AutreEntretienList } from 'src/model/model.autreEntretienList';
   styleUrls: ['./detail-transporter.component.css']
 })
 export class DetailTransporterComponent implements OnInit {
+  //* for map flotte truck
+  subscription : Subscription;
+  //transporter:Transporter=new Transporter();
+  camionMap:Camion=new Camion();
+  camionsSurMap:Array<Camion>=new Array<Camion>();
+  idCamionMap:number=108;  // test wit Hino of SOS
+  @ViewChild('gmap') gmapElement: any;
+  map: google.maps.Map;
+  markers=Array<google.maps.Marker>();
+  carte:number=-1;
+  carteText:string="Voir la carte";
+  iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+//*
   quitButton:string='';
   quebec511:number=1;
   textQuebec511:string="Voir conditions de routes."
@@ -87,11 +101,7 @@ export class DetailTransporterComponent implements OnInit {
 
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
       this.camions=data;
-      //let entsAutre:AutreEntretienList=null;
-      //*
       this.camions.forEach(async obj =>{
-        //let entsAutre:AutreEntretienList=new AutreEntretienList();
-        //entsAutre.unite="u-"+ obj.unite;
         await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
           if(data!=null){
             
@@ -100,21 +110,8 @@ export class DetailTransporterComponent implements OnInit {
             entsAutre.entsList=data;
             entsAutre.unite=obj.unite;
             entsAutre.odometre=obj.odometre;
-            //console.log("this.tailArray(entsAutre) : "+this.tailArray(entsAutre));
-            /*data.forEach(d => {
-              let autreEntretien:AutreEntretien=new AutreEntretien();
-              autreEntretien=d;
-              autreEntretien.unite="u-"+ obj.unite;
-              this.arrayEnts.push(autreEntretien);
-            })  //*/          
-
-            //console.log("u-"+ obj.unite);
-            //console.log("this.entsAutre.unite :"+this.entsAutre.unite)
-            //console.log("this.entsAutre.length : " +  this.entsAutre.entsList.length)
-            //console.log("this.entsAutre[0].kmtrage : " +  this.entsAutre.entsList[0].kmTrage);
             if(entsAutre.entsList.length != 0)
               this.arrayArrayEnts.push(entsAutre);
-            //console.log("this.arrayArrayEnts.length : "+this.arrayArrayEnts.length);
           }
         }, err=>{
           console.log(err)
@@ -126,6 +123,7 @@ export class DetailTransporterComponent implements OnInit {
       console.log();
     });
   }
+  
   saveTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
       //this.mode=2;
@@ -219,16 +217,9 @@ export class DetailTransporterComponent implements OnInit {
     this.addcamion.idTransporter=this.id;
     //*
     await this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
-      //console.log('test to see ');
       this.addcamion=data;
-      //console.log("data.id : "+ data.id)
-      //console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
-      //console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
       this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
       this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
-      //console.log("this.addCamion.id : "+ this.addcamion.id)
-      //console.log("this.fichePhysiqueEntretien.idCamion : "+ this.fichePhysiqueEntretien.idCamion)
-      //console.log("this.fichePhysiqueEntretienCont.idCamion : "+ this.fichePhysiqueEntretienCont.idCamion)
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
       }, err=>{
@@ -248,23 +239,12 @@ export class DetailTransporterComponent implements OnInit {
     }, err=>{
       console.log(err)
     })//*/
-    
-    /*
-    this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe(data=>{ console.log('fiche1 ok')}, err=>{
-        console.log(err)
-      });
-    this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe(data=>{console.log('fiche2 ok') }, err=>{
-        console.log(err)
-      });
-    //*/
   }
 
   deleteCamion(id:number){
     //*
     this.camionsService.deleteCamion(id)
     .subscribe(data=>{
-      //alert("Camion : "+this.addadresse.num+" a ete supprime.");
-      //this.refresh();
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
         this.camions=data;
       }, err=>{
@@ -281,13 +261,75 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   myWindow: any;
+
   onPress(){
-    //this.myWindow.close();
-    //this.myWindow = window.open("http://192.168.0.131:8088/", "Ma Carte");
-    this.router.navigateByUrl("/map-flotte");
-    //this.myWindow.close();
-    //window.close("googleWindow");
+    this.carte=-this.carte;
+    if(this.carte==1)
+      this.carteText='Cacher la carte'
+    else
+      this.carteText='Voir la carte'
+    
+    var numbers = timer(2000);
+    numbers.subscribe(x =>{
+      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+        this.camionsSurMap=data;
+        let mapProp = {
+          center: new google.maps.LatLng(45.568806, -73.918333),
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+        this.camionsSurMap.forEach(camion=>{
+          //console.log("camion.id : "+ camion.id)
+          if(camion.uniteMonitor!=null && camion.monitor!=null){
+            //this.marker.setMap(null);
+            let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
+            let marker = new google.maps.Marker({
+              position: location1,
+              map: this.map,
+              icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+              title: camion.unite
+            });
+            this.markers.push(marker)
+          }  
+        })
+        const source = interval(60000);
+        this.subscription=source.subscribe(val=>{this.getLocalisation()})
+      }, err=>{
+        console.log();
+      })
+    })      
+    //this.router.navigate(["/map-flotte", this.id]);
   }
+
+  getLocalisation(){
+    this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      this.camionsSurMap=data;
+      //* demarsk the list of trucks
+      this.markers.forEach(marker=>{
+        marker.setMap(null);
+        marker=null;
+      })
+      this.markers = [];
+      //*/
+      this.camionsSurMap.forEach(camion=>{
+        //console.log("camion.id : "+ camion.id)
+        if(camion.uniteMonitor!=null && camion.monitor!=null){
+          let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
+          let marker = new google.maps.Marker({
+            position: location1,
+            map: this.map,
+            icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+            title: camion.unite
+          });
+          this.markers.push(marker);
+        }  
+      })
+    }, err=>{
+      console.log();
+    })
+  }
+
   onQuebec511(){
     this.quebec511=-this.quebec511;
     if (this.quebec511==-1)

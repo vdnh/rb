@@ -70,6 +70,7 @@ export class MapComponent implements OnInit {
             icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
             title: this.camion.unite
           });
+
           console.log('this.camion.uniteMonotor  + this.camion.monitor : '+this.camion.uniteMonitor +' + '+ this.camion.monitor);
           const source = interval(60000);
           this.subscription=source.subscribe(val=>{this.getLocalisation()})  

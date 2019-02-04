@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Camion } from 'src/model/model.camion';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CamionsService } from 'src/services/camions.service';
@@ -8,6 +8,7 @@ import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
 import { AutreEntretien } from 'src/model/model.autreEntretien';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
+import { Subscription, interval, timer } from 'rxjs';
 
 @Component({
   selector: 'app-camion',
@@ -16,6 +17,17 @@ import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 })
 export class CamionComponent implements OnInit {
 
+  //** parametres de la carte
+  subscription : Subscription;
+  @ViewChild('gmap') gmapElement: any;
+  map: google.maps.Map;
+  marker=new google.maps.Marker();
+  latitude:number=45;
+  longitude:number=-73;
+  iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+  carte: number=-1;
+  carteText:string='Voir sur la carte'
+  //*/
   modeInfos:number=0;
   modeFiche:number=0;
   modeEntretiens:number=0;
@@ -41,11 +53,31 @@ export class CamionComponent implements OnInit {
   //fiche:FichePhysiqueEntretien=new FichePhysiqueEntretien();
   //ficheCont:FichePhysiqueEntretienCont=new FichePhysiqueEntretienCont();
   fiche:FichePhysiqueEntretien = new FichePhysiqueEntretien();
-  ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
+  ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();  
   
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
   public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router){    
+    
     this.id=activatedRoute.snapshot.params['id'];
+  }
+
+  getLocalisation(){
+    this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
+      //this.camion=data;
+      //this.latitude = this.camion.latitude;
+      //this.longitude= this.camion.longtitude
+      console.log("from camion every 1 minute")
+      this.marker.setMap(null);
+      let location1 = new google.maps.LatLng(data.latitude, data.longtitude);
+      this.marker = new google.maps.Marker({
+        position: location1,
+        map: this.map,
+        icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+        title: data.unite
+      });
+    }, err=>{
+      console.log();
+    })//*/
   }
 
   async ngOnInit() {
@@ -482,7 +514,44 @@ export class CamionComponent implements OnInit {
     });
   }
   onPress(id:number){
-    this.router.navigate(['map', id]);
+    this.carte=-this.carte;
+    if(this.carte==-1)
+      this.carteText='Voir la carte'
+    else
+      this.carteText='Cacher la carte'
+      var numbers = timer(2000);
+      numbers.subscribe(x =>{
+        this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
+          //this.camion=data;
+          if(data.uniteMonitor!=null && data.monitor!=null){
+            //this.latitude = this.camion.latitude;
+            //this.longitude= this.camion.longtitude
+            //this.marker.setMap(null);
+            let location1 = new google.maps.LatLng(data.latitude, data.longtitude);
+            let mapProp = {
+              center: new google.maps.LatLng(data.latitude, data.longtitude),
+              zoom: 15,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+            this.marker = new google.maps.Marker({
+              position: location1,
+              map: this.map,
+              icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+              title: data.unite
+            });
+  
+            //console.log('this.camion.uniteMonotor  + this.camion.monitor : '+this.camion.uniteMonitor +' + '+ this.camion.monitor);
+            const source = interval(60000);
+            this.subscription=source.subscribe(val=>{this.getLocalisation()})  
+          }
+          else
+            alert("Ce camion n'est pas suivi gps")
+        }, err=>{
+          console.log();
+        })//*/
+      })  
+    //this.router.navigate(['map', id]);
   }
   refresh(): void {
     //window.location.reload();
