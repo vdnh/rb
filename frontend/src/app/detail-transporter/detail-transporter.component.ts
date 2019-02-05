@@ -19,6 +19,7 @@ import { AutreEntretien } from 'src/model/model.autreEntretien';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 import { Subscription, timer, interval } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -42,6 +43,10 @@ export class DetailTransporterComponent implements OnInit {
   quitButton:string='';
   quebec511:number=1;
   textQuebec511:string="Voir conditions de routes."
+  avltrack:number=1;
+  avltrackLink:string="http://client2.avltrack.com/main.cfm?==QMxADM"; //http://client2.avltrack.com/main.cfm?==QMxADM
+  avltrackLinkTrust:any;
+  textAvltrack:string="Voir la carte AvlTrack";
   camList:number=0;
   camAdd:number=0;
   coorInfos:number=0;
@@ -68,8 +73,10 @@ export class DetailTransporterComponent implements OnInit {
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
-    public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router){    
+    public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
+    private sanitizer:DomSanitizer){    
     this.id=activatedRoute.snapshot.params['id'];
+    this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
 
   ngOnInit() {
@@ -335,7 +342,14 @@ export class DetailTransporterComponent implements OnInit {
     if (this.quebec511==-1)
       this.textQuebec511="Cacher conditions de routes."
     else
-    this.textQuebec511="Voir conditions de routes."
+      this.textQuebec511="Voir conditions de routes."
+  }
+  onAvlTrack(){
+    this.avltrack=-this.avltrack;
+    if (this.avltrack==-1)
+      this.textAvltrack="Cacher la carte AvlTrack."
+    else
+      this.textAvltrack="Voir la carte AvlTrack."
   }
   onCoordonnees(){
     this.modeTableau=0;

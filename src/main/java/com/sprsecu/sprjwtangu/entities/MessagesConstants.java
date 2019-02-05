@@ -11,7 +11,7 @@ public class MessagesConstants {
     public static final String ent3 = "* Entretien 3 - Changement filtre a polene";
     public static final String ent4 = "* Entretien 4 - Changement filtre hydrolique";
     public static final String ent5 = "* Entretien 5 - Changement filtre antigel";
-    public static final String ent6 = "* Entretien 6 - Changement huile antigel";
+    public static final String ent6 = "* Entretien 6 - Changement antigel";
     public static final String ent7 = "* Entretien 7 - Changement huile transmission";
     public static final String ent8 = "* Entretien 8 - Changement huile differentiel";
     

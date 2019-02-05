@@ -26,21 +26,21 @@
                   <label class="control-label">Password : </label>
                   <input type="password" name="password" ngModel="" class="form-control" required/>
               </div>
-              <button type="submit" class="btn btn-danger">Login</button>
-              <button type="reset" class="btn btn-success">Reset</button>
+              <button type="submit" class="btn btn-success">Login</button>
+              <button type="reset" class="btn btn-danger">Reset</button>
               </form>
             </div>
       </div>
   </div>
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
-      <!--button routerLink="/shippers" class="btn btn-link">Shippers</button-->          
+      <button class="btn btn-link" (click)="onShipper()">Shipper</button>          
       <button (click)="logout()" class="btn btn-link">Logout</button>
       <br>
     </div>
     <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
         <button routerLink="/propos" class="btn btn-link">Propos</button>
-        <!--button routerLink="/transporters" class="btn btn-link">Transporters</button-->          
+        <button class="btn btn-link"  (click)="onTransporter()">Transporter</button>          
         <button (click)="logout()" class="btn btn-link">Logout</button>
         <br>
       </div>

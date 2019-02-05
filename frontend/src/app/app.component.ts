@@ -82,4 +82,22 @@ export class AppComponent {
     this.router.navigateByUrl("");
     //window.close();
   }
+  onTransporter(){
+    let role = localStorage.getItem('role')
+    let userId = localStorage.getItem('userId')       
+    if(role.includes('TRANSPORTER')) {         
+      this.router.navigateByUrl('/detail-transporter/'+ userId);
+    }
+    else
+      this.router.navigateByUrl('/transporters/');
+  }
+  onShipper(){
+    let role = localStorage.getItem('role')
+    let userId = localStorage.getItem('userId')       
+    if(role.includes('SHIPPER')) {         
+      this.router.navigateByUrl('/detail-shipper/'+ userId);
+    }
+    else
+      this.router.navigateByUrl('/shippers/');
+  }
 }

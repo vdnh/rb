@@ -3,9 +3,13 @@
         <h2> Gerer Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
         <button class="btn btn-link" (click)="onPress()">{{carteText}}</button>
         <button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button>
+        <!--button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button-->
         <iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" *ngIf="quebec511==-1">
             <label>Referer Quebec 511</label>
         </iframe>
+        <!--iframe class="e2e-iframe-trusted-src" width="1200" height="800" sandbox="allow-top-navigation allow-scripts allow-forms" id="avlbox" [src]="avltrackLinkTrust" *ngIf="avltrack==-1">
+            <label>Carte AVLTrack</label>
+        </iframe-->
         <div class="row" *ngIf="carte==1">
             <div class="col-md-12">
               <div class="text-center">

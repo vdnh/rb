@@ -20,14 +20,14 @@ export class Camion{
     huileAntigel:number; // km a changer d'huile antigel
     huileTransmission:number; // km a changer d'huile transmission
     huileDifferentiel:number; // km a changer d'huile differentiel
-    message01:string="";
-    message02:string="";
-    message03:string="";
-    message04:string="";
-    message05:string="";
-    message06:string="";
-    message07:string="";
-    message08:string="";
+    message01:string="Changement huile moteur, filtre moteur, graissage, ajustement des freins.";
+    message02:string="Changement filtre a l'air, filtre a fuel.";
+    message03:string="Changement filtre a polene.";
+    message04:string="Changement filtre hydrolique.";
+    message05:string="Changement filtre antigel.";
+    message06:string="Changement antigel.";
+    message07:string="Changement huile transmission.";
+    message08:string="Changement huile differentiel.";
     
     latitude:number; //=45.568806;
     longtitude:number; //=-73.918333;    
