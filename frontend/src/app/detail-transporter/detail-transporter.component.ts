@@ -107,6 +107,12 @@ export class DetailTransporterComponent implements OnInit {
     });    
 
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      /*/this.camionsSurMap.length=0;
+      data.forEach(camion=>{
+        if(camion.uniteMonitor!=null && camion.monitor!=null)
+          this.camionsSurMap.push(camion)
+      })
+      //*/
       this.camions=data;
       this.camions.forEach(async obj =>{
         await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
@@ -279,7 +285,10 @@ export class DetailTransporterComponent implements OnInit {
     var numbers = timer(2000);
     numbers.subscribe(x =>{
       this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-        this.camionsSurMap=data;
+        data.forEach(camion=>{
+          if(camion.uniteMonitor!=null && camion.monitor!=null)
+            this.camionsSurMap.push(camion)
+        })
         let mapProp = {
           center: new google.maps.LatLng(45.568806, -73.918333),
           zoom: 15,
@@ -308,10 +317,18 @@ export class DetailTransporterComponent implements OnInit {
     })      
     //this.router.navigate(["/map-flotte", this.id]);
   }
-
+  onChange(){
+    console.log("You see camion : " + this.camionMap.unite)
+    this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
+  }
   getLocalisation(){
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-      this.camionsSurMap=data;
+      let camionsSurMap:Array<Camion>=new Array<Camion>();
+      data.forEach(camion=>{
+        if(camion.uniteMonitor!=null && camion.monitor!=null)
+          camionsSurMap.push(camion)
+      })
+      this.camionsSurMap=camionsSurMap;
       //* demarsk the list of trucks
       this.markers.forEach(marker=>{
         marker.setMap(null);

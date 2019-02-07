@@ -1,7 +1,7 @@
 <div class="container">
     <div class="col-sm-9 col-sm-offset-1">
       <div class="panel panel-primary">        
-        <div><strong> Calculation le prix sugere </strong></div>
+        <div> <h3><strong> Calculation le prix sugere </strong></h3></div>
         <p></p><p></p><p></p><p></p>
         <div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div>              
         <p></p><p></p>
@@ -42,11 +42,11 @@
               <tr><td></td><td>Total de points : </td><td> {{totalPoints}} </td></tr>
               <tr><td></td><td>Prix sugere : </td><td> {{prix}} </td></tr>
               <tr>
-              <td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >Calculer Le Prix Estimation</button></td>
+              <td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >Estimer Le Prix</button></td>
               <td></td>
               <!--/tr>
               <tr-->
-              <td><button  routerLink="/transporters" class="btn btn-primary">Find Matching Transporters</button></td>
+              <td><button class="btn btn-primary">Camions Correspondances</button></td>
               </tr>  
             </table>            
             </form>

@@ -181,19 +181,22 @@ public class SprjwtanguApplication implements CommandLineRunner{
                 try {
                     System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("http://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
-                    //System.out.println(listUnite.toString());
-                    camions.forEach(camion ->{
-                        listUnite.forEach(unite->{
-                            if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
-                                camion.setOdometre(new Float(unite.getOdometer()).longValue());
-                                camion.setLongtitude(new Double(unite.getLongitude()));
-                                camion.setLatitude(new Double(unite.getLatitude()));
-                                camionRepository.save(camion);
-                                //System.out.println("save camion unite monitor : "+camion.getUniteMonitor()+" unite : "+camion.getUnite()+" : "+unite.getOdometer());
-                            }
+                    if(!listUnite.isEmpty()) {
+                        System.out.println("listUnite : " + listUnite.toString());
+                        System.out.println("Sure! listUnite isn't empty!!");
+                        camions.forEach(camion ->{
+                            listUnite.forEach(unite->{
+                                if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
+                                    camion.setOdometre(new Float(unite.getOdometer()).longValue());
+                                    camion.setLongtitude(new Double(unite.getLongitude()));
+                                    camion.setLatitude(new Double(unite.getLatitude()));
+                                    camionRepository.save(camion);
+                                    //System.out.println("save camion unite monitor : "+camion.getUniteMonitor()+" unite : "+camion.getUnite()+" : "+unite.getOdometer());
+                                }
+                            });
                         });
-                    });
-                    Thread.sleep(120010);  // 1000*60*5 = 300000 ms - 5 minutes
+                    }
+                    Thread.sleep(120000);  // 1000*60*5 = 300000 ms - 5 minutes -- 120000 ms - 2 minutes
                 } catch (Exception e) {
                     System.err.println("Error occurred:" + e);
                 }

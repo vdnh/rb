@@ -34,13 +34,18 @@
   </div>
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
-      <button class="btn btn-link" (click)="onShipper()">Shipper</button>          
+      <button class="btn btn-link" (click)="onShipper()">Shipper</button>   
+      <button routerLink="/calcule-prix" class="btn btn-link">Estimation le Prix</button>
+      <button class="btn btn-link">Liste Camions disponibles</button>              
       <button (click)="logout()" class="btn btn-link">Logout</button>
-      <br>
+      <br>      
     </div>
     <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
         <button routerLink="/propos" class="btn btn-link">Propos</button>
-        <button class="btn btn-link"  (click)="onTransporter()">Transporter</button>          
+        <button class="btn btn-link"  (click)="onTransporter()">Transporter</button>     
+        <button routerLink="/calcule-prix" class="btn btn-link">Estimation le Prix</button> 
+        <button class="btn btn-link">Creer le Voyage</button>        
+        <button class="btn btn-link">Liste Demandes Potentiels</button>          
         <button (click)="logout()" class="btn btn-link">Logout</button>
         <br>
       </div>

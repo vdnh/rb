@@ -1,22 +1,25 @@
 <div class="container spacer">
     <div class="panel-heading"> 
-        <h2> Gerer Transporter : {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
+        <h2>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
         <button class="btn btn-link" (click)="onPress()">{{carteText}}</button>
         <button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button>
-        <!--button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button-->
-        <iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" *ngIf="quebec511==-1">
-            <label>Referer Quebec 511</label>
+        <button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button>
+        <iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-same-origin" *ngIf="quebec511==-1">
         </iframe>
-        <!--iframe class="e2e-iframe-trusted-src" width="1200" height="800" sandbox="allow-top-navigation allow-scripts allow-forms" id="avlbox" [src]="avltrackLinkTrust" *ngIf="avltrack==-1">
-            <label>Carte AVLTrack</label>
-        </iframe-->
+        <iframe class="e2e-iframe-trusted-src" width="1200" height="800" src="http://client2.avltrack.com/" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-same-origin" *ngIf="avltrack==-1">
+        </iframe>
         <div class="row" *ngIf="carte==1">
             <div class="col-md-12">
-              <div class="text-center">
-                <h3>
-                  <div #gmap style="width:100%;height:500px" ></div>
-                </h3>
-              </div>
+                <div>
+                    <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange()">
+                        <option *ngFor="let c of camionsSurMap" [ngValue]="c">{{c.unite}}</option>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <h3>
+                        <div #gmap style="width:100%;height:500px" ></div>
+                    </h3>
+                </div>
             </div>
         </div>
     </div>
