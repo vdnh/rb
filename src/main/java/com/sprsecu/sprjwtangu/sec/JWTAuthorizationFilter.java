@@ -24,21 +24,22 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
-            HttpServletResponse respone, FilterChain filterChain) 
+            HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
-        respone.addHeader("Access-Control-Allow-Origin", "*");
-        respone.addHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With,"
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With,"
                 + " Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,"
                 + " Authorization");
-        respone.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, "
+        response.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, "
                 + "Access-Control-Allow-Credentials, Authorization");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, Authorization");
         String jwt = request.getHeader(SecurityConstants.HEADER_STRING);
         if(request.getMethod().equals("OPTIONS")){
-            respone.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_OK);
         }
         else{
             if(jwt==null || !jwt.startsWith(SecurityConstants.TOKEN_PREFIX)){
-            filterChain.doFilter(request, respone); return;
+            filterChain.doFilter(request, response); return;
             }
             Claims claims=Jwts.parser()
                     .setSigningKey(SecurityConstants.SECRET)
@@ -54,7 +55,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
             UsernamePasswordAuthenticationToken authenticatedUser = 
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-            filterChain.doFilter(request, respone);
+            filterChain.doFilter(request, response);
         }
         
     }

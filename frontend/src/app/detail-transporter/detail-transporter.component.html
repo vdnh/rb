@@ -145,7 +145,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
                 <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
-                <!--td><button class="btn btn-primary" (click)="deleteCamion(camion.id)">Delete</button></td-->
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion.id)">Delete</button></td>
             </tr>
             </div>   
             <div *ngIf="camAdd==1">
