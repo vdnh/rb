@@ -7,7 +7,11 @@
         <p></p><p></p>
           <div class="panel-body">
             <form #f="ngForm" (ngSubmit)="onRegister(f.value)">
-              <table class="table table-striped">              
+              <table class="table table-striped">    
+                <tr>
+                  <th><label class="control-label">Demande Prevu pour</label></th>    
+                  <th><input type="date" [(ngModel)]="demande.dateDepart" name="dateDepart" class="form-control"/></th>      
+                </tr>          
               <tr *ngIf="mode==1">
                 <td *ngIf="mode==1" ><label class="control-label">Longueur (en pouce)</label></td>                
                 <td *ngIf="mode==1"><label class="control-label">Largeur (en pouce)</label></td>                
@@ -37,6 +41,18 @@
                   <td><input type="number" [(ngModel)]="poids" name="poids" class="form-control"/></td>
                   <td><input type="number" [(ngModel)]="valeur" name="valeur" class="form-control"/></td>
                   <td><input type="number" [(ngModel)]="distance" name="distance" class="form-control"/></td>
+              </tr>                  
+              <tr>
+                <td><label class="control-label">Type de Camions</label></td>
+                <td><label class="control-label">Origin</label></td>
+                <td><label class="control-label">Destination</label></td>    
+                
+              </tr>  
+              <tr>
+                <td><input type="text" [(ngModel)]="demande.typeCamion" name="tpyeCamion" class="form-control"/></td>
+                <td><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control"/></td>
+                <td><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control"/></td>
+                
               </tr>                  
               
               <tr><td></td><td>Total de points : </td><td> {{totalPoints}} </td></tr>

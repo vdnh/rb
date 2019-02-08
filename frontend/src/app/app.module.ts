@@ -30,6 +30,8 @@ import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
 import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.service';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { MapFlotteComponent } from './map-flotte/map-flotte.component';
+import { DemandesService }  from 'src/services/demandes.service';
+import { GeocodingService } from 'src/services/geocoding.service'
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -79,7 +81,7 @@ const appRoutes:Routes=[
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService],
+    AutreEntretiensService, DemandesService, GeocodingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Demande } from 'src/model/model.demande';
+import { DemandesService } from 'src/services/demandes.service';
+import { GeocodingService } from 'src/services/geocoding.service';
 
 @Component({
   selector: 'app-calcule-prix',
@@ -7,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CalculePrixComponent implements OnInit {
 
-  mode=1; // en pouce et lbs    - mode = 2 on est en cm et kg
+  mode=1; // en pouce et lbs   - Si : mode = 2 on est en cm et kg
   // les details de marchandise
   longeur:number=0.00;
   largeur:number=0.00;
@@ -22,9 +25,15 @@ export class CalculePrixComponent implements OnInit {
   // le prix sugere
   prix:number=0.00;
 
-  constructor() { }
+  demande:Demande=new Demande();
+
+  constructor(public demandesService : DemandesService, public geocoding : GeocodingService) { }
 
   ngOnInit() {
+    this.demande.roleDemander = localStorage.getItem("role");
+    this.demande.idDemandeur = Number(localStorage.getItem("userId"));
+    console.log('this.demande.roleDemander : '+this.demande.roleDemander)
+    console.log('this.demande.roleDemander : '+this.demande.idDemandeur)
   }
 
   changeUnite(){
@@ -49,11 +58,19 @@ export class CalculePrixComponent implements OnInit {
     poids = poids * 2.2046;
     console.log(poids);
   }
+  
   // cm en pouce  ---   pouce = cm * 0.39370
   cmEnPouce(longeur:number){
     longeur = longeur * 0.39370;
     console.log(longeur);
   }
+  
+  // km en mile
+  kmEnMile(distance:number){
+    distance = distance * 0.621371;
+    console.log(distance);
+  }
+
   // calcule le pointage de poids (en lbs)
   poidsPointage(poids:number, mode:number){
     if (mode == 2)
@@ -140,6 +157,7 @@ export class CalculePrixComponent implements OnInit {
     return 0.00;
   }
   onOk(){    
+    this.distance=this.calculateDistance(this.search(this.demande.origin), this.search(this.demande.destination)) / 1000
     this.totalPoints = this.longeurPointage(this.longeur, this.mode) + this.largeurPointage(this.largeur, this.mode) + this.hauteurPointage(this.hauteur, this.mode) 
       + this.poidsPointage(this.poids, this.mode); // + this.valeur + this.distance;
     
@@ -151,5 +169,60 @@ export class CalculePrixComponent implements OnInit {
   onRegister(f){
 
   }
+//* calculer distance
+search(address: string): google.maps.LatLng {
+  if (address != "") {
+      //this.warning = false;
+      //this.message = "";
+      // Converts the address into geographic coordinates.
+      // Here 'forEach' resolves the promise faster than 'subscribe'.
+      this.geocoding.codeAddress(address).forEach(
+          (results: google.maps.GeocoderResult[]) => {
+              //if (!this.center.equals(results[0].geometry.location)) {
+                  // New center object: triggers OnChanges.
+                  //this.center = new google.maps.LatLng(
+                      //results[0].geometry.location.lat(),
+                      //results[0].geometry.location.lng()                            
+                  //);
+                  console.log('results[0].geometry.location.lat() : '+Number(results[0].geometry.location.lat()));
+                  console.log('results[0].geometry.location.lng() : '+Number(results[0].geometry.location.lng()));
+                  return new google.maps.LatLng(
+                    Number(results[0].geometry.location.lat()),
+                    Number(results[0].geometry.location.lng())                            
+                  )
+                  //this.zoom = 11;
+
+                  //this.setMarker(this.center, "search result", results[0].formatted_address);
+              //}
+          })
+          .then(() => {
+              //this.address = "";
+              console.log('Geocoding service: completed.');
+          })
+          .catch((error: google.maps.GeocoderStatus) => {
+              if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                  console.log('Ne pas pour prendre coordonnees de cette point!!')
+                  //this.message = "zero results";
+                  //this.warning = true;
+                  return null;
+              }
+          });
+      //this.calculateDistance(new google.maps.LatLng(45.568806, -73.918333), new google.maps.LatLng(45.719947, -73.674694));
+      //console.log('Distance entre point1 et point2 : '+ this.distance)
+      return null;
+  }
+}
+
+
+calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng):number {
+  //point1 = new google.maps.LatLng(45.568806, -73.918333);
+  //point2 = new google.maps.LatLng(45.719947, -73.674694);
+  // this.distance = 
+  return google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+}
+
+
+
+//*/
 
 }
