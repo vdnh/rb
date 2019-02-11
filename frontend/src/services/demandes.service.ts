@@ -18,16 +18,26 @@ export class DemandesService{
         this.jwToken=localStorage.getItem('tonken');
     }
     
-    demandesDeTransporter(idDemandeur:number){
+    getDemandes(motCle:string, page:number, size:number)
+        {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeTransporter?idDemandeur="+idDemandeur
+        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+
+    demandesDeTransporter(idDemander:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/demandesDeTransporter?idDemander="+idDemander
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     
-    demandesDeShipper(idDemandeur:number){
+    demandesDeShipper(idDemander:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeShipper?idDemandeur="+idDemandeur
+        return this.http.get(this.adServer+":8080/demandesDeShipper?idDemander="+idDemander
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

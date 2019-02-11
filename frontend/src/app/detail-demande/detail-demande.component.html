@@ -1,0 +1,26 @@
+<div class="container spacer">
+    <div class="panel panel-primary" *ngIf="mode==1">
+      <div class="panel-heading">Demande de {{demande.nomDemander}}</div>
+        <div class="panel-body">
+                <table class="table table-striped">
+                        <tr>
+                          <th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                        </tr>
+                        <tr *ngIf='demande.includes("SHIPPER")'>
+                          <td><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
+                          <td><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="shipper.tel" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="shipper.fax" /></td>
+                        </tr>
+                        <tr *ngIf='demande.includes("TRANSPORTER")'>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+                          <td><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
+                        </tr>
+                </table>
+        </div>  
+    </div>
+</div>

@@ -35,6 +35,7 @@ export class DetailShipperComponent implements OnInit {
     this.shippersService.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
       this.mode=1;
+      localStorage.setItem('nom', this.shipper.nom);
     }, err=>{
       console.log(err);
     });

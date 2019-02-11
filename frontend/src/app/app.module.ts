@@ -31,7 +31,9 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { MapFlotteComponent } from './map-flotte/map-flotte.component';
 import { DemandesService }  from 'src/services/demandes.service';
-import { GeocodingService } from 'src/services/geocoding.service'
+import { GeocodingService } from 'src/services/geocoding.service';
+import { ListDemandeComponent } from './list-demande/list-demande.component';
+import { DetailDemandeComponent } from './detail-demande/detail-demande.component'
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -52,6 +54,8 @@ const appRoutes:Routes=[
   {path: 'map-flotte/:id', component: MapFlotteComponent},
   {path: "fiche-technique", component: FichTechniqueComponent},
   {path: 'camion/:id', component:  CamionComponent},
+  {path:"list-demande", component:ListDemandeComponent},
+  {path: 'detail-demande/:id', component:  DetailDemandeComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -74,6 +78,8 @@ const appRoutes:Routes=[
     FichTechniqueComponent,
     CamionComponent,
     MapFlotteComponent,
+    ListDemandeComponent,
+    DetailDemandeComponent,
     //MapComponent,
   ],
   imports: [

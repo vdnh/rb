@@ -92,6 +92,7 @@ export class DetailTransporterComponent implements OnInit {
       this.coorAddContact=0;
       this.camList=1;
       this.camAdd=0;
+      localStorage.setItem('nom', this.transporter.nom);
     }, err=>{
       console.log(err);
     });

@@ -17,7 +17,8 @@ export class CalculePrixComponent implements OnInit {
   hauteur:number=0.00;
   poids:number=0.00;
   valeur:number=0.00;
-  distance:number=0.00; // en km
+  distance:number=0.00; // en miles
+  distanceKm:number=0.00; // en km
 
   heurs_supl:number=0.00;
 
@@ -31,9 +32,10 @@ export class CalculePrixComponent implements OnInit {
 
   ngOnInit() {
     this.demande.roleDemander = localStorage.getItem("role");
-    this.demande.idDemandeur = Number(localStorage.getItem("userId"));
-    console.log('this.demande.roleDemander : '+this.demande.roleDemander)
-    console.log('this.demande.roleDemander : '+this.demande.idDemandeur)
+    this.demande.idDemander = Number(localStorage.getItem("userId"));
+    this.demande.nomDemander = localStorage.getItem("nom");
+    //console.log('this.demande.roleDemander : '+this.demande.roleDemander)
+    //console.log('this.demande.idDemander : '+this.demande.idDemander)
   }
 
   changeUnite(){
@@ -166,26 +168,13 @@ export class CalculePrixComponent implements OnInit {
       + this.prixAttendre(this.totalPoints) + this.prixSuplement(this.totalPoints, this.heurs_supl);
 
   }
-  
-  onRegister(f){
-
-  }
+    
 //* calculer distance
 async search(address: string) {
   let point:google.maps.LatLng =null;
   if (address != "") {
-      //this.warning = false;
-      //this.message = "";
-      // Converts the address into geographic coordinates.
-      // Here 'forEach' resolves the promise faster than 'subscribe'.
       await this.geocoding.codeAddress(address).forEach(
           (results: google.maps.GeocoderResult[]) => {
-              //if (!this.center.equals(results[0].geometry.location)) {
-                  // New center object: triggers OnChanges.
-                  //this.center = new google.maps.LatLng(
-                      //results[0].geometry.location.lat(),
-                      //results[0].geometry.location.lng()                            
-                  //);
                 if(results[0].geometry.location.lat()>0){
                   console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
                   console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
@@ -194,27 +183,17 @@ async search(address: string) {
                     Number(results[0].geometry.location.lng().toPrecision(8))                            
                   )
                   console.log('Dedans de If'+point.toString())
-                }//this.zoom = 11;
-
-                  //this.setMarker(this.center, "search result", results[0].formatted_address);
-              //}
+                }
           })
           .then(() => {
-              //this.address = "";
               console.log('Geocoding service: completed.');
           })
           .catch((error: google.maps.GeocoderStatus) => {
               if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
                   console.log('Ne pas pour prendre coordonnees de cette point!!')
-                  //this.message = "zero results";
-                  //this.warning = true;
-                  //return null;
               }
           });
-      //this.calculateDistance(new google.maps.LatLng(45.568806, -73.918333), new google.maps.LatLng(45.719947, -73.674694));
-      //console.log('Distance entre point1 et point2 : '+ this.distance)
-      console.log('Dehors de If'+point.toString())
-      return point;
+      //return point;
   }
 }
 
@@ -224,20 +203,11 @@ async distance2Ads(address1: string, address2:string) {
   if (address1 != "" && address2!=null) {
       await this.geocoding.codeAddress(address1).forEach(
           (results: google.maps.GeocoderResult[]) => {
-              //if (!this.center.equals(results[0].geometry.location)) {
-                  // New center object: triggers OnChanges.
-                  //this.center = new google.maps.LatLng(
-                      //results[0].geometry.location.lat(),
-                      //results[0].geometry.location.lng()                            
-                  //);
                 if(results[0].geometry.location.lat()>0){
-                  //console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
-                  //console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
                   point1= new google.maps.LatLng(
                     results[0].geometry.location.lat(),
                     results[0].geometry.location.lng()                            
                   )
-                  console.log('Dedans de If'+point1.toString())
                 }
           })
           .then(() => {
@@ -245,7 +215,7 @@ async distance2Ads(address1: string, address2:string) {
           })
           .catch((error: google.maps.GeocoderStatus) => {
               if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                  console.log('Ne pas pour prendre coordonnees de cette point!!')
+                  console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
               }
           });
           await this.geocoding.codeAddress(address2).forEach(
@@ -255,7 +225,6 @@ async distance2Ads(address1: string, address2:string) {
                       results[0].geometry.location.lat(),
                       results[0].geometry.location.lng()                            
                     )
-                    console.log('Dedans de If'+point2.toString())
                   }
             })
             .then(() => {
@@ -263,31 +232,47 @@ async distance2Ads(address1: string, address2:string) {
             })
             .catch((error: google.maps.GeocoderStatus) => {
                 if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                    console.log('Ne pas pour prendre coordonnees de cette point!!')
+                    console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
                 }
             });
-      console.log('Dehors de If : '+point1.toString()+' : '+ point2.toString())
       this.calculateDistance(point1, point2)
   }
 }
 
 calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
-  //let p1=this.search('Montreal')
-  //let p2=this.search('Toronto')
-  //console.log('p1: '+p1.toString())
-  //console.log('p2: '+p2.toString())
-  // let point1:google.maps.LatLng=new google.maps.LatLng(45.568806, -73.918333)
-  // this.search('Montreal').then((val)=>{point1=val}) //new google.maps.LatLng(45.568806, -73.918333);
-  // let point2:google.maps.LatLng=new google.maps.LatLng(45.568806, -73.918333)  
-  // this.search('Toronto').then((val)=>{point1=val}) //new google.maps.LatLng(45.719947, -73.674694);
-  // console.log('in calcul : '+point1.toString())
-  console.log('in calcul : '+point2.toString())
-  //  
-  return this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2) /1000) ;
+  this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
+  this.distanceKm = Math.round(this.distance*1.609344)
 }
 
-
-
-//*/
+  onSearchTruck(){
+    //this.demande.idDemander - deja
+    //this.demande.roleDemander - deja
+    // this.demande.dateDepart - deja
+    // mode=1 - en pouce, lbs - par default dans database 
+    // this.demande.nomDemander
+    if(this.mode==1){
+      this.demande.longueur = this.longeur
+      this.demande.largeur =this.largeur
+      this.demande.hauteur = this.hauteur
+      this.demande.poids = this.poids
+    }
+    // mode=1 - en cm, kg
+    if(this.mode==2){
+      this.cmEnPouce(this.demande.longueur = this.longeur)
+      this.cmEnPouce(this.demande.largeur =this.largeur)
+      this.cmEnPouce(this.demande.hauteur = this.hauteur)
+      this.kgEnLbs(this.demande.poids = this.poids)
+    }
+    this.demande.valeur=this.valeur
+    this.demande.distance = this.distance;  // par default en miles
+    this.demande.totalpoints=this.totalPoints;
+    this.demande.prixSugere=this.prix
+    this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+      this.demande=data;
+    }
+    , err=>{
+      console.log(err)
+    })
+  }
 
 }

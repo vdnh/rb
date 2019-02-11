@@ -5,6 +5,7 @@ import com.sprsecu.sprjwtangu.entities.Demande;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,4 +69,13 @@ public class DemandeRestService {
     {
         return demandeRepository.demandesDeShipper(idShipper);
     }
+    
+    @RequestMapping(value = "/chercherDemandes", method = RequestMethod.GET)
+    public Page<Demande> chercher(
+        @RequestParam(name = "mc", defaultValue = "") String mc, 
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        return demandeRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+    }
+    
 }

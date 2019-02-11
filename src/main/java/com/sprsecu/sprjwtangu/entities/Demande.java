@@ -39,5 +39,6 @@ public class Demande implements Serializable{
     private Float prixSugere;
     private String typeCamion;
     private String roleDemander; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
-    private Long idDemandeur;   // dans le cas SHIPPER ou TRANSPORTER 
+    private Long idDemander;   // dans le cas SHIPPER ou TRANSPORTER 
+    private String nomDemander; // possiblement SHIPPER ou TRANSPORTER
 }
