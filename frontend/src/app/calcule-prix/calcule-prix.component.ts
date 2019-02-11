@@ -17,7 +17,7 @@ export class CalculePrixComponent implements OnInit {
   hauteur:number=0.00;
   poids:number=0.00;
   valeur:number=0.00;
-  distance:number=0.00;
+  distance:number=0.00; // en km
 
   heurs_supl:number=0.00;
 
@@ -157,7 +157,8 @@ export class CalculePrixComponent implements OnInit {
     return 0.00;
   }
   onOk(){    
-    this.distance=this.calculateDistance(this.search(this.demande.origin), this.search(this.demande.destination)) / 1000
+    //this.distance=this.calculateDistance() / 1000
+    this.distance2Ads(this.demande.origin, this.demande.destination)
     this.totalPoints = this.longeurPointage(this.longeur, this.mode) + this.largeurPointage(this.largeur, this.mode) + this.hauteurPointage(this.hauteur, this.mode) 
       + this.poidsPointage(this.poids, this.mode); // + this.valeur + this.distance;
     
@@ -170,13 +171,14 @@ export class CalculePrixComponent implements OnInit {
 
   }
 //* calculer distance
-search(address: string): google.maps.LatLng {
+async search(address: string) {
+  let point:google.maps.LatLng =null;
   if (address != "") {
       //this.warning = false;
       //this.message = "";
       // Converts the address into geographic coordinates.
       // Here 'forEach' resolves the promise faster than 'subscribe'.
-      this.geocoding.codeAddress(address).forEach(
+      await this.geocoding.codeAddress(address).forEach(
           (results: google.maps.GeocoderResult[]) => {
               //if (!this.center.equals(results[0].geometry.location)) {
                   // New center object: triggers OnChanges.
@@ -184,13 +186,15 @@ search(address: string): google.maps.LatLng {
                       //results[0].geometry.location.lat(),
                       //results[0].geometry.location.lng()                            
                   //);
-                  console.log('results[0].geometry.location.lat() : '+Number(results[0].geometry.location.lat()));
-                  console.log('results[0].geometry.location.lng() : '+Number(results[0].geometry.location.lng()));
-                  return new google.maps.LatLng(
-                    Number(results[0].geometry.location.lat()),
-                    Number(results[0].geometry.location.lng())                            
+                if(results[0].geometry.location.lat()>0){
+                  console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
+                  console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
+                  point= new google.maps.LatLng(
+                    Number(results[0].geometry.location.lat().toPrecision(8)),
+                    Number(results[0].geometry.location.lng().toPrecision(8))                            
                   )
-                  //this.zoom = 11;
+                  console.log('Dedans de If'+point.toString())
+                }//this.zoom = 11;
 
                   //this.setMarker(this.center, "search result", results[0].formatted_address);
               //}
@@ -204,21 +208,82 @@ search(address: string): google.maps.LatLng {
                   console.log('Ne pas pour prendre coordonnees de cette point!!')
                   //this.message = "zero results";
                   //this.warning = true;
-                  return null;
+                  //return null;
               }
           });
       //this.calculateDistance(new google.maps.LatLng(45.568806, -73.918333), new google.maps.LatLng(45.719947, -73.674694));
       //console.log('Distance entre point1 et point2 : '+ this.distance)
-      return null;
+      console.log('Dehors de If'+point.toString())
+      return point;
   }
 }
 
+async distance2Ads(address1: string, address2:string) {
+  let point1:google.maps.LatLng =null;
+  let point2:google.maps.LatLng =null;
+  if (address1 != "" && address2!=null) {
+      await this.geocoding.codeAddress(address1).forEach(
+          (results: google.maps.GeocoderResult[]) => {
+              //if (!this.center.equals(results[0].geometry.location)) {
+                  // New center object: triggers OnChanges.
+                  //this.center = new google.maps.LatLng(
+                      //results[0].geometry.location.lat(),
+                      //results[0].geometry.location.lng()                            
+                  //);
+                if(results[0].geometry.location.lat()>0){
+                  //console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
+                  //console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
+                  point1= new google.maps.LatLng(
+                    results[0].geometry.location.lat(),
+                    results[0].geometry.location.lng()                            
+                  )
+                  console.log('Dedans de If'+point1.toString())
+                }
+          })
+          .then(() => {
+              console.log('Geocoding service: completed.');
+          })
+          .catch((error: google.maps.GeocoderStatus) => {
+              if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                  console.log('Ne pas pour prendre coordonnees de cette point!!')
+              }
+          });
+          await this.geocoding.codeAddress(address2).forEach(
+            (results: google.maps.GeocoderResult[]) => {
+                  if(results[0].geometry.location.lat()>0){
+                    point2= new google.maps.LatLng(
+                      results[0].geometry.location.lat(),
+                      results[0].geometry.location.lng()                            
+                    )
+                    console.log('Dedans de If'+point2.toString())
+                  }
+            })
+            .then(() => {
+                console.log('Geocoding service: completed.');
+            })
+            .catch((error: google.maps.GeocoderStatus) => {
+                if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                    console.log('Ne pas pour prendre coordonnees de cette point!!')
+                }
+            });
+      console.log('Dehors de If : '+point1.toString()+' : '+ point2.toString())
+      this.calculateDistance(point1, point2)
+  }
+}
 
-calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng):number {
-  //point1 = new google.maps.LatLng(45.568806, -73.918333);
-  //point2 = new google.maps.LatLng(45.719947, -73.674694);
-  // this.distance = 
-  return google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
+  //let p1=this.search('Montreal')
+  //let p2=this.search('Toronto')
+  //console.log('p1: '+p1.toString())
+  //console.log('p2: '+p2.toString())
+  // let point1:google.maps.LatLng=new google.maps.LatLng(45.568806, -73.918333)
+  // this.search('Montreal').then((val)=>{point1=val}) //new google.maps.LatLng(45.568806, -73.918333);
+  // let point2:google.maps.LatLng=new google.maps.LatLng(45.568806, -73.918333)  
+  // this.search('Toronto').then((val)=>{point1=val}) //new google.maps.LatLng(45.719947, -73.674694);
+  // console.log('in calcul : '+point1.toString())
+  console.log('in calcul : '+point2.toString())
+  //  
+  return this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2) /1000) ;
 }
 
 
