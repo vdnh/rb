@@ -58,9 +58,9 @@ public class VoyageRestService {
     }    
         
     @RequestMapping(value = "/voyagesDeTransporter", method = RequestMethod.GET)
-    public List<Voyage> chercherVdT(@RequestParam(name = "idDemander", defaultValue = "-1" ) Long idDemander) 
+    public List<Voyage> chercherVdT(@RequestParam(name = "idTransporter", defaultValue = "-1" ) Long idTransporter) 
     {
-        return voyageRepository.voyagesDeTransporter(idDemander);
+        return voyageRepository.voyagesDeTransporter(idTransporter);
     }
         
     @RequestMapping(value = "/chercherVoyages", method = RequestMethod.GET)

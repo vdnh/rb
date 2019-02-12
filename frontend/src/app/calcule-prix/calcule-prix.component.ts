@@ -268,11 +268,26 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     this.demande.totalpoints=this.totalPoints;
     this.demande.prixSugere=this.prix
     this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
-      this.demande=data;
+      //this.demande=data;
     }
     , err=>{
       console.log(err)
     })
   }
 
+  onReset(){
+    this.longeur=0.00;
+    this.largeur=0.00;
+    this.hauteur=0.00;
+    this.poids=0.00;
+    this.valeur=0.00;
+    this.distance=0.00; // en miles
+    this.distanceKm=0.00; // en km
+    this.heurs_supl=0.00;
+    this.totalPoints=0.00;
+    this.prix=0.00;
+
+    this.demande=new Demande();
+    this.ngOnInit();
+  }
 }

@@ -13,8 +13,8 @@ import org.springframework.data.repository.query.Param;
  * @author vdnh
  */
 public interface VoyageRepository extends JpaRepository<Voyage, Long>{
-    @Query("select v from Voyage v where v.idDemander = :x")
-    public List<Voyage> voyagesDeTransporter(@Param("x") Long idDemander);
+    @Query("select v from Voyage v where v.idTransporter = :x")
+    public List<Voyage> voyagesDeTransporter(@Param("x") Long idTransporter);
     
     @Query("select v from Voyage v where v.origin like :x or v.destination like :x")
     public Page<Voyage> chercher(@Param("x") String mc, Pageable pageable);       

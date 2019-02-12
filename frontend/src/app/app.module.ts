@@ -31,9 +31,13 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { MapFlotteComponent } from './map-flotte/map-flotte.component';
 import { DemandesService }  from 'src/services/demandes.service';
+import { VoyagesService }  from 'src/services/voyages.service';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { ListDemandeComponent } from './list-demande/list-demande.component';
-import { DetailDemandeComponent } from './detail-demande/detail-demande.component'
+import { DetailDemandeComponent } from './detail-demande/detail-demande.component';
+import { ListVoyageComponent } from './list-voyage/list-voyage.component';
+import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
+import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component'
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -56,6 +60,9 @@ const appRoutes:Routes=[
   {path: 'camion/:id', component:  CamionComponent},
   {path:"list-demande", component:ListDemandeComponent},
   {path: 'detail-demande/:id', component:  DetailDemandeComponent},
+  {path:"creer-voyage", component:CreerVoyageComponent},
+  {path:"list-voyage", component:ListVoyageComponent},
+  {path: 'detail-voyage/:id', component:  DetailVoyageComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -80,6 +87,9 @@ const appRoutes:Routes=[
     MapFlotteComponent,
     ListDemandeComponent,
     DetailDemandeComponent,
+    ListVoyageComponent,
+    DetailVoyageComponent,
+    CreerVoyageComponent,
     //MapComponent,
   ],
   imports: [
@@ -87,7 +97,7 @@ const appRoutes:Routes=[
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService, DemandesService, GeocodingService],
+    AutreEntretiensService, DemandesService, VoyagesService,GeocodingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

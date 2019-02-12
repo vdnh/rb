@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
-import { Demande } from "../model/model.demande";
+import { Voyage } from "../model/model.voyage";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class DemandesService{
+export class VoyagesService{
   
     adServer="//192.168.0.131";
     private jwToken=null;
@@ -18,54 +18,47 @@ export class DemandesService{
         this.jwToken=localStorage.getItem('tonken');
     }
     
-    getDemandes(motCle:string, page:number, size:number)
+    getVoyages(motCle:string, page:number, size:number)
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8080/chercherVoyages?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
         }))
     }
 
-    demandesDeTransporter(idDemander:number){
+    voyagesDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeTransporter?idDemander="+idDemander
+        return this.http.get(this.adServer+":8080/voyagesDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     
-    demandesDeShipper(idDemander:number){
+    saveVoyages(voyage:Voyage){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeShipper?idDemander="+idDemander
+        return this.http.post(this.adServer+":8080/voyages",voyage
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
-    saveDemandes(demande:Demande){
+    getDetailVoyage(id:number){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/demandes",demande
+        return this.http.get(this.adServer+":8080/voyages/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
-    getDetailDemande(id:number){
+    updateVoyage(id:number, v:Voyage){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandes/"+id
-        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(res => {return res}));
-    }
-
-    updateDemande(id:number, d:Demande){
-        this.loadTonken();
-       return this.http.put(this.adServer+":8080/demandes/"+id, d
+       return this.http.put(this.adServer+":8080/demandes/"+id, v
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
-    deleteDemande(id:number){
+    deleteVoyage(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/demandes/"+id
+        return this.http.delete(this.adServer+":8080/voyages/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

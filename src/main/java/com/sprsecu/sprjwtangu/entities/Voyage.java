@@ -34,6 +34,6 @@ public class Voyage implements Serializable{
     private Float radiusDestination;
     private String typeCamion;
     private Boolean chercheCorridor;
-    private Long idDemander;
-    private String nomDemander;
+    private Long idTransporter;
+    private String nomTransporter;
 }

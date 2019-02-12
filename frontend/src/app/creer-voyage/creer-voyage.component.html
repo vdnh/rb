@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="col-sm-9 col-sm-offset-1">
+      <div class="panel panel-primary">        
+        <div> <h3><strong> Description le voyage </strong></h3></div>
+        <p></p><p></p><p></p><p></p>
+          <div class="panel-body">
+            <table class="table table-striped">    
+              <tr>
+                <th><label class="control-label">Prevoir pour :</label></th>    
+                <th><input type="date" [(ngModel)]="voyage.dateDepart| date:'yy/mm/dd'" name="dateDepart" class="form-control"/></th>      
+              </tr>          
+              <tr>
+                <th><label class="control-label">Origin</label></th>                
+                <td><input type="text" [(ngModel)]="voyage.origin" name="origin" class="form-control"/></td>                                            
+              </tr>
+              <tr>
+                <th><label class="control-label">Rayon Origin</label></th>                
+                <td><input type="text" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control"/></td>                                            
+              </tr>
+              <tr>
+                <th><label class="control-label">Destination</label></th>                
+                <td><input type="text" [(ngModel)]="voyage.destination" name="destination" class="form-control"/></td>                                            
+              </tr>              
+              <tr>
+                <th><label class="control-label">Rayon Destination</label></th>                
+                <td><input type="text" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control"/></td>                                            
+              </tr>
+              <tr>
+                  <th><label class="control-label">Chercher Corridor</label></th>
+                  <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor"></td>
+              </tr>                
+              <tr>
+                <th><label class="control-label">Type de Camion</label></th>                
+                <td><input type="text" [(ngModel)]="voyage.typeCamion" name="typeCamion" class="form-control"/></td>                                            
+              </tr>              
+              <tr>            
+                <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
+                <td><button class="btn btn-success" (click)="onSaveVoyage()">Enregistrer Voyage</button></td>
+              </tr>  
+            </table>            
+            <!--/form-->
+          </div>
+        </div>
+    </div>
+  </div>
