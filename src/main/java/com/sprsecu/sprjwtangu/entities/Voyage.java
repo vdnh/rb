@@ -1,6 +1,7 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class Voyage implements Serializable{
     @Id @GeneratedValue
     private Long id;
     @Temporal(TemporalType.DATE)
-    private Date dateCree;
+    private Date dateCree = Date.from(Instant.now());
     @Temporal(TemporalType.DATE)
     private Date dateDepart;
     @Temporal(TemporalType.DATE)
@@ -32,4 +33,7 @@ public class Voyage implements Serializable{
     private Float radiusOrigin;
     private Float radiusDestination;
     private String typeCamion;
+    private Boolean chercheCorridor;
+    private Long idDemander;
+    private String nomDemander;
 }

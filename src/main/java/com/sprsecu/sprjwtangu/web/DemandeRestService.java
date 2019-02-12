@@ -53,15 +53,15 @@ public class DemandeRestService {
     }
     
     @RequestMapping(value = "/demandes/{id}", method = RequestMethod.PUT)
-    public Demande updateCamion(@PathVariable Long id, @RequestBody Demande d){
+    public Demande updateDemande(@PathVariable Long id, @RequestBody Demande d){
         d.setId(id);
         return demandeRepository.save(d);
     }    
         
     @RequestMapping(value = "/demandesDeTransporter", method = RequestMethod.GET)
-    public List<Demande> chercherDdT(@RequestParam(name = "idDemandeur", defaultValue = "-1" ) Long idDemandeur) 
+    public List<Demande> chercherDdT(@RequestParam(name = "idDemander", defaultValue = "-1" ) Long idDemander) 
     {
-        return demandeRepository.demandesDeTransporter(idDemandeur);
+        return demandeRepository.demandesDeTransporter(idDemander);
     }
     
     @RequestMapping(value = "/demandesDeShipper", method = RequestMethod.GET)

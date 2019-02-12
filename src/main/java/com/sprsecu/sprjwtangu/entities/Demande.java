@@ -1,6 +1,7 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class Demande implements Serializable{
     @Id @GeneratedValue
     private Long id;
     @Temporal(TemporalType.DATE)
-    private Date dateCree;
+    private Date dateCree = Date.from(Instant.now());
     @Temporal(TemporalType.DATE)
     private Date dateDepart;
     @Temporal(TemporalType.DATE)
