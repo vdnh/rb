@@ -38,7 +38,7 @@ export class ListVoyageComponent implements OnInit {
     this.doSearch();
   }
 
-  gotoDetailDemande(v:Voyage){
+  gotoDetailVoyage(v:Voyage){
     this.router.navigate(['detail-voyage',v.id]);
   }
 

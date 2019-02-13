@@ -1,3 +1,29 @@
-<p>
-  list-voyage works!
-</p>
+<div class="container spacer">
+  <div class="panel panel-primary">
+    <div class="panel-heading">Liste des Camions</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label for="Mot cle : "></label>
+        <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+      </div>
+      <table class="table table-striped">
+        <tr>
+          <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+        </tr>
+        <tr *ngFor="let v of pageVoyage.content">
+            <td>{{v.dateDepart}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
+            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detailler</button></td>
+            <!--td><button class="btn btn-link" (click)="deleteShipper(s.id)">Delete</button></td-->
+        </tr>
+      </table>
+      <div class="container">
+        <ul class="nav nav-pills"><strong>page: </strong>
+          <li *ngFor="let p of pages; let i=index">
+            <button class="btn btn-link" (click)="gotoPage(i)"> <strong>{{i}}</strong> </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

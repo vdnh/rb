@@ -1,7 +1,10 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,4 +45,11 @@ public class Demande implements Serializable{
     private String roleDemander; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
     private Long idDemander;   // dans le cas SHIPPER ou TRANSPORTER 
     private String nomDemander; // possiblement SHIPPER ou TRANSPORTER
+    
+    public void setDepuis(LocalDate date) throws ParseException{
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
+        if(date == null)
+            this.dateDepart = null; 
+        else this.dateDepart = ft.parse(date.toString());
+    }
 }

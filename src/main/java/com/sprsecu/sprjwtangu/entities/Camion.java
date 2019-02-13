@@ -1,6 +1,9 @@
 package com.sprsecu.sprjwtangu.entities;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -88,4 +91,11 @@ public class Camion implements Serializable{
     private Long idFichePhysiqueEntretienCont; // faut creer 1 ligne dans la table FichePhysiqueEntretienCont chaque fois creer 1 ligne Camion
     //private Long idEntretienControl;  // faut creer 1 ligne dans la table EntretienControl chaque fois creer 1 ligne Camion
     private Long idTransporter;
+    
+    public void setDepuis(LocalDate date) throws ParseException{
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
+        if(date == null)
+            this.inspect6m = null; 
+        else this.inspect6m = ft.parse(date.toString());
+    }    
 }

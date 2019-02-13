@@ -1,3 +1,19 @@
-<p>
-  detail-voyage works!
-</p>
+<div class="container spacer">
+    <div class="panel panel-primary" *ngIf="mode==1">
+      <div class="panel-heading">Voyage de {{voyage.nomTransporter}}</div>
+        <div class="panel-body">
+                <table class="table table-striped">
+                        <tr>
+                          <th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                        </tr>
+                        <tr>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+                          <td><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
+                        </tr>
+                </table>
+        </div>  
+    </div>
+</div>

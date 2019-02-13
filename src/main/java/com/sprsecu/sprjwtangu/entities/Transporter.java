@@ -1,5 +1,8 @@
 package com.sprsecu.sprjwtangu.entities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,4 +34,11 @@ public class Transporter {
     @Column(unique = true)
     private String loginName;
     private String password;
+    
+    public void setDepuis(LocalDate date) throws ParseException{
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
+        if(date == null)
+            this.depuis = null; 
+        else this.depuis = ft.parse(date.toString());
+    }    
 }
