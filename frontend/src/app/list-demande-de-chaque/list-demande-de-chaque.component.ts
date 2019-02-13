@@ -5,11 +5,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Demande } from 'src/model/model.demande';
 
 @Component({
-  selector: 'app-list-demande',
-  templateUrl: './list-demande.component.html',
-  styleUrls: ['./list-demande.component.css']
+  selector: 'app-list-demande-de-chaque',
+  templateUrl: './list-demande-de-chaque.component.html',
+  styleUrls: ['./list-demande-de-chaque.component.css']
 })
-export class ListDemandeComponent implements OnInit {
+export class ListDemandeDeChaqueComponent implements OnInit {
   
   pageDemande:PageDemande = new  PageDemande();  // pour tenir des Demandes
   motCle:string="";
@@ -21,7 +21,7 @@ export class ListDemandeComponent implements OnInit {
   flag:string="";
 
   constructor(activatedRoute:ActivatedRoute ,public demandesService:DemandesService, public router:Router) { 
-    //this.flag=activatedRoute.snapshot.params['flag'];
+    this.flag=activatedRoute.snapshot.params['flag'];
   }
 
   ngOnInit() {
@@ -30,7 +30,8 @@ export class ListDemandeComponent implements OnInit {
     console.log("this.flag : "+this.flag)
   }
   doSearch(){
-    /*if(this.flag.includes('transporter')){
+    //*
+    if(this.flag.includes('transporter')){
       this.demandesService.demandesDeTransporter(Number(localStorage.getItem("userId")))
       .subscribe((data:Array<Demande>)=>{
         this.demandes=data
@@ -46,14 +47,14 @@ export class ListDemandeComponent implements OnInit {
         console.log(err)
       })      
     }//*/
-    //else{
+    else{
       this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe((data:PageDemande)=>{
         this.pageDemande=data;
         this.pages=new Array(data.totalPages);
       }, err=>{
         console.log(err);
       })
-    //}
+    }
   }
   chercher(){
     this.doSearch();

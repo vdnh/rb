@@ -16,19 +16,31 @@ export class ListVoyageComponent implements OnInit {
   currentPage:number=0;
   size:number=5;
   pages:Array<number>;  // pour tenir des numeros des pages
-
+  voyages:Array<Voyage>;
+  role:string="";
   constructor(public voyagesService:VoyagesService, public router:Router) { }
 
   ngOnInit() {
+    this.role=localStorage.getItem("role");
     this.doSearch()
   }
   doSearch(){
-    this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
-      this.pageVoyage=data;
-      this.pages=new Array(data.totalPages);
-    }, err=>{
-      console.log(err);
-    })
+    if(this.role.includes("TRANSPORTER") && localStorage.getItem("userId")!=null){
+      this.voyagesService.voyagesDeTransporter(Number(localStorage.getItem("userId")))
+      .subscribe((data:Array<Voyage>)=>{
+        this.voyages=data
+      }, err=>{
+        console.log(err)
+      })
+    }
+    else{
+      this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
+        this.pageVoyage=data;
+        this.pages=new Array(data.totalPages);
+      }, err=>{
+        console.log(err);
+      })
+    }  
   }
   chercher(){
     this.doSearch();
@@ -40,6 +52,15 @@ export class ListVoyageComponent implements OnInit {
 
   gotoDetailVoyage(v:Voyage){
     this.router.navigate(['detail-voyage',v.id]);
+  }
+
+  deleteVoyage(id:number){
+    this.voyagesService.deleteVoyage(id).subscribe(data=>{
+
+    }, err=>{
+      console.log(err)
+    })
+    this.doSearch();
   }
 
 }

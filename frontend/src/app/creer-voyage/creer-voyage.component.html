@@ -15,7 +15,12 @@
               </tr>
               <tr>
                 <th><label class="control-label">Rayon Origin</label></th>                
-                <td><input type="text" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control"/></td>                                            
+                <!--td><input type="text" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control"/></td-->
+                <td>
+                  <select type="number" [(ngModel)]="voyage.radiusOrigin">
+                    <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
+                  </select>                    
+                </td>
               </tr>
               <tr>
                 <th><label class="control-label">Destination</label></th>                
@@ -23,7 +28,12 @@
               </tr>              
               <tr>
                 <th><label class="control-label">Rayon Destination</label></th>                
-                <td><input type="text" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control"/></td>                                            
+                <!--td><input type="text" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control"/></td--> 
+                <td>
+                  <select type="number" [(ngModel)]="voyage.radiusDestination">
+                    <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
+                  </select>                    
+                </td>
               </tr>
               <tr>
                   <th><label class="control-label">Chercher Corridor</label></th>

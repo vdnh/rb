@@ -65,9 +65,9 @@ public class DemandeRestService {
     }
     
     @RequestMapping(value = "/demandesDeShipper", method = RequestMethod.GET)
-    public List<Demande> chercherDdS(@RequestParam(name = "idShipper", defaultValue = "-1" ) Long idShipper) 
+    public List<Demande> chercherDdS(@RequestParam(name = "idDemander", defaultValue = "-1" ) Long idDemander) 
     {
-        return demandeRepository.demandesDeShipper(idShipper);
+        return demandeRepository.demandesDeShipper(idDemander);
     }
     
     @RequestMapping(value = "/chercherDemandes", method = RequestMethod.GET)

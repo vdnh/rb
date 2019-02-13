@@ -10,6 +10,7 @@ import { Voyage } from 'src/model/model.voyage';
 export class CreerVoyageComponent implements OnInit {
 
   voyage:Voyage=new Voyage();
+  listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
   constructor(public voyagesService : VoyagesService) { }
 
   ngOnInit() {

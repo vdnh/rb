@@ -37,7 +37,8 @@ import { ListDemandeComponent } from './list-demande/list-demande.component';
 import { DetailDemandeComponent } from './detail-demande/detail-demande.component';
 import { ListVoyageComponent } from './list-voyage/list-voyage.component';
 import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
-import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component'
+import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
+import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -59,6 +60,7 @@ const appRoutes:Routes=[
   {path: "fiche-technique", component: FichTechniqueComponent},
   {path: 'camion/:id', component:  CamionComponent},
   {path:"list-demande", component:ListDemandeComponent},
+  {path:'list-demande-de-chaque/:flag', component:ListDemandeDeChaqueComponent},
   {path: 'detail-demande/:id', component:  DetailDemandeComponent},
   {path:"creer-voyage", component:CreerVoyageComponent},
   {path:"list-voyage", component:ListVoyageComponent},
@@ -90,6 +92,7 @@ const appRoutes:Routes=[
     ListVoyageComponent,
     DetailVoyageComponent,
     CreerVoyageComponent,
+    ListDemandeDeChaqueComponent,
     //MapComponent,
   ],
   imports: [
