@@ -34,7 +34,7 @@
   </div>
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
-      <button class="btn btn-link" (click)="onShipper()">Shipper</button>   
+      <button class="btn btn-link" (click)="onShipper()">Profile</button>   
       <button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button>
       <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Nos Demandes</button>
       <button routerLink="/list-voyage" class="btn btn-link">Liste Camions disponibles</button>              
@@ -76,6 +76,7 @@
         <button routerLink="/map" class="btn btn-link">Map</button>
         <button routerLink="/fiche-technique" class="btn btn-link">Fiche Technique</button>
       </div-->
+  <br>
   <router-outlet></router-outlet>
   <br><br>
   <footer>

@@ -69,7 +69,7 @@ export class ListDemandeDeChaqueComponent implements OnInit {
   }
 
   deleteDemande(id:number){
-    this.demandesService.deleteDemande(id);
+    this.demandesService.deleteDemande(id).subscribe(data=>{}, err=>{console.log(err)});
     this.doSearch();
   }
 }

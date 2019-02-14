@@ -9,11 +9,14 @@ import { Voyage } from 'src/model/model.voyage';
 })
 export class CreerVoyageComponent implements OnInit {
 
+  today:Date; 
   voyage:Voyage=new Voyage();
   listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
   constructor(public voyagesService : VoyagesService) { }
 
   ngOnInit() {
+    this.today=new Date();
+    console.log('this.today : '+this.today)
     this.voyage.idTransporter = Number(localStorage.getItem("userId"));
     this.voyage.nomTransporter = localStorage.getItem("nom");
   }

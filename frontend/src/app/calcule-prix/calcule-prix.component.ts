@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calcule-prix',
@@ -28,7 +29,7 @@ export class CalculePrixComponent implements OnInit {
 
   demande:Demande=new Demande();
 
-  constructor(public demandesService : DemandesService, public geocoding : GeocodingService) { }
+  constructor(public demandesService : DemandesService, public geocoding : GeocodingService, public router:Router) { }
 
   ngOnInit() {
     this.demande.roleDemander = localStorage.getItem("role");
@@ -269,6 +270,7 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     this.demande.prixSugere=this.prix
     this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
       //this.demande=data;
+      this.router.navigateByUrl("/list-voyage");
     }
     , err=>{
       console.log(err)
