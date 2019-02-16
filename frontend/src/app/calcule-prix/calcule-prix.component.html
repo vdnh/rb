@@ -60,7 +60,7 @@
               <!--td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >Estimer Le Prix</button></td-->
               <td><button class="btn btn-success" (click)="onOk()" >Estimer Le Prix</button></td>
               <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
-              <td><button class="btn btn-primary" (click)="onSearchTruck()">Poster et Chercher Camions</button></td>
+              <td><button class="btn btn-primary" (click)="onSearchTruck()" [disabled]="searchTruck">Poster et Chercher Camions</button></td>
               </tr>  
             </table>            
             <!--/form-->

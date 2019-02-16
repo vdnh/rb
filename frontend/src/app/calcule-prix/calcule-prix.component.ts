@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class CalculePrixComponent implements OnInit {
 
+  searchTruck=true; //desactiver poster et rechercher
   mode=1; // en pouce et lbs   - Si : mode = 2 on est en cm et kg
   // les details de marchandise
   longeur:number=0.00;
@@ -167,6 +168,7 @@ export class CalculePrixComponent implements OnInit {
     
     this.prix = this.prixDepart(this.totalPoints) + this.prixDistance(this.totalPoints) + this.prixToile(this.totalPoints)
       + this.prixAttendre(this.totalPoints) + this.prixSuplement(this.totalPoints, this.heurs_supl);
+    this.searchTruck=false; //activer poster et rechercher
 
   }
     
@@ -288,7 +290,7 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     this.heurs_supl=0.00;
     this.totalPoints=0.00;
     this.prix=0.00;
-
+    this.searchTruck=true; //desactiver poster et rechercher
     this.demande=new Demande();
     this.ngOnInit();
   }

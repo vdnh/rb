@@ -234,7 +234,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
 	//System.out.println(emailBody); // imprimer a la place de  email
         //*
         Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "vdnhmtl@gmail.com", "mickey&9");
+	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 	transport.close();//*/
     }

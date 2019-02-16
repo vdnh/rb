@@ -34,7 +34,7 @@
   </div>
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
-      <button class="btn btn-link" (click)="onShipper()">Profile</button>   
+      <button class="btn btn-link" (click)="onShipper()">Gerer Compte</button>   
       <button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button>
       <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Nos Demandes</button>
       <button routerLink="/list-voyage" class="btn btn-link">Liste Camions disponibles</button>              
@@ -43,7 +43,7 @@
     </div>
     <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
         <button routerLink="/propos" class="btn btn-link">Propos</button>
-        <button class="btn btn-link"  (click)="onTransporter()">Gerer Flotte</button>     
+        <button class="btn btn-link"  (click)="onTransporter()">Gerer Compte</button>     
         <button routerLink="/creer-voyage" class="btn btn-link">Creer le Voyage</button>        
         <button routerLink="/list-voyage" class="btn btn-link">Nos Voyages</button>
         <button routerLink="/list-demande" class="btn btn-link">Liste Demandes Potentiels</button>          
