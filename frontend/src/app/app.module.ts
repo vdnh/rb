@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
@@ -39,6 +39,7 @@ import { ListVoyageComponent } from './list-voyage/list-voyage.component';
 import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
 import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
 import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
+import { AgmCoreModule } from '@agm/core';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -96,7 +97,11 @@ const appRoutes:Routes=[
     //MapComponent,
   ],
   imports: [
-    BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule
+    BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, 
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
+      libraries: ['places', 'drawing', 'geometry'],
+    }),
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
