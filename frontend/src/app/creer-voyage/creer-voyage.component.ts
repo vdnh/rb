@@ -3,6 +3,7 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
 import { MouseEvent, MapsAPILoader } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-creer-voyage',
@@ -64,7 +65,7 @@ export class CreerVoyageComponent implements OnInit {
   ]
   // finir ajouter des circles et markes */
   
-  constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService) { 
+  constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, public router:Router) { 
     this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
   }
@@ -146,6 +147,7 @@ export class CreerVoyageComponent implements OnInit {
   onSaveVoyage(){
     this.voyage.dateDepart = new Date(this.voyage.dateDepart)
     this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+      this.router.navigateByUrl("/list-demande");
     }
     , err=>{
       console.log(err)
