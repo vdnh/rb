@@ -174,6 +174,9 @@ export class CamionComponent implements OnInit {
     this.modeEntretiens=1;
     this.modeDefinirEnt=0;
   }
+  onBonDeTravail(){
+    alert("Ils s'en viennent.")
+  }
   onDefinirEnt(){
     this.modeInfos=0;
     this.modeFiche=0;

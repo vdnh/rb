@@ -23,14 +23,14 @@
                 <th><label class="control-label">Rayon Destination (miles)</label></th>                             
               </tr>
               <tr>
-                <td><input type="text" [(ngModel)]="voyage.origin" name="origin" class="form-control" (change)="originChange($event)"/></td>
+                <td><input type="text" [(ngModel)]="voyage.origin" name="origin" class="form-control" (change)="originChange()"/></td>
                 <td><input type="number" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control"></td>
                 <td>
                   <select type="number" [(ngModel)]="voyage.radiusOrigin">
                     <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
                   </select>                    
                 </td>                   
-                <td><input type="text" [(ngModel)]="voyage.destination" name="destination" class="form-control" (change)="destinationChange($event)"/></td>
+                <td><input type="text" [(ngModel)]="voyage.destination" name="destination" class="form-control" (change)="destinationChange()"/></td>
                 <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control"></td>
                 <td>
                   <select type="number" [(ngModel)]="voyage.radiusDestination">
@@ -50,9 +50,11 @@
     </div>
   <!--/div-->  
     <div>
+        <!-- position: absolute; top: 0px; left: 0px; -->
       <agm-map 
         [latitude]="lat"
         [longitude]="lng"
+        style="height: 450px; width: 100%; background-color: rgb(229, 227, 223);"
         [zoom]="zoom"
         [disableDefaultUI]="false"
         [zoomControl]="true"

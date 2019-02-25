@@ -119,8 +119,11 @@ export class CreerVoyageComponent implements OnInit {
                 results[0].geometry.location.lat(),
                 results[0].geometry.location.lng()                            
               )
+              alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
-            alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            else
+              alert("Ne pas trouver de coordonnees de ce origin")
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             //console.log(this.latLngOrigin.lat())
             //console.log(this.latLngOrigin.lng())
     });//*/
@@ -136,8 +139,11 @@ export class CreerVoyageComponent implements OnInit {
                 results[0].geometry.location.lat(),
                 results[0].geometry.location.lng()                            
               )
+              alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
-            alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            else
+              alert("Ne pas trouver de coordonnees de cet destination")
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             //alert("Attendre un peu en deplacant !!")
             //console.log(this.latLngDestination.lat())
             //console.log(this.latLngDestination.lng())
@@ -162,7 +168,7 @@ export class CreerVoyageComponent implements OnInit {
   // km en mile
   kmEnMile(distance:number){
     return distance = distance * 0.621371;
-    console.log(distance+' miles');
+    //console.log(distance+' miles');
   }
 
     // mile en km
@@ -171,15 +177,15 @@ export class CreerVoyageComponent implements OnInit {
       //console.log(distance+' km');
     }
 
-    private onRadius1Changed(radius:number){
+    onRadius1Changed(radius:number){
       this.voyage.radiusOrigin=this.kmEnMile(radius)/1000;
       console.log('RadiusOrigin was changed.: '+ this.voyage.radiusOrigin)
     }
-    private onRadius2Changed(radius:number){
+    onRadius2Changed(radius:number){
       this.voyage.radiusDestination=this.kmEnMile(radius)/1000;
       console.log('RadiusDestination was changed.: '+ this.voyage.radiusDestination)
     }
-    private async onCenter1Changed(center:Center){
+    async onCenter1Changed(center:Center){
       //console.log('center.lat + center.lng : '+center.lat+' '+center.lng)
       this.latLngOrigin = new google.maps.LatLng(center.lat, center.lng);
       //console.log(this.latLngOrigin.lat())
@@ -187,7 +193,7 @@ export class CreerVoyageComponent implements OnInit {
       //console.log("Address Origin")
       //await this.latLngToAddress(this.latLngOrigin)
     }
-    private async onCenter2Changed(center:Center){
+    async onCenter2Changed(center:Center){
       //console.log('center.lat + center.lng : '+center.lat+' '+center.lng)
       this.latLngDestination = new google.maps.LatLng(center.lat, center.lng);
       //console.log(this.latLngDestination.lat())
