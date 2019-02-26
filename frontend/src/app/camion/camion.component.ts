@@ -9,6 +9,10 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 import { AutreEntretien } from 'src/model/model.autreEntretien';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { Subscription, interval, timer } from 'rxjs';
+import { Reparation } from 'src/model/model.reparation';
+import { BonDeTravail } from 'src/model/model.bonDeTravail';
+import { ReparationsService } from 'src/services/reparation.service';
+import { BonDeTravailsService } from 'src/services/bonDeTravail.service';
 
 @Component({
   selector: 'app-camion',
@@ -17,6 +21,12 @@ import { Subscription, interval, timer } from 'rxjs';
 })
 export class CamionComponent implements OnInit {
 
+  //** pour le BonDeTravail
+  bonDeTravail:BonDeTravail=new BonDeTravail();
+  bonDetravails:Array<BonDeTravail>=[];
+  reparation:Reparation=new Reparation();
+  reparations:Array<Reparation>=[];
+  // */
   //** parametres de la carte
   subscription : Subscription;
   @ViewChild('gmap') gmapElement: any;
@@ -32,6 +42,8 @@ export class CamionComponent implements OnInit {
   modeFiche:number=0;
   modeEntretiens:number=0;
   modeDefinirEnt:number=0;
+  modeBonDeTravail:number=0;
+  modeListReparation:number=0;
 
   camion:Camion=new Camion();
   id:number;
@@ -56,8 +68,8 @@ export class CamionComponent implements OnInit {
   ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();  
   
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
-  public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router){    
-    
+  public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router, 
+  public reparationsService:ReparationsService, public bonDeTravailsService:BonDeTravailsService){        
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -98,6 +110,7 @@ export class CamionComponent implements OnInit {
       this.couleur09=this.codeCouleurInspect();
       this.fiche.idCamion=this.camion.id;
       this.ficheCont.idCamion=this.camion.id;
+      //this.bonDeTravail.idCamion=this.id;
       // console.log("camion.id : "+this.camion.id +" : "+this.camion.unite )
       // console.log("fiche.id_camion : "+this.fiche.idCamion)
       // console.log("ficheCont.id_camion : "+this.ficheCont.idCamion)
@@ -151,6 +164,11 @@ export class CamionComponent implements OnInit {
       }, err=>{
         console.log(err);
       });
+      /*this.bonDeTravailsService.bonDeTravailDeCamion(this.id).subscribe((data:Array<BonDeTravail>)=>{
+        this.bonDetravails=data;
+      }, err=>{
+        console.log(err);
+      });//*/
       
     }, err=>{
       console.log(err);
@@ -161,27 +179,51 @@ export class CamionComponent implements OnInit {
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=0;
   }
   onFiche(){
     this.modeInfos=0;
     this.modeFiche=1;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=0;
   }
   onEntretiens(){
     this.modeInfos=0;
     this.modeFiche=0;
     this.modeEntretiens=1;
     this.modeDefinirEnt=0;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=0;
   }
   onBonDeTravail(){
-    alert("Ils s'en viennent.")
+    this.modeInfos=0;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
+    this.modeBonDeTravail=1;
+    this.modeListReparation=0;
+  }
+  onListReparation(){
+    alert("La fonction s'en vient.")
+    /*
+    this.modeInfos=0;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=1;
+    */
   }
   onDefinirEnt(){
     this.modeInfos=0;
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=1;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=0;
   }
   gotoDetailTransporter(id:number){
     this.router.navigate(['detail-transporter',id]);
@@ -189,8 +231,8 @@ export class CamionComponent implements OnInit {
   gotoCamion(id:number){
     this.router.navigate(['camion',id]);
   }
-  saveCamion(){
-    this.camionsService.saveCamions(this.camion).subscribe(data=>{
+  async saveCamion(){
+    await this.camionsService.saveCamions(this.camion).subscribe(data=>{
       //this.mode=2;
       this.couleur01=this.codeCouleurEnt1(this.camion)
       this.couleur02=this.codeCouleurEnt2(this.camion)
@@ -204,7 +246,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });
-    this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
+    await this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
       this.fiche=data;
       if(data!=null)
         console.log("Existe fiche")
@@ -213,7 +255,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log()
     })
-    this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+    await this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
       this.ficheCont=data;
       if(data!=null)
         console.log("Existe fiche")
@@ -222,12 +264,23 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log()
     })
-    this.entretiens.forEach(obj => {
+    await this.entretiens.forEach(obj => {
       this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
       }, err=>{
         console.log(err)
       })
     });
+    await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
+    }, err=>{
+      console.log()
+    });
+    await this.reparations.forEach(obj => {
+      this.reparationsService.saveReparation(obj).subscribe(data=>{
+      }, err=>{
+        console.log(err)
+      })
+    });
+    this.router.navigate(['detail-transporter',this.camion.idTransporter]);
   }
   //*
   codeCouleurEnt1(camion:Camion){
@@ -586,6 +639,51 @@ export class CamionComponent implements OnInit {
       console.log(err)
     })
   }
+  addReparation(){
+    /*await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
+      this.bonDeTravail=data;
+    }, err=>{
+      console.log(err)
+    })//*/
+    let rep:Reparation=new Reparation();
+    rep=this.reparation
+    this.bonDeTravail.sousTotal += this.reparation.prix;
+    this.bonDeTravail.tps = 0.05*this.bonDeTravail.sousTotal 
+    this.bonDeTravail.tvq = 0.09975*this.bonDeTravail.sousTotal
+    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq
+    this.reparations.push(rep)
+    //this.bonDeTravail.sousTotal=0
+    //this.reparations.forEach
+    this.reparation=new Reparation();
+
+    /*this.reparationsService.saveReparation(this.reparation).subscribe(data=>{
+      alert("Reparation added.");
+      /*this.reparationsService.reparationDeBon(this.bonDeTravail.id).subscribe((data:Array<Reparation>)=>{
+        this.reparations=data;
+      }, err=>{
+        console.log(err);
+      });///
+    }, err=>{
+      console.log(err)
+    })//*/
+  }
+  
+  async validBonDeTravail(){
+    this.bonDeTravail.idCamion=this.id;
+    await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
+      this.bonDeTravail=data;
+    }, err=>{
+      console.log(err)
+    })
+    await this.reparations.forEach((rep:Reparation)=>{
+      rep.idBon=this.bonDeTravail.id;
+      this.reparationsService.saveReparation(rep).subscribe(data=>{          
+      }, err=>{
+        console.log(err);
+      })
+    })
+  }
+
   onAutreEntretien(entretien:AutreEntretien){
     alert("Entretien - "+entretien.nom);
     entretien.odoFait=this.camion.odometre;

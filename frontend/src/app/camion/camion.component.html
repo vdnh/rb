@@ -1,16 +1,17 @@
 <div class="w3-container">
   <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
     <div class="panel-heading"> 
-        <h2> Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; </h2>
-        <button class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
-        <br>
+      <h2> Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; </h2>
+      <button class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
+      <br>
     </div>
     <div>
-        <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onFiche()">Fiche Technique</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a definir</button>
-        <button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button>
-        <button class="btn btn-link" (click)="onBonDeTravail()">Bon de travail</button>
+      <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onFiche()">Fiche Technique</button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a definir</button>
+      <button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button>
+      <button class="btn btn-link" (click)="onBonDeTravail()">Bon de travail</button>
+      <button class="btn btn-link" (click)="onListReparation()">Histoire de Reparation</button>
     </div>
     <div class="panel-body" *ngIf="carte==1">
       <div class="col-md-12">
@@ -21,10 +22,12 @@
         </div>
       </div>
     </div>    
-    <div *ngIf="modeInfos==1">Infos</div>
-    <div *ngIf="modeFiche==1"><h4>Fiche de Technique</h4></div>
-    <div *ngIf="modeDefinirEnt==1"><h4>Entretiens a definir</h4></div>
-    <div *ngIf="modeEntretiens==1">Entretiens a faire</div>
+    <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
+    <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>
+    <div *ngIf="modeDefinirEnt==1"><h3>Entretiens a definir</h3></div>
+    <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div>
+    <div *ngIf="modeBonDeTravail==1"><h3>Bon de travail</h3></div>
+    <div *ngIf="modeListReparation==1"><h3>Histoire de reparation</h3></div>
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
@@ -333,7 +336,6 @@
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.odoFait" /></td>
             <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>
           </tr>           
-
         </table>
         <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
             <tr><th colspan="8">Les Entretiens a faire (code couleur - vert : pas besoins, jaune : conseille, rouge : oblige) </th></tr>
@@ -358,7 +360,91 @@
             <tr>
               <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection aux 6 mois {{codeTextInspect()}}</button></td>
             </tr>
-        </table>                 
+        </table>          
+        <table *ngIf="modeBonDeTravail==1">
+          <tr>
+            <th>Technicien</th><td><input class="form-control" type="text" [(ngModel)]="bonDeTravail.technicien"/></td>
+            <th>Date</th><td><input class="form-control" type="date" [(ngModel)]="bonDeTravail.date" name="dateReparation" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+          </tr>
+        </table>
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">          
+          <tr><br></tr>
+          <tr>    
+            <th>Mecanique : <input type="checkbox" [(ngModel)]="bonDeTravail.mecanique"></th>
+            <th>Carrosserie : <input type="checkbox" [(ngModel)]="bonDeTravail.carrosserie"></th>
+            <th>Piece : <input type="checkbox" [(ngModel)]="bonDeTravail.piece"></th>
+            <th>Sablage Au Jet : <input type="checkbox" [(ngModel)]="bonDeTravail.sablageAuJet"></th>
+            <th>Entreposage : <input type="checkbox" [(ngModel)]="bonDeTravail.entreposage"></th>
+          </tr>                              
+          <tr>
+              <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th>
+          </tr>
+          <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.marque" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.modele" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.niv" disabled/></td>
+          </tr>
+          <tr>
+              <th>Annee</th><th>Odometre</th><th>Moteur</th><th>Transmission</th><th>Couleur</th>
+          </tr>
+          <tr>                
+              <td><input class="form-control" type="text" [(ngModel)]="camion.annee" disabled/></td>              
+              <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" disabled/></td>              
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur" disabled/></td>
+          </tr>
+          <tr><br></tr>
+          <tr>
+            <th colspan="2">Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th>                        
+          </tr>
+          <tr *ngFor="let rep of reparations">
+            <!--let reparation of reparations - add line reparation-->
+            <td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.reparationEffectuer"></td>
+            <td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.piece"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prix"></td>
+          </tr>  
+          <tr>
+            <th>Ajouter des Reparations</th>
+          </tr>
+          <tr>
+            <td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.reparationEffectuer"></td>
+            <td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.piece"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.prix"></td>
+            <td><button class="btn btn-link" (click)="addReparation()">Add</button></td>
+          </tr>           
+          <tr><br></tr>
+          <tr>
+            <th colspan="=6">Remarques / Travaux A Prevoir</th>
+          </tr>
+
+        </table>  
+
+        <table *ngIf="modeBonDeTravail==1">
+          <tr>
+            <!--td colspan="4" rowspan="4"><input type="text" class="form-control" [(ngModel)]="bonDeTravail.remarque"></td-->
+            <td><textarea class="form-control" type="text" rows="4" cols="50" [(ngModel)]="bonDeTravail.remarque"></textarea></td>
+            <td colspan="2" rowspan="4">
+              <table>
+                <tr>
+                  <td><br></td><th>Sous-Total : </th><td colspan="2">{{bonDeTravail.sousTotal | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TPS : </th><td colspan="2">{{bonDeTravail.tps | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TVQ : </th><td colspan="2">{{bonDeTravail.tvq | number : '1.2'}}</td>
+                </tr>    
+                <tr>
+                  <td><br></td><th>TOTAL : </th><td colspan="2">{{bonDeTravail.total | number : '1.2'}}</td> 
+                  <td><br></td><td><button class="btn btn-primary" (click)="validBonDeTravail()">Valider le Bon De Travail</button></td>
+                </tr>                
+              </table>
+            </td>
+          </tr>
+        </table>   
     </div>   
     <div>
         <table class="table table-striped table-responsive"> 

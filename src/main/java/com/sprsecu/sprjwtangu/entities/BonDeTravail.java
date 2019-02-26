@@ -23,7 +23,8 @@ public class BonDeTravail implements Serializable{
     private Long id;
     @Temporal(TemporalType.DATE)
     private Date date;
-    Long idCamion;
+    private Long idCamion;
+    private String technicien;
     private Boolean mecanique=false;
     private Boolean carrosserie=false;
     private Boolean piece=false;

@@ -203,7 +203,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
             } 
         });
         
-        envoiMsgThread.start();
+        //envoiMsgThread.start();
         updateOdoSOSPrestigeThread.start(); 
     }
     

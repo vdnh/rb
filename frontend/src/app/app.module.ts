@@ -15,6 +15,8 @@ import { ContactsService } from 'src/services/contacts.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { ShippersService } from 'src/services/shippers.service';
 import { AdressesService } from 'src/services/adresses.service';
+import { BonDeTravailsService } from 'src/services/bonDeTravail.service'
+import { ReparationsService } from 'src/services/reparation.service'
 import { ShippersComponent } from './shippers/shippers.component';
 import { TransportersComponent } from './transporters/transporters.component';
 import { NewTransporterComponent } from './new-transporter/new-transporter.component';
@@ -40,6 +42,9 @@ import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
 import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
 import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
 import { AgmCoreModule } from '@agm/core';
+import { from } from 'rxjs';
+//import { Reparation } from 'src/model/model.reparation';
+//import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 
@@ -105,7 +110,7 @@ const appRoutes:Routes=[
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService, DemandesService, VoyagesService,GeocodingService],
+    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, BonDeTravailsService, ReparationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

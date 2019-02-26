@@ -32,7 +32,7 @@ public class BonDeTravailRestService {
         return bonDeTravailRepository.findById(id).get();
     }
     
-    @RequestMapping(value = "/bonDetravails", method = RequestMethod.POST)
+    @RequestMapping(value = "/bonDeTravails", method = RequestMethod.POST)
     public BonDeTravail save(@RequestBody BonDeTravail c){
         return bonDeTravailRepository.save(c);
     }
