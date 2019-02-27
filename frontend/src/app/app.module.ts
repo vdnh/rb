@@ -43,6 +43,8 @@ import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
 import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
 import { AgmCoreModule } from '@agm/core';
 import { from } from 'rxjs';
+import { BankClientsService } from 'src/services/bankClients.service';
+import { BankClientComponent } from './bank-client/bank-client.component';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
@@ -71,6 +73,7 @@ const appRoutes:Routes=[
   {path:"creer-voyage", component:CreerVoyageComponent},
   {path:"list-voyage", component:ListVoyageComponent},
   {path: 'detail-voyage/:id', component:  DetailVoyageComponent},
+  {path: 'bank-client', component:  BankClientComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -99,6 +102,7 @@ const appRoutes:Routes=[
     DetailVoyageComponent,
     CreerVoyageComponent,
     ListDemandeDeChaqueComponent,
+    BankClientComponent,
     //MapComponent,
   ],
   imports: [
@@ -110,7 +114,8 @@ const appRoutes:Routes=[
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, BonDeTravailsService, ReparationsService],
+    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, BonDeTravailsService, 
+    ReparationsService, BankClientsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
