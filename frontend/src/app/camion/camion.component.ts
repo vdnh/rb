@@ -23,7 +23,7 @@ export class CamionComponent implements OnInit {
 
   //** pour le BonDeTravail
   bonDeTravail:BonDeTravail=new BonDeTravail();
-  bonDetravails:Array<BonDeTravail>=[];
+  bonDeTravails:Array<BonDeTravail>=[];
   reparation:Reparation=new Reparation();
   reparations:Array<Reparation>=[];
   // */
@@ -206,16 +206,24 @@ export class CamionComponent implements OnInit {
     this.modeBonDeTravail=1;
     this.modeListReparation=0;
   }
-  onListReparation(){
-    alert("La fonction s'en vient.")
-    /*
+  async onListReparation(){
+    //alert("La fonction s'en vient.")
+    //* find list Bon De Travail
+    await this.bonDeTravailsService.bonDeTravailDeCamion(this.id).subscribe((data:Array<BonDeTravail>)=>{
+      this.bonDeTravails=data;
+      this.bonDeTravails.forEach(bon=>{
+        console.log(" bon : "+bon.id +" "+ bon.technicien)
+      })
+    }, err=>{
+      console.log(err);
+    })
+    //*/
     this.modeInfos=0;
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=1;
-    */
   }
   onDefinirEnt(){
     this.modeInfos=0;
@@ -648,8 +656,8 @@ export class CamionComponent implements OnInit {
     let rep:Reparation=new Reparation();
     rep=this.reparation
     this.bonDeTravail.sousTotal += this.reparation.prix;
-    this.bonDeTravail.tps = 0.05*this.bonDeTravail.sousTotal 
-    this.bonDeTravail.tvq = 0.09975*this.bonDeTravail.sousTotal
+    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
     this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq
     this.reparations.push(rep)
     //this.bonDeTravail.sousTotal=0
@@ -670,20 +678,39 @@ export class CamionComponent implements OnInit {
   
   async validBonDeTravail(){
     this.bonDeTravail.idCamion=this.id;
+    /*/this.bonDeTravail.sousTotal=0.00;
+    this.reparations.forEach(rep=>{
+      this.bonDeTravail.sousTotal += this.reparation.prix;
+      this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq                  
+    })//*/    
     await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
-      this.bonDeTravail=data;
+      this.bonDeTravail=data;      
+      console.log("data.id : " + data.id)
+      console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
+      this.reparations.forEach(async rep=>{
+        rep.idBon=this.bonDeTravail.id;
+        console.log("rep.idBon : " + rep.idBon)
+        await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
+          rep.id = d.id;
+        }, err=>{
+          console.log(err);
+        })
+      })
     }, err=>{
       console.log(err)
     })
-    await this.reparations.forEach((rep:Reparation)=>{
-      rep.idBon=this.bonDeTravail.id;
-      this.reparationsService.saveReparation(rep).subscribe(data=>{          
-      }, err=>{
-        console.log(err);
-      })
-    })
   }
-
+  onDetailHistoire(bon : BonDeTravail){
+    let repTemps : Array<Reparation> = [];
+    this.bonDeTravailsService.bonDeTravailDeCamion(bon.id).subscribe((data:Array<Reparation>)=>{
+      repTemps=data;
+    }, err=>{
+      console.log(err)
+    })
+    return repTemps;
+  }
   onAutreEntretien(entretien:AutreEntretien){
     alert("Entretien - "+entretien.nom);
     entretien.odoFait=this.camion.odometre;
