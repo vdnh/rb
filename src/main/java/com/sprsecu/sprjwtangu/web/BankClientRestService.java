@@ -4,6 +4,7 @@ import com.sprsecu.sprjwtangu.dao.BankClientRepository;
 import com.sprsecu.sprjwtangu.entities.BankClient;
 import com.sprsecu.sprjwtangu.entities.EmailMessage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -75,32 +76,34 @@ import org.springframework.web.bind.annotation.RestController;
     }    
     
     @RequestMapping(value = "/chercherClients", method = RequestMethod.GET)
-    public Page<BankClient> chercher(
-            @RequestParam(name = "mc", defaultValue = "") String mc, 
-            @RequestParam(name = "page", defaultValue = "0")int page, 
-            @RequestParam(name = "size", defaultValue = "5")int size)
+    public List<BankClient> chercher(@RequestParam(name = "mc", defaultValue = "") String mc)
     {
-        return bankClientRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+        //return shipperRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+        return bankClientRepository.chercher("%"+mc+"%");
     }
 
     @RequestMapping(value = "/emailToAll", method = RequestMethod.POST)
     public void emailToAll(@RequestBody EmailMessage em) throws MessagingException{
         String titre = em.getTitre();
         String contain = em.getContent();
-        List<InternetAddress> emails = new ArrayList<>();
-        bankClientRepository.findAll().forEach(client->{
+        //List<Address> emails = new ArrayList<>();
+        //bankClientRepository.findAll().forEach(client->{
+        bankClientRepository.chercher(em.getAddressCondition()).forEach(client->{
             if(EmailValidator.getInstance().isValid(client.getEmail())){
                 try {
-                    emails.add(new InternetAddress(client.getEmail()));
+                    //emails.add(new InternetAddress(client.getEmail()));
+                    generateAndSendEmail(contain, client.getEmail(), titre);
                 } catch (AddressException ex) {
+                    Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MessagingException ex) {
                     Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        generateAndSendEmail(contain, emails, titre);
+        //generateAndSendEmail(contain, emails, titre);
     }
     
-    public void generateAndSendEmail(String emailBody, List<InternetAddress> emails, String titre) throws AddressException, MessagingException {
+    public void generateAndSendEmail(String emailBody, String email, String titre) throws AddressException, MessagingException {
 	mailServerProperties = System.getProperties();
 	mailServerProperties.put("mail.smtp.port", "587");
 	mailServerProperties.put("mail.smtp.auth", "true");
@@ -108,16 +111,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 	generateMailMessage = new MimeMessage(getMailSession);
-        //InternetAddress[] es = emails.toArray();
-	//generateMailMessage.addRecipient(Message.RecipientType.TO, emails.toArray());
-        generateMailMessage.addRecipients(Message.RecipientType.TO, (InternetAddress[]) emails.toArray());
-        generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("vdnh@yahoo.com"));
-
+        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         generateMailMessage.setSubject(titre+",");
-        //generateMailMessage.addRecipients(Message.RecipientType.TO, new Address[]);
-        //emailBody = emailBody + "<br> Regards, <br>Application CTS.COM";
-	generateMailMessage.setContent(emailBody, "text/html");
 
+        //* parse emailBody to find each line
+        List<String> lines =Arrays.asList(emailBody.split("\n"));
+        StringBuilder bodyModified = new StringBuilder("");
+        lines.forEach(line->{
+            line=line+"<br>";
+            bodyModified.append(line);
+            System.out.println("line : "+ line);
+        });
+        System.out.println("lines : "+ lines);
+        System.out.println("lines.toString() : "+ lines.toString());
+        System.out.println("bodyModified.toString() : "+ bodyModified.toString());
+        generateMailMessage.setContent(bodyModified.toString() , "text/html");
+        //*/
         Transport transport = getMailSession.getTransport("smtp");
 	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());

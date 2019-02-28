@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class EmailMessage {
     private String titre;
     private String content;
+    private String addressCondition; // pour limiter region - par example Quebec, Montreal, Toronto, ...
 }

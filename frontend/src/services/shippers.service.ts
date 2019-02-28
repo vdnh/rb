@@ -25,26 +25,16 @@ export class ShippersService{
     }
 
     loadTonken(){
-        console.log("I will read jwTonken, I'm from load ShippersService")
+        //console.log("I will read jwTonken, I'm from load ShippersService")
         this.jwToken = localStorage.getItem('tonken');
     }
 
     getShippers(motCle:string, page:number, size:number)    //:Observable<PageShipper>
         {    
-        //this.headers.append('Authorization', this.jwToken);
         this.loadTonken();
-        /*return this.http.get<PageShipper>(this.adServer+":8080/chercherShippers?mc="+motCle+"&size="+size+
-        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(resp =>{
-            const data = resp;
-            console.log("This is the content of Shippers come from database : "+data.content);
-            return data;
-        }))//*/
         return this.http.get(this.adServer+":8080/chercherShippers?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
-            //const data = resp;
-            //console.log("This is the content of Shippers come from database : "+data.content);
             return resp;
         }))
     }

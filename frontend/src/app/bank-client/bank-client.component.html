@@ -1,37 +1,56 @@
 <div class="container spacer">
-  <table class="table table-striped table-sm table-responsive">
+  <table>
     <tr>
-        <button class="btn btn-link" (click)="onBankClients()">Bank Clients</button>&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onEmailToAll()">Email To All Clients</button>
+      <button class="btn btn-link" (click)="onBankClients()">Bank Clients</button>&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onEmailToAll()">Email To All Clients</button>
     </tr>
-    <div><!-- *ngIf="camList==1"-->   
+  </table>
+</div>
+<div class="container spacer">
+  <table class="table table-striped table-sm table-responsive" *ngIf="modeClient==1">   
     <tr>
-        <th>Nom Client</th><th>Contact</th><th>Address</th><th>Tel</th><th>Email</th>
-    </tr>
-    <tr *ngFor="let client of bankClients">
-        <td><input class="form-control" type="text" [(ngModel)]="client.nom" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="client.contact" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="client.address" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="client.tel" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="client.email"/></td>
-        <td><button class="btn btn-link">Detailler</button></td>
-        <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link">Delete</button></td>
-    </tr>
-    </div>   
-    <div><!-- *ngIf="camAdd==1" -->
-    <tr><td colspan="2"><strong>Ajouter de Client</strong></td></tr>     
+      <td><strong>Bank Client</strong></td>
+      <td><input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/></td>
+      <td><button class="btn btn-primary" (click)="chercher()">Rechercher par l'adresse</button></td>
+    </tr>     
     <tr>
-      <th>Nom Client</th><th>Contact</th><th>Address</th><th>Tel</th><th>Email</th>
+      <th>Nom Client</th><th>Contact</th><th colspan="2">Address</th><th>Tel</th><th>Email</th>
     </tr>    
     <tr>
-        <td><input class="form-control" type="text" [(ngModel)]="addClient.nom" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="addClient.contact" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="addClient.address" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="addClient.tel" /></td>
-        <td><input class="form-control" type="text" [(ngModel)]="addClient.email" /></td>
-        <td><button class="btn btn-link" (click)="onAddClient()">Add</button></td>
+      <td><input class="form-control" type="text" [(ngModel)]="addClient.nom" /></td>
+      <td><input class="form-control" type="text" [(ngModel)]="addClient.contact" /></td>
+      <td colspan="2"><input class="form-control" type="text" [(ngModel)]="addClient.address" /></td>
+      <td><input class="form-control" type="text" [(ngModel)]="addClient.tel" /></td>
+      <td><input class="form-control" type="text" [(ngModel)]="addClient.email" /></td>
+      <td><button class="btn btn-link" (click)="onAddClient()">Ajouter</button></td>
     </tr>      
-    </div>              
-  </table>       
-  <button class="btn btn-primary" (click)="onSaveClient()">Ok - Modifier</button>
+    <tr><td colspan="2"><strong>Liste de Clients</strong></td></tr>                       
+    <tr>
+        <th>Nom Client</th><th>Contact</th><th colspan="2">Address</th><th>Tel</th><th>Email</th>
+    </tr>
+    <tr *ngFor="let client of bankClients">
+      <td><input class="form-control" type="text" [(ngModel)]="client.nom" disabled/></td>
+      <td><input class="form-control" type="text" [(ngModel)]="client.contact" disabled/></td>
+      <td colspan="2"><input class="form-control" type="text" [(ngModel)]="client.address" disabled/></td>
+      <td><input class="form-control" type="text" [(ngModel)]="client.tel" disabled/></td>
+      <td><input class="form-control" type="text" [(ngModel)]="client.email" disabled/></td>
+      <!--td><button class="btn btn-link">Detailler</button></td-->
+      <!--td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link">Delete</button></td-->
+    </tr>
+  </table>   
+  <table *ngIf="modeEmail==1"> 
+    <tr><td colspan="2"><strong>Envoyer Publicite Aux Clients</strong></td></tr>     
+    <tr>
+      <th>Titre : </th> 
+      <td><input type="text" [(ngModel)]="em.titre"></td>
+      <td><button class="btn-primary" (click)="onEnvoyer()">Envoyer</button></td>
+    </tr>
+  </table>
+  <table *ngIf="modeEmail==1">
+    <tr><th>Message</th></tr>
+    <tr>
+      <td><textarea cols="45" rows="20" [(ngModel)]="em.content"></textarea></td> 
+    </tr>
+  </table>    
+  <!--button class="btn btn-primary" (click)="onSaveClient()">Ok - Modifier</button-->
 </div>
