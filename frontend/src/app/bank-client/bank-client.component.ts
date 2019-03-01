@@ -32,6 +32,7 @@ export class BankClientComponent implements OnInit {
  async onBankClients(){
     this.modeClient=1;
     this.modeEmail=0;
+    this.motCle="";
     await this.bankClientsService.getBankClients().subscribe((data:Array<BankClient>)=>{
       this.bankClients=data;
     },err=>{
@@ -47,6 +48,7 @@ export class BankClientComponent implements OnInit {
   onAddClient(){
     this.bankClientsService.saveClients(this.addClient).subscribe((data:BankClient)=>{
       this.bankClients.push(data);
+      this.addClient=new BankClient();
     }, err=>{
       console.log(err);
     })

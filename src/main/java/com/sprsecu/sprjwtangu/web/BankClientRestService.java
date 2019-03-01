@@ -88,8 +88,11 @@ import org.springframework.web.bind.annotation.RestController;
         String contain = em.getContent();
         //List<Address> emails = new ArrayList<>();
         //bankClientRepository.findAll().forEach(client->{
-        bankClientRepository.chercher(em.getAddressCondition()).forEach(client->{
+        //System.out.println("em.getAddressCondition() : "+em.getAddressCondition());
+        bankClientRepository.chercher("%"+em.getAddressCondition()+"%").forEach(client->{
+            //System.out.println("client.getNom() - client.getAddress() : "+client.getNom() +" - "+ client.getAddress());
             if(EmailValidator.getInstance().isValid(client.getEmail())){
+                //System.out.println("client.getEmail : "+ client.getEmail());
                 try {
                     //emails.add(new InternetAddress(client.getEmail()));
                     generateAndSendEmail(contain, client.getEmail(), titre);
@@ -120,11 +123,11 @@ import org.springframework.web.bind.annotation.RestController;
         lines.forEach(line->{
             line=line+"<br>";
             bodyModified.append(line);
-            System.out.println("line : "+ line);
+            //System.out.println("line : "+ line);
         });
-        System.out.println("lines : "+ lines);
-        System.out.println("lines.toString() : "+ lines.toString());
-        System.out.println("bodyModified.toString() : "+ bodyModified.toString());
+        //System.out.println("lines : "+ lines);
+        //System.out.println("lines.toString() : "+ lines.toString());
+        //System.out.println("bodyModified.toString() : "+ bodyModified.toString());
         generateMailMessage.setContent(bodyModified.toString() , "text/html");
         //*/
         Transport transport = getMailSession.getTransport("smtp");
