@@ -19,7 +19,7 @@ export class ReparationsService{
     
     reparationDeBon(idBon:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reparationDeBon?idBon="+idBon
+        return this.http.get(this.adServer+":8080/reparationsDeBon?idBon="+idBon
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

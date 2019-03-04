@@ -76,6 +76,10 @@ export class BankClientComponent implements OnInit {
   chercher(){
     this.doSearch();
   }
+  onSortClients(){
+    this.bankClients.sort((a, b) => a.nom.localeCompare(b.nom));
+    //array.sort((a,b) => a.title.rendered.localeCompare(b.title.rendered));
+  }
   onSaveClient(){
 
   }

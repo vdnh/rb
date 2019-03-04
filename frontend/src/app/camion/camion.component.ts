@@ -21,11 +21,16 @@ import { BonDeTravailsService } from 'src/services/bonDeTravail.service';
 })
 export class CamionComponent implements OnInit {
 
+  today:Date;
   //** pour le BonDeTravail
   bonDeTravail:BonDeTravail=new BonDeTravail();
   bonDeTravails:Array<BonDeTravail>=[];
   reparation:Reparation=new Reparation();
   reparations:Array<Reparation>=[];
+  bonDeTravailHistoire:BonDeTravail=new BonDeTravail();
+  modeBonhist=0;
+  reparationHistoire:Reparation=new Reparation();
+  reparationsHistoire:Array<Reparation>=[];
   // */
   //** parametres de la carte
   subscription : Subscription;
@@ -93,6 +98,7 @@ export class CamionComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.today=new Date();
     this.modeInfos=1;
     this.modeFiche=0;
     this.modeEntretiens=0;
@@ -224,6 +230,20 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=1;
+  }
+  async onHistoireDetailler(bon:BonDeTravail){
+    this.bonDeTravailHistoire=bon;
+    if(this.modeBonhist==0){
+      this.modeBonhist=1;
+      await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
+        this.reparationsHistoire=data;
+      }, err=>{
+        console.log(err)
+      })
+    }
+    else 
+      this.modeBonhist=0;
+
   }
   onDefinirEnt(){
     this.modeInfos=0;
@@ -676,7 +696,7 @@ export class CamionComponent implements OnInit {
     })//*/
   }
   
-  async validBonDeTravail(){
+  validBonDeTravail(){
     this.bonDeTravail.idCamion=this.id;
     /*/this.bonDeTravail.sousTotal=0.00;
     this.reparations.forEach(rep=>{
@@ -685,8 +705,8 @@ export class CamionComponent implements OnInit {
       this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
       this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq                  
     })//*/    
-    await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
-      this.bonDeTravail=data;      
+    this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
+      this.bonDeTravail=new BonDeTravail();   //data;      
       console.log("data.id : " + data.id)
       console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
       this.reparations.forEach(async rep=>{

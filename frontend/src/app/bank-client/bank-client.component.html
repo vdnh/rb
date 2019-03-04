@@ -38,7 +38,7 @@
       <td><input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/></td>
     </tr>                       
     <tr>
-        <th>Nom Client</th><th>Contact</th><th colspan="2">Address</th><th>Tel</th><th>Email</th>
+        <th (click)="onSortClients()">Nom Client</th><th>Contact</th><th colspan="2">Address</th><th>Tel</th><th>Email</th>
     </tr>
     <tr *ngFor="let client of bankClients">
       <td><input class="form-control" type="text" [(ngModel)]="client.nom" disabled/></td>
