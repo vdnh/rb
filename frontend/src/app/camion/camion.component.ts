@@ -497,17 +497,31 @@ export class CamionComponent implements OnInit {
 
   onEntretien01(){
     alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message01 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo1Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent1Fait=new Date(); //to test before dicide
+    this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1); // to test before dicide
+    /* stop to test
     this.camion.odo1Fait=this.camion.odometre;
     this.camion.ent1Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1);
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
   
   onEntretien02(){
     alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message02 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo2Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent2Fait=new Date(); //to test before dicide
+    this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2); // to test before dicide
+    /* stop to test
     this.camion.odo2Fait=this.camion.odometre;
     this.camion.ent2Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -517,11 +531,18 @@ export class CamionComponent implements OnInit {
       this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2);
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onEntretien03(){
     alert("Entretien 3 - Changement filtre a polene");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message03 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo3Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent3Fait=new Date(); //to test before dicide
+    this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3); // to test before dicide
+    /* stop to test
     this.camion.odo3Fait=this.camion.odometre;
     this.camion.ent3Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
@@ -530,72 +551,113 @@ export class CamionComponent implements OnInit {
       this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onEntretien04(){
     alert("Entretien 4 - Changement filtre hydrolique");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message04 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo4Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent4Fait=new Date(); //to test before dicide
+    this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique); // to test before dicide
+    /* stopper to test 
     this.camion.odo4Fait=this.camion.odometre;
     this.camion.ent4Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
   
   onEntretien05(){
     alert("Entretien 5 - Changement filtre antigel");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message05 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo5Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent5Fait=new Date(); //to test before dicide
+    this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel); // to test before dicide
+    /*
     this.camion.odo5Fait=this.camion.odometre;
     this.camion.ent5Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onEntretien06(){
     alert("Entretien 6 - Changement huile antigel");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message06 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo6Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent6Fait=new Date(); //to test before dicide
+    this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel); // to test before dicide
+    /*
     this.camion.odo6Fait=this.camion.odometre;
     this.camion.ent6Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onEntretien07(){
     alert("Entretien 7 - Changement huile transmission");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message07 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo7Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent7Fait=new Date(); //to test before dicide
+    this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission); // to test before dicide
+    /*
     this.camion.odo7Fait=this.camion.odometre;
     this.camion.ent7Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onEntretien08(){
     alert("Entretien 8 - Changement huile differentiel");
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= this.camion.message08 //ent01.message
+    this.reparations.push(rep)
+    this.camion.odo8Fait=this.camion.odometre; //to test before dicide
+    this.camion.ent8Fait=new Date(); //to test before dicide
+    this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel); // to test before dicide
+    /*
     this.camion.odo8Fait=this.camion.odometre;
     this.camion.ent8Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
 
   onInspect6(){
     alert('Inspection aux 6 mois.');
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= "Inspection aux 6 mois."; //ent01.message
+    this.reparations.push(rep)
+    this.camion.inspect6m=new Date();
+    this.couleur09=this.codeCouleurInspect();
+    /*
     this.camion.inspect6m=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur09=this.codeCouleurInspect();
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
   onPress(id:number){
     this.carte=-this.carte;
@@ -667,6 +729,16 @@ export class CamionComponent implements OnInit {
       console.log(err)
     })
   }
+  prixChange(){
+    this.bonDeTravail.sousTotal =0.00; 
+    this.reparations.forEach(async rep=>{
+      this.bonDeTravail.sousTotal += rep.prix;
+    })
+    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
+  }
+
   addReparation(){
     /*await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       this.bonDeTravail=data;
@@ -698,6 +770,13 @@ export class CamionComponent implements OnInit {
   
   validBonDeTravail(){
     this.bonDeTravail.idCamion=this.id;
+    this.bonDeTravail.sousTotal =0.00; 
+    this.reparations.forEach(async rep=>{
+      this.bonDeTravail.sousTotal += rep.prix;
+    })
+    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
     /*/this.bonDeTravail.sousTotal=0.00;
     this.reparations.forEach(rep=>{
       this.bonDeTravail.sousTotal += this.reparation.prix;
@@ -708,20 +787,60 @@ export class CamionComponent implements OnInit {
     this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       this.bonDeTravail=new BonDeTravail();   //data;      
       console.log("data.id : " + data.id)
-      console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
+      //console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
+      //this.bonDeTravail.sousTotal =0.00; 
       this.reparations.forEach(async rep=>{
-        rep.idBon=this.bonDeTravail.id;
+        //this.bonDeTravail.sousTotal += rep.prix;
+        rep.idBon=data.id;
         console.log("rep.idBon : " + rep.idBon)
         await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
           rep.id = d.id;
+          //to empty the list reparations after save them
+          this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); //test to remove reparation dans list reparation
         }, err=>{
           console.log(err);
         })
       })
+      //this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      //this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      //this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq
+      //this.reparations.length = 0;  // empty the list reparations
     }, err=>{
       console.log(err)
     })
+    //* this code block is used to test before dicide
+    this.camionsService.saveCamions(this.camion).subscribe(data=>{      
+      console.log("Mise a jour camion apres valide le BonDeTravail")
+    }, err=>{
+      console.log(err);
+    });
+    //*/
   }
+
+  printBonDeTravail(cmpId){
+    const printContent = document.getElementById(cmpId);
+    //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
+    /*
+    let printContents = document.getElementById(cmpId).innerHTML;
+    let originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+
+    window.print();
+    document.body.innerHTML=originalContents;//*/
+  }
+  
+  deleteReparation(rep:Reparation){
+    this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); 
+    this.prixChange();
+  }
+
   onDetailHistoire(bon : BonDeTravail){
     let repTemps : Array<Reparation> = [];
     this.bonDeTravailsService.bonDeTravailDeCamion(bon.id).subscribe((data:Array<Reparation>)=>{
@@ -733,13 +852,17 @@ export class CamionComponent implements OnInit {
   }
   onAutreEntretien(entretien:AutreEntretien){
     alert("Entretien - "+entretien.nom);
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= entretien.message; //ent01.message
+    this.reparations.push(rep)
+    /* stop to test
     entretien.odoFait=this.camion.odometre;
     entretien.dateFait=new Date();
     this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe((data:AutreEntretien)=>{
       this.couleurAutreEntretien(entretien)
     }, err=>{
       console.log(err);
-    });
+    });//*/
   }
   couleurAutreEntretien(entretien:AutreEntretien){
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
