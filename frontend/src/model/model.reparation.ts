@@ -3,5 +3,9 @@ export class Reparation{
     idBon:number;
     reparationEffectuer:string;
     piece:string;
+    fournisseur:string;
+    garantie:Date;
+    heures:number;
+    taux:number;
     prix:number=0.00;
 }

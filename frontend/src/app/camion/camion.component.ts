@@ -730,6 +730,9 @@ export class CamionComponent implements OnInit {
     })
   }
   prixChange(){
+    if(this.reparation.heures>0 && this.reparation.taux>0)
+      this.reparation.prix = new Number((this.reparation.heures*this.reparation.taux).toFixed(2)).valueOf();
+  
     this.bonDeTravail.sousTotal =0.00; 
     this.reparations.forEach(async rep=>{
       this.bonDeTravail.sousTotal += rep.prix;
