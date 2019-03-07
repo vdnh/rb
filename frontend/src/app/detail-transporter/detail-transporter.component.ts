@@ -551,46 +551,55 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   disableButton1(camion:Camion):boolean{
+    /*
     if(camion.odo1Fait!=camion.odo2Fait)
       return this.disableButton2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
       return true;
-    return false;
+    return false;//*/
+    return true;
   }
   disableButton2(camion:Camion):boolean{
-    if(camion.odo2Fait!=camion.odo3Fait)
+    /*if(camion.odo2Fait!=camion.odo3Fait)
       return this.disableButton3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
       return true;
-    return false;
+    return false;//*/
+    return true;
   }
   disableButton3(camion:Camion) : boolean{
+    /*
     if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
       return true;
-    return false;
+    return false;//*/
+    return true;
   }
 
   disableButton(odometre, odoFait:number, odoAFaire:number) : boolean{
+    /*
     if(odoAFaire==0 || odoAFaire==null || odometre==null)
       return true;
     if((odometre-odoFait)<(odoAFaire-5000))
       return true;
-    return false;
+    return false;//*/
+    return true;
   }
   disableButtonInspect(inspect6m:Date) : boolean{
+    /*
     if(inspect6m==null)
       return true;
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
     if (days<152)
       return true;
-    return false;
+    return false;//*/
+    return true;
   }
 
   onEntretien01(camion:Camion){

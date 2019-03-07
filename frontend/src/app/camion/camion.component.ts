@@ -28,7 +28,7 @@ export class CamionComponent implements OnInit {
   reparation:Reparation=new Reparation();
   reparations:Array<Reparation>=[];
   bonDeTravailHistoire:BonDeTravail=new BonDeTravail();
-  modeBonhist=0;
+  
   reparationHistoire:Reparation=new Reparation();
   reparationsHistoire:Array<Reparation>=[];
   // */
@@ -49,6 +49,10 @@ export class CamionComponent implements OnInit {
   modeDefinirEnt:number=0;
   modeBonDeTravail:number=0;
   modeListReparation:number=0;
+  modeBonhist:number=0;
+  modeListGarantie:number=0;
+
+  pieceChercher:string="";  // par default on voit tous pieces garantie
 
   camion:Camion=new Camion();
   id:number;
@@ -187,6 +191,7 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=0;
+    this.modeListGarantie=0;
   }
   onFiche(){
     this.modeInfos=0;
@@ -195,6 +200,7 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=0;
+    this.modeListGarantie=0;
   }
   onEntretiens(){
     this.modeInfos=0;
@@ -203,6 +209,7 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=0;
+    this.modeListGarantie=0;
   }
   onBonDeTravail(){
     this.modeInfos=0;
@@ -211,15 +218,47 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=1;
     this.modeListReparation=0;
+    this.modeListGarantie=0;
+
+    this.reparations.length=0;  // vider la liste reparation
   }
+
+  async onListGarantie(){
+    this.modeInfos=0;
+    this.modeFiche=0;
+    this.modeEntretiens=0;
+    this.modeDefinirEnt=0;
+    this.modeBonDeTravail=0;
+    this.modeListReparation=0;
+    this.modeListGarantie=1;
+    this.reparations.length=0;
+    await this.bonDeTravailsService.bonDeTravailDeCamion(this.id).subscribe((data:Array<BonDeTravail>)=>{      
+      data.sort((a, b) => {return new Date(a.date).getMilliseconds() - new Date(b.date).getMilliseconds()}); // sort date ascending
+      data.forEach(bon=>{
+        this.reparationsService.reparationDeBon(bon.id).subscribe((reps:Array<Reparation>)=>{
+          reps.forEach(rep=>{
+            if(rep.piece!=null && rep.piece.toLocaleUpperCase().includes(this.pieceChercher.toLocaleUpperCase())){
+              this.reparations.push(rep)
+              console.log('rep.piece : '+rep.piece)
+            }  
+          })
+        }, err=>{
+          console.log(err)
+        })
+      })
+    }, err=>{
+      console.log(err);
+    })
+  }
+
   async onListReparation(){
     //alert("La fonction s'en vient.")
     //* find list Bon De Travail
     await this.bonDeTravailsService.bonDeTravailDeCamion(this.id).subscribe((data:Array<BonDeTravail>)=>{
+      //this.bonDeTravails.sort((a, b) => {return (a.date.valueOf() - b.date.valueOf())}); // sort date ascending
+      data.sort((a, b) => {return new Date(a.date).getMilliseconds() - new Date(b.date).getMilliseconds()}); // sort date ascending
+      //data.sort((a, b) => {return b.id - a.id}); // sort date descending - by idBonDeTravail
       this.bonDeTravails=data;
-      this.bonDeTravails.forEach(bon=>{
-        console.log(" bon : "+bon.id +" "+ bon.technicien)
-      })
     }, err=>{
       console.log(err);
     })
@@ -230,20 +269,35 @@ export class CamionComponent implements OnInit {
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=0;
     this.modeListReparation=1;
+    this.modeListGarantie=0;
+
+    this.modeBonhist=0;
   }
   async onHistoireDetailler(bon:BonDeTravail){
     this.bonDeTravailHistoire=bon;
-    if(this.modeBonhist==0){
+    //if(this.modeBonhist==0){
       this.modeBonhist=1;
       await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
         this.reparationsHistoire=data;
       }, err=>{
         console.log(err)
       })
-    }
-    else 
-      this.modeBonhist=0;
+    //}
+    //else 
+      //this.modeBonhist=0;
+  }
 
+  async onGarantieDetailler(idBon:number){
+    //this.bonDeTravailHistoire=
+    await this.bonDeTravailsService.getDetailBonDeTravail(idBon).subscribe((data:BonDeTravail)=>{
+      //this.bonDeTravailHistoire=data;
+      //this.onListReparation();
+      this.modeListGarantie=0;
+      this.modeListReparation=1;
+      this.onHistoireDetailler(data);
+    }, err=>{
+      console.log(err)
+    });
   }
   onDefinirEnt(){
     this.modeInfos=0;
@@ -741,7 +795,7 @@ export class CamionComponent implements OnInit {
     this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
     this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
   }
-
+  
   addReparation(){
     /*await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       this.bonDeTravail=data;
