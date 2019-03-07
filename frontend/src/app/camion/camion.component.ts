@@ -242,6 +242,8 @@ export class CamionComponent implements OnInit {
               console.log('rep.piece : '+rep.piece)
             }  
           })
+          this.reparations.sort((a, b) => {return b.id - a.id});
+          //data.sort((a, b) => {return b.id - a.id}); // sort date descending - by idBonDeTravail - a and b are the BonDeTravail, data is the list of BonDeTravail
         }, err=>{
           console.log(err)
         })
@@ -256,8 +258,8 @@ export class CamionComponent implements OnInit {
     //* find list Bon De Travail
     await this.bonDeTravailsService.bonDeTravailDeCamion(this.id).subscribe((data:Array<BonDeTravail>)=>{
       //this.bonDeTravails.sort((a, b) => {return (a.date.valueOf() - b.date.valueOf())}); // sort date ascending
-      data.sort((a, b) => {return new Date(a.date).getMilliseconds() - new Date(b.date).getMilliseconds()}); // sort date ascending
-      //data.sort((a, b) => {return b.id - a.id}); // sort date descending - by idBonDeTravail
+      //data.sort((a, b) => {return new Date(a.date).getMilliseconds() - new Date(b.date).getMilliseconds()}); // sort date ascending
+      data.sort((a, b) => {return b.id - a.id}); // sort date descending - by idBonDeTravail
       this.bonDeTravails=data;
     }, err=>{
       console.log(err);

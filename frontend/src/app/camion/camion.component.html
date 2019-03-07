@@ -621,7 +621,7 @@
             <tr *ngFor="let rep of reparations">
               <td>{{rep.piece}}</td>
               <td>{{rep.fournisseur}}</td>
-              <td>{{rep.prix | number : '1.2'}}</td>
+              <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
               <td>{{rep.garantie}}</td>
               <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Voir BonDetravail</button></td>
             </tr>
