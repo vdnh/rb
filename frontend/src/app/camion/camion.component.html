@@ -1,7 +1,10 @@
 <div class="w3-container">
   <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
     <div class="panel-heading"> 
-      <h2> Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; </h2>
+      <h2> 
+        Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; 
+        <button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</button>
+      </h2>
       <button class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
       <br>
     </div>
@@ -632,7 +635,7 @@
     <div  *ngIf="modeInfos==1 || modeFiche==1 || modeDefinirEnt==1">
         <table class="table table-striped table-responsive"> 
             <td><button class="btn btn-primary" (click)="saveCamion()">Ok - Modifier</button></td>
-            <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Quit</button></td> 
+            <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</button></td> 
             <td></td>
             <td></td>
             <td></td>

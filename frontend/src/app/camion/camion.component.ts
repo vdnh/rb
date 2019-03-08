@@ -103,15 +103,18 @@ export class CamionComponent implements OnInit {
 
   async ngOnInit() {
     this.today=new Date();
-    this.modeInfos=1;
+    this.modeBonDeTravail=1;  // voir la partie Entretien-BonDetravail au premier
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
     await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
       this.camion=data;
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)
-      this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
+      // this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
+      // this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)
+      // this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3)
+      this.couleur01=this.codeCouleurEnt1(this.camion)
+      this.couleur02=this.codeCouleurEnt2(this.camion)
+      this.couleur03=this.codeCouleurEnt3(this.camion)
       this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique)
       this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel)
       this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel)
@@ -558,12 +561,12 @@ export class CamionComponent implements OnInit {
     this.reparations.push(rep)
     this.camion.odo1Fait=this.camion.odometre; //to test before dicide
     this.camion.ent1Fait=new Date(); //to test before dicide
-    this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1); // to test before dicide
+    this.couleur01=this.codeCouleurEnt1(this.camion); // to test before dicide
     /* stop to test
     this.camion.odo1Fait=this.camion.odometre;
     this.camion.ent1Fait=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
-      this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1);
+      this.couleur01=this.codeCouleurEnt01(this.camion);
     }, err=>{
       console.log(err);
     });//*/
@@ -576,7 +579,8 @@ export class CamionComponent implements OnInit {
     this.reparations.push(rep)
     this.camion.odo2Fait=this.camion.odometre; //to test before dicide
     this.camion.ent2Fait=new Date(); //to test before dicide
-    this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2); // to test before dicide
+    this.couleur02=this.codeCouleurEnt2(this.camion); // to test before dicide
+    this.onEntretien01(); // to test berfore dicide
     /* stop to test
     this.camion.odo2Fait=this.camion.odometre;
     this.camion.ent2Fait=new Date();
@@ -584,7 +588,7 @@ export class CamionComponent implements OnInit {
       //this.refresh();
       //this.gotoDetailTransporter(this.camion.idTransporter);
       this.onEntretien01();
-      this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2);
+      this.couleur02=this.codeCouleurEnt2(this.camion);
     }, err=>{
       console.log(err);
     });//*/
@@ -597,7 +601,8 @@ export class CamionComponent implements OnInit {
     this.reparations.push(rep)
     this.camion.odo3Fait=this.camion.odometre; //to test before dicide
     this.camion.ent3Fait=new Date(); //to test before dicide
-    this.couleur03=this.codeCouleur(this.camion.odo3Fait, this.camion.ent3); // to test before dicide
+    this.couleur03=this.codeCouleurEnt3(this.camion); // to test before dicide
+    this.onEntretien02(); // to test before dicide
     /* stop to test
     this.camion.odo3Fait=this.camion.odometre;
     this.camion.ent3Fait=new Date();
@@ -711,6 +716,22 @@ export class CamionComponent implements OnInit {
     this.camion.inspect6m=new Date();
     this.camionsService.saveCamions(this.camion).subscribe(data=>{
       this.couleur09=this.codeCouleurInspect();
+    }, err=>{
+      console.log(err);
+    });//*/
+  }
+  onAutreEntretien(entretien:AutreEntretien){
+    alert("Entretien - "+entretien.nom);
+    let rep:Reparation=new Reparation();
+    rep.reparationEffectuer= entretien.message; //ent01.message
+    this.reparations.push(rep)
+    entretien.odoFait=this.camion.odometre; //to test before dicide
+    entretien.dateFait=new Date(); // to test before dicide
+    /* stop to test
+    entretien.odoFait=this.camion.odometre;
+    entretien.dateFait=new Date();
+    this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe((data:AutreEntretien)=>{
+      this.couleurAutreEntretien(entretien)
     }, err=>{
       console.log(err);
     });//*/
@@ -909,20 +930,7 @@ export class CamionComponent implements OnInit {
     })
     return repTemps;
   }
-  onAutreEntretien(entretien:AutreEntretien){
-    alert("Entretien - "+entretien.nom);
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= entretien.message; //ent01.message
-    this.reparations.push(rep)
-    /* stop to test
-    entretien.odoFait=this.camion.odometre;
-    entretien.dateFait=new Date();
-    this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe((data:AutreEntretien)=>{
-      this.couleurAutreEntretien(entretien)
-    }, err=>{
-      console.log(err);
-    });//*/
-  }
+
   couleurAutreEntretien(entretien:AutreEntretien){
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
     //console.log('btn-danger" [disabled]="true');

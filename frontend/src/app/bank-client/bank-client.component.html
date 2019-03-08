@@ -43,7 +43,8 @@
     <tr *ngFor="let client of bankClients">
       <td><input class="form-control" type="text" [(ngModel)]="client.nom" disabled/></td>
       <td><input class="form-control" type="text" [(ngModel)]="client.contact" disabled/></td>
-      <td colspan="2" ><input class="form-control" type="text" [(ngModel)]="client.address" disabled/></td>
+      <td colspan="2"><textarea class="form-control" type="text" rows="1" cols="30" disabled>{{client.address}}</textarea></td>
+      <!--input class="form-control" type="text" [(ngModel)]="client.address" disabled/-->
       <td><input class="form-control" type="text" [(ngModel)]="client.tel" disabled/></td>
       <td><input class="form-control" type="text" [(ngModel)]="client.email" disabled/></td>
       <!--td><button class="btn btn-link">Detailler</button></td-->

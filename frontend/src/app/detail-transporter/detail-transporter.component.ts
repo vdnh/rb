@@ -551,7 +551,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   disableButton1(camion:Camion):boolean{
-    /*
+    //*
     if(camion.odo1Fait!=camion.odo2Fait)
       return this.disableButton2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
@@ -559,39 +559,40 @@ export class DetailTransporterComponent implements OnInit {
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
       return true;
     return false;//*/
-    return true;
+    //return true;
   }
   disableButton2(camion:Camion):boolean{
-    /*if(camion.odo2Fait!=camion.odo3Fait)
+    //*
+    if(camion.odo2Fait!=camion.odo3Fait)
       return this.disableButton3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
       return true;
     return false;//*/
-    return true;
+    //return true;
   }
   disableButton3(camion:Camion) : boolean{
-    /*
+    //*
     if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
       return true;
     return false;//*/
-    return true;
+    //return true;
   }
 
   disableButton(odometre, odoFait:number, odoAFaire:number) : boolean{
-    /*
+    //*
     if(odoAFaire==0 || odoAFaire==null || odometre==null)
       return true;
     if((odometre-odoFait)<(odoAFaire-5000))
       return true;
     return false;//*/
-    return true;
+    //return true;
   }
   disableButtonInspect(inspect6m:Date) : boolean{
-    /*
+    ///*
     if(inspect6m==null)
       return true;
     let date = new Date();
@@ -599,11 +600,12 @@ export class DetailTransporterComponent implements OnInit {
     if (days<152)
       return true;
     return false;//*/
-    return true;
+    //return true;
   }
 
   onEntretien01(camion:Camion){
     //let msg:string="test message\n test01 message\n test02 message\n";
+    /*
     alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins. ");
     camion.odo1Fait=camion.odometre;
     camion.ent1Fait=new Date();
@@ -615,10 +617,12 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien02(camion:Camion){
+    /*
     alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
     camion.odo2Fait=camion.odometre;
     camion.ent2Fait=new Date();
@@ -631,10 +635,12 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien03(camion:Camion){
+    /*
     alert("Entretien 3 - Changement filtre a polene");
     camion.odo3Fait=camion.odometre;
     camion.ent3Fait=new Date();
@@ -647,10 +653,12 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien04(camion:Camion){
+    /*
     alert("Entretien 4 - Changement filtre hydrolique");
     camion.odo4Fait=camion.odometre;
     camion.ent4Fait=new Date();
@@ -662,10 +670,12 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien05(camion:Camion){
+    /*
     alert("Entretien 5 - Changement filtre antigel");
     camion.odo5Fait=camion.odometre;
     camion.ent5Fait=new Date();
@@ -677,11 +687,13 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien06(camion:Camion){
-    alert("Entretien 6 - Changement huile antigel");
+    /*
+    alert("Entretien 6 - Changement huile antigel.");
     camion.odo6Fait=camion.odometre;
     camion.ent6Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -692,11 +704,13 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien07(camion:Camion){
-    alert("Entretien 7 - Changement huile transmission");
+    /*
+    alert("Entretien 7 - Changement huile transmission.");
     camion.odo7Fait=camion.odometre;
     camion.ent7Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -707,11 +721,13 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onEntretien08(camion:Camion){
-    alert("Entretien 7 - Changement huile transmission");
+    /*
+    alert("Entretien 8 - Changement huile differentiel.");
     camion.odo8Fait=camion.odometre;
     camion.ent8Fait=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -722,10 +738,12 @@ export class DetailTransporterComponent implements OnInit {
       });    
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
 
   onInspect6(camion:Camion){
+    /*
     alert("Inspection aux 6 mois.");
     camion.inspect6m=new Date();
     this.camionsService.saveCamions(camion).subscribe(data=>{
@@ -736,7 +754,8 @@ export class DetailTransporterComponent implements OnInit {
       });
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(camion.id)
   }
   async autreEntretiens(camion:Camion){
     //let arrayEnts:Array<AutreEntretien>=null;
@@ -765,29 +784,15 @@ export class DetailTransporterComponent implements OnInit {
     return a.entsList.length
   }
   onAutreEntretien(entretien:AutreEntretien, odometre:number){
+    /*
     alert("Entretien : "+ entretien.nom);
     entretien.odoFait=odometre;
     entretien.dateFait=new Date();
     this.autreEntretiensService.saveAutreEntretiens(entretien).subscribe(data=>{
       this.codeCouleur(odometre, entretien.odoFait, entretien.kmTrage)
-      /* this.camions.forEach(async obj =>{
-        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
-          if(data!=null){            
-            let entsAutre:AutreEntretienList=new AutreEntretienList();            
-            entsAutre.entsList=data;
-            entsAutre.unite=obj.unite;
-            entsAutre.odometre=obj.odometre;
-            if(entsAutre.entsList.length != 0)
-              this.arrayArrayEnts.push(entsAutre);
-          }
-        }, err=>{
-          console.log(err)
-        })
-      }, err=>{
-        console.log(err);
-      })          //*/
     }, err=>{
       console.log(err);
-    });
+    });//*/
+    this.gotoDetailCamion(entretien.idCamion)
   }
 }
