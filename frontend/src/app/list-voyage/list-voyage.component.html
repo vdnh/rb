@@ -25,7 +25,7 @@
         </ul>
       </div>
     </div>
-    <div class="panel-heading" *ngIf="role.includes('TRANSPORTER')">
+    <div class="panel-heading" *ngIf="role.includes('TRANSPORTER') && modeModif!=1">
       <div class="panel-body">
         <table class="table table-striped">
           <tr>
@@ -37,6 +37,11 @@
             <td><button class="btn btn-link" (click)="deleteVoyage(v.id)">Delete</button></td>
           </tr>
         </table>
+      </div>
+    </div>
+    <div class="panel-heading" *ngIf="modeModif==1 && role.includes('TRANSPORTER')">
+      <div class="panel-body">
+        <h3>Modifier le voyage</h3>
       </div>
     </div>
   </div>

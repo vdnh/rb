@@ -42,6 +42,7 @@
               <tr>            
                 <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
                 <td><button class="btn btn-success" (click)="onSaveVoyage()">Enregistrer Voyage</button></td>
+                <td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td>
               </tr>  
             </table>            
             <!--/form-->
@@ -58,8 +59,16 @@
         [zoom]="zoom"
         [disableDefaultUI]="false"
         [zoomControl]="true"
-        (mapClick)="mapClicked($event)">
-        <agm-marker 
+        >
+        <!--agm-drawing-manager 
+          (polygonComplete)="polygonCreated($event)" 
+          [drawingControl]="managerOptions.drawingControl" 
+          [drawingControlOptions]="managerOptions.drawingControlOptions"
+          [polygonOptions]='managerOptions.polygonOptions' 
+          [drawingMode]='managerOptions.drawingMode'
+        >
+        </agm-drawing-manager-->
+        <!--agm-marker 
           *ngFor="let m of markers; let i = index"
           (markerClick)="clickedMarker(m.label, i)"
           [latitude]="m.lat"
@@ -70,7 +79,7 @@
           <agm-info-window>
             <strong>InfoWindow content</strong>
           </agm-info-window>    
-        </agm-marker>
+        </agm-marker-->
   
         <agm-circle 
           [latitude]="latLngOrigin.lat()" 
@@ -93,6 +102,20 @@
           (radiusChange)="onRadius2Changed($event)"
           (centerChange)="onCenter2Changed($event)">
         </agm-circle>
+        <agm-polygon [paths]="paths" [editable]="true" [polyDraggable]="true">
+        </agm-polygon>
       </agm-map>
     </div>
+    <br>
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="text-center">
+        <h3>
+          <div #gmap style="width:100%;height:400px" ></div>
+        </h3>
+      </div>
+    </div>
+  </div>
+<br>
+<button (click)="getPaths()">Get Latest Path</button>
   <!--/div-->

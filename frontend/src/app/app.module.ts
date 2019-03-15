@@ -42,7 +42,7 @@ import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
 import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
 import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
 import { AgmCoreModule } from '@agm/core';
-import { from } from 'rxjs';
+//import { from } from 'rxjs';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { BankClientComponent } from './bank-client/bank-client.component';
 //import { Reparation } from 'src/model/model.reparation';

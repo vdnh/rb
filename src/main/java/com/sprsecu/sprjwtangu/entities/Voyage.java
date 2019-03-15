@@ -39,7 +39,7 @@ public class Voyage implements Serializable{
     private Boolean chercheCorridor;
     private Long idTransporter;
     private String nomTransporter;
-    
+    private String paths; // coordonees de polygon en text
     public void setDateDepart(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

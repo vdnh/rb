@@ -10,7 +10,7 @@ import { Voyage } from 'src/model/model.voyage';
   styleUrls: ['./list-voyage.component.css']
 })
 export class ListVoyageComponent implements OnInit {
-
+  modeModif=0;
   pageVoyage:PageVoyage = new  PageVoyage();  // pour tenir des Voyages
   motCle:string="";
   currentPage:number=0;
@@ -51,7 +51,8 @@ export class ListVoyageComponent implements OnInit {
   }
 
   gotoDetailVoyage(v:Voyage){
-    this.router.navigate(['detail-voyage',v.id]);
+    this.modeModif=1;
+    //this.router.navigate(['detail-voyage',v.id]);
   }
 
   deleteVoyage(id:number){

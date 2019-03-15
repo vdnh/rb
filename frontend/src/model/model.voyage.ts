@@ -10,4 +10,5 @@ export class Voyage{
     chercheCorridor:boolean=false;
     idTransporter:number=0.00; 
     nomTransporter:string;
+    paths:string; // coordonnes de polygon en text
 }
