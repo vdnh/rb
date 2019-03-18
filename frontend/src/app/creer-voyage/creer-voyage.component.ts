@@ -137,8 +137,8 @@ export class CreerVoyageComponent implements OnInit {
     //console.log('this.today : '+this.today)
     this.voyage.origin="Montreal";
     this.voyage.destination="Toronto";
-    this.voyage.radiusOrigin=200; // en miles
-    this.voyage.radiusDestination=200; // en miles
+    this.voyage.radiusOrigin=100; // en miles
+    this.voyage.radiusDestination=100; // en miles
     //this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     //this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
     //*
@@ -170,7 +170,7 @@ export class CreerVoyageComponent implements OnInit {
   async bk_ngAfterContentInit(){
     let mapProp = {
       center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
-      zoom: 11,
+      zoom: 6,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
@@ -204,7 +204,9 @@ export class CreerVoyageComponent implements OnInit {
     await this.showMap();
   }
   drawOrigin(){
-    //this.originCircle.setMap(null)
+    if(this.originCircle){
+      this.originCircle.setMap(null)
+    }
     this.originCircle = new google.maps.Circle({
       center: new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()),
       radius: this.mileEnKm(this.voyage.radiusOrigin)*1000,  // en metre
@@ -212,10 +214,12 @@ export class CreerVoyageComponent implements OnInit {
       editable: false,
       draggable: false,
     });
-    this.originCircle.setMap(this.map)
+    this.originCircle.setMap(this.map)  
   }
   drawDest(){
-    //this.destCircle1.setMap(null)
+    if(this.destCircle1){
+      this.destCircle1.setMap(null)
+    }
     this.destCircle1 = new google.maps.Circle({
       center: new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()),
       radius: this.mileEnKm(this.voyage.radiusDestination)*1000, // en metre
@@ -275,11 +279,12 @@ export class CreerVoyageComponent implements OnInit {
   showMap() {
     let mapProp = {
       center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
-      zoom: 11,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      zoom: 1,
+      //mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
     this.infoWindow = new google.maps.InfoWindow;
+    /*
     google.maps.event.addListener(this.map, 'click', (e)=> {
       let resultColor =
           google.maps.geometry.poly.containsLocation(e.latLng, this.polygon) ?
@@ -304,9 +309,9 @@ export class CreerVoyageComponent implements OnInit {
           strokeWeight: .5,
           scale: 10
         }
-      });//*/
+      });///
     });
-    //*
+    //*/
     this.drawOrigin();
     this.drawDest();
     //this.drawCorridor();
@@ -464,9 +469,9 @@ getPaths() {
 onDrawingPolygon(){
 
 }
-  originChange(){
+  async originChange(){
     //*
-    this.geocoding.codeAddress(this.voyage.origin).forEach(
+    await this.geocoding.codeAddress(this.voyage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngOrigin= new google.maps.LatLng(
@@ -481,12 +486,13 @@ onDrawingPolygon(){
             //console.log(this.latLngOrigin.lat())
             //console.log(this.latLngOrigin.lng())
     });//*/
+    await this.showMap();
     //console.log('hi from originChange')
   }
   
-  destinationChange(){
+  async destinationChange(){
     //*
-    this.geocoding.codeAddress(this.voyage.destination).forEach(
+    await this.geocoding.codeAddress(this.voyage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngDestination= new google.maps.LatLng(
@@ -502,6 +508,7 @@ onDrawingPolygon(){
             //console.log(this.latLngDestination.lat())
             //console.log(this.latLngDestination.lng())
     });//*/
+    this.showMap();
     //console.log('hi from destinationChange')
   }
   onSaveVoyage(){
@@ -533,14 +540,20 @@ onDrawingPolygon(){
   }
 
   onRadius1Changed(radius:number){
-    this.voyage.radiusOrigin=this.kmEnMile(radius)/1000;
-    console.log('RadiusOrigin was changed.: '+ this.voyage.radiusOrigin)
-    this.showMap(); // to test
+    //await(()=> {
+      //this.voyage.radiusOrigin=this.mileEnKm(radius)/1000;
+      //await 
+      this.showMap(); // to test
+    //})
+    console.log('RadiusOrigin was changed.: '+ this.voyage.radiusOrigin)    
   }
   onRadius2Changed(radius:number){
-    this.voyage.radiusDestination=this.kmEnMile(radius)/1000;
+    //await (()=> {
+      //this.voyage.radiusDestination=this.mileEnKm(radius)/1000;
+      //await 
+      this.showMap(); // to test
+    //})
     console.log('RadiusDestination was changed.: '+ this.voyage.radiusDestination)
-    this.showMap(); // to test
   }
   async onCenter1Changed(center:Center){
       //console.log('center.lat + center.lng : '+center.lat+' '+center.lng)

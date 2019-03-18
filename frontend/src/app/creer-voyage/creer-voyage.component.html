@@ -24,16 +24,16 @@
               </tr>
               <tr>
                 <td><input type="text" [(ngModel)]="voyage.origin" name="origin" class="form-control" (change)="originChange()"/></td>
-                <td><input type="number" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control"></td>
+                <td><input type="number" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control" (change)="onRadius1Changed(voyage.radiusOrigin)"></td>
                 <td>
-                  <select type="number" [(ngModel)]="voyage.radiusOrigin">
+                  <select type="number" [(ngModel)]="voyage.radiusOrigin" (change)="onRadius1Changed(voyage.radiusOrigin)">
                     <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
                   </select>                    
                 </td>                   
                 <td><input type="text" [(ngModel)]="voyage.destination" name="destination" class="form-control" (change)="destinationChange()"/></td>
-                <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control"></td>
+                <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control" (change)="onRadius2Changed(voyage.radiusDestination)"></td>
                 <td>
-                  <select type="number" [(ngModel)]="voyage.radiusDestination">
+                  <select type="number" [(ngModel)]="voyage.radiusDestination" (change)="onRadius2Changed(voyage.radiusDestination)">
                     <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
                   </select>                    
                 </td>
@@ -52,14 +52,14 @@
   <!--/div-->  
     <div>
         <!-- position: absolute; top: 0px; left: 0px; -->
-      <agm-map 
+      <!--agm-map 
         [latitude]="lat"
         [longitude]="lng"
         style="height: 450px; width: 100%; background-color: rgb(229, 227, 223);"
         [zoom]="zoom"
         [disableDefaultUI]="false"
         [zoomControl]="true"
-        >
+    -->
         <!--agm-drawing-manager 
           (polygonComplete)="polygonCreated($event)" 
           [drawingControl]="managerOptions.drawingControl" 
@@ -81,7 +81,7 @@
           </agm-info-window>    
         </agm-marker-->
   
-        <agm-circle 
+        <!--agm-circle 
           [latitude]="latLngOrigin.lat()" 
           [longitude]="latLngOrigin.lng()" 
           [radius]="mileEnKm(voyage.radiusOrigin)*1000"
@@ -104,7 +104,7 @@
         </agm-circle>
         <agm-polygon [paths]="paths" [editable]="true" [polyDraggable]="true">
         </agm-polygon>
-      </agm-map>
+      </agm-map-->
     </div>
     <br>
   <div class="row" >
