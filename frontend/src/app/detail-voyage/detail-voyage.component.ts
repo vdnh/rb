@@ -100,7 +100,7 @@ export class DetailVoyageComponent implements OnInit {
         console.log('this.latLngOrigin.lng() : '+this.latLngOrigin.lng())
         console.log('this.latLngDestination.lat() : '+this.latLngDestination.lat())
         console.log('this.latLngDestination.lng() : '+this.latLngDestination.lng())
-        this.showMap();
+        //this.showMap();
         //*/
       this.voyage=data;
       this.transportersService.getDetailTransporter(this.voyage.idTransporter).subscribe((data:Transporter)=>{
@@ -118,7 +118,7 @@ export class DetailVoyageComponent implements OnInit {
       }, err=>{
         console.log();
       });
-      //await this.showMap();  
+      await this.showMapInit();  
     }
     //}
     , err=>{
@@ -158,6 +158,105 @@ export class DetailVoyageComponent implements OnInit {
   }
 
   async showMap() {
+    let mapProp = {
+      center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
+      zoom: 6,
+      //mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    this.infoWindow = new google.maps.InfoWindow;
+    await this.drawOrigin();
+    await this.drawDest();
+    //this.drawCorridor();
+    //*/
+
+    //* spherical
+    this.spherical = google.maps.geometry.spherical;
+    var F: google.maps.LatLng = this.latLngOrigin //new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()); 
+    //console.log('F: '+F.lat()+' '+F.lng())
+    var T: google.maps.LatLng = this.latLngDestination  //new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()); 
+    //console.log('T: '+T.lat()+' '+T.lng())
+    // Center on the segment
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(F);
+    bounds.extend(T);
+    this.map.fitBounds(bounds);//*/
+    // Begin - If we find with corridor
+    if(this.voyage.chercheCorridor==true){
+      // Get direction of the segment
+      var heading = this.spherical.computeHeading(F, T);
+      var center1:google.maps.LatLng = new google.maps.LatLng(F.lat(), F.lng())
+      //console.log('center1: '+center1.lat()+' '+center1.lng())
+      var center2:google.maps.LatLng = new google.maps.LatLng(T.lat(), T.lng())
+      //console.log('center2: '+center1.lat()+' '+center2.lng())
+      var vertex1 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading+90);
+      //console.log('vertex1: '+vertex1.lat()+' '+vertex1.lng())
+      var vertex2 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading-90);
+      //console.log('vertex2: '+vertex2.lat()+' '+vertex2.lng())
+      var vertex3 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading-90);
+      //console.log('vertex3: '+vertex3.lat()+' '+vertex3.lng())
+      var vertex4 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading+90);
+      //console.log('vertex4: '+vertex4.lat()+' '+vertex4.lng())
+      this.paths=[];
+      if(this.polygon){
+        //console.log('this.polygon.setMap(null); before')
+        this.polygon.setMap(null)
+        //console.log('this.polygon.setMap(null); after')
+      }
+      this.paths=[
+        {lat: vertex1.lat(), lng:vertex1.lng() },
+        {lat: vertex2.lat(), lng:vertex2.lng() },
+        {lat: vertex3.lat(), lng:vertex3.lng() },
+        {lat: vertex4.lat(), lng:vertex4.lng() }
+      ]
+      /*/ Rebuild paths
+      let pathsRebuild = this.voyage.paths.split(",")
+      console.log("pathsRebuild : "+pathsRebuild)
+      let testPaths:Array<LatLngLiteral>= []; // rebuild from array of string
+      for(var i=0; i<=pathsRebuild.length-2; i=i+2){
+        //let j=i+1;
+        testPaths.push({lat:Number(pathsRebuild[i]), lng:Number(pathsRebuild[i+1])})
+      }
+      this.paths=testPaths;
+      console.log("testPaths.toString() : ")
+      testPaths.forEach((y:LatLngLiteral)=>{        
+        console.log('lat : '+y.lat + ' lng : '+y.lng)
+      })
+
+      //*/
+
+      this.polygon = new google.maps.Polygon({
+        paths: this.paths,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF00EE',
+        fillOpacity: 0.35,
+        editable: true,
+        draggable:false,
+      });
+      this.polygon.setMap(this.map);
+      //*
+      this.polygon.addListener('click', (event)=>{
+        var vertices = this.polygon.getPath();
+        var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+          //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+          //'<br>';
+        // Iterate over the vertices.
+        for (var i =0; i < vertices.getLength(); i++) {
+          var xy = vertices.getAt(i);
+          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+            xy.lng();
+        }
+        // Replace the info window's content and position.
+        this.infoWindow.setContent(contentString);
+        this.infoWindow.setPosition(event.latLng);
+        this.infoWindow.open(this.map);
+      })
+    }// End - If we find with corridor
+    //*/
+  }
+  async showMapInit() {
     let mapProp = {
       center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
       zoom: 6,
