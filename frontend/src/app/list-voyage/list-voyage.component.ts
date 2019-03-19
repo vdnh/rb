@@ -51,8 +51,8 @@ export class ListVoyageComponent implements OnInit {
   }
 
   gotoDetailVoyage(v:Voyage){
-    this.modeModif=1;
-    //this.router.navigate(['detail-voyage',v.id]);
+    //this.modeModif=1;
+    this.router.navigate(['detail-voyage',v.id]);
   }
 
   deleteVoyage(id:number){

@@ -3,7 +3,9 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
 import { MouseEvent, MapsAPILoader, LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { GeolocationService} from 'src/services/geolocation.service';
 import { Router } from '@angular/router';
+import { from } from 'rxjs';
 declare var google: any;
 
 @Component({
@@ -23,6 +25,8 @@ export class CreerVoyageComponent implements OnInit {
   // initial center position for the map
   lat: number = 45.503964;
   lng: number = -73.567426;
+
+  center : google.maps.LatLng=null;
   latLngOrigin:google.maps.LatLng =null;
   latLngDestination:google.maps.LatLng =null;
   
@@ -127,7 +131,8 @@ export class CreerVoyageComponent implements OnInit {
   //*/
   // finir ajouter des circles et markes */
   
-  constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, public router:Router) { 
+  constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, 
+    private geolocation : GeolocationService, public router:Router) { 
     this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
   }
@@ -135,13 +140,24 @@ export class CreerVoyageComponent implements OnInit {
   async ngOnInit() {
     this.today=new Date();
     //console.log('this.today : '+this.today)
-    this.voyage.origin="Montreal";
-    this.voyage.destination="Toronto";
-    this.voyage.radiusOrigin=100; // en miles
-    this.voyage.radiusDestination=100; // en miles
+    this.voyage.origin="";
+    this.voyage.destination="";
+    this.voyage.radiusOrigin=0; // en miles
+    this.voyage.radiusDestination=0; // en miles
     //this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     //this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
     //*
+    if(navigator.geolocation){
+      await this.geolocation.getCurrentPosition().subscribe(
+        (position)=>{
+          this.center=new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+          this.latLngOrigin=this.center
+          this.latLngDestination=this.center
+        }
+      )
+    }
+    
+    /*
     await this.geocoding.codeAddress(this.voyage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -150,8 +166,11 @@ export class CreerVoyageComponent implements OnInit {
                 results[0].geometry.location.lng()                            
               )                            
             }
-            console.log('this.latLngOrigin.lat() : '+this.latLngOrigin.lat())
-            console.log(this.latLngOrigin.lng())
+            else{
+              this.latLngOrigin=this.center
+            }
+            //console.log('this.latLngOrigin.lat() : '+this.latLngOrigin.lat())
+            //console.log(this.latLngOrigin.lng())
       });
     await this.geocoding.codeAddress(this.voyage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
@@ -160,6 +179,9 @@ export class CreerVoyageComponent implements OnInit {
             results[0].geometry.location.lat(),
             results[0].geometry.location.lng()                            
           )
+        }
+        else{
+          this.latLngDestination=this.center
         }
       });//*/
     await this.showMap();  
@@ -279,7 +301,7 @@ export class CreerVoyageComponent implements OnInit {
   showMap() {
     let mapProp = {
       center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
-      zoom: 1,
+      zoom: 6,
       //mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
@@ -320,68 +342,78 @@ export class CreerVoyageComponent implements OnInit {
     //* spherical
     this.spherical = google.maps.geometry.spherical;
     var F: google.maps.LatLng = this.latLngOrigin //new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()); 
-    console.log('F: '+F.lat()+' '+F.lng())
+    //console.log('F: '+F.lat()+' '+F.lng())
     var T: google.maps.LatLng = this.latLngDestination  //new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()); 
-    console.log('T: '+T.lat()+' '+T.lng())
+    //console.log('T: '+T.lat()+' '+T.lng())
     // Center on the segment
     var bounds = new google.maps.LatLngBounds();
     bounds.extend(F);
     bounds.extend(T);
-    this.map.fitBounds(bounds);
-    // Get direction of the segment
-    var heading = this.spherical.computeHeading(F, T);
-    var center1:google.maps.LatLng = new google.maps.LatLng(F.lat(), F.lng())
-    console.log('center1: '+center1.lat()+' '+center1.lng())
-    var center2:google.maps.LatLng = new google.maps.LatLng(T.lat(), T.lng())
-    console.log('center2: '+center1.lat()+' '+center2.lng())
-    var vertex1 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading+90);
-    console.log('vertex1: '+vertex1.lat()+' '+vertex1.lng())
-    var vertex2 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading-90);
-    console.log('vertex2: '+vertex2.lat()+' '+vertex2.lng())
-    var vertex3 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading-90);
-    console.log('vertex3: '+vertex3.lat()+' '+vertex3.lng())
-    var vertex4 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading+90);
-    console.log('vertex4: '+vertex4.lat()+' '+vertex4.lng())
-    this.paths=[];
-    if(this.polygon){
-      console.log('this.polygon.setMap(null); before')
-      this.polygon.setMap(null)
-      console.log('this.polygon.setMap(null); after')
-    }
-    this.paths=[
-      {lat: vertex1.lat(), lng:vertex1.lng() },
-      {lat: vertex2.lat(), lng:vertex2.lng() },
-      {lat: vertex3.lat(), lng:vertex3.lng() },
-      {lat: vertex4.lat(), lng:vertex4.lng() }
-    ]
-    this.polygon = new google.maps.Polygon({
-      paths: this.paths,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF00EE',
-      fillOpacity: 0.35,
-      editable: true,
-      draggable:false,
-    });
-    this.polygon.setMap(this.map);
-    //*
-    this.polygon.addListener('click', (event)=>{
-      var vertices = this.polygon.getPath();
-      var contentString = '<b>Polygon Paths Review</b><br>' +
-        'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
-        '<br>';
-      // Iterate over the vertices.
-      for (var i =0; i < vertices.getLength(); i++) {
-        var xy = vertices.getAt(i);
-        contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
-          xy.lng();
+    this.map.fitBounds(bounds);//*/
+    // Begin - If we find with corridor
+    if(this.voyage.chercheCorridor==true){
+      // Get direction of the segment
+      var heading = this.spherical.computeHeading(F, T);
+      var center1:google.maps.LatLng = new google.maps.LatLng(F.lat(), F.lng())
+      //console.log('center1: '+center1.lat()+' '+center1.lng())
+      var center2:google.maps.LatLng = new google.maps.LatLng(T.lat(), T.lng())
+      //console.log('center2: '+center1.lat()+' '+center2.lng())
+      var vertex1 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading+90);
+      //console.log('vertex1: '+vertex1.lat()+' '+vertex1.lng())
+      var vertex2 = this.spherical.computeOffset(center1, this.mileEnKm(this.voyage.radiusOrigin)*1000, heading-90);
+      //console.log('vertex2: '+vertex2.lat()+' '+vertex2.lng())
+      var vertex3 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading-90);
+      //console.log('vertex3: '+vertex3.lat()+' '+vertex3.lng())
+      var vertex4 = this.spherical.computeOffset(center2, this.mileEnKm(this.voyage.radiusDestination)*1000, heading+90);
+      //console.log('vertex4: '+vertex4.lat()+' '+vertex4.lng())
+      this.paths=[];
+      if(this.polygon){
+        //console.log('this.polygon.setMap(null); before')
+        this.polygon.setMap(null)
+        //console.log('this.polygon.setMap(null); after')
       }
-      // Replace the info window's content and position.
-      this.infoWindow.setContent(contentString);
-      this.infoWindow.setPosition(event.latLng);
-      this.infoWindow.open(this.map);
-    })//*/
+      this.paths=[
+        {lat: vertex1.lat(), lng:vertex1.lng() },
+        {lat: vertex2.lat(), lng:vertex2.lng() },
+        {lat: vertex3.lat(), lng:vertex3.lng() },
+        {lat: vertex4.lat(), lng:vertex4.lng() }
+      ]
+      this.polygon = new google.maps.Polygon({
+        paths: this.paths,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF00EE',
+        fillOpacity: 0.35,
+        editable: true,
+        draggable:false,
+      });
+      this.polygon.setMap(this.map);
+      //*
+      this.polygon.addListener('click', (event)=>{
+        var vertices = this.polygon.getPath();
+        var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+          //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+          //'<br>';
+        // Iterate over the vertices.
+        for (var i =0; i < vertices.getLength(); i++) {
+          var xy = vertices.getAt(i);
+          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+            xy.lng();
+        }
+        // Replace the info window's content and position.
+        this.infoWindow.setContent(contentString);
+        this.infoWindow.setPosition(event.latLng);
+        this.infoWindow.open(this.map);
+      })
+    }// End - If we find with corridor
+    //*/
+  }
+
+  onCheckCorridor(){
+    //if(this.voyage.chercheCorridor==true){
+      this.showMap();
+    //}
   }
 
 addPolygonChangeEvent(polygon) {
@@ -465,9 +497,6 @@ getPaths() {
     return paths;
   }
   return [];
-}
-onDrawingPolygon(){
-
 }
   async originChange(){
     //*

@@ -60,7 +60,9 @@ import { Observable } from 'rxjs';
                             'Geocoding service: geocode was not successful for the following reason: '
                             + status
                         );
-                        observer.error(status);
+                        alert("Ne pas trouver cette endroit. Veuillez verifier, SVP!" )
+                        //observer.error(status);
+                        observer.complete();
                     }
                 })
             );

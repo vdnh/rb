@@ -45,6 +45,7 @@ import { AgmCoreModule } from '@agm/core';
 //import { from } from 'rxjs';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { BankClientComponent } from './bank-client/bank-client.component';
+import { GeolocationService } from 'src/services/geolocation.service';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
@@ -114,7 +115,7 @@ const appRoutes:Routes=[
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, BonDeTravailsService, 
+    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
     ReparationsService, BankClientsService],
   bootstrap: [AppComponent]
 })

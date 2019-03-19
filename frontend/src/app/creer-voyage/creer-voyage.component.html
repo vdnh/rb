@@ -9,7 +9,7 @@
                 <th><label class="control-label">Prevoir pour :</label></th>   
                 <th><input type="date" [(ngModel)]="voyage.dateDepart" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th>                                 
                 <th><label class="control-label">Chercher Corridor</label></th>                
-                <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor"></td>                
+                <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor" (change)="onCheckCorridor()"></td>                
               </tr>          
               <tr>
                 <th><label class="control-label">Type de Camion : </label></th>                                      
@@ -42,7 +42,7 @@
               <tr>            
                 <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
                 <td><button class="btn btn-success" (click)="onSaveVoyage()">Enregistrer Voyage</button></td>
-                <td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td>
+                <!--td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td-->
               </tr>  
             </table>            
             <!--/form-->
@@ -111,11 +111,11 @@
     <div class="col-md-12">
       <div class="text-center">
         <h3>
-          <div #gmap style="width:100%;height:400px" ></div>
+          <div #gmap style="width:100%;height:500px" ></div>
         </h3>
       </div>
     </div>
   </div>
 <br>
-<button (click)="getPaths()">Get Latest Path</button>
+<!--button (click)="getPaths()">Get Latest Path</button-->
   <!--/div-->
