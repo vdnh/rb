@@ -2,12 +2,13 @@ import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { AutreEntretien } from "../model/model.autreEntretien";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+//import { Observable } from 'rxjs';
+import * as myGlobals from './globals'; //<==== to use variables from globals.ts
 
 @Injectable()
 export class AutreEntretiensService{
   
-    adServer="//192.168.0.131";
+    adServer=myGlobals.adServer; //"//192.168.0.131";
     private jwToken=null;
 
     constructor(public http:HttpClient){

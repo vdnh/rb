@@ -2,14 +2,15 @@ import { Injectable } from "@angular/core";
 //import "rxjs/Rx";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { Role } from 'src/model/model.role';
+//import { Role } from 'src/model/model.role';
 //import {JwtHelper} from '@auth0/angular-jwt'
+import * as myGlobals from './globals'; //<==== to use variables from globals.ts
 
 @Injectable()
 export class AuthenticationService{
   
-    private host:string="http://192.168.0.131:8080";
-    private hostUserInfo:string="http://192.168.0.131:8080/users/";
+    private host:string=myGlobals.host; //"http://192.168.0.131:8080";
+    private hostUserInfo:string=myGlobals.hostUserInfo; //"http://192.168.0.131:8080/users/";
     private jwToken=null;
     public role:string;
     private userName : string = "";

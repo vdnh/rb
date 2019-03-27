@@ -2,15 +2,16 @@ import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Shipper } from "../model/model.shipper";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { PageShipper } from 'src/model/model.pageShipper';
+//import { Observable } from 'rxjs';
+//import { PageShipper } from 'src/model/model.pageShipper';
 //import { Http, Headers, RequestOptions } from '@angular/http';
 //import { HttpHeaders } from '@angular/common/http';
+import * as myGlobals from './globals'; //<==== to use variables from globals.ts
 
 @Injectable()
 export class ShippersService{
     
-    adServer="//192.168.0.131";
+    adServer=myGlobals.adServer; //"//192.168.0.131";
     private jwToken=null;
 
     //headers: Headers = new Headers();

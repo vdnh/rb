@@ -71,8 +71,7 @@ export class DetailVoyageComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //this.role=localStorage.getItem('role');
-    //alert("Wait for 2 seconds, we load data, please!")
+    this.role=localStorage.getItem('role');
     await this.voyagesService.getDetailVoyage(this.id).subscribe(async (data:Voyage)=>{
       //*
       console.log(data.origin)
@@ -232,27 +231,29 @@ export class DetailVoyageComponent implements OnInit {
         strokeWeight: 2,
         fillColor: '#FF00EE',
         fillOpacity: 0.35,
-        editable: true,
+        editable: (this.role.includes('TRANSPORTER')),
         draggable:false,
       });
       this.polygon.setMap(this.map);
       //*
-      this.polygon.addListener('click', (event)=>{
-        var vertices = this.polygon.getPath();
-        var contentString = '<b>Coordonees de Corridor</b><br>'; // +
-          //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
-          //'<br>';
-        // Iterate over the vertices.
-        for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
-            xy.lng();
-        }
-        // Replace the info window's content and position.
-        this.infoWindow.setContent(contentString);
-        this.infoWindow.setPosition(event.latLng);
-        this.infoWindow.open(this.map);
-      })
+      if(this.role.includes('TRANSPORTER')){
+        this.polygon.addListener('click', (event)=>{
+          var vertices = this.polygon.getPath();
+          var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+            //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+            //'<br>';
+          // Iterate over the vertices.
+          for (var i =0; i < vertices.getLength(); i++) {
+            var xy = vertices.getAt(i);
+            contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+              xy.lng();
+          }
+          // Replace the info window's content and position.
+          this.infoWindow.setContent(contentString);
+          this.infoWindow.setPosition(event.latLng);
+          this.infoWindow.open(this.map);
+        })
+      }
     }// End - If we find with corridor
     //*/
   }
@@ -331,27 +332,29 @@ export class DetailVoyageComponent implements OnInit {
         strokeWeight: 2,
         fillColor: '#FF00EE',
         fillOpacity: 0.35,
-        editable: true,
+        editable: (this.role.includes('TRANSPORTER')),
         draggable:false,
       });
       this.polygon.setMap(this.map);
       //*
-      this.polygon.addListener('click', (event)=>{
-        var vertices = this.polygon.getPath();
-        var contentString = '<b>Coordonees de Corridor</b><br>'; // +
-          //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
-          //'<br>';
-        // Iterate over the vertices.
-        for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
-            xy.lng();
-        }
-        // Replace the info window's content and position.
-        this.infoWindow.setContent(contentString);
-        this.infoWindow.setPosition(event.latLng);
-        this.infoWindow.open(this.map);
-      })
+      if(this.role.includes('TRANSPORTER')){
+        this.polygon.addListener('click', (event)=>{
+          var vertices = this.polygon.getPath();
+          var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+            //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+            //'<br>';
+          // Iterate over the vertices.
+          for (var i =0; i < vertices.getLength(); i++) {
+            var xy = vertices.getAt(i);
+            contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+              xy.lng();
+          }
+          // Replace the info window's content and position.
+          this.infoWindow.setContent(contentString);
+          this.infoWindow.setPosition(event.latLng);
+          this.infoWindow.open(this.map);
+        })
+      }
     }// End - If we find with corridor
     //*/
   }
@@ -490,16 +493,15 @@ getPaths() {
     this.getPaths();
     this.voyage.dateDepart = new Date(this.voyage.dateDepart)
     this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-      this.router.navigateByUrl("/list-demande");
+      this.router.navigateByUrl("/list-voyage");
     }
     , err=>{
       console.log(err)
     })
   }
 
-  onReset(){
-    this.voyage=new Voyage();
-    this.ngOnInit()
+  onRetour(){
+    this.router.navigateByUrl("/list-voyage")
   }
 
   // km en mile

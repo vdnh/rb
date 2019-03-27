@@ -7,6 +7,7 @@ export class Voyage{
     radiusOrigin:number=0.00;
     radiusDestination:number=0.00;
     typeCamion:string;
+    optionVoyage:string;
     chercheCorridor:boolean=false;
     idTransporter:number=0.00; 
     nomTransporter:string;

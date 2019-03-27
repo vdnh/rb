@@ -7,7 +7,7 @@ import { TasksComponent } from './tasks/tasks.component';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { RegistrationComponent } from './registration/registration.component';
 import {Routes, RouterModule} from '@angular/router';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { CalculePrixComponent } from './calcule-prix/calcule-prix.component';
@@ -107,7 +107,7 @@ const appRoutes:Routes=[
     //MapComponent,
   ],
   imports: [
-    BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, 
+    BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, BrowserModule, ReactiveFormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
       libraries: ['places', 'drawing', 'geometry'],

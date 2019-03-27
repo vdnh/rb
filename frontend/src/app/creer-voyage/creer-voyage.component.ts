@@ -6,6 +6,7 @@ import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService} from 'src/services/geolocation.service';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
+import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
 declare var google: any;
 
 @Component({
@@ -17,7 +18,44 @@ export class CreerVoyageComponent implements OnInit {
   today:Date; 
   voyage:Voyage=new Voyage();
   listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
-  
+  //* pour checkBox list
+  formGroup: FormGroup;
+  camionTypes = [
+    { id: 1, name: 'Van/DryBox' },
+    { id: 2, name: 'FlatBed' },
+    { id: 3, name: 'RackAndTarp' },
+    { id: 4, name: 'Floats' },
+    { id: 5, name: 'Reefer' },
+    { id: 6, name: 'StepDeck' },
+    { id: 7, name: 'Container' },
+    { id: 8, name: 'LowBoy/RGN' },
+    { id: 9, name: 'StraightTruck' },
+    { id: 10, name: 'DoubleDrop' },
+    { id: 11, name: 'SuperB' },
+    { id: 12, name: 'PowerOnly' },
+    { id: 13, name: 'CurtainSide' },
+    { id: 14, name: 'RollTiteTrailer' },
+    { id: 15, name: 'DumpTrailer' },
+    { id: 16, name: 'Other' },
+    { id: 17, name: 'Air Ride' },
+    { id: 18, name: 'Chains' },
+    { id: 19, name: 'Tarps' },
+    { id: 20, name: 'Team' },
+    { id: 21, name: 'Heat' },
+    { id: 22, name: 'B-Train' },
+    { id: 23, name: 'HazMat' },
+    { id: 24, name: 'Vented' },
+    { id: 25, name: 'Talgate' },
+    { id: 26, name: 'Expedite' },
+    { id: 27, name: 'Blanket Wrap' },
+    { id: 28, name: 'Insulated' },
+    { id: 29, name: 'Tri-Axle' },
+    { id: 30, name: 'Frozen' },
+    { id: 31, name: 'Inbond' },
+    { id: 32, name: 'Other' }
+  ];
+
+  //*/  
   //* Pour ajouter des circles and markers sur la carte
   // google maps zoom level
   zoom: number = 6;
@@ -132,10 +170,55 @@ export class CreerVoyageComponent implements OnInit {
   // finir ajouter des circles et markes */
   
   constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, 
-    private geolocation : GeolocationService, public router:Router) { 
+    private geolocation : GeolocationService,  private formBuilder:FormBuilder, public router:Router) 
+    { 
     this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
+    //* construct for checkbox list
+    const selectAllControl = new FormControl(false);
+    const formControls = this.camionTypes.map(control => new FormControl(false));
+    this.formGroup = this.formBuilder.group({
+      camionTypes: new FormArray(formControls),
+      selectAll: selectAllControl
+    });//*/
   }
+
+  //* fonctionnes de checkbox list
+  onChangeCamionTypes(): void {
+    // Subscribe to changes on the selectAll checkbox
+    this.formGroup.get('selectAll').valueChanges.subscribe(bool => {
+      this.formGroup
+        .get('camionTypes')
+        .patchValue(Array(this.camionTypes.length).fill(bool), { emitEvent: false });
+    });
+
+    // Subscribe to changes on the music preference checkboxes
+    this.formGroup.get('camionTypes').valueChanges.subscribe(val => {
+      const allSelected = val.every(bool => bool);
+      if (this.formGroup.get('selectAll').value !== allSelected) {
+        this.formGroup.get('selectAll').patchValue(allSelected, { emitEvent: false });
+      }
+    });
+  }
+
+  onChangeTypeCamion() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.voyage.typeCamion = selectedCamionTypesNames.toString();
+  }
+
+  onChangeOptionVoyage() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.voyage.optionVoyage = selectedCamionTypesNames.toString();
+  }
+  //*/ fin de fonctionnes de checkbox list
 
   async ngOnInit() {
     this.today=new Date();
@@ -187,7 +270,8 @@ export class CreerVoyageComponent implements OnInit {
     await this.showMap();  
     this.voyage.idTransporter = Number(localStorage.getItem("userId"));
     this.voyage.nomTransporter = localStorage.getItem("nom");
-    //this.showMap();
+    
+    this.onChangeCamionTypes(); // pour selectAll ou deselectAll checkbox list
   }
   async bk_ngAfterContentInit(){
     let mapProp = {

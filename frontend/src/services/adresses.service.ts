@@ -4,11 +4,12 @@ import { Adresse } from "../model/model.adresse";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PageAdresse } from 'src/model/model.pageAdresse';
 import { Observable } from 'rxjs';
+import * as myGlobals from './globals'; //<==== to use variables from globals.ts
 
 @Injectable()
 export class AdressesService{
   
-    adServer="//192.168.0.131";
+    adServer=myGlobals.adServer;
     private jwToken=null;
 
     constructor(public http:HttpClient){
