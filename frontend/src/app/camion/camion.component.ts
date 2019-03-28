@@ -738,9 +738,11 @@ export class CamionComponent implements OnInit {
   }
   onPress(id:number){
     this.carte=-this.carte;
-    if(this.carte==-1)
+    if(this.carte==-1){
       this.carteText='Voir la carte'
-    else
+      this.subscription.unsubscribe();
+    }
+    else{
       this.carteText='Cacher la carte'
       var numbers = timer(2000);
       numbers.subscribe(x =>{
@@ -763,7 +765,6 @@ export class CamionComponent implements OnInit {
               icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
               title: data.unite
             });
-  
             //console.log('this.camion.uniteMonotor  + this.camion.monitor : '+this.camion.uniteMonitor +' + '+ this.camion.monitor);
             const source = interval(60000);
             this.subscription=source.subscribe(val=>{this.getLocalisation()})  
@@ -774,7 +775,8 @@ export class CamionComponent implements OnInit {
           console.log();
         })//*/
       })  
-    //this.router.navigate(['map', id]);
+      //this.router.navigate(['map', id]);
+    }
   }
   refresh(): void {
     //window.location.reload();

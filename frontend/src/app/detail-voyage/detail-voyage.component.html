@@ -1,7 +1,8 @@
 <div class="container spacer">
     <div class="panel panel-primary" *ngIf="mode==1">
-      <div class="panel-heading">Voyage de {{voyage.nomTransporter}}</div>
-        <div class="panel-body">
+      <!--div class="panel-heading"><h4><strong>Voyage de {{voyage.nomTransporter}}.</strong></h4></div-->
+      <div class="panel-heading"><h4><strong>{{voyage.nomTransporter}} - Tel : {{transporter.tel}} - Email : {{transporter.email}}</strong></h4></div>
+        <!--div class="panel-body">
                 <table class="table table-striped">
                         <tr>
                           <th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th>
@@ -14,33 +15,25 @@
                           <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
                         </tr>
                 </table>
-        </div>  
+        </div-->  
     </div>
     <div class="panel panel-primary">        
-      <div> <h3><strong> Description le voyage </strong></h3></div>
-      <p></p><p></p><p></p><p></p>
+      <!--div> <h3><strong> Description le voyage </strong></h3></div>
+      <p></p><p></p><p></p><p></p-->
         <div class="panel-body">
           <table class="table table-striped">    
             <tr>
               <th><label class="control-label">Prevoir pour :</label></th>   
               <th><input type="date" [(ngModel)]="voyage.dateDepart" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"  [disabled]="role.includes('SHIPPER')"/></th>                                 
-              <th><label class="control-label">Chercher Corridor</label></th>                
+              <th colspan="2" style="text-align: right"><label class="control-label">Chercher Corridor</label></th>                
               <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor" (change)="onCheckCorridor()" [disabled]="role.includes('SHIPPER')" /></td>                
             </tr>          
-            <tr>
-              <th><label class="control-label">Type de Camion : </label></th>                                      
-              <td colspan="5"><input type="text" [(ngModel)]="voyage.typeCamion" name="typeCamion" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
-            </tr>
-            <tr>
-              <th><label class="control-label">Option de Voyage : </label></th>                                      
-              <td colspan="5"><input type="text" [(ngModel)]="voyage.optionVoyage" name="optionVoyage" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
-            </tr>  
             <tr>
               <th><label class="control-label">Origin</label></th>
               <th><label class="control-label">Rayon Origin (miles)</label></th> 
               <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>             
               <th><label class="control-label">Destination</label></th>  
-              <th><label class="control-label">Rayon Destination (miles)</label></th>                             
+              <th colspan="2"><label class="control-label">Rayon Destination (miles)</label></th>                             
             </tr>
             <tr>
               <td><input type="text" [(ngModel)]="voyage.origin" name="origin" class="form-control" (change)="originChange()" [disabled]="role.includes('SHIPPER')"/></td>
@@ -58,7 +51,15 @@
                 </select>                    
               </td>
               <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            </tr>              
+            </tr>     
+            <tr>
+              <th><label class="control-label">Type de Camion : </label></th>                                      
+              <td colspan="5"><input type="text" [(ngModel)]="voyage.typeCamion" name="typeCamion" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
+            </tr>
+            <tr>
+              <th><label class="control-label">Option de Voyage : </label></th>                                      
+              <td colspan="5"><input type="text" [(ngModel)]="voyage.optionVoyage" name="optionVoyage" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
+            </tr>    
             <tr>            
               <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
               <td><button class="btn btn-success" (click)="onSaveVoyage()" [disabled]="role.includes('SHIPPER')">Modifier Voyage</button></td>

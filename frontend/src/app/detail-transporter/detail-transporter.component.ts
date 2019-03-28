@@ -278,44 +278,46 @@ export class DetailTransporterComponent implements OnInit {
 
   onPress(){
     this.carte=-this.carte;
-    if(this.carte==1)
-      this.carteText='Cacher la carte'
-    else
+    if(this.carte==-1){
       this.carteText='Voir la carte'
-    
-    var numbers = timer(2000);
-    numbers.subscribe(x =>{
-      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-        data.forEach(camion=>{
-          if(camion.uniteMonitor!=null && camion.monitor!=null)
-            this.camionsSurMap.push(camion)
+      this.subscription.unsubscribe();
+    }
+    else{
+      this.carteText='Cacher la carte'    
+      var numbers = timer(2000);
+      numbers.subscribe(x =>{
+        this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+          data.forEach(camion=>{
+            if(camion.uniteMonitor!=null && camion.monitor!=null)
+              this.camionsSurMap.push(camion)
+          })
+          let mapProp = {
+            center: new google.maps.LatLng(45.568806, -73.918333),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          this.camionsSurMap.forEach(camion=>{
+            //console.log("camion.id : "+ camion.id)
+            if(camion.uniteMonitor!=null && camion.monitor!=null){
+              //this.marker.setMap(null);
+              let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
+              let marker = new google.maps.Marker({
+                position: location1,
+                map: this.map,
+                icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                title: camion.unite
+              });
+              this.markers.push(marker)
+            }  
+          })
+          const source = interval(60000);
+          this.subscription=source.subscribe(val=>{this.getLocalisation()})
+        }, err=>{
+          console.log();
         })
-        let mapProp = {
-          center: new google.maps.LatLng(45.568806, -73.918333),
-          zoom: 15,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-        this.camionsSurMap.forEach(camion=>{
-          //console.log("camion.id : "+ camion.id)
-          if(camion.uniteMonitor!=null && camion.monitor!=null){
-            //this.marker.setMap(null);
-            let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
-            let marker = new google.maps.Marker({
-              position: location1,
-              map: this.map,
-              icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
-              title: camion.unite
-            });
-            this.markers.push(marker)
-          }  
-        })
-        const source = interval(60000);
-        this.subscription=source.subscribe(val=>{this.getLocalisation()})
-      }, err=>{
-        console.log();
-      })
-    })      
+      })      
+    }
     //this.router.navigate(["/map-flotte", this.id]);
   }
   onChange(){
