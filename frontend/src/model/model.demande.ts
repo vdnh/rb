@@ -14,6 +14,7 @@ export class Demande{
     totalpoints:number=0.00;
     prixSugere:number=0.00;
     typeCamion:string;
+    optionDemande:string;
     roleDemander:string; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
     idDemander:number=0.00;   // dans le cas SHIPPER ou TRANSPORTER 
     nomDemander:string; // possiblement SHIPPER ou TRANSPORTER ou ADMIN

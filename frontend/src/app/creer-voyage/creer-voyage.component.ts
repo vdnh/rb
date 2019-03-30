@@ -170,7 +170,7 @@ export class CreerVoyageComponent implements OnInit {
   // finir ajouter des circles et markes */
   
   constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, 
-    private geolocation : GeolocationService,  private formBuilder:FormBuilder, public router:Router) 
+    private geolocation : GeolocationService, private formBuilder:FormBuilder, public router:Router) 
     { 
     this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
     this.latLngDestination=new google.maps.LatLng(this.lat, this.lng);
