@@ -492,6 +492,24 @@ export class CreerVoyageComponent implements OnInit {
       })
     }// End - If we find with corridor
     //*/
+      //* line fron origin to destination
+  var flightPlanCoordinates = [
+    {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+    {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+  ];
+  var flightPath = new google.maps.Polyline({
+    path: flightPlanCoordinates,
+    geodesic: true,
+    strokeColor: 'Gray',
+    strokeOpacity: 0.5,
+    strokeWeight: 5,
+    icons: [{
+      icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+      offset: '100%'
+    }]
+  });
+  flightPath.setMap(this.map);
+  //*/
   }
 
   onCheckCorridor(){

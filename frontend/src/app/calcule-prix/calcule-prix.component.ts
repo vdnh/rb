@@ -172,7 +172,7 @@ showMap() {
     //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
-      scale: 2
+      scale: 4
     },
     title: this.demande.origin
   });
@@ -182,10 +182,14 @@ showMap() {
     //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
-      scale: 2
+      scale: 4
     },
     title: this.demande.destination
   });
+  //markerDestination.addListener('click', this.simpleMarkerHandler);
+  /*markerDestination.addListener('click', () => {
+    this.markerHandler(markerDestination);
+  });//*/
   // centrer la carte
   var bounds = new google.maps.LatLngBounds();
   bounds.extend(this.latLngOrigin);
@@ -226,14 +230,18 @@ showMap() {
     } else {
       window.alert('Directions request failed due to ' + status);
     }
-    
-
   });
-  
   //*/
-
 }
 //*/
+/*//
+simpleMarkerHandler() {
+  alert('Simple Component\'s function...');
+}///
+markerHandler(marker: google.maps.Marker) {
+  alert('Marker\'s Title: ' + marker.getTitle());
+}//*/
+
 
   onChangeCamionTypes(): void {
     // Subscribe to changes on the selectAll checkbox

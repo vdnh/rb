@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Transporter } from 'src/model/model.transporter';
 import { Shipper } from 'src/model/model.shipper';
 import { Demande } from 'src/model/model.demande';
@@ -11,7 +11,7 @@ import { ContactsService } from '../../services/contacts.service';
 import { AdressesService } from '../../services/adresses.service';
 import { DemandesService } from 'src/services/demandes.service';
 import { GeocodingService } from 'src/services/geocoding.service';
-
+import { } from 'googlemaps';
 
 @Component({
   selector: 'app-detail-demande',
@@ -49,6 +49,30 @@ export class DetailDemandeComponent implements OnInit {
   contacts:Array<Contact>;
   adresses:Array<Adresse>;
 
+  //* Pour ajouter des circles and markers sur la carte
+  // google maps zoom level
+  zoom: number = 6;
+  
+  // initial center position for the map
+  lat: number = 45.503964;
+  lng: number = -73.567426;
+
+  center : google.maps.LatLng=null;
+  latLngOrigin:google.maps.LatLng =null;
+  latLngDestination:google.maps.LatLng =null;
+  
+  //* default 
+  @ViewChild('gmap') gmapElement: any;
+  map: google.maps.Map;
+  // outils draw and geometry
+  drawingManager: any;
+  infoWindow : any;
+  spherical: typeof google.maps.geometry.spherical;
+  //fin
+  centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige
+  //
+
+
   constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public demandesService:DemandesService, 
     public transportersService : TransportersService, public geocoding : GeocodingService, public router:Router){    
@@ -59,6 +83,14 @@ export class DetailDemandeComponent implements OnInit {
     //this.role=localStorage.getItem('role');
     await this.demandesService.getDetailDemande(this.id).subscribe((data:Demande)=>{
       this.demande=data;
+      this.originChange(); // to find coordinates origin
+      this.destinationChange(); // to find coordinates destination
+      this.longeur=this.demande.longueur
+      this.largeur=this.demande.largeur
+      this.hauteur=this.demande.hauteur
+      this.poids=this.demande.poids
+      this.valeur=this.demande.valeur
+      this.distance=this.demande.distance
       if(this.demande.roleDemander.includes('SHIPPER')){
         this.shippersService.getDetailShipper(this.demande.idDemander).subscribe((data:Shipper)=>{
           this.shipper=data;
@@ -354,4 +386,123 @@ onReset(){
   this.ngOnInit();
 }
 //*/
+//* to show map
+showMap() {
+  let mapProp = {
+    center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
+    zoom: 6,
+    //mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+  var directionsDisplay = new google.maps.DirectionsRenderer; // declare google display
+  var directionsService = new google.maps.DirectionsService; // declare google service
+  /*var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 7,
+    center: {lat: 41.85, lng: -87.65}
+  });//*/
+  directionsDisplay.setMap(this.map); // to see the routes on the map
+  //directionsDisplay.setPanel(document.getElementById('right-panel')); // to see the routes just by the text
+
+  this.infoWindow = new google.maps.InfoWindow;
+  let markerOrigin = new google.maps.Marker({
+    position: this.latLngOrigin,
+    map: this.map,
+    //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 4
+    },
+    title: this.demande.origin
+  });
+  let markerDestination = new google.maps.Marker({
+    position: this.latLngDestination,
+    map: this.map,
+    //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 4
+    },
+    title: this.demande.destination
+  });
+  // centrer la carte
+  var bounds = new google.maps.LatLngBounds();
+  bounds.extend(this.latLngOrigin);
+  bounds.extend(this.latLngDestination);
+  this.map.fitBounds(bounds);
+  //*/
+  //* line fron origin to destination
+  var flightPlanCoordinates = [
+    {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+    {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+  ];
+  var flightPath = new google.maps.Polyline({
+    path: flightPlanCoordinates,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    icons: [{
+      icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+      offset: '100%'
+    }]
+  });
+  flightPath.setMap(this.map);
+  /*/
+  //* Totest find my route/
+  //var start = document.getElementById('start').textContent;
+  //var end = document.getElementById('end').textContent;
+  directionsService.route({
+    origin: this.demande.origin,
+    destination: this.demande.destination,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, async function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      //await directionsDisplay.setDirections(response);
+      //console.log('response : '+response.routes.toString())
+      let result = await document.getElementById('right-panel').textContent;
+      //console.log('result : '+result)
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+  
+  //*/
+
+}
+//*
+async originChange(){
+  //*
+  await this.geocoding.codeAddress(this.demande.origin).forEach(
+    (results: google.maps.GeocoderResult[]) => {
+          if(results[0].geometry.location.lat()>0){
+            this.latLngOrigin= new google.maps.LatLng(
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()                            
+            )
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+          }
+          else
+            alert("Ne pas trouver de coordonnees de ce origin")
+  });//*/
+  //this.showMap();
+}
+
+async destinationChange(){
+  //*
+  await this.geocoding.codeAddress(this.demande.destination).forEach(
+    (results: google.maps.GeocoderResult[]) => {
+          if(results[0].geometry.location.lat()>0){
+            this.latLngDestination= new google.maps.LatLng(
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()                            
+            )
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+          }
+          else
+            alert("Ne pas trouver de coordonnees de cet destination")
+  });//*/
+  //this.showMap();
+}
+//*/ end to show map
+
 }

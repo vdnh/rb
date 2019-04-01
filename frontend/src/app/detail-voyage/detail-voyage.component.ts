@@ -155,6 +155,28 @@ export class DetailVoyageComponent implements OnInit {
     })
     this.destCircle1.setMap(this.map)
   }
+  
+  lineOriginDestination()
+  {
+    //* line fron origin to destination
+    var flightPlanCoordinates = [
+      {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+      {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+    ];
+    var flightPath = new google.maps.Polyline({
+      path: flightPlanCoordinates,
+      geodesic: true,
+      strokeColor: 'Gray',
+      strokeOpacity: 0.5,
+      strokeWeight: 5,
+      icons: [{
+        icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+        offset: '100%'
+      }]
+    });
+    flightPath.setMap(this.map);
+    //*/
+  }
 
   async showMap() {
     let mapProp = {
@@ -254,8 +276,10 @@ export class DetailVoyageComponent implements OnInit {
           this.infoWindow.open(this.map);
         })
       }
+
     }// End - If we find with corridor
     //*/
+    this.lineOriginDestination()  // draw a line from origin to dest
   }
   async showMapInit() {
     let mapProp = {
@@ -357,6 +381,7 @@ export class DetailVoyageComponent implements OnInit {
       }
     }// End - If we find with corridor
     //*/
+    this.lineOriginDestination()  // draw a line from origin to dest
   }
 
   onCheckCorridor(){
