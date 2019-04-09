@@ -175,8 +175,8 @@ public class SprjwtanguApplication implements CommandLineRunner{
         
         // Thread update odometre pour SOS Prestige
         Thread updateOdoSOSPrestigeThread = new Thread(() -> {
-            List<Camion> camions = new ArrayList<>();
-            camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
+            //List<Camion> camions = new ArrayList<>();
+            //camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
             while (true) {
                 try {
                     System.out.println("Mettre a jour odometre des unites de SOS Prestige");
@@ -184,6 +184,8 @@ public class SprjwtanguApplication implements CommandLineRunner{
                     if(!listUnite.isEmpty()) {
                         System.out.println("listUnite : " + listUnite.toString());
                         System.out.println("Sure! listUnite isn't empty!!");
+                        List<Camion> camions = new ArrayList<>();
+                        camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
                         camions.forEach(camion ->{
                             listUnite.forEach(unite->{
                                 if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){

@@ -319,8 +319,8 @@ export class CamionComponent implements OnInit {
     this.router.navigate(['camion',id]);
   }
   async saveCamion(){
-    await this.camionsService.saveCamions(this.camion).subscribe(data=>{
-      //this.mode=2;
+    await this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
+      this.camion=data;
       this.couleur01=this.codeCouleurEnt1(this.camion)
       this.couleur02=this.codeCouleurEnt2(this.camion)
       this.couleur03=this.codeCouleurEnt3(this.camion)
