@@ -7,4 +7,5 @@ export class Transporter{
     tel:number=0;
     fax:number=0;
     photo:string="";
+    emailTechnic:string="";
 }

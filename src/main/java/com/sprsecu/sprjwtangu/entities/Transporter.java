@@ -34,6 +34,7 @@ public class Transporter {
     @Column(unique = true)
     private String loginName;
     private String password;
+    private String emailTechnic;  // email de personne s'ocuppe la technique
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

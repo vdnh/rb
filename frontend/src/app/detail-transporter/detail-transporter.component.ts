@@ -410,8 +410,8 @@ export class DetailTransporterComponent implements OnInit {
     this.camAdd=1;
   }
   codeCouleurEnt1(camion:Camion){
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.codeCouleurEnt2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.codeCouleurEnt2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
       return '';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -424,8 +424,8 @@ export class DetailTransporterComponent implements OnInit {
       return "";
   }
   codeCouleurEnt2(camion:Camion){
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.codeCouleurEnt3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.codeCouleurEnt3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       //console.log('btn-danger" [disabled]="true');
       return '';
@@ -484,8 +484,8 @@ export class DetailTransporterComponent implements OnInit {
     return ""
   }
   codeTextEnt1(camion:Camion){
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.codeTextEnt2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.codeTextEnt2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
       return '';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -498,8 +498,8 @@ export class DetailTransporterComponent implements OnInit {
       return "";
   }
   codeTextEnt2(camion:Camion){
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.codeTextEnt3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.codeTextEnt3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return '';
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
@@ -554,8 +554,8 @@ export class DetailTransporterComponent implements OnInit {
 
   disableButton1(camion:Camion):boolean{
     //*
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.disableButton2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.disableButton2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -565,8 +565,8 @@ export class DetailTransporterComponent implements OnInit {
   }
   disableButton2(camion:Camion):boolean{
     //*
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.disableButton3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.disableButton3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))

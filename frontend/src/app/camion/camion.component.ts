@@ -371,8 +371,8 @@ export class CamionComponent implements OnInit {
   }
   //*
   codeCouleurEnt1(camion:Camion){
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.codeCouleurEnt2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.codeCouleurEnt2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
       return '';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -385,8 +385,8 @@ export class CamionComponent implements OnInit {
       return "";
   }
   codeCouleurEnt2(camion:Camion){
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.codeCouleurEnt3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.codeCouleurEnt3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       //console.log('btn-danger" [disabled]="true');
       return '';
@@ -443,8 +443,8 @@ export class CamionComponent implements OnInit {
   }
   
   codeTextEnt1(camion:Camion){
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.codeTextEnt2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.codeTextEnt2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
       return '';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -457,8 +457,8 @@ export class CamionComponent implements OnInit {
       return "";
   }
   codeTextEnt2(camion:Camion){
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.codeTextEnt3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.codeTextEnt3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return '';
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
@@ -512,8 +512,8 @@ export class CamionComponent implements OnInit {
   }
 
   disableButton1(camion:Camion):boolean{
-    if(camion.odo1Fait!=camion.odo2Fait)
-      return this.disableButton2(camion)
+    //if(camion.odo1Fait!=camion.odo2Fait)
+      //return this.disableButton2(camion)
     if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
@@ -521,8 +521,8 @@ export class CamionComponent implements OnInit {
     return false;
   }
   disableButton2(camion:Camion):boolean{
-    if(camion.odo2Fait!=camion.odo3Fait)
-      return this.disableButton3(camion)
+    //if(camion.odo2Fait!=camion.odo3Fait)
+      //return this.disableButton3(camion)
     if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
       return true;
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
@@ -580,7 +580,7 @@ export class CamionComponent implements OnInit {
     this.camion.odo2Fait=this.camion.odometre; //to test before dicide
     this.camion.ent2Fait=new Date(); //to test before dicide
     this.couleur02=this.codeCouleurEnt2(this.camion); // to test before dicide
-    this.onEntretien01(); // to test berfore dicide
+    //this.onEntretien01(); // to test berfore dicide
     /* stop to test
     this.camion.odo2Fait=this.camion.odometre;
     this.camion.ent2Fait=new Date();
@@ -602,7 +602,7 @@ export class CamionComponent implements OnInit {
     this.camion.odo3Fait=this.camion.odometre; //to test before dicide
     this.camion.ent3Fait=new Date(); //to test before dicide
     this.couleur03=this.codeCouleurEnt3(this.camion); // to test before dicide
-    this.onEntretien02(); // to test before dicide
+    //this.onEntretien02(); // to test before dicide
     /* stop to test
     this.camion.odo3Fait=this.camion.odometre;
     this.camion.ent3Fait=new Date();

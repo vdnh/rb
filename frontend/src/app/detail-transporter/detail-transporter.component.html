@@ -43,7 +43,7 @@
             </tr>
             <div *ngIf="coorInfos==1">Coordonnee Infos 
             <tr>
-                <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
+                <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>EmailTechnique</th>
             </tr>
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
@@ -52,7 +52,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
-                <!--td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td-->
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.emailTechnic" /></td>
             </tr>
             <tr><td colspan="2"><strong>Adresses</strong></td></tr>
             <tr>
