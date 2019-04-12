@@ -213,7 +213,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
         updateOdoSOSPrestigeThread.start(); 
     }
     
-        public void generateAndSendEmail(String emailBody, String email) throws AddressException, MessagingException {
+        public void generateAndSendEmail(String emailBody, String email, String uniteCamion) throws AddressException, MessagingException {
 	mailServerProperties = System.getProperties();
 	mailServerProperties.put("mail.smtp.port", "587");
 	mailServerProperties.put("mail.smtp.auth", "true");
@@ -233,7 +233,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
 	generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("vdnh@yahoo.com"));
         //generateMailMessage.setSubject("Greetings from vdnh..");
-        generateMailMessage.setSubject("Entretien à faire,");
+        generateMailMessage.setSubject(uniteCamion +" - Entretiens à faire,");
 	//String emailBody = "Test email by vdnh JavaMail API example. " + "<br><br> Regards, <br>vdnh Admin";
         emailBody = emailBody + "<br> Regards, <br>Application CTS.COM";
 	generateMailMessage.setContent(emailBody, "text/html");
@@ -254,7 +254,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
             //this.camions.forEach(camion->{System.out.println("Je suis un camion."+camion.getInspect6m());});
         camions.forEach(camion->{
             //System.out.println("Camion : "+ camion.getUnite());  // to see all camion
-            String textFix = "Camion Unite : "+camion.getUnite()+"<br>";
+            String textFix = "Camion Unite "+camion.getUnite()+"<br>";
             StringBuilder sb = new StringBuilder("");
             if(camion.getOdometre()!=null){ 
                 //System.out.println("camion.getOdometre()!=null - Camion : "+ camion.getUnite());  // to see all camion
@@ -323,7 +323,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                     //System.out.println("sb is : " + sb.toString());
                     try {
                         System.out.println(""+textFix+sb.toString());
-                        generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic());
+                        generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic(), "Camion Unite "+camion.getUnite());
                     } catch (Exception ex) {
                         //return;
                     }
@@ -458,10 +458,10 @@ public class SprjwtanguApplication implements CommandLineRunner{
     //System.out.println("Autre Entretien : " + autreEnt.getNom() +" "+autreEnt.getMessage()+" faire a : "+autreEnt.getKmTrage()+" "+ autreEnt.getOdoFait());
     if((odometre-odoFait)>(odoAFaire-5000)){
         if((odometre-odoFait)<odoAFaire){
-            return "Attention : " +"<br>"+ message+"<br>";
+            return "Attention : " +"<br>  "+ message+"<br>";
         }
         else{
-            return "Urgent : " +"<br>"+ message+"<br>";
+            return "Urgent : " +"<br>  "+ message+"<br>";
         }
     }
     return "";
