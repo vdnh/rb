@@ -18,10 +18,18 @@ export class ListVoyageComponent implements OnInit {
   pages:Array<number>;  // pour tenir des numeros des pages
   voyages:Array<Voyage>;
   role:string="";
+  modeMatching=0;
   constructor(public voyagesService:VoyagesService, public router:Router) { }
 
   ngOnInit() {
     this.role=localStorage.getItem("role");
+    // write out demande to console.log
+    console.log(localStorage.getItem('demande.origin'));
+    console.log(localStorage.getItem('demande.destination'));
+    console.log(localStorage.getItem('demande.typeCamion'));
+    console.log(localStorage.getItem('demande.optionDemande'));
+    console.log(localStorage.getItem('demande.dateDepart'));
+    //
     this.doSearch()
   }
   doSearch(){
@@ -33,6 +41,29 @@ export class ListVoyageComponent implements OnInit {
         console.log(err)
       })
     }
+    //*  C'est pour les voyages matches
+    else if(localStorage.getItem("demande.origin")!=null && localStorage.getItem("demande.destination")!=null){
+      this.voyagesService.matchingVoyagesa(localStorage.getItem('demande.typeCamion'), localStorage.getItem('demande.optionDemande'), localStorage.getItem('demande.dateDepart'))
+      .subscribe((data:Array<Voyage>)=>{
+        this.voyages=data
+        this.modeMatching=1
+        localStorage.removeItem('demande.origin');
+        localStorage.removeItem('demande.destination');
+        localStorage.removeItem('demande.typeCamion');
+        localStorage.removeItem('demande.optionDemande');
+        localStorage.removeItem('demande.dateDepart');
+        // write out demande to console.log
+        console.log("Write out demande after cleared.")
+        console.log(localStorage.getItem('demande.origin'));
+        console.log(localStorage.getItem('demande.destination'));
+        console.log(localStorage.getItem('demande.typeCamion'));
+        console.log(localStorage.getItem('demande.optionDemande'));
+        console.log(localStorage.getItem('demande.dateDepart'));
+        //
+      }, err=>{
+        console.log(err)
+      })
+    }//*/
     else{
       this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
         this.pageVoyage=data;

@@ -36,6 +36,13 @@ export class VoyagesService{
         .pipe(map(res => {return res}));
     }
     
+    matchingVoyagesa(typeCamion:string, optionVoyage:string, dateDepart:string){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/matchingVoyages?typeCamion="+typeCamion+"&optionVoyage="+optionVoyage+"&dateDepart="+dateDepart
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+
     saveVoyages(voyage:Voyage){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/voyages",voyage

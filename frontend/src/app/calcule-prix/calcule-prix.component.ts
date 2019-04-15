@@ -508,6 +508,19 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     this.demande.distance = this.distance;  // par default en miles
     this.demande.totalpoints=this.totalPoints;
     this.demande.prixSugere=this.prix
+    //set parametres to match the voyages
+    localStorage.setItem('demande.origin', this.demande.origin);
+    localStorage.setItem('demande.destination', this.demande.destination);
+    localStorage.setItem('demande.typeCamion', this.demande.typeCamion);
+    localStorage.setItem('demande.optionDemande', this.demande.optionDemande);
+    localStorage.setItem('demande.dateDepart', this.demande.dateDepart.toLocaleString());
+    // write out demande to console.log
+    console.log(localStorage.getItem('demande.origin'));
+    console.log(localStorage.getItem('demande.destination'));
+    console.log(localStorage.getItem('demande.typeCamion'));
+    console.log(localStorage.getItem('demande.optionDemande'));
+    console.log(localStorage.getItem('demande.dateDepart'));
+    //
     this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
       //this.demande=data;
       this.router.navigateByUrl("/list-voyage");

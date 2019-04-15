@@ -70,5 +70,14 @@ public class VoyageRestService {
         @RequestParam(name = "size", defaultValue = "5")int size){
         return voyageRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
     }
+    
+    @RequestMapping(value = "/matchingVoyages", method = RequestMethod.GET)
+    public List<Voyage> matching(
+            @RequestParam(name = "typeCamion", defaultValue = "" ) String typeCamion
+            , @RequestParam(name = "optionVoyage", defaultValue = "" ) String optionVoyage
+            , @RequestParam(name = "dateDepart", defaultValue = "3000-01-01" ) String dateDepart
+        ){
+        return voyageRepository.matching(typeCamion, optionVoyage, dateDepart);
+    }
 
 }
