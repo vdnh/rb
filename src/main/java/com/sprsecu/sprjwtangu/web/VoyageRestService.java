@@ -75,9 +75,9 @@ public class VoyageRestService {
     public List<Voyage> matching(
             @RequestParam(name = "typeCamion", defaultValue = "" ) String typeCamion
             , @RequestParam(name = "optionVoyage", defaultValue = "" ) String optionVoyage
-            , @RequestParam(name = "dateDepart", defaultValue = "3000-01-01" ) String dateDepart
+            //, @RequestParam(name = "dateDepart", defaultValue = "3000-01-01" ) String dateDepart
         ){
-        return voyageRepository.matching(typeCamion, optionVoyage, dateDepart);
+        return voyageRepository.matching("%"+typeCamion+"%", "%"+optionVoyage+"%"); //, dateDepart);
     }
 
 }

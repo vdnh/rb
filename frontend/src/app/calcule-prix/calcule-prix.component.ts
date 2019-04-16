@@ -511,7 +511,11 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     //set parametres to match the voyages
     localStorage.setItem('demande.origin', this.demande.origin);
     localStorage.setItem('demande.destination', this.demande.destination);
+    if (this.demande.typeCamion.includes("undefined"))
+    this.demande.typeCamion=""
     localStorage.setItem('demande.typeCamion', this.demande.typeCamion);
+    if (this.demande.optionDemande.includes("undefined"))
+    this.demande.optionDemande=""
     localStorage.setItem('demande.optionDemande', this.demande.optionDemande);
     localStorage.setItem('demande.dateDepart', this.demande.dateDepart.toLocaleString());
     // write out demande to console.log

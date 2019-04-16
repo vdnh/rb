@@ -36,9 +36,9 @@ export class VoyagesService{
         .pipe(map(res => {return res}));
     }
     
-    matchingVoyagesa(typeCamion:string, optionVoyage:string, dateDepart:string){
+    matchingVoyages(typeCamion:string, optionVoyage:string){ //, dateDepart:string){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/matchingVoyages?typeCamion="+typeCamion+"&optionVoyage="+optionVoyage+"&dateDepart="+dateDepart
+        return this.http.get(this.adServer+":8080/matchingVoyages?typeCamion="+typeCamion+"&optionVoyage="+optionVoyage //+"&dateDepart="+dateDepart
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

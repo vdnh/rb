@@ -9,13 +9,13 @@ export class Demande{
     poids:number=0.00;
     valeur:number=0.00;
     distance:number=0.00;
-    origin:string;
-    destination:string;
+    origin:string="";
+    destination:string="";
     totalpoints:number=0.00;
     prixSugere:number=0.00;
-    typeCamion:string;
-    optionDemande:string;
-    roleDemander:string; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
+    typeCamion:string="";
+    optionDemande:string="";
+    roleDemander:string=""; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
     idDemander:number=0.00;   // dans le cas SHIPPER ou TRANSPORTER 
-    nomDemander:string; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
+    nomDemander:string=""; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
 }

@@ -19,10 +19,10 @@ public interface VoyageRepository extends JpaRepository<Voyage, Long>{
     @Query("select v from Voyage v where v.origin like :x or v.destination like :x")
     public Page<Voyage> chercher(@Param("x") String mc, Pageable pageable);       
     
-    @Query("select v from Voyage v where v.typeCamion like :t and v.optionVoyage like :o and v.dateDepart<= :d")
+    @Query("select v from Voyage v where v.typeCamion like :t and v.optionVoyage like :o") // and v.dateDepart<= :d")
     public List<Voyage> matching(
             @Param("t") String typeCamion
             ,@Param("o") String optionVoyage
-            ,@Param("d") String dateDepart
+            //,@Param("d") String dateDepart
             );
 }

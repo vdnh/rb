@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         //
         
         http.authorizeRequests().antMatchers("/login/**", "/shippers/**", "/transporters/**", "/contacts/**", 
-                "/adresses/**", "/camions/**", "/bonDeTravails/**", "/reparations/**" ).permitAll(); //"/h2-console/**",  
+                "/adresses/**", "/camions/**", "/bonDeTravails/**", "/reparations/**", "/matchingVoyages/**" ).permitAll(); //"/h2-console/**",  
         //http.authorizeRequests().antMatchers(HttpMethod.POST, "/tasks/**").hasAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated(); 
         

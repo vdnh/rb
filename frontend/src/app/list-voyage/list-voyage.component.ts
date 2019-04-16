@@ -43,7 +43,7 @@ export class ListVoyageComponent implements OnInit {
     }
     //*  C'est pour les voyages matches
     else if(localStorage.getItem("demande.origin")!=null && localStorage.getItem("demande.destination")!=null){
-      this.voyagesService.matchingVoyagesa(localStorage.getItem('demande.typeCamion'), localStorage.getItem('demande.optionDemande'), localStorage.getItem('demande.dateDepart'))
+      this.voyagesService.matchingVoyages(localStorage.getItem('demande.typeCamion'), localStorage.getItem('demande.optionDemande'))
       .subscribe((data:Array<Voyage>)=>{
         this.voyages=data
         this.modeMatching=1
