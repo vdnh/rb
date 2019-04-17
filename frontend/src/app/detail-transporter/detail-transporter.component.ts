@@ -79,6 +79,15 @@ export class DetailTransporterComponent implements OnInit {
     this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
 
+/*/test ngOnDestroy  -- pour quoi il ne marche pas comme ol est dans camion.component.ts
+  ngOnDestroy(){
+    if(this.carte==-1){
+      //this.carteText='Voir la carte'
+      this.subscription.unsubscribe();
+    }
+  }
+//*/
+
   ngOnInit() {
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
       this.quitButton=localStorage.getItem('role')
