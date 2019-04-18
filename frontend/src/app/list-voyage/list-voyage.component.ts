@@ -153,7 +153,12 @@ export class ListVoyageComponent implements OnInit {
             let heading:number = this.spherical.computeHeading(this.latLngOrigin, this.latLngDestination);
             let dHeading:number = this.spherical.computeHeading(this.dLatLngOrigin, this.dLatLngDestination);
             console.log('dHeading - heading = ' + (dHeading-heading))
-          }    //*/      
+          }    //*/   
+          // distances en mile - d1 : dO-vO, d2 : dO-vD, d3 : dD-vD, d4 : dD-vO   
+          let d1 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngOrigin)/1000/1.609344) ;   
+          let d2 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngDestination)/1000/1.609344) ;   
+          let d3 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngDestination)/1000/1.609344) ;   
+          let d4 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngOrigin)/1000/1.609344) ;   
           if(this.originCircle.getBounds().contains(this.dLatLngOrigin) && this.destCircle1.getBounds().contains(this.dLatLngDestination)){
             matchVoyages.push(voyage)
           }

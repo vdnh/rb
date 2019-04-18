@@ -89,30 +89,52 @@ import org.springframework.web.bind.annotation.RestController;
         //List<Address> emails = new ArrayList<>();
         //bankClientRepository.findAll().forEach(client->{
         //System.out.println("em.getAddressCondition() : "+em.getAddressCondition());
+        //* we can move Transport to EmailAll function to avoid login many time
+        mailServerProperties = System.getProperties();
+	mailServerProperties.put("mail.smtp.port", "587");
+	mailServerProperties.put("mail.smtp.auth", "true");
+	mailServerProperties.put("mail.smtp.starttls.enable", "true");
+
+	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+
+        Transport transport = getMailSession.getTransport("smtp");
+	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
+        transport.connect("smtp.gmail.com", "ventessosprestige@gmail.com", "ventes18");
+        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
+        //*/
+	        
         bankClientRepository.chercher("%"+em.getAddressCondition()+"%").forEach(client->{
             //System.out.println("client.getNom() - client.getAddress() : "+client.getNom() +" - "+ client.getAddress());
             if(EmailValidator.getInstance().isValid(client.getEmail())){
                 //System.out.println("client.getEmail : "+ client.getEmail());
                 try {
                     //emails.add(new InternetAddress(client.getEmail()));
-                    generateAndSendEmail(contain, client.getEmail(), titre);
+                    generateAndSendEmail(contain, client.getEmail(), titre, transport);
+                    Thread.sleep(5000);
                 } catch (AddressException ex) {
                     Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MessagingException ex) {
                     Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
+        //*we can move Transport to EmailAll function to avoid login many time
+        transport.close();
+        //*/
         //generateAndSendEmail(contain, emails, titre);
     }
     
-    public void generateAndSendEmail(String emailBody, String email, String titre) throws AddressException, MessagingException {
-	mailServerProperties = System.getProperties();
+    public void generateAndSendEmail(String emailBody, String email, String titre, Transport transport) throws AddressException, MessagingException {
+	/*
+        mailServerProperties = System.getProperties();
 	mailServerProperties.put("mail.smtp.port", "587");
 	mailServerProperties.put("mail.smtp.auth", "true");
 	mailServerProperties.put("mail.smtp.starttls.enable", "true");
 
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+        //*/
 	generateMailMessage = new MimeMessage(getMailSession);
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         generateMailMessage.setSubject(titre+",");
@@ -130,9 +152,15 @@ import org.springframework.web.bind.annotation.RestController;
         //System.out.println("bodyModified.toString() : "+ bodyModified.toString());
         generateMailMessage.setContent(bodyModified.toString() , "text/html");
         //*/
+        /* we can move Transport to EmailAll function to avoid login many time
         Transport transport = getMailSession.getTransport("smtp");
 	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
+        //transport.connect("smtp.gmail.com", "ventessosprestige@gmail.com", "ventes18");
+        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
+        //*/
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-	transport.close();
+	/*we can move Transport to EmailAll function to avoid login many time
+        transport.close();
+        //*/
     }
 }
