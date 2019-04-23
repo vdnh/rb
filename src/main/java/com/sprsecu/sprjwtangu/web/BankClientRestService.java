@@ -99,7 +99,7 @@ import org.springframework.web.bind.annotation.RestController;
 
         Transport transport = getMailSession.getTransport("smtp");
 	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        transport.connect("smtp.gmail.com", "ventessosprestige@gmail.com", "ventes18");
+        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ventes18$$$9");
         //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
         //*/
 	        
@@ -110,7 +110,7 @@ import org.springframework.web.bind.annotation.RestController;
                 try {
                     //emails.add(new InternetAddress(client.getEmail()));
                     generateAndSendEmail(contain, client.getEmail(), titre, transport);
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (AddressException ex) {
                     Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MessagingException ex) {

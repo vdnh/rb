@@ -100,11 +100,11 @@ export class CamionComponent implements OnInit {
       console.log();
     })//*/
   }
-  //test ngOnDestroy
+  /*/test ngOnDestroy
     ngOnDestroy(){
       this.subscription.unsubscribe();
     }
-  //
+  //*/
   async ngOnInit() {
     this.today=new Date();
     this.modeBonDeTravail=1;  // voir la partie Entretien-BonDetravail au premier
@@ -941,7 +941,7 @@ export class CamionComponent implements OnInit {
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
     //console.log('btn-danger" [disabled]="true');
     return "";
-  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-5000))
+  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
     return "btn-success";
   if((this.camion.odometre-entretien.odoFait)<entretien.kmTrage)
     return "btn-warning";
@@ -953,7 +953,7 @@ export class CamionComponent implements OnInit {
   disableButtonAutreEntretien(entretien:AutreEntretien){
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
     return true;
-  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-5000))
+  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
     return true;
   return false;
   }

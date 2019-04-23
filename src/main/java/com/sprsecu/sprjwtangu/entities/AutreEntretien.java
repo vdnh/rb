@@ -24,6 +24,7 @@ public class AutreEntretien implements Serializable{
     private Long idCamion;
     private String nom;
     private Long kmTrage; // km a faire
+    private Long kmAvertir=5000l; //km a avertir avant
     private Long odoFait;
     @Temporal(TemporalType.DATE)
     private Date dateFait;

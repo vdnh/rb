@@ -602,6 +602,28 @@ export class DetailTransporterComponent implements OnInit {
     return false;//*/
     //return true;
   }
+  // pour autre entretine
+  codeCouleurAutre(odometre, odoFait:number, odoAFaire:number, kmAvertir:number){
+    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+      //console.log('btn-danger" [disabled]="true');
+      return '';
+    if((odometre-odoFait)<(odoAFaire-kmAvertir))
+      return "btn-success";
+    if((odometre-odoFait)<odoAFaire)
+      return "btn-warning";
+    if((odometre-odoFait)>=odoAFaire)
+      return "btn-danger";
+    
+      return "";
+  } 
+  disableButtonAutre(odometre, odoFait:number, odoAFaire:number, kmAvertir:number){
+    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+      return true;
+    if((odometre-odoFait)<(odoAFaire-kmAvertir))
+      return true;
+    return false;
+  }
+  //
   disableButtonInspect(inspect6m:Date) : boolean{
     ///*
     if(inspect6m==null)

@@ -335,15 +335,18 @@
             <td><input class="form-control" type="text" [(ngModel)]="entretien.kmTrage" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
             <td><input class="form-control" type="text" [(ngModel)]="entretien.odoFait" /></td>
+            <th>Avertir avant : </th>
+            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmAvertir" /></td>
             <!--td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td-->
           </tr>           
           <tr><td colspan="2"><strong>Ajouter d'entretien</strong></td></tr>   
           <tr>
-            <th>Entretiens</th><th>Nombre km A Faire</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
+            <th>Entretiens</th><th>Kms A Faire</th><th>Avertir Avant</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
           </tr>  
           <tr>
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmTrage" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmAvertir" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="autreEntretien.message"></textarea></td>                
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.odoFait" /></td>
             <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>

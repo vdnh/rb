@@ -217,7 +217,7 @@
             <tr><th>Autres Entretiens</th></tr>
             <tr *ngFor="let aae of arrayArrayEnts">
                 <th>Unite {{aae.unite}}</th>
-                <td *ngFor="let entretien of aae.entsList"><button class="btn btn-sm {{codeCouleur(aae.odometre, entretien.odoFait, entretien.kmTrage)}}" [disabled]="disableButton(aae.odometre, entretien.odoFait, entretien.kmTrage)" (click)="onAutreEntretien(entretien, aae.odometre)">{{entretien.nom}}</button></td>
+                <td *ngFor="let entretien of aae.entsList"><button class="btn btn-sm {{codeCouleurAutre(aae.odometre, entretien.odoFait, entretien.kmTrage, entretien.kmAvertir)}}" [disabled]="disableButton(aae.odometre, entretien.odoFait, entretien.kmTrage, entretien.kmAvertir)" (click)="onAutreEntretien(entretien, aae.odometre)">{{entretien.nom}}</button></td>
                 <!--th>Autres Entretiens</th-->                             
                 <!--th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(entretien.odometre, entretien.odoFait, entretien.kmTrage)}}" [disabled]="disableButton(entretien.odometre, entretien.odoFait, entretien.kmTrage)" (click)="onAutreEntretien(entretien)">{{codeText(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}</button></th-->
             </tr>                                     

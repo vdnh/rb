@@ -439,7 +439,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
     if(autreEnt==null) 
         return "";
     if(autreEnt.getKmTrage()!=null){
-        if((odometre-autreEnt.getOdoFait())>(autreEnt.getKmTrage()-5000)){
+        if((odometre-autreEnt.getOdoFait())>(autreEnt.getKmTrage()- autreEnt.getKmAvertir())){
             if((odometre-autreEnt.getOdoFait())<autreEnt.getKmTrage()){
                 return "Attention : " +"<br>"+ "* Entretien "+autreEnt.getNom()+" - "+autreEnt.getMessage()+"<br>";
             }
