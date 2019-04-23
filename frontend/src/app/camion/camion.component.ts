@@ -939,22 +939,22 @@ export class CamionComponent implements OnInit {
 
   couleurAutreEntretien(entretien:AutreEntretien){
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
-    //console.log('btn-danger" [disabled]="true');
-    return "";
-  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
-    return "btn-success";
-  if((this.camion.odometre-entretien.odoFait)<entretien.kmTrage)
-    return "btn-warning";
-  if((this.camion.odometre-entretien.odoFait)>=entretien.kmTrage)
-    return "btn-danger";
+      //console.log('btn-danger" [disabled]="true');
+      return "";
+    if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
+      return "btn-success";
+    if((this.camion.odometre-entretien.odoFait)<entretien.kmTrage)
+      return "btn-warning";
+    if((this.camion.odometre-entretien.odoFait)>=entretien.kmTrage)
+      return "btn-danger";
   
     return "";
   }
   disableButtonAutreEntretien(entretien:AutreEntretien){
     if(entretien.kmTrage==0 || entretien.kmTrage==null || this.camion.odometre==null)
-    return true;
-  if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
-    return true;
-  return false;
+      return true;
+    if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
+      return true;
+    return false;
   }
 }

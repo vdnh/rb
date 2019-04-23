@@ -35,6 +35,12 @@ public class Voyage implements Serializable{
     private String destination;
     private Float radiusOrigin;
     private Float radiusDestination;
+    // il vaut mieur de garder coordonees
+    private Double originLat;
+    private Double originLong;
+    private Double destLat;
+    private Double destLong;
+    //
     private String typeCamion;
     private String optionVoyage;
     private Boolean chercheCorridor;

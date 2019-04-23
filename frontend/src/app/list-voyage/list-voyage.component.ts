@@ -5,6 +5,8 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
 import { LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { DemandesService } from 'src/services/demandes.service';
+import { Demande } from 'src/model/model.demande';
 
 @Component({
   selector: 'app-list-voyage',
@@ -23,7 +25,9 @@ export class ListVoyageComponent implements OnInit {
   modeMatching=0;
   dLatLngOrigin: google.maps.LatLng=null;
   dLatLngDestination: google.maps.LatLng=null;
-  constructor(public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) { }
+  demande:Demande=new Demande();
+  
+  constructor(public demandesService : DemandesService, public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) { }
   //*/ to help matching voyages
   latLngOrigin:google.maps.LatLng =null;
   latLngDestination:google.maps.LatLng =null;
@@ -37,6 +41,18 @@ export class ListVoyageComponent implements OnInit {
   //*/
   ngOnInit() {
     this.role=localStorage.getItem("role");
+    if(localStorage.getItem('idDemande')!=null)
+      this.demandesService.getDetailDemande(Number(localStorage.getItem('idDemande').toString())).subscribe((data:Demande)=>{
+        this.demande=data;
+        console.log(this.demande.id)
+        console.log(this.demande.originLat)
+        console.log(this.demande.originLong)
+        console.log(this.demande.origin)
+        console.log(this.demande.destination)
+      }, err=>{
+        console.log(err)
+      })
+      //getDetailDemande(+(localStorage.getItem('idDemande')).subscribe((data:Demande)
     // write out demande to console.log
     console.log(localStorage.getItem('demande.origin'));
     console.log(localStorage.getItem('demande.destination'));
@@ -56,8 +72,8 @@ export class ListVoyageComponent implements OnInit {
       })
     }
     //*  C'est pour les voyages matches
-    else if(localStorage.getItem("demande.origin")!=null && localStorage.getItem("demande.destination")!=null){
-      this.geocoding.codeAddress(localStorage.getItem("demande.origin")).forEach(
+    else if(this.demande.origin.length!=0 && this.demande.destination.length!=0){
+      /*this.geocoding.codeAddress(localStorage.getItem("demande.origin")).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.dLatLngOrigin= new google.maps.LatLng(
@@ -65,8 +81,12 @@ export class ListVoyageComponent implements OnInit {
               results[0].geometry.location.lng()                            
             )                            
           }
-      });
-      this.geocoding.codeAddress(localStorage.getItem("demande.destination")).forEach(
+      });//*/
+      this.dLatLngOrigin= new google.maps.LatLng(
+        this.demande.originLat,
+        this.demande.originLong
+      )                            
+      /*this.geocoding.codeAddress(localStorage.getItem("demande.destination")).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.dLatLngDestination= new google.maps.LatLng(
@@ -74,8 +94,12 @@ export class ListVoyageComponent implements OnInit {
               results[0].geometry.location.lng()                            
             )
           }
-      });
-      this.voyagesService.matchingVoyages(localStorage.getItem('demande.typeCamion'), localStorage.getItem('demande.optionDemande'))
+      });//*/
+      this.dLatLngDestination= new google.maps.LatLng(
+        this.demande.destLat,
+        this.demande.destLong
+      )
+      this.voyagesService.matchingVoyages(this.demande.typeCamion, this.demande.optionDemande)
       .subscribe(async (data:Array<Voyage>)=>{
         let matchVoyages:Array<Voyage>=[]
         //this.voyages=data
@@ -100,7 +124,7 @@ export class ListVoyageComponent implements OnInit {
             console.log('lat : '+y.lat + ' lng : '+y.lng)
           })
           //
-          await this.geocoding.codeAddress(voyage.origin).forEach(
+          /*await this.geocoding.codeAddress(voyage.origin).forEach(
             (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngOrigin= new google.maps.LatLng(
@@ -108,8 +132,12 @@ export class ListVoyageComponent implements OnInit {
                   results[0].geometry.location.lng()                            
                 )                            
               }
-          });
-          await this.geocoding.codeAddress(voyage.destination).forEach(
+          });//*/
+          this.latLngOrigin= new google.maps.LatLng(
+            voyage.originLat,
+            voyage.originLong                            
+          )
+          /*await this.geocoding.codeAddress(voyage.destination).forEach(
             (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngDestination= new google.maps.LatLng(
@@ -117,7 +145,11 @@ export class ListVoyageComponent implements OnInit {
                   results[0].geometry.location.lng()                            
                 )
               }
-          });
+          });//*/
+          this.latLngDestination= new google.maps.LatLng(
+            voyage.destLat,
+            voyage.destLong                            
+          )
 
           this.originCircle = new google.maps.Circle({
             center: new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()),
@@ -155,10 +187,15 @@ export class ListVoyageComponent implements OnInit {
             console.log('dHeading - heading = ' + (dHeading-heading))
           }    //*/   
           // distances en mile - d1 : dO-vO, d2 : dO-vD, d3 : dD-vD, d4 : dD-vO   
-          let d1 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngOrigin)/1000/1.609344) ;   
-          let d2 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngDestination)/1000/1.609344) ;   
-          let d3 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngDestination)/1000/1.609344) ;   
-          let d4 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngOrigin)/1000/1.609344) ;   
+          let d1 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngOrigin))//1000/1.609344) ;   
+          let d2 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngDestination))//1000/1.609344) ;   
+          let d3 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngDestination))//1000/1.609344) ;   
+          let d4 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngOrigin))//1000/1.609344) ;   
+          console.log('d1 : dO-vO  -  Rayon origin : ' + d1 + "  -  "+ this.originCircle.getRadius());
+          console.log('d2 : dO-vD  -  Rayon dest : ' + d2 + "  -  "+ this.destCircle1.getRadius());
+          console.log('d3 : dD-vD  -  Rayon dest : ' + d3 + "  -  "+ this.destCircle1.getRadius());
+          console.log('d4 : dD-vO  -  Rayon origin : ' + d4 + "  -  "+ this.originCircle.getRadius());
+
           if(this.originCircle.getBounds().contains(this.dLatLngOrigin) && this.destCircle1.getBounds().contains(this.dLatLngDestination)){
             matchVoyages.push(voyage)
           }

@@ -11,6 +11,10 @@ export class Demande{
     distance:number=0.00;
     origin:string="";
     destination:string="";
+    originLat:number;
+    originLong:number;
+    destLat:number;
+    destLong:number;
     totalpoints:number=0.00;
     prixSugere:number=0.00;
     typeCamion:string="";

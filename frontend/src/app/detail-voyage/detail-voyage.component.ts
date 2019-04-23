@@ -516,6 +516,14 @@ getPaths() {
   }
   onSaveVoyage(){
     this.getPaths();
+    this.voyage.originLat=this.latLngOrigin.lat()
+    this.voyage.originLong=this.latLngOrigin.lng()
+    this.voyage.destLat=this.latLngDestination.lat()
+    this.voyage.destLong=this.latLngDestination.lng()
+    console.log('this.voyage.originLat : ' + this.voyage.originLat)
+    console.log('this.voyage.originLong : ' + this.voyage.originLong)
+    console.log('this.voyage.destLat : ' + this.voyage.destLat)
+    console.log('this.voyage.destLong : ' + this.voyage.destLong)
     this.voyage.dateDepart = new Date(this.voyage.dateDepart)
     this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
       this.router.navigateByUrl("/list-voyage");

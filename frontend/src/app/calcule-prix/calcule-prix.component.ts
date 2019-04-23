@@ -446,8 +446,8 @@ async distance2Ads(address1: string, address2:string) {
           (results: google.maps.GeocoderResult[]) => {
                 if(results[0].geometry.location.lat()>0){
                   point1= new google.maps.LatLng(
-                    results[0].geometry.location.lat(),
-                    results[0].geometry.location.lng()                            
+                    this.demande.originLat = results[0].geometry.location.lat(),
+                    this.demande.originLong = results[0].geometry.location.lng()                            
                   )
                 }
           })
@@ -463,8 +463,8 @@ async distance2Ads(address1: string, address2:string) {
             (results: google.maps.GeocoderResult[]) => {
                   if(results[0].geometry.location.lat()>0){
                     point2= new google.maps.LatLng(
-                      results[0].geometry.location.lat(),
-                      results[0].geometry.location.lng()                            
+                      this.demande.destLat = results[0].geometry.location.lat(),
+                      this.demande.destLong = results[0].geometry.location.lng()                            
                     )
                   }
             })
@@ -512,12 +512,13 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     localStorage.setItem('demande.origin', this.demande.origin);
     localStorage.setItem('demande.destination', this.demande.destination);
     if (this.demande.typeCamion.includes("undefined"))
-    this.demande.typeCamion=""
+      this.demande.typeCamion=""
     localStorage.setItem('demande.typeCamion', this.demande.typeCamion);
     if (this.demande.optionDemande.includes("undefined"))
-    this.demande.optionDemande=""
+      this.demande.optionDemande=""
     localStorage.setItem('demande.optionDemande', this.demande.optionDemande);
     localStorage.setItem('demande.dateDepart', this.demande.dateDepart.toLocaleString());
+
     // write out demande to console.log
     console.log(localStorage.getItem('demande.origin'));
     console.log(localStorage.getItem('demande.destination'));
@@ -527,6 +528,8 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
     //
     this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
       //this.demande=data;
+      localStorage.setItem('idDemande', data.id.toString());
+      console.log('idDemande : ' + localStorage.getItem('idDemande'))
       this.router.navigateByUrl("/list-voyage");
     }
     , err=>{

@@ -39,6 +39,12 @@ public class Demande implements Serializable{
     private Float distance;
     private String origin;
     private String destination;
+    // il vaut mieur de garder coordonees
+    private Double originLat;
+    private Double originLong;
+    private Double destLat;
+    private Double destLong;
+    //
     private Long totalpoints;
     private Float prixSugere;
     private String typeCamion;

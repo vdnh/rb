@@ -6,6 +6,12 @@ export class Voyage{
     destination:string;
     radiusOrigin:number=0.00;
     radiusDestination:number=0.00;
+    // il vaut mieur de garder coordonees
+    originLat:number;
+    originLong:number;
+    destLat:number;
+    destLong:number;
+    //
     typeCamion:string;
     optionVoyage:string;
     chercheCorridor:boolean=false;
