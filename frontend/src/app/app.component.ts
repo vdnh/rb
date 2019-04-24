@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Role } from 'src/model/model.role';
@@ -8,7 +8,7 @@ import { Role } from 'src/model/model.role';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'CTS';
   mode:number=0;  // to control password
   role:string="";
@@ -81,6 +81,12 @@ export class AppComponent {
     //window.open("http://192.168.0.131")
     this.router.navigateByUrl("");
     //window.close();
+  }
+  // on close window
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event){
+    alert("I'm leaving the app");
+    localStorage.clear();
   }
   onTransporter(){
     let role = localStorage.getItem('role')
