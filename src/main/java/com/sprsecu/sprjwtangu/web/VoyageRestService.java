@@ -79,5 +79,19 @@ public class VoyageRestService {
         ){
         return voyageRepository.matching("%"+typeCamion+"%", "%"+optionVoyage+"%"); //, dateDepart);
     }
-
+    
+    @RequestMapping(value = "/matchedVoyages", method = RequestMethod.GET)
+    public List<Voyage> matchedVoyages(
+            @RequestParam(name = "mv", defaultValue = "" ) String mv
+            //, @RequestParam(name = "optionVoyage", defaultValue = "" ) String optionVoyage
+            //, @RequestParam(name = "dateDepart", defaultValue = "3000-01-01" ) String dateDepart
+        ){
+        return voyageRepository.matchedVoyages(mv); //, dateDepart);
+    }
+/*/
+    @Query("select v from Voyage v where v.id in (:mv)")
+    public List<Voyage> matchedVoyages(
+            @Param("mv") String typeCamion
+            );
+//*/
 }

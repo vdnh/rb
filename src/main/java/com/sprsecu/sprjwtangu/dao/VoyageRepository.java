@@ -25,4 +25,8 @@ public interface VoyageRepository extends JpaRepository<Voyage, Long>{
             ,@Param("o") String optionVoyage
             //,@Param("d") String dateDepart
             );
+    @Query("select v from Voyage v where v.id in (:mv)")
+    public List<Voyage> matchedVoyages(
+            @Param("mv") String typeCamion
+            );
 }

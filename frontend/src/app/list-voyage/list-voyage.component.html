@@ -27,6 +27,11 @@
     </div>
     <div class="panel-heading" *ngIf="!role.includes('TRANSPORTER') && modeMatching==1">
       <div class="panel-body">
+        <div class="form-group">
+          <label for="Mot cle : "></label>
+          <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+        </div>
         <table class="table table-striped">
           <tr>
             <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>

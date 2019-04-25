@@ -47,6 +47,9 @@ public class Voyage implements Serializable{
     private Long idTransporter;
     private String nomTransporter;
     private String paths; // coordonees de polygon en text
+    private String idsDemandeeMatchings; // ids de Demandes matching avec ce Voyage
+    private String idsDemandePasBesoins; // ids de Demandes matching mais pas besoins
+    private String idsDemandeContactes; // ids de Demandes contactes
     public void setDateDepart(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

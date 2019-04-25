@@ -148,7 +148,7 @@ export class ListVoyageComponent implements OnInit {
             angle=Math.abs(dHeading-heading);
             console.log('dHeading - heading = ' + angle)
           }    //*/   
-          // distances en mile - d1 : dO-vO, d2 : dO-vD, d3 : dD-vD, d4 : dD-vO   
+          /*/ distances en mile - d1 : dO-vO, d2 : dO-vD, d3 : dD-vD, d4 : dD-vO   
           let d1 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngOrigin))//1000/1.609344) ;   
           let d2 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngOrigin, this.latLngDestination))//1000/1.609344) ;   
           let d3 = Math.round(google.maps.geometry.spherical.computeDistanceBetween(this.dLatLngDestination, this.latLngDestination))//1000/1.609344) ;   
@@ -156,7 +156,7 @@ export class ListVoyageComponent implements OnInit {
           console.log('d1 : dO-vO  -  Rayon origin : ' + d1 + "  -  "+ this.originCircle.getRadius());
           console.log('d2 : dO-vD  -  Rayon dest : ' + d2 + "  -  "+ this.destCircle1.getRadius());
           console.log('d3 : dD-vD  -  Rayon dest : ' + d3 + "  -  "+ this.destCircle1.getRadius());
-          console.log('d4 : dD-vO  -  Rayon origin : ' + d4 + "  -  "+ this.originCircle.getRadius());
+          console.log('d4 : dD-vO  -  Rayon origin : ' + d4 + "  -  "+ this.originCircle.getRadius());//*/
           //if(this.paths.length<=0){
           if(this.originCircle.getBounds().contains(this.dLatLngOrigin) && this.destCircle1.getBounds().contains(this.dLatLngDestination)){
             matchVoyages.push(voyage)
@@ -237,6 +237,8 @@ export class ListVoyageComponent implements OnInit {
   }
 
   chercher(){
+    this.demande=null;
+    this.modeMatching=0;
     this.doSearch();
   }
   gotoPage(i:number){
