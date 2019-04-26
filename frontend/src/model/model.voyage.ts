@@ -18,7 +18,7 @@ export class Voyage{
     idTransporter:number=0.00; 
     nomTransporter:string;
     paths:string; // coordonnes de polygon en text
-    idsDemandeeMatchings:string; // ids de Demandes matching avec ce Voyage
+    idsDemandeMatchings:string; // ids de Demandes matching avec ce Voyage
     idsDemandePasBesoins:string; // ids de Demandes matching mais pas besoins
     idsDemandeContactes:string; // ids de Demandes contactes
 }

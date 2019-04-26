@@ -3,7 +3,7 @@
     <!--div class="panel-heading" *ngIf="!flag.includes('transporter') && !role.includes('shipper')">Liste des demandes</div-->
     <!--div class="panel-body" *ngIf="!flag.includes('transporter') && !role.includes('shipper')"-->
     <div class="panel-heading">Liste des demandes</div>
-    <div class="panel-body">
+    <div class="panel-body" *ngIf="modeMatching==0">
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
@@ -27,7 +27,23 @@
         </ul>
       </div>
     </div>
-    <!--div class="panel-heading" *ngIf="flag.includes('transporter') || role.includes('shipper')">
+    <div class="panel-body" *ngIf="modeMatching==1">
+      <div class="form-group">
+        <label for="Mot cle : "></label>
+        <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+      </div>
+      <table class="table table-striped">
+        <tr>
+          <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+        </tr>
+        <tr *ngFor="let d of demandes">
+          <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
+        </tr>
+      </table>
+    </div>
+    <!--div class="panel-heading" *ngIf="">
       <div class="panel-body">
         <table class="table table-striped">
           <tr>

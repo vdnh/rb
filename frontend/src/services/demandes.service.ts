@@ -28,7 +28,15 @@ export class DemandesService{
             return resp;
         }))
     }
-
+    getAllDemandes()
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/demandes", 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
     demandesDeTransporter(idDemander:number){
         this.loadTonken();
         return this.http.get(this.adServer+":8080/demandesDeTransporter?idDemander="+idDemander

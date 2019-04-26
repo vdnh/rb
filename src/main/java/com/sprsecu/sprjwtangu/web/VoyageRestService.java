@@ -2,6 +2,7 @@ package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.dao.VoyageRepository;
 import com.sprsecu.sprjwtangu.entities.Voyage;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -81,17 +82,29 @@ public class VoyageRestService {
     }
     
     @RequestMapping(value = "/matchedVoyages", method = RequestMethod.GET)
-    public List<Voyage> matchedVoyages(
-            @RequestParam(name = "mv", defaultValue = "" ) String mv
-            //, @RequestParam(name = "optionVoyage", defaultValue = "" ) String optionVoyage
-            //, @RequestParam(name = "dateDepart", defaultValue = "3000-01-01" ) String dateDepart
-        ){
-        return voyageRepository.matchedVoyages(mv); //, dateDepart);
+    public List<Voyage> matchedVoyages(@RequestParam(name = "mv", defaultValue = "" ) String mv)
+    {
+        List<Voyage> voys= new ArrayList<>();
+        String[] listIdVoys = mv.split(",");
+        for(String id : listIdVoys){
+            voys.add(voyageRepository.getOne(new Long(id)));
+        }
+        System.out.println("list Ids Voyages : " + listIdVoys.toString());
+        
+        return voys;
+        //return voyageRepository.matchedVoyages(mv); //, dateDepart);
     }
 /*/
     @Query("select v from Voyage v where v.id in (:mv)")
     public List<Voyage> matchedVoyages(
             @Param("mv") String typeCamion
             );
+    
+    @RequestMapping(value = "/chercherClients", method = RequestMethod.GET)
+    public List<BankClient> chercher(@RequestParam(name = "mc", defaultValue = "") String mc)
+    {
+        //return shipperRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+        return bankClientRepository.chercher("%"+mc+"%");
+    }
 //*/
 }

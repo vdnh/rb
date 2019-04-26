@@ -3,6 +3,8 @@ import { PageDemande } from 'src/model/model.pageDemande';
 import { DemandesService } from 'src/services/demandes.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Demande } from 'src/model/model.demande';
+import { VoyagesService } from 'src/services/voyages.service';
+import { Voyage } from 'src/model/model.voyage';
 
 @Component({
   selector: 'app-list-demande',
@@ -19,15 +21,32 @@ export class ListDemandeComponent implements OnInit {
   demandes:Array<Demande>;
   role:string="";
   flag:string="";
+  voyage:Voyage = null; //=new Voyage();
+  modeMatching=0;
 
-  constructor(activatedRoute:ActivatedRoute ,public demandesService:DemandesService, public router:Router) { 
-    //this.flag=activatedRoute.snapshot.params['flag'];
+  constructor(activatedRoute:ActivatedRoute, public voyagesService : VoyagesService, public demandesService:DemandesService, public router:Router) { 
+    
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.role=localStorage.getItem("role");
-    this.doSearch()
-    console.log("this.flag : "+this.flag)
+    if(localStorage.getItem('idVoyage')!=null)
+      await this.voyagesService.getDetailVoyage(Number(localStorage.getItem('idVoyage').toString())).subscribe((data:Voyage)=>{
+        this.voyage=data;
+        console.log(this.voyage.id)
+        console.log(this.voyage.originLat)
+        console.log(this.voyage.originLong)
+        console.log(this.voyage.origin)
+        console.log(this.voyage.destination)
+        this.modeMatching=1;
+        this.doSearch();
+      }, err=>{
+        console.log(err)
+      })
+    else 
+      this.doSearch()
+    //console.log("this.flag : "+this.flag)
+
   }
   doSearch(){
     /*if(this.flag.includes('transporter')){
@@ -47,6 +66,25 @@ export class ListDemandeComponent implements OnInit {
       })      
     }//*/
     //else{
+
+      if(this.voyage!=null){ 
+        this.demandesService.getAllDemandes()
+        .subscribe(async (data:Array<Demande>)=>{
+          let matchDemandes:Array<Demande>=[]
+          //this.voyages=data
+          this.modeMatching=1
+          // we filter voyages here
+          await data.forEach(async demande=>{
+            if(this.voyage.idsDemandeMatchings.includes(demande.id.toString()))
+            {
+              matchDemandes.push(demande)
+            }
+          })
+          this.demandes=matchDemandes;
+        }, err=>{
+          console.log(err);
+        })
+      }
       this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe((data:PageDemande)=>{
         this.pageDemande=data;
         this.pages=new Array(data.totalPages);
@@ -56,6 +94,8 @@ export class ListDemandeComponent implements OnInit {
     //}
   }
   chercher(){
+    this.modeMatching=0;
+    this.voyage=null;
     this.doSearch();
   }
   gotoPage(i:number){
