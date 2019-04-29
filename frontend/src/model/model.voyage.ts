@@ -12,13 +12,13 @@ export class Voyage{
     destLat:number;
     destLong:number;
     //
-    typeCamion:string;
-    optionVoyage:string;
+    typeCamion:string="";
+    optionVoyage:string="";
     chercheCorridor:boolean=false;
     idTransporter:number=0.00; 
     nomTransporter:string;
     paths:string; // coordonnes de polygon en text
-    idsDemandeMatchings:string; // ids de Demandes matching avec ce Voyage
-    idsDemandePasBesoins:string; // ids de Demandes matching mais pas besoins
-    idsDemandeContactes:string; // ids de Demandes contactes
+    idsDemandeMatchings:string=""; // ids de Demandes matching avec ce Voyage
+    idsDemandePasBesoins:string=""; // ids de Demandes matching mais pas besoins
+    idsDemandeContactes:string=""; // ids de Demandes contactes
 }

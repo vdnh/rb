@@ -83,7 +83,8 @@ export class ListVoyageComponent implements OnInit {
         this.modeMatching=1
         // we filter voyages here
         await data.forEach(async voyage=>{
-          if(this.demande.idsVoyageMatchings.includes(voyage.id.toString()))
+          if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
+            && !this.demande.idsVoyagePasBesoins.includes(voyage.id.toString()))
           {
             matchVoyages.push(voyage)
           }        
@@ -139,6 +140,16 @@ export class ListVoyageComponent implements OnInit {
       console.log(err)
     })
     this.doSearch();
+  }
+
+  removeVoyage(voyage:Voyage){
+    this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
+    this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+      this.demande=data;
+    }, err=>{
+      console.log(err)
+    })
+    this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
   }
 
 }

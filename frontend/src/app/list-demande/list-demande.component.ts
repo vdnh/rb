@@ -75,7 +75,8 @@ export class ListDemandeComponent implements OnInit {
           this.modeMatching=1
           // we filter voyages here
           await data.forEach(async demande=>{
-            if(this.voyage.idsDemandeMatchings.includes(demande.id.toString()))
+            if(this.voyage.idsDemandeMatchings.includes(demande.id.toString())
+              && !this.voyage.idsDemandePasBesoins.includes(demande.id.toString()))
             {
               matchDemandes.push(demande)
             }
@@ -110,5 +111,14 @@ export class ListDemandeComponent implements OnInit {
   deleteDemande(id:number){
     this.demandesService.deleteDemande(id);
     this.doSearch();
+  }
+  removeDemande(demande:Demande){
+    this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
+    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+      this.voyage=data;
+    }, err=>{
+      console.log(err);
+    })
+    this.demandes.splice(this.demandes.indexOf(demande), 1)
   }
 }

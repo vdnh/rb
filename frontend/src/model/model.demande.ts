@@ -22,7 +22,7 @@ export class Demande{
     roleDemander:string=""; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
     idDemander:number=0.00;   // dans le cas SHIPPER ou TRANSPORTER 
     nomDemander:string=""; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
-    idsVoyageMatchings:string; // ids de Voyages matching avec ce Demande
-    idsVoyagePasBesoins:string; // ids de Voyages matching mais pas besoins
-    idsVoyageContactes:string; // ids de Voyages contactes
+    idsVoyageMatchings:string=""; // ids de Voyages matching avec ce Demande
+    idsVoyagePasBesoins:string=""; // ids de Voyages matching mais pas besoins
+    idsVoyageContactes:string=""; // ids de Voyages contactes
 }

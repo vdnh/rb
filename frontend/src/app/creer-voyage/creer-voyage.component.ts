@@ -683,12 +683,15 @@ getPaths() {
                
         if(this.originCircle.getBounds().contains(latLngOriginD) && this.destCircle1.getBounds().contains(latLngDestinationD)){
           listIdDemandes.push(demande.id.toString())
+          return;
         }
         if(this.originCircle.getBounds().contains(latLngOriginD) && this.originCircle.getBounds().contains(latLngDestinationD)){
           listIdDemandes.push(demande.id.toString())
+          return;
         }
         if(this.destCircle1.getBounds().contains(latLngOriginD) && this.destCircle1.getBounds().contains(latLngDestinationD)){
           listIdDemandes.push(demande.id.toString())
+          return;
         }
         
         if(this.paths.length>0){
@@ -699,6 +702,7 @@ getPaths() {
             && this.destCircle1.getBounds().contains(latLngDestinationD)) // destinationDemande in destination
           {
             listIdDemandes.push(demande.id.toString())
+            return;
           }
           if(
             !this.destCircle1.getBounds().contains(latLngDestinationD) // destinationDemande not in destination
@@ -707,6 +711,7 @@ getPaths() {
             && this.originCircle.getBounds().contains(latLngOriginD)) // originDemande in origin
           {
             listIdDemandes.push(demande.id.toString())
+            return;
           }
           // */
           if(
@@ -716,9 +721,10 @@ getPaths() {
             && !this.destCircle1.getBounds().contains(latLngDestinationD) // destinationDemande not in destination 
             && !this.originCircle.getBounds().contains(latLngDestinationD) // destinationDemande not in origin
             && google.maps.geometry.poly.containsLocation(latLngDestinationD, this.polygon) // destinationDemande in corridor
-            && angle<=90 || angle>=270)
+            && (angle<=90 || angle>=270))
           {
             listIdDemandes.push(demande.id.toString())
+            return;
           }
         }
         //if(google.maps.geometry.poly.containsLocation(this.dLatLngOrigin, this.polygon)){}          

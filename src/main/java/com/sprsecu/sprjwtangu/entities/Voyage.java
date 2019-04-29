@@ -41,8 +41,8 @@ public class Voyage implements Serializable{
     private Double destLat;
     private Double destLong;
     //
-    private String typeCamion;
-    private String optionVoyage;
+    private String typeCamion="";
+    private String optionVoyage="";
     private Boolean chercheCorridor;
     private Long idTransporter;
     private String nomTransporter;

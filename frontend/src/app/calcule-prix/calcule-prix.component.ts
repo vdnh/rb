@@ -650,14 +650,17 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
         if(originCircle.getBounds().contains(this.latLngOrigin) && destCircle1.getBounds().contains(this.latLngDestination)){
           //matchVoyages.push(voyage);
           listIdVoyages.push(voyage.id.toString())
+          return;
         }
         if(originCircle.getBounds().contains(this.latLngOrigin) && originCircle.getBounds().contains(this.latLngDestination)){
           //matchVoyages.push(voyage)
           listIdVoyages.push(voyage.id.toString())
+          return;
         }
         if(destCircle1.getBounds().contains(this.latLngOrigin) && destCircle1.getBounds().contains(this.latLngDestination)){
           //matchVoyages.push(voyage)
           listIdVoyages.push(voyage.id.toString())
+          return;
         }
         
         if(paths.length>0){
@@ -669,6 +672,7 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
           {
             //matchVoyages.push(voyage)
             listIdVoyages.push(voyage.id.toString())
+            return;
           }
           if(
             !destCircle1.getBounds().contains(this.latLngDestination) // destinationDemande not in destination
@@ -678,6 +682,7 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
           {
             //matchVoyages.push(voyage)
             listIdVoyages.push(voyage.id.toString())
+            return;
           }
           // */
           if(
@@ -687,10 +692,11 @@ calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
             && !destCircle1.getBounds().contains(this.latLngDestination) // destinationDemande not in destination 
             && !originCircle.getBounds().contains(this.latLngDestination) // destinationDemande not in origin
             && google.maps.geometry.poly.containsLocation(this.latLngDestination, polygon) // destinationDemande in corridor
-            && angle<=90 || angle>=270)
+            && (angle<=90 || angle>=270))
           {
             //matchVoyages.push(voyage)
             listIdVoyages.push(voyage.id.toString())
+            return;
           }
         }
         //if(google.maps.geometry.poly.containsLocation(this.dLatLngOrigin, this.polygon)){}          

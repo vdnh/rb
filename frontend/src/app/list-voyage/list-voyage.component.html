@@ -39,7 +39,7 @@
           <tr *ngFor="let v of voyages">
             <td>{{v.dateDepart}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
             <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detailler</button></td>
-            <!--td><button class="btn btn-link" (click)="deleteVoyage(v.id)">Delete</button></td-->
+            <td><button class="btn btn-link" (click)="removeVoyage(v)">Retirer</button></td>
           </tr>
         </table>
       </div>
