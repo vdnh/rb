@@ -84,7 +84,7 @@ export class ListVoyageComponent implements OnInit {
         // we filter voyages here
         await data.forEach(async voyage=>{
           if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
-            && !this.demande.idsVoyagePasBesoins.includes(voyage.id.toString()))
+            && !this.demande.idsVoyagePasBesoins.split(",").includes(voyage.id.toString()))
           {
             matchVoyages.push(voyage)
           }        
@@ -109,7 +109,7 @@ export class ListVoyageComponent implements OnInit {
       })
     }//*/
     else{
-      this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
+      this.voyagesService.getVoyages(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageVoyage)=>{
         this.pageVoyage=data;
         this.pages=new Array(data.totalPages);
       }, err=>{
@@ -143,13 +143,20 @@ export class ListVoyageComponent implements OnInit {
   }
 
   removeVoyage(voyage:Voyage){
-    this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
-    this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
-      this.demande=data;
-    }, err=>{
-      console.log(err)
-    })
-    this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
+    if(this.demande!=null){
+      this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
+      this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+        this.demande=data;
+      }, err=>{
+        console.log(err)
+      })
+      this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
+    }
+    if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins + "," + localStorage.getItem('userId');
+      this.voyagesService.saveVoyages(voyage).subscribe(data=>{},err=>{console.log(err)})
+      this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the content list
+    }
   }
 
 }

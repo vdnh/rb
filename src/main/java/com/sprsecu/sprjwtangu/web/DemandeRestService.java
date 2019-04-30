@@ -73,9 +73,19 @@ public class DemandeRestService {
     @RequestMapping(value = "/chercherDemandes", method = RequestMethod.GET)
     public Page<Demande> chercher(
         @RequestParam(name = "mc", defaultValue = "") String mc, 
+        @RequestParam(name = "id", defaultValue = " ") String id, 
         @RequestParam(name = "page", defaultValue = "0")int page, 
         @RequestParam(name = "size", defaultValue = "5")int size){
-        return demandeRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+        return demandeRepository.chercher("%"+mc+"%", id, PageRequest.of(page, size));
     }
-    
+    /*
+    @RequestMapping(value = "/chercherVoyages", method = RequestMethod.GET)
+    public Page<Voyage> chercher(
+        @RequestParam(name = "mc", defaultValue = "") String mc, 
+        @RequestParam(name = "id", defaultValue = " ") String id, 
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        return voyageRepository.chercher("%"+mc+"%", id, PageRequest.of(page, size));
+    }
+    //*/
 }

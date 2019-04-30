@@ -86,7 +86,7 @@ export class ListDemandeComponent implements OnInit {
           console.log(err);
         })
       }
-      this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe((data:PageDemande)=>{
+      this.demandesService.getDemandes(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageDemande)=>{
         this.pageDemande=data;
         this.pages=new Array(data.totalPages);
       }, err=>{
@@ -112,13 +112,39 @@ export class ListDemandeComponent implements OnInit {
     this.demandesService.deleteDemande(id);
     this.doSearch();
   }
+
   removeDemande(demande:Demande){
-    this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
-    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-      this.voyage=data;
-    }, err=>{
-      console.log(err);
-    })
-    this.demandes.splice(this.demandes.indexOf(demande), 1)
+    if(this.voyage!=null){
+      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
+      this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+        this.voyage=data;
+      }, err=>{
+        console.log(err);
+      })
+      this.demandes.splice(this.demandes.indexOf(demande), 1)
+    }
+    if(this.pageDemande.totalPages!=null && this.pageDemande.totalPages>0){
+      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+","+localStorage.getItem("userId");
+      this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})
+      this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
+    }
   }
+  /*
+    removeVoyage(voyage:Voyage){
+    if(this.demande!=null){
+      this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
+      this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+        this.demande=data;
+      }, err=>{
+        console.log(err)
+      })
+      this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
+    }
+    if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins + "," + localStorage.getItem('userId');
+      this.voyagesService.saveVoyages(voyage).subscribe(data=>{},err=>{console.log(err)})
+      this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the content list
+    }
+  }
+  //*/
 }

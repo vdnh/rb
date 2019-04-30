@@ -67,9 +67,10 @@ public class VoyageRestService {
     @RequestMapping(value = "/chercherVoyages", method = RequestMethod.GET)
     public Page<Voyage> chercher(
         @RequestParam(name = "mc", defaultValue = "") String mc, 
+        @RequestParam(name = "id", defaultValue = " ") String id, 
         @RequestParam(name = "page", defaultValue = "0")int page, 
         @RequestParam(name = "size", defaultValue = "5")int size){
-        return voyageRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+        return voyageRepository.chercher("%"+mc+"%", id, PageRequest.of(page, size));
     }
     
     @RequestMapping(value = "/matchingVoyages", method = RequestMethod.GET)

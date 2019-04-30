@@ -52,9 +52,10 @@ public class Demande implements Serializable{
     private String roleDemander; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
     private Long idDemander;   // dans le cas SHIPPER ou TRANSPORTER 
     private String nomDemander; // possiblement SHIPPER ou TRANSPORTER
-    private String idsVoyageMatchings; // ids de Voyages matching avec ce Demande
-    private String idsVoyagePasBesoins; // ids de Voyages matching mais pas besoins
-    private String idsVoyageContactes; // ids de Voyages contactes
+    private String idsVoyageMatchings=""; // ids de Voyages matching avec ce Demande
+    private String idsVoyagePasBesoins=""; // ids de Voyages matching mais pas besoins
+    private String idsVoyageContactes=""; // ids de Voyages contactes
+    private String idsUsersPasBesoins=""; // ids de Users (Shipper or Transporter) pas besoins
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

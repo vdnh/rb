@@ -25,4 +25,5 @@ export class Demande{
     idsVoyageMatchings:string=""; // ids de Voyages matching avec ce Demande
     idsVoyagePasBesoins:string=""; // ids de Voyages matching mais pas besoins
     idsVoyageContactes:string=""; // ids de Voyages contactes
+    idsUsersPasBesoins:string=""; // ids de Users (Shipper or Transporter) pas besoins
 }
