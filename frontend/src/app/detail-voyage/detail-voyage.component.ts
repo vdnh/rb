@@ -11,6 +11,8 @@ import { TransportersService } from 'src/services/transporters.service';
 import { LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
+import { Demande } from 'src/model/model.demande';
+import { DemandesService } from 'src/services/demandes.service';
 
 @Component({
   selector: 'app-detail-voyage',
@@ -65,6 +67,7 @@ export class DetailVoyageComponent implements OnInit {
 
   constructor(public activatedRoute:ActivatedRoute, public contactsService:ContactsService,
     public adressesService:AdressesService, public voyagesService:VoyagesService, 
+    public demandesService : DemandesService, 
     public transportersService : TransportersService, public geocoding : GeocodingService, 
     private geolocation : GeolocationService, public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
@@ -72,11 +75,12 @@ export class DetailVoyageComponent implements OnInit {
 
   async ngOnInit() {
     this.role=localStorage.getItem('role');
+    localStorage.setItem('idVoyage', this.id.toString());
     await this.voyagesService.getDetailVoyage(this.id).subscribe(async (data:Voyage)=>{
       //*
       console.log(data.origin)
       console.log(data.destination)
-      await this.geocoding.codeAddress(data.origin).forEach(
+      /*await this.geocoding.codeAddress(data.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.latLngOrigin= new google.maps.LatLng(
@@ -84,8 +88,12 @@ export class DetailVoyageComponent implements OnInit {
               results[0].geometry.location.lng()                            
             )                            
           }
-        });
-      await this.geocoding.codeAddress(data.destination).forEach(
+        });//*/
+      this.latLngOrigin= new google.maps.LatLng(
+        data.originLat,
+        data.originLong                            
+      )  
+      /*await this.geocoding.codeAddress(data.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.latLngDestination= new google.maps.LatLng(
@@ -93,8 +101,14 @@ export class DetailVoyageComponent implements OnInit {
               results[0].geometry.location.lng()                            
             )
           }
-        });
-        alert("Wait for 2 seconds, we load data, please!")
+        });//*/
+        this.latLngDestination= new google.maps.LatLng(
+          data.destLat,
+          data.destLong                            
+        )
+
+        alert("Wait for 2 seconds, we load data, please!")        
+        /*//
         console.log('this.latLngOrigin.lat() : '+this.latLngOrigin.lat())
         console.log('this.latLngOrigin.lng() : '+this.latLngOrigin.lng())
         console.log('this.latLngDestination.lat() : '+this.latLngDestination.lat())
@@ -514,7 +528,104 @@ getPaths() {
     this.showMap();
     //console.log('hi from destinationChange')
   }
+  async getMatchingDemandes(){
+    let demandes:Array<Demande>;
+    let listIdDemandes:Array<string>=[]
+    let vLatLngOrigin= new google.maps.LatLng(
+      this.voyage.originLat,
+      this.voyage.originLong
+    )                            
+    let vLatLngDestination= new google.maps.LatLng(
+      this.voyage.destLat,
+      this.voyage.destLong
+    )
+    await this.demandesService.getAllDemandes()
+    .subscribe(async (data:Array<Demande>)=>{
+      let matchDemandes:Array<Demande>=[]
+      // we filter demandes here
+      await data.forEach(async demande=>{
+        console.log(demande.origin)
+        console.log(demande.destination)
+
+        let latLngOriginD= new google.maps.LatLng(
+          demande.originLat,
+          demande.originLong                            
+        )
+
+        let latLngDestinationD= new google.maps.LatLng(
+          demande.destLat,
+          demande.destLong                            
+        )
+
+        let angle:number;  // to get angle of voyage and demande 
+          this.spherical = google.maps.geometry.spherical;
+          let heading:number = this.spherical.computeHeading(vLatLngOrigin, vLatLngDestination);
+          let dHeading:number = this.spherical.computeHeading(latLngOriginD, latLngDestinationD);
+          angle=Math.abs(dHeading-heading);
+          console.log('dHeading - heading = ' + angle)
+               
+        if(this.originCircle.getBounds().contains(latLngOriginD) && this.destCircle1.getBounds().contains(latLngDestinationD)){
+          listIdDemandes.push(demande.id.toString())
+          return;
+        }
+        if(this.originCircle.getBounds().contains(latLngOriginD) && this.originCircle.getBounds().contains(latLngDestinationD)){
+          listIdDemandes.push(demande.id.toString())
+          return;
+        }
+        if(this.destCircle1.getBounds().contains(latLngOriginD) && this.destCircle1.getBounds().contains(latLngDestinationD)){
+          listIdDemandes.push(demande.id.toString())
+          return;
+        }
+        
+        if(this.paths.length>0){
+          if(
+            !this.originCircle.getBounds().contains(latLngOriginD) // originDemande not in origin
+            && !this.destCircle1.getBounds().contains(latLngOriginD) // originDemande not in destination
+            && google.maps.geometry.poly.containsLocation(latLngOriginD, this.polygon) // originDemande in corridor
+            && this.destCircle1.getBounds().contains(latLngDestinationD)) // destinationDemande in destination
+          {
+            listIdDemandes.push(demande.id.toString())
+            return;
+          }
+          if(
+            !this.destCircle1.getBounds().contains(latLngDestinationD) // destinationDemande not in destination
+            && !this.originCircle.getBounds().contains(latLngDestinationD) // destinationDemande not in origin
+            && google.maps.geometry.poly.containsLocation(latLngDestinationD, this.polygon) // destinationDemande in corridor
+            && this.originCircle.getBounds().contains(latLngOriginD)) // originDemande in origin
+          {
+            listIdDemandes.push(demande.id.toString())
+            return;
+          }
+          // */
+          if(
+            !this.originCircle.getBounds().contains(latLngOriginD) // originDemande not in origin
+            && !this.destCircle1.getBounds().contains(latLngOriginD) // originDemande not in destination
+            && google.maps.geometry.poly.containsLocation(latLngOriginD, this.polygon) // originDemande in corridor
+            && !this.destCircle1.getBounds().contains(latLngDestinationD) // destinationDemande not in destination 
+            && !this.originCircle.getBounds().contains(latLngDestinationD) // destinationDemande not in origin
+            && google.maps.geometry.poly.containsLocation(latLngDestinationD, this.polygon) // destinationDemande in corridor
+            && (angle<=90 || angle>=270))
+          {
+            listIdDemandes.push(demande.id.toString())
+            return;
+          }
+        }
+        //if(google.maps.geometry.poly.containsLocation(this.dLatLngOrigin, this.polygon)){}          
+      })
+      //voyages=matchVoyages
+      this.voyage.idsDemandeMatchings=listIdDemandes.toString();
+      this.doSaveVoyage();
+    }, err=>{
+      console.log(err)
+    })
+    //this.doSaveVoyage()
+  }
+  
   onSaveVoyage(){
+    this.getMatchingDemandes()
+  }
+
+  doSaveVoyage(){
     this.getPaths();
     this.voyage.originLat=this.latLngOrigin.lat()
     this.voyage.originLong=this.latLngOrigin.lng()
@@ -526,12 +637,33 @@ getPaths() {
     console.log('this.voyage.destLong : ' + this.voyage.destLong)
     this.voyage.dateDepart = new Date(this.voyage.dateDepart)
     this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-      this.router.navigateByUrl("/list-voyage");
+      //localStorage.setItem('idVoyage', data.id.toString());
+      this.router.navigateByUrl("/list-demande");
     }
     , err=>{
       console.log(err)
     })
   }
+  /*
+      this.getPaths();
+    this.voyage.originLat=this.latLngOrigin.lat()
+    this.voyage.originLong=this.latLngOrigin.lng()
+    this.voyage.destLat=this.latLngDestination.lat()
+    this.voyage.destLong=this.latLngDestination.lng()
+    this.voyage.dateDepart = new Date(this.voyage.dateDepart)
+    console.log('this.voyage.originLat : ' + this.voyage.originLat)
+    console.log('this.voyage.originLong : ' + this.voyage.originLong)
+    console.log('this.voyage.destLat : ' + this.voyage.destLat)
+    console.log('this.voyage.destLong : ' + this.voyage.destLong)
+    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+      localStorage.setItem('idVoyage', data.id.toString());
+      this.router.navigateByUrl("/list-demande");
+    }
+    , err=>{
+      console.log(err)
+    })
+
+  //*/
 
   onRetour(){
     this.router.navigateByUrl("/list-voyage")

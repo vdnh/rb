@@ -51,7 +51,7 @@ public class Voyage implements Serializable{
     private String idsDemandePasBesoins=""; // ids de Demandes matching mais pas besoins
     private String idsDemandeContactes=""; // ids de Demandes contactes
     private String idsUsersPasBesoins=""; // ids de Users (Shipper or Transporter) pas besoins
-    public void setDateDepart(LocalDate date) throws ParseException{
+    public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)
             this.dateDepart = null; 

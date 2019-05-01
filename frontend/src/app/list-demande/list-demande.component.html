@@ -2,7 +2,10 @@
   <div class="panel panel-primary">
     <!--div class="panel-heading" *ngIf="!flag.includes('transporter') && !role.includes('shipper')">Liste des demandes</div-->
     <!--div class="panel-body" *ngIf="!flag.includes('transporter') && !role.includes('shipper')"-->
-    <div class="panel-heading">Liste des demandes</div>
+    <div class="panel-heading">Liste de demandes disponibles :</div>
+    <h6 *ngIf="modeMatching==1">Le Voyage de {{voyage.origin}} rayon {{voyage.radiusOrigin}} miles &nbsp;a&nbsp; {{voyage.destination}} rayon {{voyage.radiusDestination}} miles 
+      <span *ngIf="voyage.chercheCorridor"> &nbsp; avec Corridor</span> 
+    </h6>
     <div class="panel-body" *ngIf="modeMatching==0">
       <div class="form-group">
         <label for="Mot cle : "></label>

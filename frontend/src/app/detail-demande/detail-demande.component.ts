@@ -43,7 +43,7 @@ export class DetailDemandeComponent implements OnInit {
   //demande:Demande=new Demande();
 
   // */
-  role:string="";
+  role:string="";  // role of user login
   demande:Demande=new Demande();
   shipper:Shipper=new Shipper();
   transporter:Transporter=new Transporter();
@@ -83,7 +83,7 @@ export class DetailDemandeComponent implements OnInit {
   }
   //constructor(public demandesService : DemandesService, public geocoding : GeocodingService, public router:Router) { }
   async ngOnInit() {
-    //this.role=localStorage.getItem('role');
+    this.role=localStorage.getItem('role');
     await this.demandesService.getDetailDemande(this.id).subscribe((data:Demande)=>{
       this.demande=data;
       this.originChange(); // to find coordinates origin
@@ -265,7 +265,14 @@ onOk(){
   this.searchTruck=false; //activer poster et rechercher
 
 }
-  
+
+onRetour(){
+  if(this.role.includes('SHIPPER'))
+    this.router.navigateByUrl("/list-demande-de-chaque/shipper")
+  if(this.role.includes('TRANSPORTER'))
+    this.router.navigateByUrl("/list-demande")
+}
+
 //* calculer distance
 async search(address: string) {
 let point:google.maps.LatLng =null;

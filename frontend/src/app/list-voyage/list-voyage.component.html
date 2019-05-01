@@ -1,6 +1,9 @@
 <div class="container spacer">
   <div class="panel panel-primary">
-    <div class="panel-heading" *ngIf="!role.includes('TRANSPORTER')">Liste des Camions</div>
+    <div class="panel-heading" *ngIf="!role.includes('TRANSPORTER')">
+      Liste des Camions disponibles : 
+      <h6 *ngIf="!role.includes('TRANSPORTER') && modeMatching==1">La demande : {{demande.origin}} - {{demande.destination}}</h6>
+    </div>
     <div class="panel-body" *ngIf="!role.includes('TRANSPORTER') && modeMatching==0">
       <div class="form-group">
         <label for="Mot cle : "></label>

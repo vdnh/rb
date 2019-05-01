@@ -29,7 +29,7 @@ export class ListDemandeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.role=localStorage.getItem("role");
+    console.log('localStorage.getItem("idVoyage") : ' +  localStorage.getItem("idVoyage"));
     if(localStorage.getItem('idVoyage')!=null)
       await this.voyagesService.getDetailVoyage(Number(localStorage.getItem('idVoyage').toString())).subscribe((data:Voyage)=>{
         this.voyage=data;
@@ -86,12 +86,13 @@ export class ListDemandeComponent implements OnInit {
           console.log(err);
         })
       }
-      this.demandesService.getDemandes(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageDemande)=>{
-        this.pageDemande=data;
-        this.pages=new Array(data.totalPages);
-      }, err=>{
-        console.log(err);
-      })
+      else
+        this.demandesService.getDemandes(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageDemande)=>{
+          this.pageDemande=data;
+          this.pages=new Array(data.totalPages);
+        }, err=>{
+          console.log(err);
+        })
     //}
   }
   chercher(){

@@ -81,10 +81,13 @@ export class ListVoyageComponent implements OnInit {
         let matchVoyages:Array<Voyage>=[]
         //this.voyages=data
         this.modeMatching=1
-        // we filter voyages here
+        // we filter voyages here : if idVoyage in demandeMatching but not in demande.idsVoyagePasBesoins
+        // and this userId not in voyage.idsUsersPasBesoins
         await data.forEach(async voyage=>{
           if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
-            && !this.demande.idsVoyagePasBesoins.split(",").includes(voyage.id.toString()))
+            && !this.demande.idsVoyagePasBesoins.split(",").includes(voyage.id.toString())
+            //&& !voyage.idsUsersPasBesoins.includes(localStorage.getItem('userId'))
+            )
           {
             matchVoyages.push(voyage)
           }        
@@ -150,6 +153,8 @@ export class ListVoyageComponent implements OnInit {
       }, err=>{
         console.log(err)
       })
+      //voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins + "," + localStorage.getItem('userId');
+      //this.voyagesService.saveVoyages(voyage).subscribe(data=>{},err=>{console.log(err)})
       this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
     }
     if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
