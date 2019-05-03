@@ -19,6 +19,7 @@
         <tr *ngFor="let d of pageDemande.content">
           <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
+          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Contact</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Retirer</button></td>
         </tr>
       </table>
@@ -43,6 +44,7 @@
         <tr *ngFor="let d of demandes">
           <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
+          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Contact</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Retirer</button></td>
         </tr>
       </table>

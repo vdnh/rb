@@ -59,7 +59,7 @@ export class VoyagesService{
 
     updateVoyage(id:number, v:Voyage){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/demandes/"+id, v
+       return this.http.put(this.adServer+":8080/voyages/"+id, v
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }

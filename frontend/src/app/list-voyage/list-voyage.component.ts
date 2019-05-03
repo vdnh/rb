@@ -7,6 +7,9 @@ import { LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { DemandesService } from 'src/services/demandes.service';
 import { Demande } from 'src/model/model.demande';
+import { Message } from 'src/model/model.message';
+import { MessagesService } from 'src/services/messages.service';
+import { async } from 'q';
 
 @Component({
   selector: 'app-list-voyage',
@@ -27,7 +30,11 @@ export class ListVoyageComponent implements OnInit {
   dLatLngDestination: google.maps.LatLng=null;
   demande:Demande = null; //=new Demande();
   
-  constructor(public demandesService : DemandesService, public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) { }
+  constructor(public messagesService : MessagesService, public demandesService : DemandesService, 
+    public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) 
+  { 
+
+  }
   //*/ to help matching voyages
   latLngOrigin:google.maps.LatLng =null;
   latLngDestination:google.maps.LatLng =null;
@@ -145,6 +152,34 @@ export class ListVoyageComponent implements OnInit {
     this.doSearch();
   }
 
+  disableContactVoyage(v:Voyage):boolean{
+    let disableContact:boolean=false;  // by default, contact is actif
+    if((v.idsDemandeContactes+',').includes(','+localStorage.getItem("userId")+','))
+      disableContact=true;
+    return disableContact;
+  }
+  contactVoyage(v:Voyage){
+    console.log("OK, We have had your message!")
+    let message= new Message()
+    v.idsDemandeContactes=v.idsDemandeContactes+","+localStorage.getItem('userId')
+    console.log('v.idsDemandeContactes : before write in database :'+v.idsDemandeContactes)
+    message.idSender=Number(localStorage.getItem('userId'));
+    message.roleSender=localStorage.getItem('role');
+    message.idReceiver=v.idTransporter;
+    message.roleReceiver="TRANSPORTER";
+    //message.idDemande
+    message.idVoyage=v.id
+    message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+    +" - email:  " + localStorage.getItem('email')
+    +" -  besoins votre Voyage de  "+ v.origin +"  a  " + v.destination; //"Contactez nous : " + 
+    //let messagesService : MessagesService;
+    this.messagesService.saveMessages(message).subscribe(async data=>{
+      await this.voyagesService.updateVoyage(v.id, v).subscribe((data:Voyage)=>{
+        console.log('v.idsDemandeContactes : after write in database :'+data.idsDemandeContactes)
+      },err=>{console.log(err)})
+    }, err=>{console.log(err)});
+  }
+  
   removeVoyage(voyage:Voyage){
     if(this.demande!=null){
       this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;

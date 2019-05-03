@@ -76,7 +76,7 @@ export class DetailDemandeComponent implements OnInit {
   //fin
   centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige
   //
-  message:Message=null;
+  //message:Message=null;
 
 
   constructor(public messagesService : MessagesService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
@@ -131,14 +131,14 @@ export class DetailDemandeComponent implements OnInit {
           console.log();
         });
       }
-      this.messagesService.messageDemandeContacted(Number(localStorage.getItem('userId')), this.demande.id)
+      /*this.messagesService.messageDemandeContacted(Number(localStorage.getItem('userId')), this.demande.id)
       .subscribe((data:Message)=>{
         this.message=data;
-        console.log("this.message.idSender : "+this.message.idSender)
-        console.log("this.message.idDemande : "+this.message.idDemande)
+        //console.log("this.message.idSender : "+this.message.idSender)
+        //console.log("this.message.idDemande : "+this.message.idDemande)
       }, err=>{
         console.log()
-      })
+      })//*/
     }
     , err=>{
       console.log(err)
@@ -283,22 +283,29 @@ onRetour(){
   if(this.role.includes('TRANSPORTER'))
     this.router.navigateByUrl("/list-demande")
 }
-
+disableContactDemande():boolean{
+  let disableContact:boolean=false;  // by default, contact is actif
+  if((this.demande.idsVoyageContactes+',').includes(','+localStorage.getItem("userId")+','))
+    disableContact=true;
+  return disableContact;
+}
 onContact(){
   console.log("OK, We have had your message!")
-  this.message= new Message()
-
-  this.message.idSender=Number(localStorage.getItem('userId'));
-  this.message.roleSender=localStorage.getItem('role');
-  this.message.idReceiver=this.demande.idDemander;
-  this.message.roleReceiver="SHIPPER";
-  this.message.idDemande=this.demande.id;
+  let message= new Message()
+  this.demande.idsVoyageContactes=this.demande.idsVoyageContactes+","+localStorage.getItem('userId')
+  message.idSender=Number(localStorage.getItem('userId'));
+  message.roleSender=localStorage.getItem('role');
+  message.idReceiver=this.demande.idDemander;
+  message.roleReceiver="SHIPPER";
+  message.idDemande=this.demande.id;
   //message.idVoyage=
-  this.message.message="Contactez nous : " + localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+  message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
   +" - email:  " + localStorage.getItem('email')
-  +" -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination
+  +" -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination; //"Contactez nous : " + 
   //let messagesService : MessagesService
-  this.messagesService.saveMessages(this.message).subscribe(data=>{}, err=>{console.log(err)})
+  this.messagesService.saveMessages(message).subscribe(data=>{
+    this.demandesService.updateDemande(this.demande.id, this.demande).subscribe(data=>{},err=>{console.log(err)})
+  }, err=>{console.log(err)})
 }
 
 //* calculer distance

@@ -65,7 +65,7 @@ export class DetailVoyageComponent implements OnInit {
   polygon = new google.maps.Polygon(); 
   //*/ fin map voyage
   
-  message:Message=null;
+  //message:Message=null;
 
   constructor(public messagesService : MessagesService,
     public activatedRoute:ActivatedRoute, public contactsService:ContactsService,
@@ -134,14 +134,14 @@ export class DetailVoyageComponent implements OnInit {
       }, err=>{
         console.log();
       });
-      this.messagesService.messageVoyageContacted(Number(localStorage.getItem('userId')), this.voyage.id)
+      /*this.messagesService.messageVoyageContacted(Number(localStorage.getItem('userId')), this.voyage.id)
       .subscribe((data:Message)=>{
         this.message=data;
-        console.log("this.message.idSender : "+this.message.idSender)
-        console.log("this.message.idVoyage : "+this.message.idVoyage)
+        //console.log("this.message.idSender : "+this.message.idSender)
+        //console.log("this.message.idVoyage : "+this.message.idVoyage)
       }, err=>{
         console.log()
-      })
+      })//*/
       await this.showMapInit();  
     }
     //}
@@ -679,22 +679,34 @@ getPaths() {
   onRetour(){
     this.router.navigateByUrl("/list-voyage")
   }
-
+  disableContactVoyage():boolean{
+    let disableContact:boolean=false;  // by default, contact is actif
+    if((this.voyage.idsDemandeContactes+',').includes(','+localStorage.getItem("userId")+','))
+      disableContact=true;
+    return disableContact;
+  }
   onContact(){
     console.log("OK, We have had your message!")
-    this.message= new Message()
-
-    this.message.idSender=Number(localStorage.getItem('userId'));
-    this.message.roleSender=localStorage.getItem('role');
-    this.message.idReceiver=this.voyage.idTransporter;
-    this.message.roleReceiver="TRANSPORTER";
+    let message= new Message()
+    this.voyage.idsDemandeContactes=this.voyage.idsDemandeContactes+","+localStorage.getItem('userId')
+    console.log('this.voyage.idsDemandeContactes : before write in database :'+this.voyage.idsDemandeContactes)
+    message.idSender=Number(localStorage.getItem('userId'));
+    message.roleSender=localStorage.getItem('role');
+    message.idReceiver=this.voyage.idTransporter;
+    message.roleReceiver="TRANSPORTER";
     //message.idDemande
-    this.message.idVoyage=this.voyage.id
-    this.message.message="Contactez nous : " + localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+    message.idVoyage=this.voyage.id
+    message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
     +" - email:  " + localStorage.getItem('email')
-    +" -  Concernant votre Voyage de  "+ this.voyage.origin +"  a  " + this.voyage.destination
+    +" -  besoins votre Voyage de  "+ this.voyage.origin +"  a  " + this.voyage.destination; //"Contactez nous : " + 
     //let messagesService : MessagesService;
-    this.messagesService.saveMessages(this.message).subscribe(data=>{}, err=>{console.log(err)});
+    this.messagesService.saveMessages(message).subscribe(data=>{
+      this.voyagesService.updateVoyage(this.voyage.id, this.voyage).subscribe(data=>{
+        console.log('this.voyage.idsDemandeContactes : after write in database :'+this.voyage.idsDemandeContactes)
+      },err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    });
   }
   
   // km en mile

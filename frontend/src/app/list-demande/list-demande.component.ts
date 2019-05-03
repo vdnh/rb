@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Demande } from 'src/model/model.demande';
 import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
+import { Message } from 'src/model/model.message';
+import { MessagesService } from 'src/services/messages.service';
 
 @Component({
   selector: 'app-list-demande',
@@ -24,7 +26,8 @@ export class ListDemandeComponent implements OnInit {
   voyage:Voyage = null; //=new Voyage();
   modeMatching=0;
 
-  constructor(activatedRoute:ActivatedRoute, public voyagesService : VoyagesService, public demandesService:DemandesService, public router:Router) { 
+  constructor(activatedRoute:ActivatedRoute, public voyagesService : VoyagesService, 
+    public messagesService : MessagesService, public demandesService:DemandesService, public router:Router) { 
     
   }
 
@@ -114,6 +117,30 @@ export class ListDemandeComponent implements OnInit {
     this.doSearch();
   }
 
+  
+  disableContactDemande(d:Demande):boolean{
+    let disableContact:boolean=false;  // by default, contact is actif
+    if((d.idsVoyageContactes+',').includes(','+localStorage.getItem("userId")+','))
+      disableContact=true;
+    return disableContact;
+  }
+  contactDemande(d:Demande){
+    let message= new Message()
+    d.idsVoyageContactes=d.idsVoyageContactes+","+localStorage.getItem('userId')
+    message.idSender=Number(localStorage.getItem('userId'));
+    message.roleSender=localStorage.getItem('role');
+    message.idReceiver=d.idDemander;
+    message.roleReceiver="SHIPPER";
+    message.idDemande=d.id;
+    //message.idVoyage=
+    message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+    +" - email:  " + localStorage.getItem('email')
+    +" -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination; //"Contactez nous : " + 
+    //let messagesService : MessagesService
+    this.messagesService.saveMessages(message).subscribe(data=>{
+      this.demandesService.updateDemande(d.id, d).subscribe(data=>{},err=>{console.log(err)})
+    }, err=>{console.log(err)})
+  }
   removeDemande(demande:Demande){
     if(this.voyage!=null){
       this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
