@@ -47,6 +47,7 @@ import { BankClientsService } from 'src/services/bankClients.service';
 import { BankClientComponent } from './bank-client/bank-client.component';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { MessagesService } from 'src/services/messages.service';
+import { BusinessMessagesComponent } from './business-messages/business-messages.component';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
@@ -74,6 +75,7 @@ const appRoutes:Routes=[
   {path: 'detail-demande/:id', component:  DetailDemandeComponent},
   {path:"creer-voyage", component:CreerVoyageComponent},
   {path:"list-voyage", component:ListVoyageComponent},
+  {path:"business-messages", component:BusinessMessagesComponent},
   {path: 'detail-voyage/:id', component:  DetailVoyageComponent},
   {path: 'bank-client', component:  BankClientComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
@@ -105,6 +107,7 @@ const appRoutes:Routes=[
     CreerVoyageComponent,
     ListDemandeDeChaqueComponent,
     BankClientComponent,
+    BusinessMessagesComponent,
     //MapComponent,
   ],
   imports: [
