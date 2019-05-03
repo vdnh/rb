@@ -102,6 +102,8 @@ export class DetailTransporterComponent implements OnInit {
       this.camList=1;
       this.camAdd=0;
       localStorage.setItem('nom', this.transporter.nom);
+      localStorage.setItem('tel', this.transporter.tel.toString());
+      localStorage.setItem('email', this.transporter.email);
     }, err=>{
       console.log(err);
     });
@@ -282,6 +284,12 @@ export class DetailTransporterComponent implements OnInit {
     //console.log('this is test of camion detail');
     this.router.navigate(['camion',id]);
   }
+
+  /* Just for test direct link
+  testLinkDirect(){
+    this.router.navigate(['detail-demande',1240]);
+  }
+  //*/
 
   myWindow: any;
 

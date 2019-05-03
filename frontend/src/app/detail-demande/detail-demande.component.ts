@@ -15,6 +15,8 @@ import { } from 'googlemaps';
 import { Voyage } from 'src/model/model.voyage';
 import { VoyagesService } from 'src/services/voyages.service';
 import { LatLngLiteral } from '@agm/core';
+import { Message } from 'src/model/model.message';
+import { MessagesService } from 'src/services/messages.service';
 
 @Component({
   selector: 'app-detail-demande',
@@ -74,9 +76,10 @@ export class DetailDemandeComponent implements OnInit {
   //fin
   centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige
   //
+  message:Message=null;
 
 
-  constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
+  constructor(public messagesService : MessagesService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public voyagesService:VoyagesService, public adressesService:AdressesService, public demandesService:DemandesService, 
     public transportersService : TransportersService, public geocoding : GeocodingService, public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
@@ -128,6 +131,14 @@ export class DetailDemandeComponent implements OnInit {
           console.log();
         });
       }
+      this.messagesService.messageDemandeContacted(Number(localStorage.getItem('userId')), this.demande.id)
+      .subscribe((data:Message)=>{
+        this.message=data;
+        console.log("this.message.idSender : "+this.message.idSender)
+        console.log("this.message.idDemande : "+this.message.idDemande)
+      }, err=>{
+        console.log()
+      })
     }
     , err=>{
       console.log(err)
@@ -271,6 +282,23 @@ onRetour(){
     this.router.navigateByUrl("/list-demande-de-chaque/shipper")
   if(this.role.includes('TRANSPORTER'))
     this.router.navigateByUrl("/list-demande")
+}
+
+onContact(){
+  console.log("OK, We have had your message!")
+  this.message= new Message()
+
+  this.message.idSender=Number(localStorage.getItem('userId'));
+  this.message.roleSender=localStorage.getItem('role');
+  this.message.idReceiver=this.demande.idDemander;
+  this.message.roleReceiver="SHIPPER";
+  this.message.idDemande=this.demande.id;
+  //message.idVoyage=
+  this.message.message="Contactez nous : " + localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+  +" - email:  " + localStorage.getItem('email')
+  +" -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination
+  //let messagesService : MessagesService
+  this.messagesService.saveMessages(this.message).subscribe(data=>{}, err=>{console.log(err)})
 }
 
 //* calculer distance

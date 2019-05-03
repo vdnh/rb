@@ -13,6 +13,8 @@ import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
+import { Message } from 'src/model/model.message';
+import { MessagesService } from 'src/services/messages.service';
 
 @Component({
   selector: 'app-detail-voyage',
@@ -61,11 +63,12 @@ export class DetailVoyageComponent implements OnInit {
   originCircle = new google.maps.Circle();
   destCircle1 = new google.maps.Circle(); 
   polygon = new google.maps.Polygon(); 
-
-
   //*/ fin map voyage
+  
+  message:Message=null;
 
-  constructor(public activatedRoute:ActivatedRoute, public contactsService:ContactsService,
+  constructor(public messagesService : MessagesService,
+    public activatedRoute:ActivatedRoute, public contactsService:ContactsService,
     public adressesService:AdressesService, public voyagesService:VoyagesService, 
     public demandesService : DemandesService, 
     public transportersService : TransportersService, public geocoding : GeocodingService, 
@@ -131,6 +134,14 @@ export class DetailVoyageComponent implements OnInit {
       }, err=>{
         console.log();
       });
+      this.messagesService.messageVoyageContacted(Number(localStorage.getItem('userId')), this.voyage.id)
+      .subscribe((data:Message)=>{
+        this.message=data;
+        console.log("this.message.idSender : "+this.message.idSender)
+        console.log("this.message.idVoyage : "+this.message.idVoyage)
+      }, err=>{
+        console.log()
+      })
       await this.showMapInit();  
     }
     //}
@@ -669,6 +680,23 @@ getPaths() {
     this.router.navigateByUrl("/list-voyage")
   }
 
+  onContact(){
+    console.log("OK, We have had your message!")
+    this.message= new Message()
+
+    this.message.idSender=Number(localStorage.getItem('userId'));
+    this.message.roleSender=localStorage.getItem('role');
+    this.message.idReceiver=this.voyage.idTransporter;
+    this.message.roleReceiver="TRANSPORTER";
+    //message.idDemande
+    this.message.idVoyage=this.voyage.id
+    this.message.message="Contactez nous : " + localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+    +" - email:  " + localStorage.getItem('email')
+    +" -  Concernant votre Voyage de  "+ this.voyage.origin +"  a  " + this.voyage.destination
+    //let messagesService : MessagesService;
+    this.messagesService.saveMessages(this.message).subscribe(data=>{}, err=>{console.log(err)});
+  }
+  
   // km en mile
   kmEnMile(distance:number){
     return distance = distance * 0.621371;

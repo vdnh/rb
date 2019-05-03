@@ -118,7 +118,7 @@ export class ListDemandeComponent implements OnInit {
     if(this.voyage!=null){
       this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
       this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-        this.voyage=data;
+        //this.voyage=data; // we don't to do it
       }, err=>{
         console.log(err);
       })

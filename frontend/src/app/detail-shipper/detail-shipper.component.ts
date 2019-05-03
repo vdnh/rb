@@ -36,6 +36,8 @@ export class DetailShipperComponent implements OnInit {
       this.shipper=data;
       this.mode=1;
       localStorage.setItem('nom', this.shipper.nom);
+      localStorage.setItem('tel', this.shipper.tel.toString());
+      localStorage.setItem('email', this.shipper.email);
     }, err=>{
       console.log(err);
     });

@@ -1,7 +1,11 @@
 <div class="container spacer">
     <div class="panel panel-primary" *ngIf="mode==1">
       <!--div class="panel-heading"><h4><strong>Voyage de {{voyage.nomTransporter}}.</strong></h4></div-->
-      <div class="panel-heading"><h4><strong>{{voyage.nomTransporter}} - Tel : {{transporter.tel}} - Email : {{transporter.email}}</strong></h4></div>
+      <div class="panel-heading" *ngIf="role.includes('SHIPPER')">
+        <h6>
+          <strong>Le camion de {{voyage.nomTransporter}} - Tel : {{transporter.tel}} - Email : {{transporter.email}}</strong>
+        </h6>
+      </div>
         <!--div class="panel-body">
                 <table class="table table-striped">
                         <tr>
@@ -62,7 +66,8 @@
             </tr>    
             <tr>            
               <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
-              <td><button class="btn btn-success" (click)="onSaveVoyage()" [disabled]="role.includes('SHIPPER')">Modifier/Chercher Demandes</button></td>
+              <td *ngIf="role.includes('SHIPPER') && message==null"><button class="btn btn-success" (click)="onContact()">Contact</button></td>
+              <td *ngIf="!role.includes('SHIPPER')" colspan="3"><button class="btn btn-success" (click)="onSaveVoyage()">Modifier/Chercher Demandes</button></td>
               <!--td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td-->
             </tr>  
           </table>            
