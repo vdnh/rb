@@ -20,10 +20,12 @@ export class AppComponent implements OnInit{
       this.role=localStorage.getItem('role');
       if(this.role.includes('TRANSPORTER')) {         
         this.router.navigateByUrl('/detail-transporter/'+ localStorage.getItem('userId'));
+        //this.router.navigateByUrl('/business-messages/');
         //localStorage.setItem('userId', res.id.toString());
       }  
       if(this.role.includes('SHIPPER')) {         
         this.router.navigateByUrl('/detail-shipper/'+ localStorage.getItem('userId'));
+        //this.router.navigateByUrl('/business-messages/');
         //localStorage.setItem('userId', res.id.toString());
       }
       this.mode=0;
@@ -92,7 +94,8 @@ export class AppComponent implements OnInit{
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('TRANSPORTER')) {         
-      this.router.navigateByUrl('/detail-transporter/'+ userId);
+      //this.router.navigateByUrl('/detail-transporter/'+ userId);
+      this.router.navigateByUrl('/business-messages/');
     }
     else
       this.router.navigateByUrl('/transporters/');
@@ -101,7 +104,8 @@ export class AppComponent implements OnInit{
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('SHIPPER')) {         
-      this.router.navigateByUrl('/detail-shipper/'+ userId);
+      //this.router.navigateByUrl('/detail-shipper/'+ userId);
+      this.router.navigateByUrl('/business-messages/');
     }
     else
       this.router.navigateByUrl('/shippers/');

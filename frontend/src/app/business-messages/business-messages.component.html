@@ -1,13 +1,13 @@
 <div class="container spacer">
   <div class="panel panel-primary">
-    <div class="panel-heading">Liste des Messages</div>
+    <!--div class="panel-heading">Liste des Messages</div-->
     <div class="panel-body">
       <table class="table table-striped">
         <tr>
           <th>Date</th><th colspan="4">Message</th>
         </tr>
         <tr *ngFor="let m of messages">
-            <td>{{m.date}}</td><td colspan="6">{{m.message}}</td>
+            <td>{{m.date}}</td><td colspan="6" [innerHTML]="m.message"></td>
             <td><button class="btn btn-link" (click)="deleteMessage(m.id)">Delete</button></td>
         </tr>
       </table>

@@ -27,7 +27,8 @@ export class DetailShipperComponent implements OnInit {
   addadresse:Adresse=new Adresse(); // to add more adresse
   constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public adressesService:AdressesService){    
-    this.id=activatedRoute.snapshot.params['id'];
+    //this.id=activatedRoute.snapshot.params['id'];
+    this.id=Number(localStorage.getItem('userId'))
   }
 
   ngOnInit() {

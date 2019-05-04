@@ -133,10 +133,24 @@ export class ListDemandeComponent implements OnInit {
     message.roleReceiver="SHIPPER";
     message.idDemande=d.id;
     //message.idVoyage=
+    /*
     message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
     +" - email:  " + localStorage.getItem('email')
-    +" -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination; //"Contactez nous : " + 
-    //let messagesService : MessagesService
+    +" -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination;
+    //*/
+    //*
+    let temp1Tel:string= '<strong><a href="tel:'
+    let temp1Mail:string='<strong><a href="mailto:'
+    let temp2:string='">'
+    let temp3:string='</a></strong>'
+    
+    message.message=localStorage.getItem('nom') +" - Tel:  "
+    + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
+    + " - Email:  " 
+    + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
+    + " -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination;
+    //*/
+
     this.messagesService.saveMessages(message).subscribe(data=>{
       this.demandesService.updateDemande(d.id, d).subscribe(data=>{},err=>{console.log(err)})
     }, err=>{console.log(err)})

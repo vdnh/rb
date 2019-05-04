@@ -299,10 +299,24 @@ onContact(){
   message.roleReceiver="SHIPPER";
   message.idDemande=this.demande.id;
   //message.idVoyage=
+  /*
   message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
   +" - email:  " + localStorage.getItem('email')
-  +" -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination; //"Contactez nous : " + 
+  +" -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination; 
+  //*/
   //let messagesService : MessagesService
+  //*
+  let temp1Tel:string= '<strong><a href="tel:'
+  let temp1Mail:string='<strong><a href="mailto:'
+  let temp2:string='">'
+  let temp3:string='</a></strong>'
+  
+  message.message=localStorage.getItem('nom') +" - Tel:  "
+  + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
+  + " - Email:  " 
+  + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
+  + " -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination;
+  //*/
   this.messagesService.saveMessages(message).subscribe(data=>{
     this.demandesService.updateDemande(this.demande.id, this.demande).subscribe(data=>{},err=>{console.log(err)})
   }, err=>{console.log(err)})

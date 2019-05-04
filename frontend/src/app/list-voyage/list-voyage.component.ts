@@ -169,10 +169,39 @@ export class ListVoyageComponent implements OnInit {
     message.roleReceiver="TRANSPORTER";
     //message.idDemande
     message.idVoyage=v.id
-    message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
+    /*message.message=localStorage.getItem('nom') +" - tel:  "+localStorage.getItem('tel')
     +" - email:  " + localStorage.getItem('email')
-    +" -  besoins votre Voyage de  "+ v.origin +"  a  " + v.destination; //"Contactez nous : " + 
-    //let messagesService : MessagesService;
+    +" -  besoins votre Voyage de  "+ v.origin +"  a  " + v.destination;//*/
+
+    let temp1Tel:string= '<strong><a href="tel:'
+    let temp1Mail:string='<strong><a href="mailto:'
+    let temp2:string='">'
+    let temp3:string='</a></strong>'
+    
+    message.message=localStorage.getItem('nom') +" - Tel:  "
+    + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
+    + " - Email:  " 
+    + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
+    + " -  besoins votre Voyage de  "+ v.origin +"  a  " + v.destination;
+
+    /*
+    <strong><a href="tel:  --temp1Tel
+    localStorage.getItem('tel')
+    ">  ----temp2
+    localStorage.getItem('tel')
+    </a></strong><br>  --temp3
+    
+    ==> temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
+
+
+    <strong><a href="mailto:  ----temp1Mail
+    localStorage.getItem('email')
+    ">  ----temp2
+    localStorage.getItem('email')
+    </a></strong>  --temp3
+
+    ==> temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
+    //*/
     this.messagesService.saveMessages(message).subscribe(async data=>{
       await this.voyagesService.updateVoyage(v.id, v).subscribe((data:Voyage)=>{
         console.log('v.idsDemandeContactes : after write in database :'+data.idsDemandeContactes)
