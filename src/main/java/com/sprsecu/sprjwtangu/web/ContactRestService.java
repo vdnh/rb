@@ -87,4 +87,9 @@ public class ContactRestService {
     {
         return contactRepository.contactsDeTransporter(id_transporter);
     }    
+    
+    @RequestMapping(value = "/contactSignUp", method = RequestMethod.POST)
+    public Contact saveSignUp(@RequestBody Contact c){
+        return contactRepository.save(c);
+    }
 }

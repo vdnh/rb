@@ -76,4 +76,9 @@ public class AdresseRestService {
     {
         return adresseRepository.adressesDeTransporter(id_transporter);
     }
+    
+    @RequestMapping(value = "/adresseSignUp", method = RequestMethod.POST)
+    public Adresse saveSignUp(@RequestBody Adresse c){
+        return adresseRepository.save(c);
+    }
 }

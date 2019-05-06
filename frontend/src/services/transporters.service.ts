@@ -49,4 +49,8 @@ export class TransportersService{
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
+
+    signUpTransporter(transporter:Transporter){
+        return this.http.post(this.adServer+":8080/transporterSignUp",transporter).pipe(map(res => {return res}));
+    }
 }

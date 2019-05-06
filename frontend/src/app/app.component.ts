@@ -12,6 +12,8 @@ export class AppComponent implements OnInit{
   title = 'CTS';
   mode:number=0;  // to control password
   role:string="";
+  modeSignUp=0;
+  textSign="Nouveau Transporter ou Shipper"
   constructor(private authService:AuthenticationService, private router:Router) { }
 
   ngOnInit() {
@@ -34,6 +36,21 @@ export class AppComponent implements OnInit{
     //*/
   }
 
+  signing(){
+    if(this.modeSignUp==0){
+      this.modeSignUp=1;
+      this.textSign="Sign in"
+    }
+    else{
+      this.modeSignUp=0;
+      this.textSign="Nouveau Transporter ou Shipper";      
+      this.router.navigateByUrl("");
+    }
+  }
+  /*signIn(){
+    this.modeSignUp=0;
+    this.textSign="Sign up";
+  }//*/
   onLogin(dataForm){
     this.authService.login(dataForm)
     .subscribe(resp=> {
@@ -89,13 +106,14 @@ export class AppComponent implements OnInit{
   beforeunloadHandler(event){
     alert("I'm leaving the app");
     localStorage.clear();
+    this.router.navigateByUrl("");
   }
   onTransporter(){
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('TRANSPORTER')) {         
-      //this.router.navigateByUrl('/detail-transporter/'+ userId);
-      this.router.navigateByUrl('/business-messages/');
+      this.router.navigateByUrl('/detail-transporter/'+ userId);
+      //this.router.navigateByUrl('/business-messages/');
     }
     else
       this.router.navigateByUrl('/transporters/');
@@ -104,8 +122,8 @@ export class AppComponent implements OnInit{
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('SHIPPER')) {         
-      //this.router.navigateByUrl('/detail-shipper/'+ userId);
-      this.router.navigateByUrl('/business-messages/');
+      this.router.navigateByUrl('/detail-shipper/'+ userId);
+      //this.router.navigateByUrl('/business-messages/');
     }
     else
       this.router.navigateByUrl('/shippers/');

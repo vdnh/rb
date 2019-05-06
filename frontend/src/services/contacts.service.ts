@@ -67,4 +67,8 @@ export class ContactsService{
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
+
+    signupContact(contact:Contact){
+        return this.http.post(this.adServer+":8080/contactSignUp",contact).pipe(map(res => {return res}));
+    }
 }

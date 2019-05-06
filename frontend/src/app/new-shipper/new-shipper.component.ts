@@ -21,31 +21,28 @@ export class NewShipperComponent implements OnInit {
   ngOnInit() {
   }
 
-  saveShipper(){
-    this.shippersService.saveShippers(this.shipper).subscribe((data:Shipper)=>{
+  signUpShipper(){
+    this.shippersService.signUpShipper(this.shipper).subscribe((data:Shipper)=>{
       this.mode=2;
       this.shipper=data;
       this.contact.id_shipper=this.shipper.id;
       this.adresse.id_shipper=this.shipper.id;
-      // console.log("id actual of shipper : "+this.shipper.id);
-      // console.log("idShipper of contact : "+this.contact.id_shipper);
-      // console.log("This Contact all info : "+this.contact.toString());
-      this.saveContact();
-      this.saveAdresse();
+      this.signUpContact();
+      this.signUpAdresse();
     }, err=>{
       console.log(err);
     });
   }
 
-  saveContact(){
-    this.contactsService.saveContacts(this.contact).subscribe((data:Contact)=>{
+  signUpContact(){
+    this.contactsService.signupContact(this.contact).subscribe((data:Contact)=>{
     }, err=>{
       console.log(err);
     })    
   }
 
-  saveAdresse(){
-    this.adressesService.saveAdresses(this.adresse).subscribe((data:Adresse)=>{
+  signUpAdresse(){
+    this.adressesService.signUpAdresse(this.adresse).subscribe((data:Adresse)=>{
 
     }, err=>{
       console.log(err);

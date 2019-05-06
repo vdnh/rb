@@ -71,4 +71,9 @@ public class TransporterRestService {
     {
         return transporterRepository.findByLoginName(loginName);
     }
+    
+    @RequestMapping(value = "/transporterSignUp", method = RequestMethod.POST)
+    public Transporter saveSignUp(@RequestBody Transporter t){
+        return transporterRepository.save(t);
+    }
 }

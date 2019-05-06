@@ -165,7 +165,14 @@ export class DetailVoyageComponent implements OnInit {
       editable: false,
       draggable: false,
     });
-    this.originCircle.setMap(this.map)  
+    this.originCircle.setMap(this.map);
+    this.originCircle.addListener('click', (event)=>{
+      var contentString:string='Origin : '+ this.voyage.origin + '  -  Rayon : ' + this.voyage.radiusOrigin + ' miles.';
+      // Replace the info window's content and position.
+      this.infoWindow.setContent(contentString);
+      this.infoWindow.setPosition(event.latLng);
+      this.infoWindow.open(this.map);
+    })
   }
   drawDest(){
     if(this.destCircle1){
@@ -178,7 +185,14 @@ export class DetailVoyageComponent implements OnInit {
       editable: false,
       draggable: false,
     })
-    this.destCircle1.setMap(this.map)
+    this.destCircle1.setMap(this.map);
+    this.destCircle1.addListener('click', (event)=>{
+      var contentString:string='Destination : '+ this.voyage.destination + '  -  Rayon : ' + this.voyage.radiusDestination + ' miles.';
+      // Replace the info window's content and position.
+      this.infoWindow.setContent(contentString);
+      this.infoWindow.setPosition(event.latLng);
+      this.infoWindow.open(this.map);
+    })
   }
   
   lineOriginDestination()
@@ -283,24 +297,24 @@ export class DetailVoyageComponent implements OnInit {
       });
       this.polygon.setMap(this.map);
       //*
-      if(this.role.includes('TRANSPORTER')){
+      //if(this.role.includes('TRANSPORTER')){
         this.polygon.addListener('click', (event)=>{
           var vertices = this.polygon.getPath();
-          var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+          var contentString = '<b>Corridor de ce voyage</b><br>'; // +
             //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
             //'<br>';
-          // Iterate over the vertices.
+          /*/ Iterate over the vertices.
           for (var i =0; i < vertices.getLength(); i++) {
             var xy = vertices.getAt(i);
             contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
               xy.lng();
-          }
+          }//*/
           // Replace the info window's content and position.
           this.infoWindow.setContent(contentString);
           this.infoWindow.setPosition(event.latLng);
           this.infoWindow.open(this.map);
         })
-      }
+      //}
 
     }// End - If we find with corridor
     //*/
@@ -376,34 +390,34 @@ export class DetailVoyageComponent implements OnInit {
 
       this.polygon = new google.maps.Polygon({
         paths: this.paths,
-        strokeColor: '#FF0000',
+        strokeColor: '#F08080',
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#FF00EE',
+        fillColor: '#F08080',
         fillOpacity: 0.35,
         editable: (this.role.includes('TRANSPORTER')),
         draggable:false,
       });
       this.polygon.setMap(this.map);
       //*
-      if(this.role.includes('TRANSPORTER')){
+      //if(this.role.includes('TRANSPORTER')){
         this.polygon.addListener('click', (event)=>{
           var vertices = this.polygon.getPath();
-          var contentString = '<b>Coordonees de Corridor</b><br>'; // +
+          var contentString = '<b>Corridor de ce voyage</b>'; // +
             //'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
             //'<br>';
-          // Iterate over the vertices.
+          /*/ Iterate over the vertices.
           for (var i =0; i < vertices.getLength(); i++) {
             var xy = vertices.getAt(i);
             contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
               xy.lng();
-          }
+          }//*/
           // Replace the info window's content and position.
           this.infoWindow.setContent(contentString);
           this.infoWindow.setPosition(event.latLng);
           this.infoWindow.open(this.map);
         })
-      }
+      //}
     }// End - If we find with corridor
     //*/
     this.lineOriginDestination()  // draw a line from origin to dest

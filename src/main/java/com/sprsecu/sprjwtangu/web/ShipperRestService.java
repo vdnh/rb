@@ -72,4 +72,8 @@ public class ShipperRestService {
         return shipperRepository.findByLoginName(loginName);
     }//*/
     
+    @RequestMapping(value = "/shipperSignUp", method = RequestMethod.POST)
+    public Shipper saveSignUp(@RequestBody Shipper t){
+        return shipperRepository.save(t);
+    }
 }

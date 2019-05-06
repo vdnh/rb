@@ -60,4 +60,8 @@ export class ShippersService{
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res=> {return res}));
     }
+    // for sign up no need authentication
+    signUpShipper(shipper:Shipper){
+        return this.http.post(this.adServer+":8080/shipperSignUp",shipper).pipe(map(res => {return res;}));
+    }
 }
