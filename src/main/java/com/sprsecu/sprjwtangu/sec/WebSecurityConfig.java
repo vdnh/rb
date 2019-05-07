@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //
         
-        http.authorizeRequests().antMatchers("/login/**", "shipperSignUp", "transporterSignUp", "adressesSignUp", "contactsSignUp").permitAll(); 
+        http.authorizeRequests().antMatchers("/login/**", "/shipperSignUp/**", "/transporterSignUp/**", "/adresseSignUp/**", "/contactSignUp/**").permitAll(); 
             
             //, "/shippers/**", "/transporters/**", "/contacts/**", 
             //    "/adresses/**", "/camions/**", "/bonDeTravails/**", "/reparations/**", "/matchingVoyages/**",

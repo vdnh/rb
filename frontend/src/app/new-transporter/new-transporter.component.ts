@@ -21,26 +21,26 @@ export class NewTransporterComponent implements OnInit {
   ngOnInit() {
   }
 
-  saveTransporter(){
-    this.transportersService.saveTransporters(this.transporter).subscribe((data:Transporter)=>{
+  signUpTransporter(){
+    this.transportersService.signUpTransporter(this.transporter).subscribe((data:Transporter)=>{
       this.mode=2;
       this.transporter=data;
       this.contact.id_transporter=this.transporter.id;
       this.adresse.id_transporter=this.transporter.id;
-      this.saveContact();
-      this.saveAdresse();
+      this.signUpContact();
+      this.signUpAdresse();
     }, err=>{
       console.log(err);
     })    
   }
-  saveAdresse(): any {
-    this.adressesService.saveAdresses(this.adresse).subscribe((data:Adresse)=>{
+  signUpAdresse(): any {
+    this.adressesService.signUpAdresse(this.adresse).subscribe((data:Adresse)=>{
     }, err=>{
       console.log(err);
     })
   }
-  saveContact(): any {
-    this.contactsService.saveContacts(this.contact).subscribe((data:Contact)=>{
+  signUpContact(): any {
+    this.contactsService.signupContact(this.contact).subscribe((data:Contact)=>{
     }, err=>{
       console.log(err);
     })
