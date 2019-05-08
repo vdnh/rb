@@ -32,7 +32,7 @@ export class DetailVoyageComponent implements OnInit {
   adresses:Array<Adresse>;
 
   //*// pour map voyage
-  today:Date; 
+  today= new Date(); 
   //voyage:Voyage=new Voyage();
   listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
   
@@ -83,6 +83,7 @@ export class DetailVoyageComponent implements OnInit {
       //*
       console.log(data.origin)
       console.log(data.destination)
+      console.log('data.dateDepart : '+data.dateDepart)
       /*await this.geocoding.codeAddress(data.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){

@@ -30,8 +30,8 @@
           <!--form #f="ngForm" (ngSubmit)="onRegister(f.value)"-->
           <table class="table table-striped">    
             <tr>
-              <th><label class="control-label">Prevoir</label></th>    
-              <th><input type="date" [(ngModel)]="demande.dateDepart" name="dateDepart" class="form-control"/></th>    
+              <th><label class="control-label">Available</label></th>    
+              <th><input type="date" [ngModel]="today | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th>    
               <th><label class="control-label">Origin</label></th>
               <th><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control" (change)="originChange()"/></th>
               <th><label class="control-label">Destination</label></th>               

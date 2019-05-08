@@ -29,6 +29,7 @@ export class ListVoyageComponent implements OnInit {
   dLatLngOrigin: google.maps.LatLng=null;
   dLatLngDestination: google.maps.LatLng=null;
   demande:Demande = null; //=new Demande();
+  today = new Date();
   
   constructor(public messagesService : MessagesService, public demandesService : DemandesService, 
     public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) 

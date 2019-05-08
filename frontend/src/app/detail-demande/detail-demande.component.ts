@@ -77,7 +77,7 @@ export class DetailDemandeComponent implements OnInit {
   centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige
   //
   //message:Message=null;
-
+  today=new Date();
 
   constructor(public messagesService : MessagesService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public voyagesService:VoyagesService, public adressesService:AdressesService, public demandesService:DemandesService, 

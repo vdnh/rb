@@ -2,9 +2,9 @@
   <div class="panel panel-primary">
     <!--div class="panel-heading" *ngIf="!flag.includes('transporter') && !role.includes('shipper')">Liste des demandes</div-->
     <!--div class="panel-body" *ngIf="!flag.includes('transporter') && !role.includes('shipper')"-->
-    <div class="panel-heading">Liste de demandes disponibles :</div>
-    <h6 *ngIf="modeMatching==1">Le Voyage de {{voyage.origin}} rayon {{voyage.radiusOrigin}} miles &nbsp;a&nbsp; {{voyage.destination}} rayon {{voyage.radiusDestination}} miles 
-      <span *ngIf="voyage.chercheCorridor"> &nbsp; avec Corridor</span> 
+    <div class="panel-heading">Loads Potential :</div>
+    <h6 *ngIf="modeMatching==1">From {{voyage.origin}} rayon {{voyage.radiusOrigin}} miles &nbsp; To &nbsp; {{voyage.destination}} rayon {{voyage.radiusDestination}} miles 
+      <span *ngIf="voyage.chercheCorridor"> &nbsp; check Corridor</span> 
     </h6>
     <div class="panel-body" *ngIf="modeMatching==0">
       <div class="form-group">
@@ -14,13 +14,13 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let d of pageDemande.content">
-          <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
-          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
-          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Contact</button></td>
-          <td><button class="btn btn-link" (click)="removeDemande(d)">Retirer</button></td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
+          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
+          <td><button class="btn btn-link" (click)="removeDemande(d)">Remove</button></td>
         </tr>
       </table>
       <div class="container">
@@ -39,13 +39,13 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let d of demandes">
-          <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
-          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
-          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Contact</button></td>
-          <td><button class="btn btn-link" (click)="removeDemande(d)">Retirer</button></td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
+          <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
+          <td><button class="btn btn-link" (click)="removeDemande(d)">Remove</button></td>
         </tr>
       </table>
     </div>
@@ -53,11 +53,11 @@
       <div class="panel-body">
         <table class="table table-striped">
           <tr>
-            <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
+            <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
           </tr>
           <tr *ngFor="let d of demandes">
-            <td>{{d.dateDepart}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td>
+            <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
             <td><button class="btn btn-link" (click)="deleteDemande(d.id)">Delete</button></td>
           </tr>
         </table>

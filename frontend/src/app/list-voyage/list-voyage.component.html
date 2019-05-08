@@ -1,8 +1,8 @@
 <div class="container spacer">
   <div class="panel panel-primary">
     <div class="panel-heading" *ngIf="!role.includes('TRANSPORTER')">
-      Liste des Camions disponibles : 
-      <h6 *ngIf="!role.includes('TRANSPORTER') && modeMatching==1">La demande : {{demande.origin}} - {{demande.destination}}</h6>
+      Equipments Potential : 
+      <h6 *ngIf="!role.includes('TRANSPORTER') && modeMatching==1">For Load From : {{demande.origin}} To :  {{demande.destination}}</h6>
     </div>
     <div class="panel-body" *ngIf="!role.includes('TRANSPORTER') && modeMatching==0">
       <div class="form-group">
@@ -12,13 +12,13 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let v of pageVoyage.content">
-            <td>{{v.dateDepart}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detailler</button></td>
-            <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Contact</button></td>
-            <td><button class="btn btn-link" (click)="removeVoyage(v)">Retirer</button></td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
+            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
+            <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
+            <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
         </tr>
       </table>
       <div class="container">
@@ -38,13 +38,13 @@
         </div>
         <table class="table table-striped">
           <tr>
-            <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+            <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
           </tr>
           <tr *ngFor="let v of voyages">
-            <td>{{v.dateDepart}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detailler</button></td>
-            <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Contact</button></td>
-            <td><button class="btn btn-link" (click)="removeVoyage(v)">Retirer</button></td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
+            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
+            <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
+            <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
           </tr>
         </table>
       </div>
@@ -53,11 +53,11 @@
       <div class="panel-body">
         <table class="table table-striped">
           <tr>
-            <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
+            <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
           </tr>
           <tr *ngFor="let v of voyages">
-            <td>{{v.dateDepart}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detailler</button></td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td>
+            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
             <td><button class="btn btn-link" (click)="deleteVoyage(v.id)">Delete</button></td>
           </tr>
         </table>

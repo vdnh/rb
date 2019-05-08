@@ -19,6 +19,7 @@ export class ListDemandeDeChaqueComponent implements OnInit {
   demandes:Array<Demande>;
   role:string="";
   flag:string="";
+  today=new Date();
 
   constructor(activatedRoute:ActivatedRoute ,public demandesService:DemandesService, public router:Router) { 
     this.flag=activatedRoute.snapshot.params['flag'];

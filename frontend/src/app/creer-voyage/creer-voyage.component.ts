@@ -9,6 +9,7 @@ import { from } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
 import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
+//import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
 declare var google: any;
 
 @Component({
@@ -56,7 +57,255 @@ export class CreerVoyageComponent implements OnInit {
     { id: 31, name: 'Inbond' },
     { id: 32, name: 'Other' }
   ];
-
+  province=''
+  provinceList=['Alberta',
+  'British Columbia',
+  'Manitoba',
+  'New Brunswick',
+  'Newfoundland and Labrador',
+  'Northwest Territories',
+  'Nova Scotia',
+  'Nunavut',
+  'Ontario',
+  'Prince Edward Island',
+  'Quebec',
+  'Saskatchewan',
+  'Yukon',]
+  onChangeProvince(){
+    console.log("You are in province : " + this.province)
+    // for(let test in ProvincesTerritories){
+    //   console.log(test)
+    // }
+  }
+  ville=''
+  villeList=['Banff',
+  'Brooks',
+  'Calgary',
+  'Edmonton',
+  'Fort McMurray',
+  'Grande Prairie',
+  'Jasper',
+  'Lake Louise',
+  'Lethbridge',
+  'Medicine Hat',
+  'Red Deer',
+  'Saint Albert',
+  'Barkerville',
+  'Burnaby',
+  'Campbell River',
+  'Chilliwack',
+  'Courtenay',
+  'Cranbrook',
+  'Dawson Creek',
+  'Delta',
+  'Esquimalt',
+  'Fort Saint James',
+  'Fort Saint John',
+  'Hope',
+  'Kamloops',
+  'Kelowna',
+  'Kimberley',
+  'Kitimat',
+  'Langley',
+  'Nanaimo',
+  'Nelson',
+  'New Westminster',
+  'North Vancouver',
+  'Oak Bay',
+  'Penticton',
+  'Powell River',
+  'Prince George',
+  'Prince Rupert',
+  'Quesnel',
+  'Revelstoke',
+  'Rossland',
+  'Trail',
+  'Vancouver',
+  'Vernon',
+  'Victoria',
+  'West Vancouver',
+  'White Rock',
+  'Advertisement',
+  'Brandon',
+  'Churchill',
+  'Dauphin',
+  'Flin Flon',
+  'Kildonan',
+  'Saint Boniface',
+  'Swan River',
+  'Thompson',
+  'Winnipeg',
+  'York Factory',
+  'Bathurst',
+  'Caraquet',
+  'Dalhousie',
+  'Fredericton',
+  'Miramichi',
+  'Moncton',
+  'Saint John',
+  'Argentia',
+  'Bonavista',
+  'Channel-Port aux Basques',
+  'Corner Brook',
+  'Ferryland',
+  'Gander',
+  'Grand Falls–Windsor',
+  'Happy Valley–Goose Bay',
+  'Harbour Grace',
+  'Labrador City',
+  'Placentia',
+  'Saint Anthony',
+  'St. John`s',
+  'Wabana',
+  'Advertisement',
+  'Fort Smith',
+  'Hay River',
+  'Inuvik',
+  'Tuktoyaktuk',
+  'Yellowknife',
+  'Baddeck',
+  'Digby',
+  'Glace Bay',
+  'Halifax',
+  'Liverpool',
+  'Louisbourg',
+  'Lunenburg',
+  'Pictou',
+  'Port Hawkesbury',
+  'Springhill',
+  'Sydney',
+  'Yarmouth',
+  'Iqaluit',
+  'Bancroft',
+  'Barrie',
+  'Belleville',
+  'Brampton',
+  'Brantford',
+  'Brockville',
+  'Burlington',
+  'Cambridge',
+  'Chatham',
+  'Chatham-Kent',
+  'Cornwall',
+  'Elliot Lake',
+  'Etobicoke',
+  'Fort Erie',
+  'Fort Frances',
+  'Gananoque',
+  'Guelph',
+  'Hamilton',
+  'Iroquois Falls',
+  'Kapuskasing',
+  'Kawartha Lakes',
+  'Kenora',
+  'Kingston',
+  'Kirkland Lake',
+  'Kitchener',
+  'Laurentian Hills',
+  'London',
+  'Midland',
+  'Mississauga',
+  'Moose Factory',
+  'Moosonee',
+  'Niagara Falls',
+  'Niagara-on-the-Lake',
+  'North Bay',
+  'North York',
+  'Oakville',
+  'Orillia',
+  'Oshawa',
+  'Ottawa',
+  'Parry Sound',
+  'Perth',
+  'Peterborough',
+  'Picton',
+  'Port Colborne',
+  'Saint Catharines',
+  'Saint Thomas',
+  'Sarnia-Clearwater',
+  'Sault Sainte Marie',
+  'Scarborough',
+  'Simcoe',
+  'Stratford',
+  'Sudbury',
+  'Temiskaming Shores',
+  'Thorold',
+  'Thunder Bay',
+  'Timmins',
+  'Toronto',
+  'Trenton',
+  'Waterloo',
+  'Welland',
+  'West Nipissing',
+  'Windsor',
+  'Woodstock',
+  'York',
+  'Borden',
+  'Cavendish',
+  'Charlottetown',
+  'Souris',
+  'Summerside',
+  'Asbestos',
+  'Baie-Comeau',
+  'Beloeil',
+  'Cap-de-la-Madeleine',
+  'Chambly',
+  'Charlesbourg',
+  'Châteauguay',
+  'Chibougamau',
+  'Côte-Saint-Luc',
+  'Dorval',
+  'Gaspé',
+  'Gatineau',
+  'Granby',
+  'Havre-Saint-Pierre',
+  'Hull',
+  'Jonquière',
+  'Kuujjuaq',
+  'La Salle',
+  'La Tuque',
+  'Lachine',
+  'Laval',
+  'Lévis',
+  'Longueuil',
+  'Magog',
+  'Matane',
+  'Montreal',
+  'Montréal-Nord',
+  'Terrebonne',
+  'Percé',
+  'Port-Cartier',
+  'Quebec',
+  'Rimouski',
+  'Rouyn-Noranda',
+  'Saguenay',
+  'Saint-Eustache',
+  'Saint-Hubert',
+  'Sainte-Anne-de-Beaupré',
+  'Sainte-Foy',
+  'Sainte-Thérèse',
+  'Sept-Îles',
+  'Sherbrooke',
+  'Sorel-Tracy',
+  'Trois-Rivières',
+  'Val-d’Or',
+  'Waskaganish',
+  'Batoche',
+  'Cumberland House',
+  'Estevan',
+  'Flin Flon',
+  'Moose Jaw',
+  'Prince Albert',
+  'Regina',
+  'Saskatoon',
+  'Uranium City',
+  'Dawson',
+  'Watson Lake',
+  'Whitehorse',]
+  onChangeVille(){
+    console.log("You are in ville : " + this.ville)
+  }
+  
   //*/  
   //* Pour ajouter des circles and markers sur la carte
   // google maps zoom level
@@ -224,7 +473,9 @@ export class CreerVoyageComponent implements OnInit {
 
   async ngOnInit() {
     this.today=new Date();
-    //console.log('this.today : '+this.today)
+    //this.voyage.dateDepart=new Date('2019-04-17');
+    console.log('this.today : '+this.today)
+    console.log('this.voyage.dateDepart : '+this.voyage.dateDepart)
     this.voyage.origin="";
     this.voyage.destination="";
     this.voyage.radiusOrigin=0; // en miles
@@ -618,45 +869,53 @@ getPaths() {
 }
   async originChange(){
     //*
-    await this.geocoding.codeAddress(this.voyage.origin).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngOrigin= new google.maps.LatLng(
-                this.voyage.originLat = results[0].geometry.location.lat(),
-                this.voyage.originLong = results[0].geometry.location.lng()                            
-              )
-              alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-              alert("Ne pas trouver de coordonnees de ce origin")
-            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            //console.log(this.latLngOrigin.lat())
-            //console.log(this.latLngOrigin.lng())
-    });//*/
-    await this.showMap();
-    //console.log('hi from originChange')
+    if(this.voyage.originProvince!=null){
+      this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince
+      await this.geocoding.codeAddress(this.voyage.origin).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+              if(results[0].geometry.location.lat()>0){
+                this.latLngOrigin= new google.maps.LatLng(
+                  this.voyage.originLat = results[0].geometry.location.lat(),
+                  this.voyage.originLong = results[0].geometry.location.lng()                            
+                )
+                //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              }
+              else
+                alert("Ne pas trouver de coordonnees de ce origin")
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              //console.log(this.latLngOrigin.lat())
+              //console.log(this.latLngOrigin.lng())
+      });//*/
+      await this.showMap();
+    }
+    /*else
+      alert('Province ne peut etre vide!!')//*/
   }
   
   async destinationChange(){
     //*
-    await this.geocoding.codeAddress(this.voyage.destination).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= new google.maps.LatLng(
-                this.voyage.destLat = results[0].geometry.location.lat(),
-                this.voyage.destLong = results[0].geometry.location.lng()                            
-              )
-              alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-              alert("Ne pas trouver de coordonnees de cet destination")
-            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            //alert("Attendre un peu en deplacant !!")
-            //console.log(this.latLngDestination.lat())
-            //console.log(this.latLngDestination.lng())
-    });//*/
-    this.showMap();
-    //console.log('hi from destinationChange')
+    if(this.voyage.destProvince!=null){
+      this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince
+      await this.geocoding.codeAddress(this.voyage.destination).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+              if(results[0].geometry.location.lat()>0){
+                this.latLngDestination= new google.maps.LatLng(
+                  this.voyage.destLat = results[0].geometry.location.lat(),
+                  this.voyage.destLong = results[0].geometry.location.lng()                            
+                )
+                //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              }
+              else
+                alert("Ne pas trouver de coordonnees de cet destination")
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              //alert("Attendre un peu en deplacant !!")
+              //console.log(this.latLngDestination.lat())
+              //console.log(this.latLngDestination.lng())
+      });//*/
+      this.showMap();
+    }
+    /*else
+      alert('Province ne peut etre vide!!')//*/
   }
 
   async getMatchingDemandes(){
@@ -859,3 +1118,19 @@ export interface LatLngLiteral{
   lat:number,
   lng:number
 }
+
+export enum ProvincesTerritories{
+  'Alberta',
+  'British Columbia',
+  'Manitoba',
+  'New Brunswick',
+  'Newfoundland and Labrador',
+  'Northwest Territories',
+  'Nova Scotia',
+  'Nunavut',
+  'Ontario',
+  'Prince Edward Island',
+  'Quebec',
+  'Saskatchewan',
+  'Yukon',
+  }

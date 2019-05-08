@@ -92,10 +92,10 @@ export class CalculePrixComponent implements OnInit {
   spherical: typeof google.maps.geometry.spherical;
   //fin
   
-  centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige
-  
-  
+  centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige  
   // finir ajouter des circles et markes */
+
+  today=new Date();
 
   constructor(public voyagesService:VoyagesService, public demandesService : DemandesService, public geocoding : GeocodingService, private formBuilder:FormBuilder, public router:Router) { 
         //* construct for checkbox list

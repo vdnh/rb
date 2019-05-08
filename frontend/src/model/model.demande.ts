@@ -1,7 +1,7 @@
 export class Demande{
     id:number;
     dateCree:Date;
-    dateDepart:Date;
+    dateDepart:Date=new Date();
     dateArrive:Date;
     longueur:number=0.00;
     largeur:number=0.00;
@@ -26,4 +26,10 @@ export class Demande{
     idsVoyagePasBesoins:string=""; // ids de Voyages matching mais pas besoins
     idsVoyageContactes:string=""; // ids de Voyages contactes
     idsUsersPasBesoins:string=""; // ids de Users (Shipper or Transporter) pas besoins
+    originAdresse:string;
+    originVille:string;
+    originProvince:string;
+    destAdresse:string;
+    destVille:string;
+    destProvince:string;
 }

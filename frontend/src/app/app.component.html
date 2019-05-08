@@ -36,22 +36,22 @@
     <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
       <button routerLink="/propos" class="btn btn-link">Propos</button>
       <button class="btn btn-link" (click)="onShipper()">Gerer Compte</button>   
-      <button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button>
-      <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Nos Demandes</button>
-      <button routerLink="/list-voyage" class="btn btn-link">Liste Camions disponibles</button>    
-      <button routerLink="/business-messages" class="btn btn-link">Business Messages</button>
+      <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
+      <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
+      <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
+      <button routerLink="/business-messages" class="btn btn-link">Messages</button>
       <button (click)="logout()" class="btn btn-link">Logout</button>
       <br>      
     </div>
     <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
         <button routerLink="/propos" class="btn btn-link">Propos</button>
         <button class="btn btn-link"  (click)="onTransporter()">Gerer Compte</button>     
-        <button routerLink="/creer-voyage" class="btn btn-link">Creer le Voyage</button>        
-        <button routerLink="/list-voyage" class="btn btn-link">Nos Voyages</button>
-        <button routerLink="/list-demande" class="btn btn-link">Liste Demandes Potentiels</button>          
+        <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
+        <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
+        <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>          
         <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
         <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
-          <button routerLink="/business-messages" class="btn btn-link">Business Messages</button>
+          <button routerLink="/business-messages" class="btn btn-link">Messages</button>
           <button (click)="logout()" class="btn btn-link">Logout</button>
         <br>
       </div>

@@ -27,8 +27,8 @@
         <div class="panel-body">
           <table class="table table-striped">    
             <tr>
-              <th><label class="control-label">Prevoir pour :</label></th>   
-              <th><input type="date" [(ngModel)]="voyage.dateDepart" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"  [disabled]="role.includes('SHIPPER')"/></th>                                 
+              <th><label class="control-label">Available :</label></th>   
+              <th><input type="date" [ngModel]="today | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"  [disabled]="role.includes('SHIPPER')"/></th>                                 
               <th colspan="2" style="text-align: right"><label class="control-label">Chercher Corridor</label></th>                
               <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor" (change)="onCheckCorridor()" [disabled]="role.includes('SHIPPER')" /></td>                
             </tr>          

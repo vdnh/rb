@@ -25,6 +25,7 @@ export class ListDemandeComponent implements OnInit {
   flag:string="";
   voyage:Voyage = null; //=new Voyage();
   modeMatching=0;
+  today=new Date();
 
   constructor(activatedRoute:ActivatedRoute, public voyagesService : VoyagesService, 
     public messagesService : MessagesService, public demandesService:DemandesService, public router:Router) { 

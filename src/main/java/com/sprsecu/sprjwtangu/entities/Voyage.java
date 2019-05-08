@@ -32,7 +32,13 @@ public class Voyage implements Serializable{
     @Temporal(TemporalType.DATE)
     private Date dateArrive;
     private String origin;
+    private String originAdresse;
+    private String originVille;
+    private String originProvince;
     private String destination;
+    private String destAdresse;
+    private String destVille;
+    private String destProvince;
     private Float radiusOrigin;
     private Float radiusDestination;
     // il vaut mieur de garder coordonees
