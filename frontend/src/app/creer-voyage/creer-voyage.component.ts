@@ -9,7 +9,7 @@ import { from } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
 import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
-//import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
+import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
 declare var google: any;
 
 @Component({
@@ -23,7 +23,8 @@ export class CreerVoyageComponent implements OnInit {
   listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
   //* pour checkBox list
   formGroup: FormGroup;
-  camionTypes = [
+  camionTypes = myGlobals.camionTypes;
+  /*[
     { id: 1, name: 'Van/DryBox' },
     { id: 2, name: 'FlatBed' },
     { id: 3, name: 'RackAndTarp' },
@@ -56,9 +57,9 @@ export class CreerVoyageComponent implements OnInit {
     { id: 30, name: 'Frozen' },
     { id: 31, name: 'Inbond' },
     { id: 32, name: 'Other' }
-  ];
-  province=''
-  provinceList=['Alberta',
+  ];//*/
+  provinceList=myGlobals.provinceList ;
+  /*['Alberta',
   'British Columbia',
   'Manitoba',
   'New Brunswick',
@@ -70,15 +71,9 @@ export class CreerVoyageComponent implements OnInit {
   'Prince Edward Island',
   'Quebec',
   'Saskatchewan',
-  'Yukon',]
-  onChangeProvince(){
-    console.log("You are in province : " + this.province)
-    // for(let test in ProvincesTerritories){
-    //   console.log(test)
-    // }
-  }
-  ville=''
-  villeList=['Banff',
+  'Yukon',]//*/
+  villeListO= myGlobals.villeList ;
+  /*/['Banff',
   'Brooks',
   'Calgary',
   'Edmonton',
@@ -301,12 +296,248 @@ export class CreerVoyageComponent implements OnInit {
   'Uranium City',
   'Dawson',
   'Watson Lake',
-  'Whitehorse',]
-  onChangeVille(){
-    console.log("You are in ville : " + this.ville)
-  }
-  
-  //*/  
+  'Whitehorse',]//*/
+  villeListD=this.villeListO;
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  /*['Banff',
+  'Brooks',
+  'Calgary',
+  'Edmonton',
+  'Fort McMurray',
+  'Grande Prairie',
+  'Jasper',
+  'Lake Louise',
+  'Lethbridge',
+  'Medicine Hat',
+  'Red Deer',
+  'Saint Albert',]//*/
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  /*['Barkerville',
+  'Burnaby',
+  'Campbell River',
+  'Chilliwack',
+  'Courtenay',
+  'Cranbrook',
+  'Dawson Creek',
+  'Delta',
+  'Esquimalt',
+  'Fort Saint James',
+  'Fort Saint John',
+  'Hope',
+  'Kamloops',
+  'Kelowna',
+  'Kimberley',
+  'Kitimat',
+  'Langley',
+  'Nanaimo',
+  'Nelson',
+  'New Westminster',
+  'North Vancouver',
+  'Oak Bay',
+  'Penticton',
+  'Powell River',
+  'Prince George',
+  'Prince Rupert',
+  'Quesnel',
+  'Revelstoke',
+  'Rossland',
+  'Trail',
+  'Vancouver',
+  'Vernon',
+  'Victoria',
+  'West Vancouver',
+  'White Rock',
+  'Advertisement',
+  ]//*/
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  /*['Brandon',
+  'Churchill',
+  'Dauphin',
+  'Flin Flon',
+  'Kildonan',
+  'Saint Boniface',
+  'Swan River',
+  'Thompson',
+  'Winnipeg',
+  'York Factory',]//*/
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  /*['Bathurst',
+  'Caraquet',
+  'Dalhousie',
+  'Fredericton',
+  'Miramichi',
+  'Moncton',
+  'Saint John',]//*/
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  /*['Argentia',
+  'Bonavista',
+  'Channel-Port aux Basques',
+  'Corner Brook',
+  'Ferryland',
+  'Gander',
+  'Grand Falls–Windsor',
+  'Happy Valley–Goose Bay',
+  'Harbour Grace',
+  'Labrador City',
+  'Placentia',
+  'Saint Anthony',
+  'St. John`s',
+  'Wabana',
+  'Advertisement',]//*/
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  /*['Fort Smith',
+  'Hay River',
+  'Inuvik',
+  'Tuktoyaktuk',
+  'Yellowknife',]//*/
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  /*['Baddeck',
+  'Digby',
+  'Glace Bay',
+  'Halifax',
+  'Liverpool',
+  'Louisbourg',
+  'Lunenburg',
+  'Pictou',
+  'Port Hawkesbury',
+  'Springhill',
+  'Sydney',
+  'Yarmouth',]//*/
+  NunavutVilles=myGlobals.NunavutVilles;
+  /*['Iqaluit',]//*/
+  OntarioVilles=myGlobals.OntarioVilles;
+  /*['Bancroft',
+  'Barrie',
+  'Belleville',
+  'Brampton',
+  'Brantford',
+  'Brockville',
+  'Burlington',
+  'Cambridge',
+  'Chatham',
+  'Chatham-Kent',
+  'Cornwall',
+  'Elliot Lake',
+  'Etobicoke',
+  'Fort Erie',
+  'Fort Frances',
+  'Gananoque',
+  'Guelph',
+  'Hamilton',
+  'Iroquois Falls',
+  'Kapuskasing',
+  'Kawartha Lakes',
+  'Kenora',
+  'Kingston',
+  'Kirkland Lake',
+  'Kitchener',
+  'Laurentian Hills',
+  'London',
+  'Midland',
+  'Mississauga',
+  'Moose Factory',
+  'Moosonee',
+  'Niagara Falls',
+  'Niagara-on-the-Lake',
+  'North Bay',
+  'North York',
+  'Oakville',
+  'Orillia',
+  'Oshawa',
+  'Ottawa',
+  'Parry Sound',
+  'Perth',
+  'Peterborough',
+  'Picton',
+  'Port Colborne',
+  'Saint Catharines',
+  'Saint Thomas',
+  'Sarnia-Clearwater',
+  'Sault Sainte Marie',
+  'Scarborough',
+  'Simcoe',
+  'Stratford',
+  'Sudbury',
+  'Temiskaming Shores',
+  'Thorold',
+  'Thunder Bay',
+  'Timmins',
+  'Toronto',
+  'Trenton',
+  'Waterloo',
+  'Welland',
+  'West Nipissing',
+  'Windsor',
+  'Woodstock',
+  'York',]//*/
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  /*['Borden',
+  'Cavendish',
+  'Charlottetown',
+  'Souris',
+  'Summerside',]//*/
+  QuebecVilles=myGlobals.QuebecVilles;
+  /*['Asbestos',
+  'Baie-Comeau',
+  'Beloeil',
+  'Cap-de-la-Madeleine',
+  'Chambly',
+  'Charlesbourg',
+  'Châteauguay',
+  'Chibougamau',
+  'Côte-Saint-Luc',
+  'Dorval',
+  'Gaspé',
+  'Gatineau',
+  'Granby',
+  'Havre-Saint-Pierre',
+  'Hull',
+  'Jonquière',
+  'Kuujjuaq',
+  'La Salle',
+  'La Tuque',
+  'Lachine',
+  'Laval',
+  'Lévis',
+  'Longueuil',
+  'Magog',
+  'Matane',
+  'Montreal',
+  'Montréal-Nord',
+  'Percé',
+  'Port-Cartier',
+  'Quebec',
+  'Rimouski',
+  'Rouyn-Noranda',
+  'Saguenay',
+  'Saint-Eustache',
+  'Saint-Hubert',
+  'Sainte-Anne-de-Beaupré',
+  'Sainte-Foy',
+  'Sainte-Thérèse',
+  'Sept-Îles',
+  'Sherbrooke',
+  'Sorel-Tracy',
+  'Terrebonne',
+  'Trois-Rivières',
+  'Val-d’Or',
+  'Waskaganish',''
+  ]//*/
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  /*['Batoche',
+  'Cumberland House',
+  'Estevan',
+  'Flin Flon',
+  'Moose Jaw',
+  'Prince Albert',
+  'Regina',
+  'Saskatoon',
+  'Uranium City',]//*/
+  YukonVilles=myGlobals.YukonVilles;
+  /*['Dawson',
+  'Watson Lake',
+  'Whitehorse',]//*/  
+
   //* Pour ajouter des circles and markers sur la carte
   // google maps zoom level
   zoom: number = 6;
@@ -870,7 +1101,36 @@ getPaths() {
   async originChange(){
     //*
     if(this.voyage.originProvince!=null){
-      this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince
+      // check the province to limit the cities
+      if(this.voyage.originProvince==this.provinceList[0])
+        this.villeListO=this.AlbertaVilles;
+      if(this.voyage.originProvince==this.provinceList[1])
+        this.villeListO=this.BritishColumbiaVilles;        
+      if(this.voyage.originProvince==this.provinceList[2])
+        this.villeListO=this.ManitobaVilles;
+      if(this.voyage.originProvince==this.provinceList[3])
+        this.villeListO=this.NewBrunswickVilles;    
+      if(this.voyage.originProvince==this.provinceList[4])
+        this.villeListO=this.NewfoundlandLabradorVilles;    
+      if(this.voyage.originProvince==this.provinceList[5])
+        this.villeListO=this.NorthwestTerritoriesVilles;
+      if(this.voyage.originProvince==this.provinceList[6])
+        this.villeListO=this.NovaScotiaVilles;
+      if(this.voyage.originProvince==this.provinceList[7])
+        this.villeListO=this.NunavutVilles;
+      if(this.voyage.originProvince==this.provinceList[8])
+        this.villeListO=this.OntarioVilles;
+      if(this.voyage.originProvince==this.provinceList[9])
+        this.villeListO=this.PrinceEdwardIslandVilles;
+      if(this.voyage.originProvince==this.provinceList[10])
+        this.villeListO=this.QuebecVilles;
+      if(this.voyage.originProvince==this.provinceList[11])
+        this.villeListO=this.SaskatchewanVilles;  
+      if(this.voyage.originProvince==this.provinceList[12])
+        this.villeListO=this.YukonVilles;
+      // end check the provine
+      
+      this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince+', canada'
       await this.geocoding.codeAddress(this.voyage.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
@@ -895,7 +1155,35 @@ getPaths() {
   async destinationChange(){
     //*
     if(this.voyage.destProvince!=null){
-      this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince
+      // check the province to limit the cities
+      if(this.voyage.destProvince==this.provinceList[0])
+        this.villeListD=this.AlbertaVilles;
+      if(this.voyage.destProvince==this.provinceList[1])
+        this.villeListD=this.BritishColumbiaVilles;        
+      if(this.voyage.destProvince==this.provinceList[2])
+        this.villeListD=this.ManitobaVilles;
+      if(this.voyage.destProvince==this.provinceList[3])
+        this.villeListD=this.NewBrunswickVilles;    
+      if(this.voyage.destProvince==this.provinceList[4])
+        this.villeListD=this.NewfoundlandLabradorVilles;    
+      if(this.voyage.destProvince==this.provinceList[5])
+        this.villeListD=this.NorthwestTerritoriesVilles;
+      if(this.voyage.destProvince==this.provinceList[6])
+        this.villeListD=this.NovaScotiaVilles;
+      if(this.voyage.destProvince==this.provinceList[7])
+        this.villeListD=this.NunavutVilles;
+      if(this.voyage.destProvince==this.provinceList[8])
+        this.villeListD=this.OntarioVilles;
+      if(this.voyage.destProvince==this.provinceList[9])
+        this.villeListD=this.PrinceEdwardIslandVilles;
+      if(this.voyage.destProvince==this.provinceList[10])
+        this.villeListD=this.QuebecVilles;
+      if(this.voyage.destProvince==this.provinceList[11])
+        this.villeListD=this.SaskatchewanVilles;  
+      if(this.voyage.destProvince==this.provinceList[12])
+        this.villeListD=this.YukonVilles;
+      // end check the provine
+      this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince+', canada'
       await this.geocoding.codeAddress(this.voyage.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){

@@ -18,9 +18,10 @@ export class ListDemandeComponent implements OnInit {
   pageDemande:PageDemande = new  PageDemande();  // pour tenir des Demandes
   motCle:string="";
   currentPage:number=0;
-  size:number=5;
+  size:number=100;
   pages:Array<number>;  // pour tenir des numeros des pages
   demandes:Array<Demande>;
+  demandesBlue:Array<Demande>=[];
   role:string="";
   flag:string="";
   voyage:Voyage = null; //=new Voyage();
@@ -158,18 +159,48 @@ export class ListDemandeComponent implements OnInit {
   }
   removeDemande(demande:Demande){
     if(this.voyage!=null){
+      /*
       this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
       this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
         //this.voyage=data; // we don't to do it
       }, err=>{
         console.log(err);
-      })
+      })//*/
+      this.demandesBlue.push(demande)// to keep the demande blue
       this.demandes.splice(this.demandes.indexOf(demande), 1)
     }
     if(this.pageDemande.totalPages!=null && this.pageDemande.totalPages>0){
+      /*
+      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+","+localStorage.getItem("userId");
+      this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})//*/
+      this.demandesBlue.push(demande)
+      this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
+    }
+  }
+  unRemoveDemande(demande:Demande){
+    if(this.voyage!=null){
+      /*
+      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
+      this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+        //this.voyage=data; // we don't to do it
+      }, err=>{
+        console.log(err);
+      })//*/
+      //this.demandesBlue.push(demande)// to keep the demande blue
+      //this.demandes.splice(this.demandes.indexOf(demande), 1)
+      this.demandes.push(demande)// to keep the demande
+      this.demandesBlue.splice(this.demandesBlue.indexOf(demande), 1)
+    }
+    if(this.pageDemande.totalPages!=null && this.pageDemande.totalPages>0){
+      /*
       demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+","+localStorage.getItem("userId");
       this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})
       this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
+      //*/
+      //this.demandesBlue.push(demande)
+      //this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
+      this.pageDemande.content.push(demande)
+      this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
     }
   }
   /*

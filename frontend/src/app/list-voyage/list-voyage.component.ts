@@ -144,6 +144,11 @@ export class ListVoyageComponent implements OnInit {
     this.router.navigate(['detail-voyage',v.id]);
   }
 
+  matchingVoyage(v){
+    localStorage.setItem('idVoyage', v.id.toString());
+    this.router.navigateByUrl("/list-demande");
+  }
+  
   deleteVoyage(id:number){
     this.voyagesService.deleteVoyage(id).subscribe(data=>{
 

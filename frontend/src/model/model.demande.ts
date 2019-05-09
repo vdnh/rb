@@ -26,10 +26,10 @@ export class Demande{
     idsVoyagePasBesoins:string=""; // ids de Voyages matching mais pas besoins
     idsVoyageContactes:string=""; // ids de Voyages contactes
     idsUsersPasBesoins:string=""; // ids de Users (Shipper or Transporter) pas besoins
-    originAdresse:string;
-    originVille:string;
-    originProvince:string;
-    destAdresse:string;
-    destVille:string;
-    destProvince:string;
+    originAdresse:string="";
+    originVille:string="";
+    originProvince:string="";
+    destAdresse:string="";
+    destVille:string="";
+    destProvince:string="";
 }

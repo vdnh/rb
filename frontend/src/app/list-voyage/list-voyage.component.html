@@ -55,9 +55,10 @@
           <tr>
             <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
           </tr>
-          <tr *ngFor="let v of voyages">
+          <tr *ngFor="let v of voyages" (click)="matchingVoyage(v)">
             <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
+            <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Edit</button></td>
+            <td><button class="btn btn-link" (click)="matchingVoyage(v)">LoadsMatch</button></td>
             <td><button class="btn btn-link" (click)="deleteVoyage(v.id)">Delete</button></td>
           </tr>
         </table>

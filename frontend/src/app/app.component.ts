@@ -61,13 +61,16 @@ export class AppComponent implements OnInit{
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);          
+          localStorage.setItem('userId', res.id.toString());
           if(res.roleName.includes('TRANSPORTER')) {         
-            this.router.navigateByUrl('/detail-transporter/'+ res.id);
-            localStorage.setItem('userId', res.id.toString());
+            //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
+            this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
+            //localStorage.setItem('userId', res.id.toString());
           }  
           if(res.roleName.includes('SHIPPER')) {         
-            this.router.navigateByUrl('/detail-shipper/'+ res.id);
-            localStorage.setItem('userId', res.id.toString());
+            //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
+            this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
+            //localStorage.setItem('userId', res.id.toString());
           }
           this.mode=0;
         }, err=>{          
@@ -112,7 +115,8 @@ export class AppComponent implements OnInit{
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('TRANSPORTER')) {         
-      this.router.navigateByUrl('/detail-transporter/'+ userId);
+      //this.router.navigateByUrl('/detail-transporter/'+ userId);
+      this.router.navigate(['/detail-transporter/'+ userId], {skipLocationChange: true});
       //this.router.navigateByUrl('/business-messages/');
     }
     else
@@ -122,7 +126,8 @@ export class AppComponent implements OnInit{
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('SHIPPER')) {         
-      this.router.navigateByUrl('/detail-shipper/'+ userId);
+      //this.router.navigateByUrl('/detail-shipper/'+ userId);
+      this.router.navigate(['/detail-shipper/'+ userId], {skipLocationChange: true});
       //this.router.navigateByUrl('/business-messages/');
     }
     else
