@@ -49,7 +49,7 @@ export class ListDemandeDeChaqueComponent implements OnInit {
       })      
     }//*/
     else{
-      this.demandesService.getDemandes(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageDemande)=>{
+      this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe((data:PageDemande)=>{
         this.pageDemande=data;
         this.pages=new Array(data.totalPages);
       }, err=>{

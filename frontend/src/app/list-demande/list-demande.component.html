@@ -17,10 +17,22 @@
           <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let d of pageDemande.content">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td>
+          <td>{{d.origin}}</td>
+          <td>{{d.destination}}</td>
+          <td>{{d.typeCamion}}</td>
+          <td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desactive</button></td>
+        </tr>
+      </table>
+      <table class="table table-striped" style="background-color: lightsteelblue">
+        <tr *ngFor="let d of demandesBlue">
+          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td>
+          <td><button class="btn btn-link" (click)="contactDemande(d)" disabled>Ask</button></td>
+          <td><button class="btn btn-link" (click)="unRemoveDemande(d)">Active</button></td>
         </tr>
       </table>
       <div class="container">
@@ -29,15 +41,7 @@
             <button class="btn btn-link" (click)="gotoPage(i)"> <strong>{{i}}</strong> </button>
           </li>
         </ul>
-      </div>
-      <table class="table table-striped">
-        <tr *ngFor="let d of demandesBlue">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
-          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td>
-          <td><button class="btn btn-link" (click)="contactDemande(d)" disabled>Ask</button></td>
-          <td><button class="btn btn-link" (click)="unRemoveDemande(d)">Desactive</button></td>
-        </tr>
-      </table>
+      </div>      
     </div>
     <div class="panel-body" *ngIf="modeMatching==1">
       <div class="form-group">
@@ -47,15 +51,21 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>DFO</th><th>DFD</th><th>Type Camions</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let d of demandes">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td>
+          <td>{{d.origin}}</td>
+          <td>{{d.destination}}</td>
+          <td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
+          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td>
+          <td>{{d.typeCamion}}</td>
+          <td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desative</button></td>
         </tr>
-        <tr *ngFor="let d of demandesBlue" style="background-color: peru">
+        <tr *ngFor="let d of demandesBlue" style="background-color: lightsteelblue">
           <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" disabled>Ask</button></td>

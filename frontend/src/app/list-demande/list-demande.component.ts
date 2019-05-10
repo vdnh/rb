@@ -76,25 +76,48 @@ export class ListDemandeComponent implements OnInit {
         this.demandesService.getAllDemandes()
         .subscribe(async (data:Array<Demande>)=>{
           let matchDemandes:Array<Demande>=[]
+          let matchDemandesBlue:Array<Demande>=[]
           //this.voyages=data
           this.modeMatching=1
           // we filter voyages here
           await data.forEach(async demande=>{
             if(this.voyage.idsDemandeMatchings.includes(demande.id.toString())
-              && !this.voyage.idsDemandePasBesoins.includes(demande.id.toString()))
+              && !this.voyage.idsDemandePasBesoins.split(',').includes(demande.id.toString()))
             {
               matchDemandes.push(demande)
             }
+            if(this.voyage.idsDemandeMatchings.includes(demande.id.toString())
+              && this.voyage.idsDemandePasBesoins.includes(demande.id.toString()))
+            {
+              matchDemandesBlue.push(demande)
+            }
           })
           this.demandes=matchDemandes;
+          this.demandesBlue=matchDemandesBlue;
         }, err=>{
           console.log(err);
         })
       }
       else
-        this.demandesService.getDemandes(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageDemande)=>{
+        this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe(async (data:PageDemande)=>{
           this.pageDemande=data;
           this.pages=new Array(data.totalPages);
+          // filter to take d demandes blue
+          let matchDemandes:Array<Demande>=[]
+          let matchDemandesBlue:Array<Demande>=[]
+          await this.pageDemande.content.forEach(async demande=>{
+            if(!demande.idsUsersPasBesoins.split(',').includes(localStorage.getItem('userId')))
+            {
+              matchDemandes.push(demande)
+            }
+            else
+            {
+              matchDemandesBlue.push(demande)
+            }
+          })
+          this.pageDemande.content=matchDemandes;
+          this.demandesBlue=matchDemandesBlue;
+          //
         }, err=>{
           console.log(err);
         })
@@ -111,7 +134,8 @@ export class ListDemandeComponent implements OnInit {
   }
 
   gotoDetailDemande(d:Demande){
-    this.router.navigate(['detail-demande',d.id]);
+    //this.router.navigate(['detail-demande',d.id]);
+    this.router.navigate([{ outlets: { detailDemande: ['detail-demande',d.id]}}]);
   }
 
   deleteDemande(id:number){
@@ -159,10 +183,10 @@ export class ListDemandeComponent implements OnInit {
   }
   removeDemande(demande:Demande){
     if(this.voyage!=null){
-      /*
+      //*
       this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
       this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-        //this.voyage=data; // we don't to do it
+        //this.voyage=data; // we don't do it
       }, err=>{
         console.log(err);
       })//*/
@@ -170,55 +194,42 @@ export class ListDemandeComponent implements OnInit {
       this.demandes.splice(this.demandes.indexOf(demande), 1)
     }
     if(this.pageDemande.totalPages!=null && this.pageDemande.totalPages>0){
-      /*
+      //*
       demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+","+localStorage.getItem("userId");
-      this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})//*/
+      this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})
+      //*/
       this.demandesBlue.push(demande)
       this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
     }
   }
   unRemoveDemande(demande:Demande){
     if(this.voyage!=null){
-      /*
-      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+','+demande.id;
+      //*
+      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins+',';
+      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins.replace(','+demande.id.toString()+',', ',') //+','+demande.id;
+      this.voyage.idsDemandePasBesoins=this.voyage.idsDemandePasBesoins.replace(',,', ',');
       this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-        //this.voyage=data; // we don't to do it
+        //this.voyage=data; // we don't do it
       }, err=>{
         console.log(err);
       })//*/
-      //this.demandesBlue.push(demande)// to keep the demande blue
-      //this.demandes.splice(this.demandes.indexOf(demande), 1)
       this.demandes.push(demande)// to keep the demande
       this.demandesBlue.splice(this.demandesBlue.indexOf(demande), 1)
     }
     if(this.pageDemande.totalPages!=null && this.pageDemande.totalPages>0){
-      /*
-      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+","+localStorage.getItem("userId");
+      //*
+      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins+",";
+      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins.replace(","+localStorage.getItem("userId")+",", ',');
+      demande.idsUsersPasBesoins = demande.idsUsersPasBesoins.replace(',,', ',');
       this.demandesService.saveDemandes(demande).subscribe(data=>{}, err=>{ console.log(err)})
-      this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
       //*/
-      //this.demandesBlue.push(demande)
-      //this.pageDemande.content.splice(this.pageDemande.content.indexOf(demande),1); // remove this demande from the list
       this.pageDemande.content.push(demande)
       this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
     }
   }
-  /*
-    removeVoyage(voyage:Voyage){
-    if(this.demande!=null){
-      this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
-      this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
-        this.demande=data;
-      }, err=>{
-        console.log(err)
-      })
-      this.voyages.splice(this.voyages.indexOf(voyage),1); // remove this voyage from the list
-    }
-    if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
-      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins + "," + localStorage.getItem('userId');
-      this.voyagesService.saveVoyages(voyage).subscribe(data=>{},err=>{console.log(err)})
-      this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the content list
-    }
+  calculateDistance(lat1:number, long1:number, lat2:number, long2:number) { // en miles
+    let point1 = new google.maps.LatLng(lat1, long1)
+    let point2 = new google.maps.LatLng(lat2, long2)
+    return Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
   }
-  //*/
 }

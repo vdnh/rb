@@ -69,7 +69,7 @@ public class DemandeRestService {
     {
         return demandeRepository.demandesDeShipper(idDemander);
     }
-    
+    /*
     @RequestMapping(value = "/chercherDemandes", method = RequestMethod.GET)
     public Page<Demande> chercher(
         @RequestParam(name = "mc", defaultValue = "") String mc, 
@@ -77,6 +77,15 @@ public class DemandeRestService {
         @RequestParam(name = "page", defaultValue = "0")int page, 
         @RequestParam(name = "size", defaultValue = "5")int size){
         return demandeRepository.chercher("%"+mc+"%", id, PageRequest.of(page, size));
+    }//*/
+    
+    @RequestMapping(value = "/chercherDemandes", method = RequestMethod.GET)
+    public Page<Demande> chercher(
+        @RequestParam(name = "mc", defaultValue = "") String mc, 
+        //@RequestParam(name = "id", defaultValue = " ") String id, 
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        return demandeRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
     }
     /*
     @RequestMapping(value = "/chercherVoyages", method = RequestMethod.GET)
