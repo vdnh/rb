@@ -62,6 +62,7 @@ public class Demande implements Serializable{
     private String idsVoyagePasBesoins=""; // ids de Voyages matching mais pas besoins
     private String idsVoyageContactes=""; // ids de Voyages contactes
     private String idsUsersPasBesoins=""; // ids de Users (Shipper or Transporter) pas besoins
+    private String comments;    // description plus
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

@@ -12,10 +12,15 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>Comments</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let v of pageVoyage.content">
-            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td>
+            <td>{{v.origin}}</td>
+            <td>{{v.destination}}</td>
+            <!--td>{{v.comments}}</td-->
+            <td><textarea class="form-control" type="text" rows="1" cols="30">{{v.comments}}</textarea></td>
+            <td>{{v.nomTransporter}}</td>
             <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
             <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
             <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
@@ -38,10 +43,15 @@
         </div>
         <table class="table table-striped">
           <tr>
-            <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+            <th>Available</th><th>Origin</th><th>Destination</th><th>Comments</th><th>Poste Par</th>
           </tr>
           <tr *ngFor="let v of voyages">
-            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td><td>{{v.nomTransporter}}</td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td>
+            <td>{{v.origin}}</td>
+            <td>{{v.destination}}</td>
+            <!--td>{{v.comments}}</td-->
+            <td><textarea class="form-control" type="text" rows="1" cols="30">{{v.comments}}</textarea></td>
+            <td>{{v.nomTransporter}}</td>
             <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td>
             <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
             <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
@@ -53,10 +63,14 @@
       <div class="panel-body">
         <table class="table table-striped">
           <tr>
-            <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
+            <th>Available</th><th>Origin</th><th>Destination</th><th>Comments</th>
           </tr>
           <tr *ngFor="let v of voyages" (click)="matchingVoyage(v)">
-            <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{v.origin}}</td><td>{{v.destination}}</td><td>{{v.typeCamion}}</td>
+            <td>{{today | date: 'yyyy-MM-dd'}}</td>
+            <td>{{v.origin}}</td>
+            <td>{{v.destination}}</td>
+            <!--td>{{v.comments}}</td-->
+            <td><textarea class="form-control" type="text" rows="1" cols="30">{{v.comments}}</textarea></td>
             <td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Edit</button></td>
             <td><button class="btn btn-link" (click)="matchingVoyage(v)">LoadsMatch</button></td>
             <td><button class="btn btn-link" (click)="deleteVoyage(v.id)">Delete</button></td>
@@ -66,7 +80,7 @@
     </div>    
     <div class="panel-heading" *ngIf="modeModif==1 && role.includes('TRANSPORTER')">
       <div class="panel-body">
-        <h3>Modifier le voyage</h3>
+        <h3>Modifier l'Equipment</h3>
       </div>
     </div>
   </div>

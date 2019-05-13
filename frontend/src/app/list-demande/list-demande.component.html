@@ -1,5 +1,5 @@
 <div class="container spacer">
-  <div class="panel panel-primary">
+  <!--div class="panel panel-primary"-->
     <!--div class="panel-heading" *ngIf="!flag.includes('transporter') && !role.includes('shipper')">Liste des demandes</div-->
     <!--div class="panel-body" *ngIf="!flag.includes('transporter') && !role.includes('shipper')"-->
     <div class="panel-heading">Loads Potential :</div>
@@ -10,17 +10,18 @@
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+        <!--button class="btn btn-primary" (click)="chercher()">Chercher</button-->
+        <button class="btn btn-primary" (click)="cherDistanceTravel()">Chercher</button>        
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>Comments</th><th>Poste Par</th>
         </tr>
         <tr *ngFor="let d of pageDemande.content">
           <td>{{today | date: 'yyyy-MM-dd'}}</td>
           <td>{{d.origin}}</td>
           <td>{{d.destination}}</td>
-          <td>{{d.typeCamion}}</td>
+          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
           <td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
@@ -29,7 +30,11 @@
       </table>
       <table class="table table-striped" style="background-color: lightsteelblue">
         <tr *ngFor="let d of demandesBlue">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td>
+          <td>{{d.origin}}</td>
+          <td>{{d.destination}}</td>
+          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
+          <td>{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" disabled>Ask</button></td>
           <td><button class="btn btn-link" (click)="unRemoveDemande(d)">Active</button></td>
@@ -51,23 +56,31 @@
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>DFO</th><th>DFD</th><th>Type Camions</th><th>Poste Par</th>
+          <th>Available</th><th>Origin</th><th>Destination</th><th>DFO</th><th>LD</th><th>DFD</th><th>Comments</th><th>Poste Par</th>
         </tr>
-        <tr *ngFor="let d of demandes">
+        <tr *ngFor="let d of demandes" (click)="gotoDetailDemande(d)">
           <td>{{today | date: 'yyyy-MM-dd'}}</td>
           <td>{{d.origin}}</td>
           <td>{{d.destination}}</td>
           <td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
+          <td>{{calculateDistance(d.originLat, d.originLong, d.destLat, d.destLong)}}</td>
           <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td>
-          <td>{{d.typeCamion}}</td>
+          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
           <td>{{d.nomDemander}}</td>
-          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
+          <!--td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td-->
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desative</button></td>
         </tr>
         <tr *ngFor="let d of demandesBlue" style="background-color: lightsteelblue">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td><td>{{d.nomDemander}}</td>
-          <td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td>
+          <td>{{today | date: 'yyyy-MM-dd'}}</td>
+          <td>{{d.origin}}</td>
+          <td>{{d.destination}}</td>
+          <td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
+          <td>{{calculateDistance(d.originLat, d.originLong, d.destLat, d.destLong)}}</td>
+          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td>
+          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
+          <td>{{d.nomDemander}}</td>
+          <!--td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td-->
           <td><button class="btn btn-link" (click)="contactDemande(d)" disabled>Ask</button></td>
           <td><button class="btn btn-link" (click)="unRemoveDemande(d)">Active</button></td>
         </tr>        
@@ -87,5 +100,5 @@
         </table>
       </div>
     </div-->    
-  </div>
+  <!--/div-->
 </div>

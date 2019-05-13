@@ -31,4 +31,5 @@ export class Voyage{
     destAdresse:string="";
     destVille:string="";
     destProvince:string="";
+    comments:string;    // description plus
 }

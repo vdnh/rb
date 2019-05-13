@@ -31,8 +31,58 @@
               <th><input type="date" [ngModel]="today | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"  [disabled]="role.includes('SHIPPER')"/></th>                                 
               <th colspan="2" style="text-align: right"><label class="control-label">Chercher Corridor</label></th>                
               <td><input type="checkbox" [(ngModel)]="voyage.chercheCorridor" (change)="onCheckCorridor()" [disabled]="role.includes('SHIPPER')" /></td>                
-            </tr>          
+            </tr>   
             <tr>
+              <th><label class="control-label">Adresse</label></th>
+              <th>Numero & Rue</th>
+              <th>Province</th>
+              <th>Ville</th>
+              <th>Rayon(miles)</th>
+            </tr>       
+            <tr>
+                <th><label class="control-label">Origin</label></th>
+                <td><input type="text" [(ngModel)]="voyage.originAdresse" name="origin" class="form-control" (change)="originChange()"/></td>
+                <td>
+                  <select type="text" [(ngModel)]="voyage.originProvince" (ngModelChange)="originChange()">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>
+                <td>
+                  <select type="text" [(ngModel)]="voyage.originVille" (ngModelChange)="originChange()">
+                    <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+                  </select>
+                  <input type="text" [(ngModel)]="voyage.originVille" name="originVille" class="form-control" (change)="originChange()">
+                </td>
+                <td><input type="number" [(ngModel)]="voyage.radiusOrigin" name="radiusOrigin" class="form-control" (change)="onRadius1Changed(voyage.radiusOrigin)"></td>
+                <td>
+                  <select type="number" [(ngModel)]="voyage.radiusOrigin" (change)="onRadius1Changed(voyage.radiusOrigin)">
+                    <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
+                  </select>                    
+                </td>
+              </tr>       
+              <tr>
+              <th><label class="control-label">Destination</label></th>
+              <td><input type="text" [(ngModel)]="voyage.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
+              <td>
+                <select type="text" [(ngModel)]="voyage.destProvince" (ngModelChange)="destinationChange()">
+                  <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                </select>
+              </td>  
+              <td>
+                <select type="text" [(ngModel)]="voyage.destVille" (ngModelChange)="destinationChange()">
+                  <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+                </select>
+                <input type="text" [(ngModel)]="voyage.destVille" name="destVille" class="form-control" (change)="destinationChange()">
+              </td>
+                <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control" (change)="onRadius2Changed(voyage.radiusDestination)">
+              </td>
+              <td>
+                <select type="number" [(ngModel)]="voyage.radiusDestination" (change)="onRadius2Changed(voyage.radiusDestination)">
+                  <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
+                </select>                    
+              </td>
+            </tr>                   
+            <!--tr>
               <th><label class="control-label">Origin</label></th>
               <th><label class="control-label">Rayon Origin (miles)</label></th> 
               <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>             
@@ -55,19 +105,75 @@
                 </select>                    
               </td>
               <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            </tr>     
+            </tr-->     
             <tr>
-              <th><label class="control-label">Type de Camion : </label></th>                                      
+              <th>Description</th>
+              <!--td><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="voyage.comments"></textarea></td-->
+              <td colspan="5"><input type="text" [(ngModel)]="voyage.comments" name="comments" class="form-control"/></td>
+            </tr>
+            
+            <tr>
+              <th><label class="control-label">Equipment Type</label></th>                                      
               <td colspan="5"><input type="text" [(ngModel)]="voyage.typeCamion" name="typeCamion" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
             </tr>
             <tr>
-              <th><label class="control-label">Option de Voyage : </label></th>                                      
+              <td colspan="8">
+                <div>
+                  <form [formGroup]="formGroup" >
+                    <table>
+                      <!--tr>
+                        <td> 
+                          Tous
+                          <input type="checkbox" formControlName="selectAll" (change)="onChangeTypeCamion()"/>
+                        </td>
+                      </tr-->
+                      <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                        <tr *ngIf="((i % 8 === 0) && (i<16))">
+                          <td *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                              {{camionTypes[x].name}}
+                              <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </table>
+                  </form>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <th><label class="control-label">Attributes</label></th>                                      
               <td colspan="5"><input type="text" [(ngModel)]="voyage.optionVoyage" name="optionVoyage" class="form-control" [disabled]="role.includes('SHIPPER')"/></td>                                                            
             </tr>    
+            <tr>
+              <td colspan="8">
+                <div>
+                  <form [formGroup]="formGroup" >
+                    <table>
+                      <!--tr>
+                        <td> 
+                          Tous
+                          <input type="checkbox" formControlName="selectAll" (change)="onChangeTypeCamion()"/>
+                        </td>
+                      </tr-->
+                      <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                        <tr *ngIf="i % 8 === 0 && i>=16">
+                          <td *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                              {{camionTypes[x].name}}
+                              <input type="checkbox" [formControlName]='x' (change)="onChangeOptionVoyage()"/>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </table>
+                  </form>
+                </div>
+              </td>
+            </tr>
+
             <tr>            
               <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
               <td *ngIf="role.includes('SHIPPER')"><button class="btn btn-success" (click)="onContact()" [disabled]="disableContactVoyage()">Contact</button></td>
-              <td *ngIf="!role.includes('SHIPPER')" colspan="3"><button class="btn btn-success" (click)="onSaveVoyage()">Modifier/Chercher Demandes</button></td>
+              <td *ngIf="!role.includes('SHIPPER')" colspan="3"><button class="btn btn-success" (click)="onSaveVoyage()">Modifier/LoadsMatch</button></td>
               <!--td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td-->
             </tr>  
           </table>            

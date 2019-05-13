@@ -15,6 +15,8 @@ import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
+import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
+import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-voyage',
@@ -35,6 +37,42 @@ export class DetailVoyageComponent implements OnInit {
   today= new Date(); 
   //voyage:Voyage=new Voyage();
   listRadius : Array<number> = [50, 100, 200, 300, 400, 500];
+  
+  formGroup: FormGroup;
+  camionTypes = myGlobals.camionTypes;
+  
+  provinceList=myGlobals.provinceList ;
+  
+  villeListO= myGlobals.villeList ;
+  
+  villeListD=this.villeListO;
+  
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  
+  NunavutVilles=myGlobals.NunavutVilles;
+  
+  OntarioVilles=myGlobals.OntarioVilles;
+  
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  
+  QuebecVilles=myGlobals.QuebecVilles;
+  
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  
+  YukonVilles=myGlobals.YukonVilles;
+  
   
   //* Pour ajouter des circles and markers sur la carte
   // google maps zoom level
@@ -72,9 +110,54 @@ export class DetailVoyageComponent implements OnInit {
     public adressesService:AdressesService, public voyagesService:VoyagesService, 
     public demandesService : DemandesService, 
     public transportersService : TransportersService, public geocoding : GeocodingService, 
-    private geolocation : GeolocationService, public router:Router){    
+    private geolocation : GeolocationService, private formBuilder:FormBuilder, public router:Router)
+  {    
     this.id=activatedRoute.snapshot.params['id'];
+    //* construct for checkbox list
+    const selectAllControl = new FormControl(false);
+    const formControls = this.camionTypes.map(control => new FormControl(false));
+    this.formGroup = this.formBuilder.group({
+      camionTypes: new FormArray(formControls),
+      selectAll: selectAllControl
+    });//*/
   }
+
+  //* fonctionnes de checkbox list
+  onChangeCamionTypes(): void {
+    // Subscribe to changes on the selectAll checkbox
+    this.formGroup.get('selectAll').valueChanges.subscribe(bool => {
+      this.formGroup
+        .get('camionTypes')
+        .patchValue(Array(this.camionTypes.length).fill(bool), { emitEvent: false });
+    });
+
+    // Subscribe to changes on the music preference checkboxes
+    this.formGroup.get('camionTypes').valueChanges.subscribe(val => {
+      const allSelected = val.every(bool => bool);
+      if (this.formGroup.get('selectAll').value !== allSelected) {
+        this.formGroup.get('selectAll').patchValue(allSelected, { emitEvent: false });
+      }
+    });
+  }
+
+  onChangeTypeCamion() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.voyage.typeCamion = selectedCamionTypesNames.toString();
+  }
+
+  onChangeOptionVoyage() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.voyage.optionVoyage = selectedCamionTypesNames.toString();
+  }
+  //*/ fin de fonctionnes de checkbox list
 
   async ngOnInit() {
     this.role=localStorage.getItem('role');
@@ -512,7 +595,115 @@ getPaths() {
   }
   return [];
 }
-  async originChange(){
+async originChange(){
+  //*
+  if(this.voyage.originProvince!=null){
+    // check the province to limit the cities
+    if(this.voyage.originProvince==this.provinceList[0])
+      this.villeListO=this.AlbertaVilles;
+    if(this.voyage.originProvince==this.provinceList[1])
+      this.villeListO=this.BritishColumbiaVilles;        
+    if(this.voyage.originProvince==this.provinceList[2])
+      this.villeListO=this.ManitobaVilles;
+    if(this.voyage.originProvince==this.provinceList[3])
+      this.villeListO=this.NewBrunswickVilles;    
+    if(this.voyage.originProvince==this.provinceList[4])
+      this.villeListO=this.NewfoundlandLabradorVilles;    
+    if(this.voyage.originProvince==this.provinceList[5])
+      this.villeListO=this.NorthwestTerritoriesVilles;
+    if(this.voyage.originProvince==this.provinceList[6])
+      this.villeListO=this.NovaScotiaVilles;
+    if(this.voyage.originProvince==this.provinceList[7])
+      this.villeListO=this.NunavutVilles;
+    if(this.voyage.originProvince==this.provinceList[8])
+      this.villeListO=this.OntarioVilles;
+    if(this.voyage.originProvince==this.provinceList[9])
+      this.villeListO=this.PrinceEdwardIslandVilles;
+    if(this.voyage.originProvince==this.provinceList[10])
+      this.villeListO=this.QuebecVilles;
+    if(this.voyage.originProvince==this.provinceList[11])
+      this.villeListO=this.SaskatchewanVilles;  
+    if(this.voyage.originProvince==this.provinceList[12])
+      this.villeListO=this.YukonVilles;
+    // end check the provine
+    
+    this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince+', canada'
+    await this.geocoding.codeAddress(this.voyage.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngOrigin= new google.maps.LatLng(
+                this.voyage.originLat = results[0].geometry.location.lat(),
+                this.voyage.originLong = results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              alert("Ne pas trouver de coordonnees de ce origin")
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            //console.log(this.latLngOrigin.lat())
+            //console.log(this.latLngOrigin.lng())
+    });//*/
+    await this.showMap();
+  }
+  /*else
+    alert('Province ne peut etre vide!!')//*/
+}
+
+async destinationChange(){
+  //*
+  if(this.voyage.destProvince!=null){
+    // check the province to limit the cities
+    if(this.voyage.destProvince==this.provinceList[0])
+      this.villeListD=this.AlbertaVilles;
+    if(this.voyage.destProvince==this.provinceList[1])
+      this.villeListD=this.BritishColumbiaVilles;        
+    if(this.voyage.destProvince==this.provinceList[2])
+      this.villeListD=this.ManitobaVilles;
+    if(this.voyage.destProvince==this.provinceList[3])
+      this.villeListD=this.NewBrunswickVilles;    
+    if(this.voyage.destProvince==this.provinceList[4])
+      this.villeListD=this.NewfoundlandLabradorVilles;    
+    if(this.voyage.destProvince==this.provinceList[5])
+      this.villeListD=this.NorthwestTerritoriesVilles;
+    if(this.voyage.destProvince==this.provinceList[6])
+      this.villeListD=this.NovaScotiaVilles;
+    if(this.voyage.destProvince==this.provinceList[7])
+      this.villeListD=this.NunavutVilles;
+    if(this.voyage.destProvince==this.provinceList[8])
+      this.villeListD=this.OntarioVilles;
+    if(this.voyage.destProvince==this.provinceList[9])
+      this.villeListD=this.PrinceEdwardIslandVilles;
+    if(this.voyage.destProvince==this.provinceList[10])
+      this.villeListD=this.QuebecVilles;
+    if(this.voyage.destProvince==this.provinceList[11])
+      this.villeListD=this.SaskatchewanVilles;  
+    if(this.voyage.destProvince==this.provinceList[12])
+      this.villeListD=this.YukonVilles;
+    // end check the provine
+    this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince+', canada'
+    await this.geocoding.codeAddress(this.voyage.destination).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngDestination= new google.maps.LatLng(
+                this.voyage.destLat = results[0].geometry.location.lat(),
+                this.voyage.destLong = results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              alert("Ne pas trouver de coordonnees de cet destination")
+            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            //alert("Attendre un peu en deplacant !!")
+            //console.log(this.latLngDestination.lat())
+            //console.log(this.latLngDestination.lng())
+    });//*/
+    this.showMap();
+  }
+  /*else
+    alert('Province ne peut etre vide!!')//*/
+}
+
+  async originChangeBK(){
     //*
     await this.geocoding.codeAddress(this.voyage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
@@ -533,7 +724,7 @@ getPaths() {
     //console.log('hi from originChange')
   }
   
-  async destinationChange(){
+  async destinationChangeBK(){
     //*
     await this.geocoding.codeAddress(this.voyage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {

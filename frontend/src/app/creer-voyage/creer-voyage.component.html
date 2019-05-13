@@ -84,9 +84,14 @@
                   </select>                    
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-              </tr-->              
+              </tr-->       
               <tr>
-                <th><label class="control-label">Type de Camion</label></th>                                      
+                <th>Description</th>
+                <!--td><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="voyage.comments"></textarea></td-->
+                <td colspan="5"><input type="text" [(ngModel)]="voyage.comments" name="comments" class="form-control"/></td>
+              </tr>       
+              <tr>
+                <th><label class="control-label">Equipment Type</label></th>                                      
                 <td colspan="5"><input type="text" [(ngModel)]="voyage.typeCamion" name="typeCamion" class="form-control"/></td>                                                            
                 <!--td><button>Afficher Types de Camions</button></td-->
               </tr>
@@ -115,7 +120,7 @@
                 </td>
               </tr>
               <tr>
-                <th><label class="control-label">Options Voyage</label></th>                                      
+                <th><label class="control-label">Attributes</label></th>                                      
                 <td colspan="5"><input type="text" [(ngModel)]="voyage.optionVoyage" name="optionVoyage" class="form-control"/></td>                                                            
                 <!--td><button>Afficher Types de Camions</button></td-->
               </tr>

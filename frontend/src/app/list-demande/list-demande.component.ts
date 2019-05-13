@@ -7,6 +7,7 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
+import { async } from 'q';
 
 @Component({
   selector: 'app-list-demande',
@@ -134,8 +135,7 @@ export class ListDemandeComponent implements OnInit {
   }
 
   gotoDetailDemande(d:Demande){
-    //this.router.navigate(['detail-demande',d.id]);
-    this.router.navigate([{ outlets: { detailDemande: ['detail-demande',d.id]}}]);
+    this.router.navigate(['detail-demande',d.id]);
   }
 
   deleteDemande(id:number){
@@ -232,4 +232,105 @@ export class ListDemandeComponent implements OnInit {
     let point2 = new google.maps.LatLng(lat2, long2)
     return Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
   }
+
+  //* another test distance travel
+  getDistanceTravel(origin: string, dest: string): number {
+    //*
+    let distance:number=0;
+    let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
+    service.getDistanceMatrix({
+      'origins': [origin], 'destinations': [dest], travelMode:google.maps.TravelMode.DRIVING
+    }, async (results: any) => {
+      console.log('resultat distance (miles - first) -- ', distance)
+      distance= await Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+      console.log('resultat distance (miles - after first) -- ', distance)
+    });
+    console.log('resultat distance (miles - seconde) -- ', distance)
+    return distance;//*/
+    /*
+    new google.maps.DistanceMatrixService().getDistanceMatrix({
+      'origins': [origin], 'destinations': [dest], travelMode:google.maps.TravelMode.DRIVING
+    }, (res:any)=>{})//*/
+  }
+  cherDistanceTravel() :number {
+    let distance= this.getDistanceTravel('Montreal', 'Toronto')/*.then((res:number)=>{
+      distance=res
+      console.log('res : '+res)
+    });//*/
+    console.log( 'resultat distance (miles -) -- ' + distance)
+    return distance;
+  }
+  //*/
+  
+  /* test travel distance
+  
+  initMap() {
+    var bounds = new google.maps.LatLngBounds;
+    var markersArray = [];
+
+    var origin1 = {lat: 55.93, lng: -3.118};
+    var origin2 = 'Greenwich, England';
+    var destinationA = 'Stockholm, Sweden';
+    var destinationB = {lat: 50.087, lng: 14.421};
+
+    var destinationIcon = 'https://chart.googleapis.com/chart?' +
+        'chst=d_map_pin_letter&chld=D|FF0000|000000';
+    var originIcon = 'https://chart.googleapis.com/chart?' +
+        'chst=d_map_pin_letter&chld=O|FFFF00|000000';
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 55.53, lng: 9.4},
+      zoom: 10
+    });
+    var geocoder = new google.maps.Geocoder;
+
+    var service = new google.maps.DistanceMatrixService;
+    service.getDistanceMatrix({
+      origins: [origin1, origin2],
+      destinations: [destinationA, destinationB],
+      travelMode: 'DRIVING',
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false
+    }, function(response, status) {
+      if (status !== 'OK') {
+        alert('Error was: ' + status);
+      } else {
+        var originList = response.originAddresses;
+        var destinationList = response.destinationAddresses;
+        var outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = '';
+        deleteMarkers(markersArray);
+
+        var showGeocodedAddressOnMap = function(asDestination) {
+          var icon = asDestination ? destinationIcon : originIcon;
+          return function(results, status) {
+            if (status === 'OK') {
+              map.fitBounds(bounds.extend(results[0].geometry.location));
+              markersArray.push(new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                icon: icon
+              }));
+            } else {
+              alert('Geocode was not successful due to: ' + status);
+            }
+          };
+        };
+
+        for (var i = 0; i < originList.length; i++) {
+          var results = response.rows[i].elements;
+          geocoder.geocode({'address': originList[i]},
+              showGeocodedAddressOnMap(false));
+          for (var j = 0; j < results.length; j++) {
+            geocoder.geocode({'address': destinationList[j]},
+                showGeocodedAddressOnMap(true));
+            outputDiv.innerHTML += originList[i] + ' to ' + destinationList[j] +
+                ': ' + results[j].distance.text + ' in ' +
+                results[j].duration.text + '<br>';
+          }
+        }
+      }
+    });
+  }
+  //* */
 }

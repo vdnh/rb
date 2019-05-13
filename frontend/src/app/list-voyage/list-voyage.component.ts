@@ -21,7 +21,7 @@ export class ListVoyageComponent implements OnInit {
   pageVoyage:PageVoyage = new  PageVoyage();  // pour tenir des Voyages
   motCle:string="";
   currentPage:number=0;
-  size:number=5;
+  size:number=100;
   pages:Array<number>;  // pour tenir des numeros des pages
   voyages:Array<Voyage>;
   role:string="";
