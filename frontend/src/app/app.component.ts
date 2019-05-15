@@ -2,6 +2,9 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Role } from 'src/model/model.role';
+import { MessagesService } from 'src/services/messages.service';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import {VarsGlobal} from 'src/services/VarsGlobal'
 
 @Component({
   selector: 'app-root',
@@ -14,7 +17,9 @@ export class AppComponent implements OnInit{
   role:string="";
   modeSignUp=0;
   textSign="Nouveau Transporter ou Shipper"
-  constructor(private authService:AuthenticationService, private router:Router) { }
+  //nombreMessages: number=this.varsGlobal.nombreMessages;
+  constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
+              public varsGlobal:VarsGlobal, private router:Router) { }
 
   ngOnInit() {
     //*
@@ -73,6 +78,14 @@ export class AppComponent implements OnInit{
             //localStorage.setItem('userId', res.id.toString());
           }
           this.mode=0;
+          this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
+            (data:Array<Message>)=>{
+              this.varsGlobal.nombreMessages=data.length
+            }, err=>{
+              console.log(err)
+            }
+          )
+        //}
         }, err=>{          
           console.log(err);
         });//*/
@@ -98,6 +111,13 @@ export class AppComponent implements OnInit{
 
   logout(){
     localStorage.clear();
+    // localStorage.removeItem('tonken');
+    // localStorage.removeItem('nom');
+    // localStorage.removeItem('tel');
+    // localStorage.removeItem('role');
+    // localStorage.removeItem('email');
+    // localStorage.removeItem('userId');
+    //this.router.navigateByUrl("");
     this.role="";
     //this.log=1;
     //window.open("http://192.168.0.131")
@@ -107,8 +127,15 @@ export class AppComponent implements OnInit{
   // on close window
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event){
-    alert("I'm leaving the app");
-    localStorage.clear();
+    //alert("I'm leaving the app");
+    //localStorage.clear();
+    localStorage.removeItem('tonken');
+    localStorage.removeItem('nom');
+    localStorage.removeItem('tel');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
+    this.role="";
     this.router.navigateByUrl("");
   }
   onTransporter(){

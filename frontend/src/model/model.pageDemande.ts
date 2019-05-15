@@ -1,7 +1,7 @@
 import {Demande} from '../model/model.demande'
 
 export class PageDemande{
-    content:Demande[];
+    content:Demande[]=[];
     totalPages:number;
     totalElements:number;
     last:boolean;

@@ -402,7 +402,8 @@ markerHandler(marker: google.maps.Marker) {
   }
   onOk(){    
     //this.distance=this.calculateDistance() / 1000
-    this.distance2Ads(this.demande.origin, this.demande.destination)
+    //this.distance2Ads(this.demande.origin, this.demande.destination)
+    this.setDistanceTravel(this.demande.origin, this.demande.destination)
     this.totalPoints = this.longeurPointage(this.longeur, this.mode) + this.largeurPointage(this.largeur, this.mode) + this.hauteurPointage(this.hauteur, this.mode) 
       + this.poidsPointage(this.poids, this.mode); // + this.valeur + this.distance;
     
@@ -412,61 +413,44 @@ markerHandler(marker: google.maps.Marker) {
 
   }
     
-//* calculer distance
-async search(address: string) {
-  let point:google.maps.LatLng =null;
-  if (address != "") {
-      await this.geocoding.codeAddress(address).forEach(
-          (results: google.maps.GeocoderResult[]) => {
-                if(results[0].geometry.location.lat()>0){
-                  console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
-                  console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
-                  point= new google.maps.LatLng(
-                    Number(results[0].geometry.location.lat().toPrecision(8)),
-                    Number(results[0].geometry.location.lng().toPrecision(8))                            
-                  )
-                  console.log('Dedans de If'+point.toString())
-                }
-          })
-          .then(() => {
-              console.log('Geocoding service: completed.');
-          })
-          .catch((error: google.maps.GeocoderStatus) => {
-              if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                  console.log('Ne pas pour prendre coordonnees de cette point!!')
-              }
-          });
-      //return point;
-  }
-}
-
-async distance2Ads(address1: string, address2:string) {
-  let point1:google.maps.LatLng =null;
-  let point2:google.maps.LatLng =null;
-  if (address1 != "" && address2!=null) {
-      await this.geocoding.codeAddress(address1).forEach(
-          (results: google.maps.GeocoderResult[]) => {
-                if(results[0].geometry.location.lat()>0){
-                  point1= new google.maps.LatLng(
-                    this.demande.originLat = results[0].geometry.location.lat(),
-                    this.demande.originLong = results[0].geometry.location.lng()                            
-                  )
-                }
-          })
-          .then(() => {
-              console.log('Geocoding service: completed.');
-          })
-          .catch((error: google.maps.GeocoderStatus) => {
-              if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                  console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
-              }
-          });
-          await this.geocoding.codeAddress(address2).forEach(
+  //* calculer distance
+  async search(address: string) {
+    let point:google.maps.LatLng =null;
+    if (address != "") {
+        await this.geocoding.codeAddress(address).forEach(
             (results: google.maps.GeocoderResult[]) => {
                   if(results[0].geometry.location.lat()>0){
-                    point2= new google.maps.LatLng(
-                      this.demande.destLat = results[0].geometry.location.lat(),
-                      this.demande.destLong = results[0].geometry.location.lng()                            
+                    console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
+                    console.log('results[0].geometry.location.lng() : '+results[0].geometry.location.lng().toPrecision(8));                                    
+                    point= new google.maps.LatLng(
+                      Number(results[0].geometry.location.lat().toPrecision(8)),
+                      Number(results[0].geometry.location.lng().toPrecision(8))                            
+                    )
+                    console.log('Dedans de If'+point.toString())
+                  }
+            })
+            .then(() => {
+                console.log('Geocoding service: completed.');
+            })
+            .catch((error: google.maps.GeocoderStatus) => {
+                if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                    console.log('Ne pas pour prendre coordonnees de cette point!!')
+                }
+            });
+        //return point;
+    }
+  }
+
+  async distance2Ads(address1: string, address2:string) {
+    let point1:google.maps.LatLng =null;
+    let point2:google.maps.LatLng =null;
+    if (address1 != "" && address2!=null) {
+        await this.geocoding.codeAddress(address1).forEach(
+            (results: google.maps.GeocoderResult[]) => {
+                  if(results[0].geometry.location.lat()>0){
+                    point1= new google.maps.LatLng(
+                      this.demande.originLat = results[0].geometry.location.lat(),
+                      this.demande.originLong = results[0].geometry.location.lng()                            
                     )
                   }
             })
@@ -478,14 +462,43 @@ async distance2Ads(address1: string, address2:string) {
                     console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
                 }
             });
-      this.calculateDistance(point1, point2)
+            await this.geocoding.codeAddress(address2).forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                    if(results[0].geometry.location.lat()>0){
+                      point2= new google.maps.LatLng(
+                        this.demande.destLat = results[0].geometry.location.lat(),
+                        this.demande.destLong = results[0].geometry.location.lng()                            
+                      )
+                    }
+              })
+              .then(() => {
+                  console.log('Geocoding service: completed.');
+              })
+              .catch((error: google.maps.GeocoderStatus) => {
+                  if (error === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                      console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
+                  }
+              });
+        this.calculateDistance(point1, point2)
+    }
   }
-}
 
-calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
-  this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
-  this.distanceKm = Math.round(this.distance*1.609344)
-}
+  calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
+    this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
+    this.distanceKm = Math.round(this.distance*1.609344)
+  }
+
+  //* calculer distance travel en miles + kms
+  setDistanceTravel(address1: string, address2:string) {
+    let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
+    // calculate load distance - ld
+    service.getDistanceMatrix({
+      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
+    }, (results: any) => {    
+      this.distance= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+      this.distanceKm = Math.round(this.distance*1.609344)
+    });  
+  }
 
   onSearchTruck(){
     this.getMatchingVoyages()

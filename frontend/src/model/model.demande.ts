@@ -33,4 +33,7 @@ export class Demande{
     destVille:string="";
     destProvince:string="";
     comments:string;    // description plus
+    dfo:number=0.00; // distance from origin - temporaiment
+    dfd:number=0.00; // distance from destination - temporaiment
+    ld:number=0.00; // load distance - mode travel - temporaiment
 }

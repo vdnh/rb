@@ -172,7 +172,7 @@
 
             <tr>            
               <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
-              <td *ngIf="role.includes('SHIPPER')"><button class="btn btn-success" (click)="onContact()" [disabled]="disableContactVoyage()">Contact</button></td>
+              <td *ngIf="role.includes('SHIPPER')"><button class="btn btn-success" (click)="onContact()" [disabled]="disableContactVoyage()">Ask</button></td>
               <td *ngIf="!role.includes('SHIPPER')" colspan="3"><button class="btn btn-success" (click)="onSaveVoyage()">Modifier/LoadsMatch</button></td>
               <!--td><button class="btn btn-success" (click)="onDrawingPolygon()">Dessin un polygon</button></td-->
             </tr>  

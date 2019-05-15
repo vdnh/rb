@@ -892,10 +892,9 @@ async destinationChange(){
     return disableContact;
   }
   onContact(){
-    console.log("OK, We have had your message!")
     let message= new Message()
     this.voyage.idsDemandeContactes=this.voyage.idsDemandeContactes+","+localStorage.getItem('userId')
-    console.log('this.voyage.idsDemandeContactes : before write in database :'+this.voyage.idsDemandeContactes)
+    //console.log('this.voyage.idsDemandeContactes : before write in database :'+this.voyage.idsDemandeContactes)
     message.idSender=Number(localStorage.getItem('userId'));
     message.roleSender=localStorage.getItem('role');
     message.idReceiver=this.voyage.idTransporter;
@@ -920,11 +919,12 @@ async destinationChange(){
 
     this.messagesService.saveMessages(message).subscribe(data=>{
       this.voyagesService.updateVoyage(this.voyage.id, this.voyage).subscribe(data=>{
-        console.log('this.voyage.idsDemandeContactes : after write in database :'+this.voyage.idsDemandeContactes)
+        //console.log('this.voyage.idsDemandeContactes : after write in database :'+this.voyage.idsDemandeContactes)
       },err=>{console.log(err)})
     }, err=>{
       console.log(err)
     });
+    alert("Votre demande a ete envoye!")
   }
   
   // km en mile

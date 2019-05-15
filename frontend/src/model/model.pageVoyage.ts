@@ -1,7 +1,7 @@
 import {Voyage} from '../model/model.voyage'
 
 export class PageVoyage{
-    content:Voyage[];
+    content:Voyage[]=[];
     totalPages:number;
     totalElements:number;
     last:boolean;

@@ -39,7 +39,7 @@
       <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
       <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
       <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
-      <button routerLink="/business-messages" class="btn btn-link">Messages</button>
+      <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
       <button (click)="logout()" class="btn btn-link">Logout</button>
       <br>      
     </div>
@@ -51,7 +51,7 @@
         <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>          
         <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
         <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
-          <button routerLink="/business-messages" class="btn btn-link">Messages</button>
+          <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
           <button (click)="logout()" class="btn btn-link">Logout</button>
         <br>
       </div>

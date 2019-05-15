@@ -48,6 +48,7 @@ import { BankClientComponent } from './bank-client/bank-client.component';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { MessagesService } from 'src/services/messages.service';
 import { BusinessMessagesComponent } from './business-messages/business-messages.component';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
@@ -120,7 +121,7 @@ const appRoutes:Routes=[
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
-    ReparationsService, BankClientsService, MessagesService],
+    ReparationsService, BankClientsService, MessagesService, VarsGlobal],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

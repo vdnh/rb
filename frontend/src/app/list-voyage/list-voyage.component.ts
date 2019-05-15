@@ -165,10 +165,9 @@ export class ListVoyageComponent implements OnInit {
     return disableContact;
   }
   contactVoyage(v:Voyage){
-    console.log("OK, We have had your message!")
     let message= new Message()
     v.idsDemandeContactes=v.idsDemandeContactes+","+localStorage.getItem('userId')
-    console.log('v.idsDemandeContactes : before write in database :'+v.idsDemandeContactes)
+    //console.log('v.idsDemandeContactes : before write in database :'+v.idsDemandeContactes)
     message.idSender=Number(localStorage.getItem('userId'));
     message.roleSender=localStorage.getItem('role');
     message.idReceiver=v.idTransporter;
@@ -210,9 +209,10 @@ export class ListVoyageComponent implements OnInit {
     //*/
     this.messagesService.saveMessages(message).subscribe(async data=>{
       await this.voyagesService.updateVoyage(v.id, v).subscribe((data:Voyage)=>{
-        console.log('v.idsDemandeContactes : after write in database :'+data.idsDemandeContactes)
+        //console.log('v.idsDemandeContactes : after write in database :'+data.idsDemandeContactes)
       },err=>{console.log(err)})
     }, err=>{console.log(err)});
+    alert("Votre demande a ete envoye!")
   }
   
   removeVoyage(voyage:Voyage){

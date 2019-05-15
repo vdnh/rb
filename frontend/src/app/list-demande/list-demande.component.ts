@@ -21,7 +21,7 @@ export class ListDemandeComponent implements OnInit {
   currentPage:number=0;
   size:number=100;
   pages:Array<number>;  // pour tenir des numeros des pages
-  demandes:Array<Demande>;
+  demandes:Array<Demande>=[];
   demandesBlue:Array<Demande>=[];
   role:string="";
   flag:string="";
@@ -34,18 +34,21 @@ export class ListDemandeComponent implements OnInit {
     
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     console.log('localStorage.getItem("idVoyage") : ' +  localStorage.getItem("idVoyage"));
     if(localStorage.getItem('idVoyage')!=null)
-      await this.voyagesService.getDetailVoyage(Number(localStorage.getItem('idVoyage').toString())).subscribe((data:Voyage)=>{
+      this.voyagesService.getDetailVoyage(Number(localStorage.getItem('idVoyage').toString())).subscribe((data:Voyage)=>{
         this.voyage=data;
         console.log(this.voyage.id)
         console.log(this.voyage.originLat)
         console.log(this.voyage.originLong)
         console.log(this.voyage.origin)
         console.log(this.voyage.destination)
-        this.modeMatching=1;
+        this.modeMatching=2;
         this.doSearch();
+        // this.demandes.forEach(d=>{this.setDistanceTravel(d)})
+        // this.demandesBlue.forEach(d=>{this.setDistanceTravel(d)})
+        this.modeMatching=1;
       }, err=>{
         console.log(err)
       })
@@ -74,39 +77,54 @@ export class ListDemandeComponent implements OnInit {
     //else{
 
       if(this.voyage!=null){ 
+        //this.modeMatching=2  
         this.demandesService.getAllDemandes()
-        .subscribe(async (data:Array<Demande>)=>{
+        .subscribe((data:Array<Demande>)=>{
           let matchDemandes:Array<Demande>=[]
           let matchDemandesBlue:Array<Demande>=[]
           //this.voyages=data
-          this.modeMatching=1
+          //this.modeMatching=2  
           // we filter voyages here
-          await data.forEach(async demande=>{
+          data.forEach(demande=>{            
             if(this.voyage.idsDemandeMatchings.includes(demande.id.toString())
               && !this.voyage.idsDemandePasBesoins.split(',').includes(demande.id.toString()))
             {
-              matchDemandes.push(demande)
+              this.setDistanceTravel(demande, matchDemandes)
+              //matchDemandes.push(demande)
             }
             if(this.voyage.idsDemandeMatchings.includes(demande.id.toString())
               && this.voyage.idsDemandePasBesoins.includes(demande.id.toString()))
             {
-              matchDemandesBlue.push(demande)
+              this.setDistanceTravel(demande, matchDemandesBlue)
+              //matchDemandesBlue.push(demande)
             }
           })
           this.demandes=matchDemandes;
           this.demandesBlue=matchDemandesBlue;
+          
+          
+
+          //this.demandes.forEach(d=>{this.setDistanceTravel(d)})
+          //this.demandesBlue.forEach(d=>{this.setDistanceTravel(d)})
+          //this.modeMatching=1
+          //await this.demandes.forEach(d=>{this.setDistanceTravel(d)})
+          //await this.demandesBlue.forEach(d=>{this.setDistanceTravel(d)})
+          //alert('Wait for 2 secondes, we calculate th distances !!!')
         }, err=>{
           console.log(err);
         })
+        //console.log('Before this.modeMatching set to 1')
+        //this.modeMatching=1
+        //console.log('After set this.demandes - this.modeMatching= '+this.modeMatching)
       }
       else
-        this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe(async (data:PageDemande)=>{
+        this.demandesService.getDemandes(this.motCle, this.currentPage, this.size).subscribe((data:PageDemande)=>{
           this.pageDemande=data;
           this.pages=new Array(data.totalPages);
           // filter to take d demandes blue
           let matchDemandes:Array<Demande>=[]
           let matchDemandesBlue:Array<Demande>=[]
-          await this.pageDemande.content.forEach(async demande=>{
+          this.pageDemande.content.forEach(demande=>{
             if(!demande.idsUsersPasBesoins.split(',').includes(localStorage.getItem('userId')))
             {
               matchDemandes.push(demande)
@@ -128,12 +146,97 @@ export class ListDemandeComponent implements OnInit {
     this.modeMatching=0;
     this.voyage=null;
     this.doSearch();
+    localStorage.removeItem('idVoyage')
+  }
+  refresh(){
+    this.router.navigateByUrl("/list-demande"); // call one more time to refresh
   }
   gotoPage(i:number){
     this.currentPage=i;
     this.doSearch();
   }
 
+  dFOSort(){    // sort by DFO
+    this.demandes.sort((a, b)=>{
+      if(a.dfo>b.dfo)
+        return 1;
+      if(a.dfo<b.dfo)
+        return -1
+      return 0;
+    })
+    this.demandesBlue.sort((a, b)=>{
+      if(a.dfo>b.dfo)
+        return 1;
+      if(a.dfo<b.dfo)
+        return -1
+      return 0;
+    })
+  }
+  dFDSort(){  // sort by DFD
+    this.demandes.sort((a, b)=>{
+      if(a.dfd>b.dfd)
+        return 1;
+      if(a.dfd<b.dfd)
+        return -1
+      return 0;
+    })
+    this.demandesBlue.sort((a, b)=>{
+      if(a.dfd>b.dfd)
+        return 1;
+      if(a.dfd<b.dfd)
+        return -1
+      return 0;
+    })
+  }
+  lDSort(){   // sort by LD
+    this.demandes.sort((a, b)=>{
+      if(a.ld>b.ld)
+        return 1;
+      if(a.ld<b.ld)
+        return -1
+      return 0;
+    })
+    this.demandesBlue.sort((a, b)=>{
+      if(a.ld>b.ld)
+        return 1;
+      if(a.ld<b.ld)
+        return -1
+      return 0;
+    })
+  }
+  clientSort(){   // sort by name client
+    this.pageDemande.content.sort((a, b)=>{
+      return a.nomDemander.localeCompare(b.nomDemander)
+    })
+    this.demandes.sort((a, b)=>{
+      return a.nomDemander.localeCompare(b.nomDemander)
+    })
+    this.demandesBlue.sort((a, b)=>{
+      return a.nomDemander.localeCompare(b.nomDemander)
+    })
+  }
+  originSort(){   // sort by origin
+    this.pageDemande.content.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+    this.demandes.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+    this.demandesBlue.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+  }
+  destSort(){   // sort by destination
+    this.pageDemande.content.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+    this.demandes.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+    this.demandesBlue.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+  }
   gotoDetailDemande(d:Demande){
     this.router.navigate(['detail-demande',d.id]);
   }
@@ -180,6 +283,7 @@ export class ListDemandeComponent implements OnInit {
     this.messagesService.saveMessages(message).subscribe(data=>{
       this.demandesService.updateDemande(d.id, d).subscribe(data=>{},err=>{console.log(err)})
     }, err=>{console.log(err)})
+    alert("Votre demande a ete envoye!")
   }
   removeDemande(demande:Demande){
     if(this.voyage!=null){
@@ -233,30 +337,56 @@ export class ListDemandeComponent implements OnInit {
     return Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
   }
 
-  //* another test distance travel
-  getDistanceTravel(origin: string, dest: string): number {
+  //* Calculate and set distance travel in miles
+  setDistanceTravel(d: Demande, demandes:Array<Demande>) {
     //*
-    let distance:number=0;
+    //this.modeMatching=2
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
-    service.getDistanceMatrix({
-      'origins': [origin], 'destinations': [dest], travelMode:google.maps.TravelMode.DRIVING
-    }, async (results: any) => {
-      console.log('resultat distance (miles - first) -- ', distance)
-      distance= await Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
-      console.log('resultat distance (miles - after first) -- ', distance)
-    });
-    console.log('resultat distance (miles - seconde) -- ', distance)
-    return distance;//*/
-    /*
-    new google.maps.DistanceMatrixService().getDistanceMatrix({
-      'origins': [origin], 'destinations': [dest], travelMode:google.maps.TravelMode.DRIVING
-    }, (res:any)=>{})//*/
+    // get back distances - ld - dfo - dfd
+    if(localStorage.getItem(d.id+'-ld-'+this.voyage.id)!=null
+        && localStorage.getItem(d.id+'-dfo-'+this.voyage.id)!=null
+        && localStorage.getItem(d.id+'-dfd-'+this.voyage.id)!=null
+      )
+    {
+      d.ld=Number(localStorage.getItem(d.id+'-ld-'+this.voyage.id))
+      d.dfo=Number(localStorage.getItem(d.id+'-dfo-'+this.voyage.id))
+      d.dfd=Number(localStorage.getItem(d.id+'-dfd-'+this.voyage.id))
+    }
+    else{
+      // calculate load distance - ld
+      service.getDistanceMatrix({
+        'origins': [d.origin], 'destinations': [d.destination], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        d.ld= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(d.id+'-ld-'+this.voyage.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'ld (miles -) -- ' + d.ld)
+        //return;
+      });
+      
+      // calculate distance from origin - dfo
+      service.getDistanceMatrix({
+        'origins': [d.origin], 'destinations': [this.voyage.origin], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        d.dfo= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(d.id+'-dfo-'+this.voyage.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'dfo (miles -) -- ' + d.dfo)
+        //return;
+      });
+      // calculate distance from destination - dfd
+      service.getDistanceMatrix({
+        'origins': [d.destination], 'destinations': [this.voyage.destination], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        d.dfd= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(d.id+'-dfd-'+this.voyage.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'dfd (miles -) -- ' + d.dfd)
+        //return;
+      });
+    }
+    demandes.push(d);
   }
+  /*
   cherDistanceTravel() :number {
-    let distance= this.getDistanceTravel('Montreal', 'Toronto')/*.then((res:number)=>{
-      distance=res
-      console.log('res : '+res)
-    });//*/
+    let distance= this.getDistanceTravel('Montreal', 'Toronto')
     console.log( 'resultat distance (miles -) -- ' + distance)
     return distance;
   }

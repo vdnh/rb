@@ -10,19 +10,19 @@
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
-        <!--button class="btn btn-primary" (click)="chercher()">Chercher</button-->
-        <button class="btn btn-primary" (click)="cherDistanceTravel()">Chercher</button>        
+        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+        <!--button class="btn btn-primary" (click)="cherDistanceTravel()">Chercher</button-->        
       </div>
       <table class="table table-striped">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>Comments</th><th>Poste Par</th>
+          <th>Available</th><th (click)="originSort()">Origin</th><th (click)="destSort()">Destination</th><th>Comments</th><th (click)="clientSort()">Poste Par</th>
         </tr>
         <tr *ngFor="let d of pageDemande.content">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td>
-          <td>{{d.origin}}</td>
-          <td>{{d.destination}}</td>
-          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
-          <td>{{d.nomDemander}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{today | date: 'yyyy-MM-dd'}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.origin}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.destination}}</td>
+          <td (dblclick)="gotoDetailDemande(d)"><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.nomDemander}}</td>
           <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td>
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desactive</button></td>
@@ -48,25 +48,32 @@
         </ul>
       </div>      
     </div>
-    <div class="panel-body" *ngIf="modeMatching==1">
+    <div class="panel-body" *ngIf="modeMatching!=0">
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+        <button class="btn btn-primary" (click)="chercher()">All Loads</button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="refresh()">Refresh</button>
       </div>
-      <table class="table table-striped">
+      <table class="table table-striped" *ngIf="modeMatching==2">
+        <tr><h4>Please wait, Google is calculating distances !!!</h4></tr>
+      </table>
+      <table class="table table-striped" *ngIf="modeMatching==1">
         <tr>
-          <th>Available</th><th>Origin</th><th>Destination</th><th>DFO</th><th>LD</th><th>DFD</th><th>Comments</th><th>Poste Par</th>
+          <th>Available</th><th (click)="originSort()">Origin</th><th (click)="destSort()">Destination</th><th (click)="dFOSort()">DFO</th><th (click)="lDSort()">LD</th><th (click)="dFDSort()">DFD</th><th>Comments</th><th (click)="clientSort()">Poste Par</th>
         </tr>
-        <tr *ngFor="let d of demandes" (click)="gotoDetailDemande(d)">
-          <td>{{today | date: 'yyyy-MM-dd'}}</td>
-          <td>{{d.origin}}</td>
-          <td>{{d.destination}}</td>
-          <td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
+        <tr *ngFor="let d of demandes">
+          <td (dblclick)="gotoDetailDemande(d)">{{today | date: 'yyyy-MM-dd'}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.origin}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.destination}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.dfo}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.ld}}</td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.dfd}}</td>
+          <!--td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
           <td>{{calculateDistance(d.originLat, d.originLong, d.destLat, d.destLong)}}</td>
-          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td>
-          <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
-          <td>{{d.nomDemander}}</td>
+          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td-->
+          <td (dblclick)="gotoDetailDemande(d)"><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
+          <td (dblclick)="gotoDetailDemande(d)">{{d.nomDemander}}</td>
           <!--td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td-->
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desative</button></td>
@@ -75,9 +82,12 @@
           <td>{{today | date: 'yyyy-MM-dd'}}</td>
           <td>{{d.origin}}</td>
           <td>{{d.destination}}</td>
-          <td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
+          <td>{{d.dfo}}</td>
+          <td>{{d.ld}}</td>
+          <td>{{d.dfd}}</td>
+          <!--td>{{calculateDistance(voyage.originLat, voyage.originLong, d.originLat, d.originLong)}}</td>
           <td>{{calculateDistance(d.originLat, d.originLong, d.destLat, d.destLong)}}</td>
-          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td>
+          <td>{{calculateDistance(voyage.destLat, voyage.destLong, d.destLat, d.destLong)}}</td-->
           <td><textarea class="form-control" type="text" rows="1" cols="30">{{d.comments}}</textarea></td>
           <td>{{d.nomDemander}}</td>
           <!--td><button class="btn btn-link" (click)="gotoDetailDemande(d)" disabled>Detail</button></td-->

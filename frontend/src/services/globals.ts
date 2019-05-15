@@ -504,4 +504,3 @@ export const SaskatchewanVilles=['Batoche',
 export const YukonVilles=['Dawson',
   'Watson Lake',
   'Whitehorse',]
-
