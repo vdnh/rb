@@ -7,6 +7,7 @@ import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { } from 'googlemaps';
 import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
+import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
 
 @Component({
   selector: 'app-calcule-prix',
@@ -18,41 +19,40 @@ export class CalculePrixComponent implements OnInit {
   searchTruck=true; //desactiver poster et rechercher
   //* pour checkBox list
   formGroup: FormGroup;
-  camionTypes = [
-    { id: 1, name: 'Van/DryBox' },
-    { id: 2, name: 'FlatBed' },
-    { id: 3, name: 'RackAndTarp' },
-    { id: 4, name: 'Floats' },
-    { id: 5, name: 'Reefer' },
-    { id: 6, name: 'StepDeck' },
-    { id: 7, name: 'Container' },
-    { id: 8, name: 'LowBoy/RGN' },
-    { id: 9, name: 'StraightTruck' },
-    { id: 10, name: 'DoubleDrop' },
-    { id: 11, name: 'SuperB' },
-    { id: 12, name: 'PowerOnly' },
-    { id: 13, name: 'CurtainSide' },
-    { id: 14, name: 'RollTiteTrailer' },
-    { id: 15, name: 'DumpTrailer' },
-    { id: 16, name: 'Other' },
-    { id: 17, name: 'Air Ride' },
-    { id: 18, name: 'Chains' },
-    { id: 19, name: 'Tarps' },
-    { id: 20, name: 'Team' },
-    { id: 21, name: 'Heat' },
-    { id: 22, name: 'B-Train' },
-    { id: 23, name: 'HazMat' },
-    { id: 24, name: 'Vented' },
-    { id: 25, name: 'Talgate' },
-    { id: 26, name: 'Expedite' },
-    { id: 27, name: 'Blanket Wrap' },
-    { id: 28, name: 'Insulated' },
-    { id: 29, name: 'Tri-Axle' },
-    { id: 30, name: 'Frozen' },
-    { id: 31, name: 'Inbond' },
-    { id: 32, name: 'Other' }
-  ];
-  //*/
+  camionTypes = myGlobals.camionTypes;
+  
+  provinceList=myGlobals.provinceList ;
+  
+  villeListO= myGlobals.villeList ;
+  
+  villeListD=this.villeListO;
+  
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  
+  NunavutVilles=myGlobals.NunavutVilles;
+  
+  OntarioVilles=myGlobals.OntarioVilles;
+  
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  
+  QuebecVilles=myGlobals.QuebecVilles;
+  
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  
+  YukonVilles=myGlobals.YukonVilles;
+//*/
   mode=1; // en pouce et lbs   - Si : mode = 2 on est en cm et kg
   // les details de marchandise
   longeur:number=0.00;
@@ -119,36 +119,98 @@ export class CalculePrixComponent implements OnInit {
 //*
 async originChange(){
   //*
-  await this.geocoding.codeAddress(this.demande.origin).forEach(
-    (results: google.maps.GeocoderResult[]) => {
-          if(results[0].geometry.location.lat()>0){
-            this.latLngOrigin= new google.maps.LatLng(
-              results[0].geometry.location.lat(),
-              results[0].geometry.location.lng()                            
-            )
-            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-          }
-          else
-            alert("Ne pas trouver de coordonnees de ce origin")
-  });//*/
+  if(this.demande.originProvince!=null){
+    // check the province to limit the cities
+    if(this.demande.originProvince==this.provinceList[0])
+      this.villeListO=this.AlbertaVilles;
+    if(this.demande.originProvince==this.provinceList[1])
+      this.villeListO=this.BritishColumbiaVilles;        
+    if(this.demande.originProvince==this.provinceList[2])
+      this.villeListO=this.ManitobaVilles;
+    if(this.demande.originProvince==this.provinceList[3])
+      this.villeListO=this.NewBrunswickVilles;    
+    if(this.demande.originProvince==this.provinceList[4])
+      this.villeListO=this.NewfoundlandLabradorVilles;    
+    if(this.demande.originProvince==this.provinceList[5])
+      this.villeListO=this.NorthwestTerritoriesVilles;
+    if(this.demande.originProvince==this.provinceList[6])
+      this.villeListO=this.NovaScotiaVilles;
+    if(this.demande.originProvince==this.provinceList[7])
+      this.villeListO=this.NunavutVilles;
+    if(this.demande.originProvince==this.provinceList[8])
+      this.villeListO=this.OntarioVilles;
+    if(this.demande.originProvince==this.provinceList[9])
+      this.villeListO=this.PrinceEdwardIslandVilles;
+    if(this.demande.originProvince==this.provinceList[10])
+      this.villeListO=this.QuebecVilles;
+    if(this.demande.originProvince==this.provinceList[11])
+      this.villeListO=this.SaskatchewanVilles;  
+    if(this.demande.originProvince==this.provinceList[12])
+      this.villeListO=this.YukonVilles;
+    // end check the provine
+    
+    this.demande.origin=this.demande.originAdresse+', '+this.demande.originVille+', '+this.demande.originProvince+', canada'
+    await this.geocoding.codeAddress(this.demande.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngOrigin= new google.maps.LatLng(
+                results[0].geometry.location.lat(),
+                results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              alert("Ne pas trouver de coordonnees de ce origin")
+    });//*/
+  }
   //this.showMap();
 }
 
 async destinationChange(){
   //*
-  await this.geocoding.codeAddress(this.demande.destination).forEach(
-    (results: google.maps.GeocoderResult[]) => {
-          if(results[0].geometry.location.lat()>0){
-            this.latLngDestination= new google.maps.LatLng(
-              results[0].geometry.location.lat(),
-              results[0].geometry.location.lng()                            
-            )
-            //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-          }
-          else
-            alert("Ne pas trouver de coordonnees de cet destination")
-  });//*/
-  //this.showMap();
+  if(this.demande.destProvince!=null){
+    // check the province to limit the cities
+    if(this.demande.destProvince==this.provinceList[0])
+      this.villeListD=this.AlbertaVilles;
+    if(this.demande.destProvince==this.provinceList[1])
+      this.villeListD=this.BritishColumbiaVilles;        
+    if(this.demande.destProvince==this.provinceList[2])
+      this.villeListD=this.ManitobaVilles;
+    if(this.demande.destProvince==this.provinceList[3])
+      this.villeListD=this.NewBrunswickVilles;    
+    if(this.demande.destProvince==this.provinceList[4])
+      this.villeListD=this.NewfoundlandLabradorVilles;    
+    if(this.demande.destProvince==this.provinceList[5])
+      this.villeListD=this.NorthwestTerritoriesVilles;
+    if(this.demande.destProvince==this.provinceList[6])
+      this.villeListD=this.NovaScotiaVilles;
+    if(this.demande.destProvince==this.provinceList[7])
+      this.villeListD=this.NunavutVilles;
+    if(this.demande.destProvince==this.provinceList[8])
+      this.villeListD=this.OntarioVilles;
+    if(this.demande.destProvince==this.provinceList[9])
+      this.villeListD=this.PrinceEdwardIslandVilles;
+    if(this.demande.destProvince==this.provinceList[10])
+      this.villeListD=this.QuebecVilles;
+    if(this.demande.destProvince==this.provinceList[11])
+      this.villeListD=this.SaskatchewanVilles;  
+    if(this.demande.destProvince==this.provinceList[12])
+      this.villeListD=this.YukonVilles;
+    // end check the provine
+    this.demande.destination=this.demande.destAdresse+', '+this.demande.destVille+', '+this.demande.destProvince+', canada'
+    await this.geocoding.codeAddress(this.demande.destination).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngDestination= new google.maps.LatLng(
+                results[0].geometry.location.lat(),
+                results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              alert("Ne pas trouver de coordonnees de cet destination")
+    });//*/
+  }//this.showMap();
 }
 
 showMap() {

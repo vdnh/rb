@@ -40,27 +40,27 @@
                   </td>
                 </tr>       
                 <tr>
-                <th><label class="control-label">Destination</label></th>
-                <td><input type="text" [(ngModel)]="voyage.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
-                <td>
-                  <select type="text" [(ngModel)]="voyage.destProvince" (ngModelChange)="destinationChange()">
-                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-                  </select>
-                </td>  
-                <td>
-                  <select type="text" [(ngModel)]="voyage.destVille" (ngModelChange)="destinationChange()">
-                    <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-                  </select>
-                  <input type="text" [(ngModel)]="voyage.destVille" name="destVille" class="form-control" (change)="destinationChange()">
-                </td>
-                  <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control" (change)="onRadius2Changed(voyage.radiusDestination)">
-                </td>
-                <td>
-                  <select type="number" [(ngModel)]="voyage.radiusDestination" (change)="onRadius2Changed(voyage.radiusDestination)">
-                    <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
-                  </select>                    
-                </td>
-              </tr>              
+                  <th><label class="control-label">Destination</label></th>
+                  <td><input type="text" [(ngModel)]="voyage.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
+                  <td>
+                    <select type="text" [(ngModel)]="voyage.destProvince" (ngModelChange)="destinationChange()">
+                      <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                    </select>
+                  </td>  
+                  <td>
+                    <select type="text" [(ngModel)]="voyage.destVille" (ngModelChange)="destinationChange()">
+                      <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+                    </select>
+                    <input type="text" [(ngModel)]="voyage.destVille" name="destVille" class="form-control" (change)="destinationChange()">
+                  </td>
+                    <td><input type="number" [(ngModel)]="voyage.radiusDestination" name="radiusDestination" class="form-control" (change)="onRadius2Changed(voyage.radiusDestination)">
+                  </td>
+                  <td>
+                    <select type="number" [(ngModel)]="voyage.radiusDestination" (change)="onRadius2Changed(voyage.radiusDestination)">
+                      <option *ngFor="let r of listRadius" [ngValue]="r">{{r}} miles</option>
+                    </select>                    
+                  </td>
+                </tr>              
               <!--tr>
                 <th><label class="control-label">Origin</label></th>
                 <th><label class="control-label">Rayon Origin (miles)</label></th> 

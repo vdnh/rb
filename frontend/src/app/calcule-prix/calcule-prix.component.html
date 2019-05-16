@@ -11,11 +11,47 @@
               <tr>
                 <th><label class="control-label">Available</label></th>    
                 <th><input type="date" [ngModel]="demande.dateDepart | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th>    
-                <th><label class="control-label">Origin</label></th>
+                <!--th><label class="control-label">Origin</label></th>
                 <th><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control" (change)="originChange()"/></th>
                 <th><label class="control-label">Destination</label></th>               
-                <th><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control" (change)="destinationChange()"/></th>   
+                <th><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control" (change)="destinationChange()"/></th-->   
               </tr>
+              <tr>
+                <th><label class="control-label">Adresse</label></th>
+                <th>Numero & Rue</th>
+                <th>Province</th>
+                <th>Ville</th>
+              </tr>       
+              <tr>
+                  <th><label class="control-label">Origin</label></th>
+                  <td><input type="text" [(ngModel)]="demande.originAdresse" name="origin" class="form-control" (change)="originChange()"/></td>
+                  <td>
+                    <select type="text" [(ngModel)]="demande.originProvince" (ngModelChange)="originChange()">
+                      <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select type="text" [(ngModel)]="demande.originVille" (ngModelChange)="originChange()">
+                      <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+                    </select>
+                    <input type="text" [(ngModel)]="demande.originVille" name="originVille" class="form-control" (change)="originChange()">
+                  </td>
+                </tr>       
+                <tr>
+                  <th><label class="control-label">Destination</label></th>
+                  <td><input type="text" [(ngModel)]="demande.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
+                  <td>
+                    <select type="text" [(ngModel)]="demande.destProvince" (ngModelChange)="destinationChange()">
+                      <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                    </select>
+                  </td>  
+                  <td>
+                    <select type="text" [(ngModel)]="demande.destVille" (ngModelChange)="destinationChange()">
+                      <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+                    </select>
+                    <input type="text" [(ngModel)]="demande.destVille" name="destVille" class="form-control" (change)="destinationChange()">
+                  </td>
+                </tr>   
             </table>
             <table class="table table-striped">
               <tr *ngIf="mode==1">
