@@ -24,7 +24,19 @@
                         </tr>
                 </table>
         </div-->  
-        <div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div>              
+        <div>
+          <table>
+            <tr>
+              <td><button class="btn btn-primary" (click)="changeUnite()">Change Unite</button></td>
+              <td (mouseover)="gotoTop()"><button class="btn btn-primary" (click)="gotoTop()">Insurance</button></td>
+              <td><button class="btn btn-primary" (click)="gotoTop()">Equifax</button></td>
+              <td><button class="btn btn-primary" (click)="gotoTop()">TransCredit CA</button></td>
+              <td><button class="btn btn-primary" (click)="gotoTop()">Authority</button></td>
+              <td><button class="btn btn-primary" (click)="gotoTop()">TransCredit US</button></td>
+              <td><button class="btn btn-primary" (click)="gotoTop()">Web Info</button></td>
+            </tr>
+          </table>
+        </div>              
         <p></p><p></p>
         <div class="panel-body">
           <!--form #f="ngForm" (ngSubmit)="onRegister(f.value)"-->
@@ -32,11 +44,56 @@
             <tr>
               <th><label class="control-label">Available</label></th>    
               <th><input type="date" [ngModel]="today | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th>    
-              <th><label class="control-label">Origin</label></th>
-              <th><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control" (change)="originChange()"/></th>
-              <th><label class="control-label">Destination</label></th>               
-              <th><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control" (change)="destinationChange()"/></th>   
+              <!--ng-template *ngIf='role.includes("TRANSPORTER")'-->
+                <th *ngIf='role.includes("TRANSPORTER")'><label class="control-label">Origin</label></th>
+                <th *ngIf='role.includes("TRANSPORTER")'><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control" (change)="originChange()"/></th>
+                <th *ngIf='role.includes("TRANSPORTER")'><label class="control-label">Destination</label></th>               
+                <th *ngIf='role.includes("TRANSPORTER")'><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control" (change)="destinationChange()"/></th>   
+              <!--/ng-template-->
             </tr>
+            <!--ng-template *ngIf='role.includes("SHIPPER")'-->
+            <tr *ngIf='role.includes("SHIPPER")'>
+              <th><label class="control-label">Adresse</label></th>
+              <th>Numero & Rue</th>
+              <th>Province</th>
+              <th>Ville</th>
+            </tr>       
+            <tr *ngIf='role.includes("SHIPPER")'>
+                <th><label class="control-label">Origin</label></th>
+                <td><input type="text" [(ngModel)]="demande.originAdresse" name="origin" class="form-control" (change)="originChange()"/></td>
+                <td>
+                  <select type="text" [(ngModel)]="demande.originProvince" (ngModelChange)="originChange()">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>
+                <td>
+                  <select type="text" [(ngModel)]="demande.originVille" (ngModelChange)="originChange()">
+                    <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+                  </select>
+                  <input type="text" [(ngModel)]="demande.originVille" name="originVille" class="form-control" (change)="originChange()">
+                </td>
+              </tr>       
+              <tr *ngIf='role.includes("SHIPPER")'>
+                <th><label class="control-label">Destination</label></th>
+                <td><input type="text" [(ngModel)]="demande.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
+                <td>
+                  <select type="text" [(ngModel)]="demande.destProvince" (ngModelChange)="destinationChange()">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>  
+                <td>
+                  <select type="text" [(ngModel)]="demande.destVille" (ngModelChange)="destinationChange()">
+                    <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+                  </select>
+                  <input type="text" [(ngModel)]="demande.destVille" name="destVille" class="form-control" (change)="destinationChange()">
+                </td>
+              </tr>   
+              <tr>
+                <th>Description</th>
+                <!--td><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="voyage.comments"></textarea></td-->
+                <td colspan="5"><input type="text" [(ngModel)]="demande.comments" name="comments" class="form-control"/></td>
+              </tr>  
+            <!--/ng-template-->          
           </table>
           <table class="table table-striped">
             <tr *ngIf="mode==1">
@@ -92,11 +149,53 @@
               <th><label class="control-label">Type Camion : </label></th>                                      
               <td colspan="5"><input type="text" [(ngModel)]="demande.typeCamion" name="typeCamion" class="form-control"/></td>
             </tr>
+            <tr *ngIf='role.includes("SHIPPER")'>
+              <td colspan="8">
+                <div>
+                  <form [formGroup]="formGroup" >
+                    <table>
+                      <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                        <tr *ngIf="((i % 8 === 0) && (i<16))">
+                          <td style="font-size: 10px" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                              {{camionTypes[x].name}}
+                              <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </table>
+                  </form>
+                </div>
+              </td>
+            </tr>
             <tr>
               <th><label class="control-label">Options : </label></th>                                      
               <td colspan="5"><input type="text" [(ngModel)]="demande.optionDemande" name="optionDemande" class="form-control"/></td>                                                            
               <!--td><button>Afficher Types de Camions</button></td-->
             </tr>
+            <tr *ngIf='role.includes("SHIPPER")'>
+              <td colspan="8">
+                <div>
+                  <form [formGroup]="formGroup" >
+                    <table>
+                      <!--tr>
+                        <td> 
+                          Tous
+                          <input type="checkbox" formControlName="selectAll" (change)="onChangeTypeCamion()"/>
+                        </td>
+                      </tr-->
+                      <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                        <tr *ngIf="i % 8 === 0 && i>=16">
+                          <td style="font-size: 10px" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                              {{camionTypes[x].name}}
+                              <input type="checkbox" [formControlName]='x' (change)="onChangeOptionDemande()"/>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </table>
+                  </form>
+                </div>
+              </td>
+            </tr>              
             <tr>
               <th>Total de points : </th>
               <td> {{totalPoints}} </td>

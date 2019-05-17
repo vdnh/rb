@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Transporter } from 'src/model/model.transporter';
 import { Shipper } from 'src/model/model.shipper';
 import { Demande } from 'src/model/model.demande';
@@ -17,6 +17,8 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { LatLngLiteral } from '@agm/core';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
+import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-demande',
@@ -26,6 +28,42 @@ import { MessagesService } from 'src/services/messages.service';
 export class DetailDemandeComponent implements OnInit {
   //*  for calculprix
   searchTruck=true; //desactiver poster et rechercher
+  //* pour checkBox list
+  formGroup: FormGroup;
+  camionTypes = myGlobals.camionTypes;
+  
+  provinceList=myGlobals.provinceList ;
+  
+  villeListO= myGlobals.villeList ;
+  
+  villeListD=this.villeListO;
+  
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  
+  NunavutVilles=myGlobals.NunavutVilles;
+  
+  OntarioVilles=myGlobals.OntarioVilles;
+  
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  
+  QuebecVilles=myGlobals.QuebecVilles;
+  
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  
+  YukonVilles=myGlobals.YukonVilles;
+
   mode=1; // en pouce et lbs   - Si : mode = 2 on est en cm et kg
   // les details de marchandise
   longeur:number=0.00;
@@ -110,6 +148,7 @@ export class DetailDemandeComponent implements OnInit {
         });
         this.adressesService.adressesDeShipper(this.demande.idDemander).subscribe((data:Array<Adresse>)=>{
           this.adresses=data;
+          this.gotoTop();
         }, err=>{
           console.log();
         });
@@ -127,6 +166,7 @@ export class DetailDemandeComponent implements OnInit {
         });
         this.adressesService.adressesDeTransporter(this.demande.idDemander).subscribe((data:Array<Adresse>)=>{
           this.adresses=data;
+          this.gotoTop();
         }, err=>{
           console.log();
         });
@@ -142,7 +182,7 @@ export class DetailDemandeComponent implements OnInit {
     }
     , err=>{
       console.log(err)
-    })
+    })    
   }
 //* function from calcul prix
 changeUnite(){
@@ -693,6 +733,7 @@ onContact(){
   //*
   async originChange(){
     //*
+    
     await this.geocoding.codeAddress(this.demande.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -726,4 +767,38 @@ onContact(){
   }
   //*/ end to show map
 
+  isShow: boolean;
+  topPosToStartShowing = 100;
+  @HostListener('window:scroll')
+  checkScroll() {
+      
+    // window의 scroll top
+    // Both window.pageYOffset and document.documentElement.scrollTop returns the same result in all the cases. window.pageYOffset is not supported below IE 9.
+
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+
+    //console.log('[scroll]', scrollPosition);
+    
+    if (scrollPosition >= this.topPosToStartShowing) {
+      this.isShow = true;
+    } else {
+      this.isShow = false;
+    }
+  }
+
+  // TODO: Cross browsing
+  gotoTop() {
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+  }
+  gotoBottom() {
+    window.scroll({ 
+      top: document.documentElement.scrollHeight, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+  }
 }

@@ -1,6 +1,22 @@
 import { Injectable } from '@angular/core';
+import { MessagesService } from 'src/services/messages.service';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Injectable()
 export class VarsGlobal{
+  
   nombreMessages:number=0; // number of messages 
+  
+  constructor(public messagesService: MessagesService){}
+  refreshData(){
+    //this.router.navigateByUrl("");
+    //this.ngOnInit();
+    this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
+      (data:Array<Message>)=>{
+        this.nombreMessages=data.length
+      }, err=>{
+        console.log(err)
+      }
+    )
+  }
 }

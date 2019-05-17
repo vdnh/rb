@@ -24,6 +24,13 @@ export class AppComponent implements OnInit{
   ngOnInit() {
     //*
     if (localStorage.getItem('role')!=null){
+      this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
+        (data:Array<Message>)=>{
+          this.varsGlobal.nombreMessages=data.length
+        }, err=>{
+          console.log(err)
+        }
+      )
       this.role=localStorage.getItem('role');
       if(this.role.includes('TRANSPORTER')) {         
         this.router.navigateByUrl('/detail-transporter/'+ localStorage.getItem('userId'));
@@ -52,10 +59,20 @@ export class AppComponent implements OnInit{
       this.router.navigateByUrl("");
     }
   }
-  /*signIn(){
-    this.modeSignUp=0;
-    this.textSign="Sign up";
-  }//*/
+  
+  refreshData(){
+    //this.router.navigateByUrl("");
+    //this.ngOnInit();
+    /* this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
+      (data:Array<Message>)=>{
+        this.varsGlobal.nombreMessages=data.length
+      }, err=>{
+        console.log(err)
+      }
+    ) */
+    this.varsGlobal.refreshData();
+  }
+
   onLogin(dataForm){
     this.authService.login(dataForm)
     .subscribe(resp=> {

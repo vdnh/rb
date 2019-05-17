@@ -7,7 +7,10 @@
           <th>Date</th><th colspan="4">Message</th>
         </tr>
         <tr *ngFor="let m of messages">
-            <td>{{m.date}}</td><td colspan="6" [innerHTML]="m.message"></td>
+            <td>{{m.date}}</td>
+            <td colspan="6" [innerHTML]="m.message"></td>
+            <td><button (click)="gotoDetailDemande(m.idDemande)">Detail votre poste</button></td>
+            <!--td><button class="btn btn-link" (click)="gotoDetailDemande(1234)">Detail Load</button></td-->
             <td><button class="btn btn-link" (click)="deleteMessage(m.id)">Delete</button></td>
         </tr>
       </table>

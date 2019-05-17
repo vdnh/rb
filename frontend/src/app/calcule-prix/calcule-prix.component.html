@@ -52,7 +52,12 @@
                     <input type="text" [(ngModel)]="demande.destVille" name="destVille" class="form-control" (change)="destinationChange()">
                   </td>
                 </tr>   
-            </table>
+                <tr>
+                  <th>Description</th>
+                  <!--td><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="voyage.comments"></textarea></td-->
+                  <td colspan="5"><input type="text" [(ngModel)]="demande.comments" name="comments" class="form-control"/></td>
+                </tr>
+              </table>
             <table class="table table-striped">
               <tr *ngIf="mode==1">
                 <th *ngIf="mode==1" ><label class="control-label">Longueur(pouce)</label></th>                

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
 import {VarsGlobal} from 'src/services/VarsGlobal'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-business-messages',
@@ -10,19 +11,21 @@ import {VarsGlobal} from 'src/services/VarsGlobal'
 })
 export class BusinessMessagesComponent implements OnInit {
   messages:Array<Message>=[];
-  constructor(public messagesService:MessagesService, public varsGlobal:VarsGlobal) { }
+  constructor(public messagesService:MessagesService, public varsGlobal:VarsGlobal, public router:Router) { }
 
   ngOnInit() {
+    this.varsGlobal.refreshData();
     this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
       (data:Array<Message>)=>{
-        this.messages=
-        data.sort((a, b) => {
+        this.messages=data.sort((a, b) => {
           if(a.id>b.id)
             return -1;
           if(a.id<b.id)
             return 1;
           return 0;
         });
+        //this.varsGlobal.nombreMessages=this.messages.length
+        this.messages.forEach(d=>{console.log(d.message)})
       }, err=>{
         console.log(err)
       }
@@ -36,5 +39,9 @@ export class BusinessMessagesComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
+  }
+
+  gotoDetailDemande(id:number){
+    this.router.navigate(['detail-demande',id]);
   }
 }

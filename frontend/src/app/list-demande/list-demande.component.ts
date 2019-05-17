@@ -272,12 +272,19 @@ export class ListDemandeComponent implements OnInit {
     let temp1Mail:string='<strong><a href="mailto:'
     let temp2:string='">'
     let temp3:string='</a></strong>'
+    //* contruire button
+    let bTemp01:string = '<div><button routerLink="/detail-demande/'+d.id
+    let bTemp02:string = '" class="btn btn-link">'+ " -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination
+    let bTemp03:string = '</button></div>'
+    //let button=bTemp01+bTemp02+bTemp03
+    //*/
     
     message.message=localStorage.getItem('nom') +" - Tel:  "
     + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
     + " - Email:  " 
     + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
-    + " -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination;
+    //+ " -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination;
+    +bTemp01+bTemp02+bTemp03;
     //*/
 
     this.messagesService.saveMessages(message).subscribe(data=>{
