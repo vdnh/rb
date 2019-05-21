@@ -27,18 +27,23 @@ export class DetailShipperComponent implements OnInit {
   addadresse:Adresse=new Adresse(); // to add more adresse
   constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public adressesService:AdressesService){    
-    //this.id=activatedRoute.snapshot.params['id'];
-    this.id=Number(localStorage.getItem('userId'))
+    this.id=activatedRoute.snapshot.params['id'];
+    //this.id=Number(localStorage.getItem('userId'))
   }
 
   ngOnInit() {
     this.quitButton=localStorage.getItem('role');
     this.shippersService.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
-      this.mode=1;
-      localStorage.setItem('nom', this.shipper.nom);
-      localStorage.setItem('tel', this.shipper.tel.toString());
-      localStorage.setItem('email', this.shipper.email);
+      if(localStorage.getItem('role').includes('TRANSPORTER')){  // in the cas Transporter want to view detail contact
+        this.mode=3;
+      }
+      else{ // in the cas Shipper want to view detail himsefl
+        this.mode=1;
+        localStorage.setItem('nom', this.shipper.nom);
+        localStorage.setItem('tel', this.shipper.tel.toString());
+        localStorage.setItem('email', this.shipper.email);
+      }
     }, err=>{
       console.log(err);
     });

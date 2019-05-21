@@ -106,5 +106,33 @@
           <!--/div-->
         </div>   
   </div>
-
+<div class="panel panel-primary" *ngIf="mode==3">
+  <div class="panel-heading">Detai Contact</div>
+  <div class="panel-body">
+    <table class="table table-striped">
+        <tr>
+            <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
+        </tr>
+        <tr>
+            <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.depuis}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td><!--td>{{shipper.photo}}</td-->
+        </tr>
+        <tr><td colspan="2"><strong>Adresse</strong></td></tr>
+        <tr>
+            <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+        </tr>     
+        <tr *ngFor="let adresse of adresses">
+            <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+        </tr>                                         
+        <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
+        <tr>
+            <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+        </tr>
+        <tr *ngFor="let contact of contacts">
+            <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+        </tr>                
+    </table>
+        <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/business-messages">Retour</button></div>
+    <!--/div-->
+  </div>   
+</div>
 </div>

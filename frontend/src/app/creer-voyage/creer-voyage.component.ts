@@ -620,7 +620,7 @@ getPaths() {
         this.villeListO=this.YukonVilles;
       // end check the provine
       
-      this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince+', canada'
+      this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince //+', canada'
       await this.geocoding.codeAddress(this.voyage.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
@@ -673,7 +673,7 @@ getPaths() {
       if(this.voyage.destProvince==this.provinceList[12])
         this.villeListD=this.YukonVilles;
       // end check the provine
-      this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince+', canada'
+      this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince  //+', canada'
       await this.geocoding.codeAddress(this.voyage.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){

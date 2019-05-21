@@ -92,18 +92,24 @@ export class DetailTransporterComponent implements OnInit {
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
       this.quitButton=localStorage.getItem('role')
       this.transporter=data;
-      this.mode=1;
-      this.modeTableau=1;
-      this.modeCamions=0;
-      this.modeCoordonnes=0;
-      this.coorInfos=1;
-      this.coorAddAdresse=0;
-      this.coorAddContact=0;
-      this.camList=1;
-      this.camAdd=0;
-      localStorage.setItem('nom', this.transporter.nom);
-      localStorage.setItem('tel', this.transporter.tel.toString());
-      localStorage.setItem('email', this.transporter.email);
+      if(localStorage.getItem('role').includes('SHIPPER')){  // in the cas Shipper want to view detail contact
+        this.mode=3;
+      }
+      else{ // in the cas Transporter want to view detail himsefl
+        this.mode=1;
+        this.modeTableau=1;
+        this.modeCamions=0;
+        this.modeCoordonnes=0;
+        this.coorInfos=1;
+        this.coorAddAdresse=0;
+        this.coorAddContact=0;
+        this.camList=1;
+        this.camAdd=0;
+        localStorage.setItem('nom', this.transporter.nom);
+        localStorage.setItem('tel', this.transporter.tel.toString());
+        localStorage.setItem('email', this.transporter.email);
+      }
+
     }, err=>{
       console.log(err);
     });

@@ -25,7 +25,9 @@ export class BusinessMessagesComponent implements OnInit {
           return 0;
         });
         //this.varsGlobal.nombreMessages=this.messages.length
-        this.messages.forEach(d=>{console.log(d.message)})
+        this.messages.forEach(d=>{
+          //console.log(d.message)
+        })
       }, err=>{
         console.log(err)
       }
@@ -41,7 +43,11 @@ export class BusinessMessagesComponent implements OnInit {
     })
   }
 
-  gotoDetailDemande(id:number){
-    this.router.navigate(['detail-demande',id]);
+  gotoDetailContact(id:number){
+    //this.router.navigate(['detail-demande',id]);
+    if(localStorage.getItem('role').includes('SHIPPER'))
+      this.router.navigate(['detail-transporter',id]);
+    if(localStorage.getItem('role').includes('TRANSPORTER'))
+      this.router.navigate(['detail-shipper',id]);
   }
 }

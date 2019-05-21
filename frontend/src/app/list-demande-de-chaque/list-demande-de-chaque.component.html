@@ -6,9 +6,10 @@
             <tr>
               <th>Prevoir</th><th>Origin</th><th>Destination</th><th>Type Camions</th>
             </tr>
-            <tr *ngFor="let d of demandes">
+            <tr *ngFor="let d of demandes" (click)="onSearchTruck(d)">
               <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td>
-              <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detailler</button></td>
+              <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Edit</button></td>
+              <td><button class="btn btn-link" (click)="onSearchTruck(d)">EquipmentsMatch</button></td>
               <td><button class="btn btn-link" (click)="deleteDemande(d.id)">Delete</button></td>
             </tr>
           </table>

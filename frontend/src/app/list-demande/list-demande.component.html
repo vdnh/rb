@@ -53,7 +53,7 @@
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="chercher()">All Loads</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-primary" (click)="refresh()">Refresh DFO-LD-DFD</button>
+        <button class="btn btn-primary" (click)="refreshDistance()">Refresh DFO-LD-DFD</button>
       </div>
       <table class="table table-striped" *ngIf="modeMatching==2">
         <tr><h4>Please wait, Google is calculating distances !!!</h4></tr>

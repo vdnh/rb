@@ -149,7 +149,7 @@ async originChange(){
       this.villeListO=this.YukonVilles;
     // end check the provine
     
-    this.demande.origin=this.demande.originAdresse+', '+this.demande.originVille+', '+this.demande.originProvince+', canada'
+    this.demande.origin=this.demande.originAdresse+', '+this.demande.originVille+', '+this.demande.originProvince //+', canada'
     await this.geocoding.codeAddress(this.demande.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -197,7 +197,7 @@ async destinationChange(){
     if(this.demande.destProvince==this.provinceList[12])
       this.villeListD=this.YukonVilles;
     // end check the provine
-    this.demande.destination=this.demande.destAdresse+', '+this.demande.destVille+', '+this.demande.destProvince+', canada'
+    this.demande.destination=this.demande.destAdresse+', '+this.demande.destVille+', '+this.demande.destProvince  //+', canada'
     await this.geocoding.codeAddress(this.demande.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){

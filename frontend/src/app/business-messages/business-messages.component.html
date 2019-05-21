@@ -4,12 +4,12 @@
     <div class="panel-body">
       <table class="table table-striped">
         <tr>
-          <th>Date</th><th colspan="4">Message</th>
+          <th>Date</th><th colspan="5">Message</th>
         </tr>
         <tr *ngFor="let m of messages">
             <td>{{m.date}}</td>
-            <td colspan="6" [innerHTML]="m.message"></td>
-            <td><button (click)="gotoDetailDemande(m.idDemande)">Detail votre poste</button></td>
+            <td colspan="5" [innerHTML]="m.message"></td>
+            <td><button class="btn btn-link" (click)="gotoDetailContact(m.idSender)">DetailContact</button></td>
             <!--td><button class="btn btn-link" (click)="gotoDetailDemande(1234)">Detail Load</button></td-->
             <td><button class="btn btn-link" (click)="deleteMessage(m.id)">Delete</button></td>
         </tr>

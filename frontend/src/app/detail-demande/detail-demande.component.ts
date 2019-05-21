@@ -18,7 +18,7 @@ import { LatLngLiteral } from '@agm/core';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
 import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-demande',
@@ -119,8 +119,17 @@ export class DetailDemandeComponent implements OnInit {
 
   constructor(public messagesService : MessagesService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public voyagesService:VoyagesService, public adressesService:AdressesService, public demandesService:DemandesService, 
-    public transportersService : TransportersService, public geocoding : GeocodingService, public router:Router){    
+    public transportersService : TransportersService, public geocoding : GeocodingService, public router:Router
+    , private formBuilder:FormBuilder)
+  {    
     this.id=activatedRoute.snapshot.params['id'];
+    //* construct for checkbox list
+    const selectAllControl = new FormControl(false);
+    const formControls = this.camionTypes.map(control => new FormControl(false));
+    this.formGroup = this.formBuilder.group({
+      camionTypes: new FormArray(formControls),
+      selectAll: selectAllControl
+    });//*/
   }
   //constructor(public demandesService : DemandesService, public geocoding : GeocodingService, public router:Router) { }
   async ngOnInit() {
@@ -184,6 +193,43 @@ export class DetailDemandeComponent implements OnInit {
       console.log(err)
     })    
   }
+
+  onChangeCamionTypes(): void {
+    // Subscribe to changes on the selectAll checkbox
+    this.formGroup.get('selectAll').valueChanges.subscribe(bool => {
+      this.formGroup
+        .get('camionTypes')
+        .patchValue(Array(this.camionTypes.length).fill(bool), { emitEvent: false });
+    });
+
+    // Subscribe to changes on the music preference checkboxes
+    this.formGroup.get('camionTypes').valueChanges.subscribe(val => {
+      const allSelected = val.every(bool => bool);
+      if (this.formGroup.get('selectAll').value !== allSelected) {
+        this.formGroup.get('selectAll').patchValue(allSelected, { emitEvent: false });
+      }
+    });
+  }
+
+  onChangeTypeCamion() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.demande.typeCamion = selectedCamionTypesNames.toString();
+  }
+
+  onChangeOptionDemande() {
+    const selectedCamionTypesNames = this.formGroup.value.camionTypes
+      .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedCamionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
+    this.demande.optionDemande = selectedCamionTypesNames.toString();
+  }
+  //*/ fin de fonctionnes de checkbox list
+
 //* function from calcul prix
 changeUnite(){
   if (this.mode==1){
@@ -356,7 +402,7 @@ onContact(){
   + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
   + " - Email:  " 
   + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
-  + " -  On peut charger votre demande de  "+ this.demande.origin +"  a  " + this.demande.destination;
+  + " -  On peut charger votre Load de  "+ this.demande.origin +"  a  " + this.demande.destination;
   //*/
   this.messagesService.saveMessages(message).subscribe(data=>{
     this.demandesService.updateDemande(this.demande.id, this.demande).subscribe(data=>{},err=>{console.log(err)})
@@ -733,37 +779,102 @@ onContact(){
   //*
   async originChange(){
     //*
-    
-    await this.geocoding.codeAddress(this.demande.origin).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngOrigin= new google.maps.LatLng(
-                results[0].geometry.location.lat(),
-                results[0].geometry.location.lng()                            
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-              alert("Ne pas trouver de coordonnees de ce origin")
-    });//*/
+    //*
+    if(this.demande.originProvince!=null){
+      // check the province to limit the cities
+      if(this.demande.originProvince==this.provinceList[0])
+        this.villeListO=this.AlbertaVilles;
+      if(this.demande.originProvince==this.provinceList[1])
+        this.villeListO=this.BritishColumbiaVilles;        
+      if(this.demande.originProvince==this.provinceList[2])
+        this.villeListO=this.ManitobaVilles;
+      if(this.demande.originProvince==this.provinceList[3])
+        this.villeListO=this.NewBrunswickVilles;    
+      if(this.demande.originProvince==this.provinceList[4])
+        this.villeListO=this.NewfoundlandLabradorVilles;    
+      if(this.demande.originProvince==this.provinceList[5])
+        this.villeListO=this.NorthwestTerritoriesVilles;
+      if(this.demande.originProvince==this.provinceList[6])
+        this.villeListO=this.NovaScotiaVilles;
+      if(this.demande.originProvince==this.provinceList[7])
+        this.villeListO=this.NunavutVilles;
+      if(this.demande.originProvince==this.provinceList[8])
+        this.villeListO=this.OntarioVilles;
+      if(this.demande.originProvince==this.provinceList[9])
+        this.villeListO=this.PrinceEdwardIslandVilles;
+      if(this.demande.originProvince==this.provinceList[10])
+        this.villeListO=this.QuebecVilles;
+      if(this.demande.originProvince==this.provinceList[11])
+        this.villeListO=this.SaskatchewanVilles;  
+      if(this.demande.originProvince==this.provinceList[12])
+        this.villeListO=this.YukonVilles;
+      // end check the provine
+      
+      this.demande.origin=this.demande.originAdresse+', '+this.demande.originVille+', '+this.demande.originProvince //+', canada'
+      this.demande.origin=this.demande.origin.replace('null', '')
+      await this.geocoding.codeAddress(this.demande.origin).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+              if(results[0].geometry.location.lat()>0){
+                this.latLngOrigin= new google.maps.LatLng(
+                  results[0].geometry.location.lat(),
+                  results[0].geometry.location.lng()                            
+                )
+                //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              }
+              else
+                alert("Ne pas trouver de coordonnees de ce origin")
+      });//*/
+    }
     //this.showMap();
   }
 
   async destinationChange(){
     //*
-    await this.geocoding.codeAddress(this.demande.destination).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= new google.maps.LatLng(
-                results[0].geometry.location.lat(),
-                results[0].geometry.location.lng()                            
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-              alert("Ne pas trouver de coordonnees de cet destination")
-    });//*/
-    //this.showMap();
+    if(this.demande.destProvince!=null){
+      // check the province to limit the cities
+      if(this.demande.destProvince==this.provinceList[0])
+        this.villeListD=this.AlbertaVilles;
+      if(this.demande.destProvince==this.provinceList[1])
+        this.villeListD=this.BritishColumbiaVilles;        
+      if(this.demande.destProvince==this.provinceList[2])
+        this.villeListD=this.ManitobaVilles;
+      if(this.demande.destProvince==this.provinceList[3])
+        this.villeListD=this.NewBrunswickVilles;    
+      if(this.demande.destProvince==this.provinceList[4])
+        this.villeListD=this.NewfoundlandLabradorVilles;    
+      if(this.demande.destProvince==this.provinceList[5])
+        this.villeListD=this.NorthwestTerritoriesVilles;
+      if(this.demande.destProvince==this.provinceList[6])
+        this.villeListD=this.NovaScotiaVilles;
+      if(this.demande.destProvince==this.provinceList[7])
+        this.villeListD=this.NunavutVilles;
+      if(this.demande.destProvince==this.provinceList[8])
+        this.villeListD=this.OntarioVilles;
+      if(this.demande.destProvince==this.provinceList[9])
+        this.villeListD=this.PrinceEdwardIslandVilles;
+      if(this.demande.destProvince==this.provinceList[10])
+        this.villeListD=this.QuebecVilles;
+      if(this.demande.destProvince==this.provinceList[11])
+        this.villeListD=this.SaskatchewanVilles;  
+      if(this.demande.destProvince==this.provinceList[12])
+        this.villeListD=this.YukonVilles;
+      // end check the provine
+      this.demande.destination=this.demande.destAdresse+', '+this.demande.destVille+', '+this.demande.destProvince  //+', canada'
+      this.demande.destination=this.demande.destination.replace('null', '')
+      await this.geocoding.codeAddress(this.demande.destination).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+              if(results[0].geometry.location.lat()>0){
+                this.latLngDestination= new google.maps.LatLng(
+                  results[0].geometry.location.lat(),
+                  results[0].geometry.location.lng()                            
+                )
+                //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              }
+              else
+                alert("Ne pas trouver de coordonnees de cet destination")
+      });//*/
+      //this.showMap();
+    }
   }
   //*/ end to show map
 

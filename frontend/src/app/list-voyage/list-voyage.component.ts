@@ -24,6 +24,7 @@ export class ListVoyageComponent implements OnInit {
   size:number=100;
   pages:Array<number>;  // pour tenir des numeros des pages
   voyages:Array<Voyage>;
+  voyagesBlue:Array<Voyage>=[];
   role:string="";
   modeMatching=0;
   dLatLngOrigin: google.maps.LatLng=null;
@@ -97,7 +98,8 @@ export class ListVoyageComponent implements OnInit {
             //&& !voyage.idsUsersPasBesoins.includes(localStorage.getItem('userId'))
             )
           {
-            matchVoyages.push(voyage)
+            this.setDistanceTravel(voyage,  matchVoyages)
+            //matchVoyages.push(voyage)
           }        
         })
         this.voyages=matchVoyages
@@ -133,6 +135,9 @@ export class ListVoyageComponent implements OnInit {
     this.demande=null;
     this.modeMatching=0;
     this.doSearch();
+  }
+  refreshDistance(){
+    this.router.navigateByUrl("/list-voyage"); // call one more time to refresh
   }
   gotoPage(i:number){
     this.currentPage=i;
@@ -187,7 +192,7 @@ export class ListVoyageComponent implements OnInit {
     + temp1Tel+localStorage.getItem('tel')+temp2+localStorage.getItem('tel')+temp3
     + " - Email:  " 
     + temp1Mail+localStorage.getItem('email')+temp2+localStorage.getItem('email')+temp3
-    + " -  besoins votre Voyage de  "+ v.origin +"  a  " + v.destination;
+    + " -  besoins votre Equipment de  "+ v.origin +"  a  " + v.destination;
 
     /*
     <strong><a href="tel:  --temp1Tel
@@ -233,5 +238,136 @@ export class ListVoyageComponent implements OnInit {
       this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the content list
     }
   }
+
+  //* Calculate and set distance travel in miles
+  setDistanceTravel(v: Voyage, voyages:Array<Voyage>) {
+    //*
+    //this.modeMatching=2
+    let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
+    // get back distances - ld - dfo - dfd
+    if(localStorage.getItem(v.id+'-ld-'+this.demande.id)!=null
+        && localStorage.getItem(v.id+'-dfo-'+this.demande.id)!=null
+        && localStorage.getItem(v.id+'-dfd-'+this.demande.id)!=null
+      )
+    {
+      v.ld=Number(localStorage.getItem(v.id+'-ld-'+this.demande.id))
+      v.dfo=Number(localStorage.getItem(v.id+'-dfo-'+this.demande.id))
+      v.dfd=Number(localStorage.getItem(v.id+'-dfd-'+this.demande.id))
+    }
+    else{
+      // calculate load distance - ld - allways for for the Load
+      service.getDistanceMatrix({
+        'origins': [this.demande.origin], 'destinations': [this.demande.destination], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        v.ld= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(v.id+'-ld-'+this.demande.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'ld (miles -) -- ' + d.ld)
+        //return;
+      });
+      
+      // calculate distance from origin - dfo
+      service.getDistanceMatrix({
+        'origins': [v.origin], 'destinations': [this.demande.origin], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        v.dfo= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(v.id+'-dfo-'+this.demande.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'dfo (miles -) -- ' + d.dfo)
+        //return;
+      });
+      // calculate distance from destination - dfd
+      service.getDistanceMatrix({
+        'origins': [v.destination], 'destinations': [this.demande.destination], travelMode:google.maps.TravelMode.DRIVING
+      }, (results: any) => {    
+        v.dfd= Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344)  
+        localStorage.setItem(v.id+'-dfd-'+this.demande.id, Math.round((results.rows[0].elements[0].distance.value)/1000/1.609344).toString())
+        //console.log( 'dfd (miles -) -- ' + d.dfd)
+        //return;
+      });
+    }
+    voyages.push(v);
+  }
+  
+  dFOSort(){    // sort by DFO
+    this.voyages.sort((a, b)=>{
+      if(a.dfo>b.dfo)
+        return 1;
+      if(a.dfo<b.dfo)
+        return -1
+      return 0;
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      if(a.dfo>b.dfo)
+        return 1;
+      if(a.dfo<b.dfo)
+        return -1
+      return 0;
+    })
+  }
+  dFDSort(){  // sort by DFD
+    this.voyages.sort((a, b)=>{
+      if(a.dfd>b.dfd)
+        return 1;
+      if(a.dfd<b.dfd)
+        return -1
+      return 0;
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      if(a.dfd>b.dfd)
+        return 1;
+      if(a.dfd<b.dfd)
+        return -1
+      return 0;
+    })
+  }
+  lDSort(){   // sort by LD
+    this.voyages.sort((a, b)=>{
+      if(a.ld>b.ld)
+        return 1;
+      if(a.ld<b.ld)
+        return -1
+      return 0;
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      if(a.ld>b.ld)
+        return 1;
+      if(a.ld<b.ld)
+        return -1
+      return 0;
+    })
+  }
+  clientSort(){   // sort by name client
+    this.pageVoyage.content.sort((a, b)=>{
+      return a.nomTransporter.localeCompare(b.nomTransporter)
+    })
+    this.voyages.sort((a, b)=>{
+      return a.nomTransporter.localeCompare(b.nomTransporter)
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      return a.nomTransporter.localeCompare(b.nomTransporter)
+    })
+  }
+  originSort(){   // sort by origin
+    this.pageVoyage.content.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+    this.voyages.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      return a.origin.localeCompare(b.origin)
+    })
+  }
+  destSort(){   // sort by destination
+    this.pageVoyage.content.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+    this.voyages.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+    this.voyagesBlue.sort((a, b)=>{
+      return a.destination.localeCompare(b.destination)
+    })
+  }
+
 
 }

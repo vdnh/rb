@@ -46,9 +46,9 @@
               <th><input type="date" [ngModel]="today | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th>    
               <!--ng-template *ngIf='role.includes("TRANSPORTER")'-->
                 <th *ngIf='role.includes("TRANSPORTER")'><label class="control-label">Origin</label></th>
-                <th *ngIf='role.includes("TRANSPORTER")'><input type="text" [(ngModel)]="demande.origin" name="origin" class="form-control" (change)="originChange()"/></th>
+                <th *ngIf='role.includes("TRANSPORTER")'>{{demande.origin}}</th>
                 <th *ngIf='role.includes("TRANSPORTER")'><label class="control-label">Destination</label></th>               
-                <th *ngIf='role.includes("TRANSPORTER")'><input type="text" [(ngModel)]="demande.destination" name="destination" class="form-control" (change)="destinationChange()"/></th>   
+                <th *ngIf='role.includes("TRANSPORTER")'>{{demande.destination}}</th>   
               <!--/ng-template-->
             </tr>
             <!--ng-template *ngIf='role.includes("SHIPPER")'-->
@@ -204,17 +204,17 @@
             </tr>
             <tr>
               <!--td><button class="btn btn-success" [disabled]="!f.form.valid" (click)="onOk()" >Estimer Le Prix</button></td-->
-              <td><button class="btn btn-success" (click)="showMap()" >Voir la Carte</button></td>
+              <td><button class="btn btn-success" (click)="showMap()" >Voir Map</button></td>
               <td style="width: 20%" *ngIf='role.includes("SHIPPER")'>
-                <button class="btn btn-success" (click)="onOk()" >Re-estimer Le Prix</button>
+                <button class="btn btn-success" (click)="onOk()" >Estimer Prix</button>
               </td>
-              <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
               <td *ngIf="role.includes('TRANSPORTER')">
                 <button class="btn btn-success" (click)="onContact()" [disabled]="disableContactDemande()">Ask</button>
               </td>
               <td colspan="3" *ngIf='role.includes("SHIPPER")'>
-                <button class="btn btn-primary" (click)="onSearchTruck()">Modifier et Chercher Camions</button>
+                <button class="btn btn-primary" (click)="onSearchTruck()">Modifier/EquipmentsMatch</button>
               </td>
+              <td><button class="btn btn-danger" (click)="onRetour()" >Retour</button></td>
             </tr>
           <!--tr>
             <td><button class="btn btn-success" (click)="showMap()" >Voir la Carte</button></td>

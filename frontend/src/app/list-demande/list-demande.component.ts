@@ -148,7 +148,7 @@ export class ListDemandeComponent implements OnInit {
     this.doSearch();
     localStorage.removeItem('idVoyage')
   }
-  refresh(){
+  refreshDistance(){
     this.router.navigateByUrl("/list-demande"); // call one more time to refresh
   }
   gotoPage(i:number){
@@ -274,7 +274,7 @@ export class ListDemandeComponent implements OnInit {
     let temp3:string='</a></strong>'
     //* contruire button
     let bTemp01:string = '<div><button routerLink="/detail-demande/'+d.id
-    let bTemp02:string = '" class="btn btn-link">'+ " -  On peut charger votre demande de  "+ d.origin +"  a  " + d.destination
+    let bTemp02:string = '" class="btn btn-link">'+ " -  On peut charger votre Load de  "+ d.origin +"  a  " + d.destination
     let bTemp03:string = '</button></div>'
     //let button=bTemp01+bTemp02+bTemp03
     //*/
