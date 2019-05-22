@@ -10,7 +10,7 @@
               <td>{{today | date: 'yyyy-MM-dd'}}</td><td>{{d.origin}}</td><td>{{d.destination}}</td><td>{{d.typeCamion}}</td>
               <td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Edit</button></td>
               <td><button class="btn btn-link" (click)="onSearchTruck(d)">EquipmentsMatch</button></td>
-              <td><button class="btn btn-link" (click)="deleteDemande(d.id)">Delete</button></td>
+              <td><button class="btn btn-link" (click)="deleteDemande(d)">Delete</button></td>
             </tr>
           </table>
         </div>

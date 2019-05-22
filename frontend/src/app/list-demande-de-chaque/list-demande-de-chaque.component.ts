@@ -73,9 +73,11 @@ export class ListDemandeDeChaqueComponent implements OnInit {
     this.router.navigate(['detail-demande',d.id]);
   }
 
-  deleteDemande(id:number){
-    this.demandesService.deleteDemande(id).subscribe(data=>{}, err=>{console.log(err)});
-    this.doSearch();
+  deleteDemande(d:Demande){
+    this.demandesService.deleteDemande(d.id).subscribe(data=>{}, err=>{console.log(err)});
+    //this.demandes
+    this.demandes.splice(this.demandes.indexOf(d), 1)
+    //this.doSearch();
   }
 
   //*// function to take list Matching Voyage

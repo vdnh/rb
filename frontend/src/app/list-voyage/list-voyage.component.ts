@@ -212,13 +212,14 @@ export class ListVoyageComponent implements OnInit {
     this.router.navigateByUrl("/list-demande");
   }
   
-  deleteVoyage(id:number){
-    this.voyagesService.deleteVoyage(id).subscribe(data=>{
+  deleteVoyage(v:Voyage){
+    this.voyagesService.deleteVoyage(v.id).subscribe(data=>{
 
     }, err=>{
       console.log(err)
     })
-    this.doSearch();
+    this.voyages.splice(this.voyages.indexOf(v), 1)
+    //this.doSearch();
   }
 
   disableContactVoyage(v:Voyage):boolean{
