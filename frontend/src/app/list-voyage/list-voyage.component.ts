@@ -49,7 +49,7 @@ export class ListVoyageComponent implements OnInit {
 
   //*/
   ngOnInit() {
-    //this.role=localStorage.getItem("role");
+    this.role=localStorage.getItem("role");
     if(localStorage.getItem('idDemande')!=null)
       this.demandesService.getDetailDemande(Number(localStorage.getItem('idDemande').toString())).subscribe((data:Demande)=>{
         this.demande=data;
@@ -67,52 +67,60 @@ export class ListVoyageComponent implements OnInit {
   }
   
   doSearch(){
-      if(this.demande!=null){ 
-        this.voyagesService.getAllVoyages()
-        .subscribe((data:Array<Voyage>)=>{
-          this.modeMatching=1
-          let matchVoyages:Array<Voyage>=[]
-          let matchVoyagesBlue:Array<Voyage>=[]
-          data.forEach(voyage=>{            
-            if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
-              && !this.demande.idsVoyagePasBesoins.split(',').includes(voyage.id.toString()))
-            {
-              this.setDistanceTravel(voyage, matchVoyages)              
-            }
-            if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
-              && this.demande.idsVoyagePasBesoins.includes(voyage.id.toString()))
-            {
-              this.setDistanceTravel(voyage, matchVoyagesBlue)
-            }
-          })
-          this.voyages=matchVoyages;
-          this.voyagesBlue=matchVoyagesBlue;
-        }, err=>{
-          console.log(err);
+    if(this.role.includes("TRANSPORTER") && localStorage.getItem("userId")!=null){
+      this.voyagesService.voyagesDeTransporter(Number(localStorage.getItem("userId")))
+      .subscribe((data:Array<Voyage>)=>{
+        this.voyages=data
+      }, err=>{
+        console.log(err)
+      })
+    }  
+    else if(this.demande!=null){ 
+      this.voyagesService.getAllVoyages()
+      .subscribe((data:Array<Voyage>)=>{
+        this.modeMatching=1
+        let matchVoyages:Array<Voyage>=[]
+        let matchVoyagesBlue:Array<Voyage>=[]
+        data.forEach(voyage=>{            
+          if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
+            && !this.demande.idsVoyagePasBesoins.split(',').includes(voyage.id.toString()))
+          {
+            this.setDistanceTravel(voyage, matchVoyages)              
+          }
+          if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
+            && this.demande.idsVoyagePasBesoins.includes(voyage.id.toString()))
+          {
+            this.setDistanceTravel(voyage, matchVoyagesBlue)
+          }
         })
-      }
-      else
-        this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
-          this.pageVoyage=data;
-          this.pages=new Array(data.totalPages);
-          let matchVoyages:Array<Voyage>=[]
-          let matchVoyagesBlue:Array<Voyage>=[]
-          this.pageVoyage.content.forEach(voyage=>{
-            if(!voyage.idsUsersPasBesoins.split(',').includes(localStorage.getItem('userId')))
-            {
-              matchVoyages.push(voyage)
-            }
-            else
-            {
-              matchVoyagesBlue.push(voyage)
-            }
-          })
-          this.pageVoyage.content=matchVoyages;
-          this.voyagesBlue=matchVoyagesBlue;
-          //
-        }, err=>{
-          console.log(err);
+        this.voyages=matchVoyages;
+        this.voyagesBlue=matchVoyagesBlue;
+      }, err=>{
+        console.log(err);
+      })
+    }
+    else
+      this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
+        this.pageVoyage=data;
+        this.pages=new Array(data.totalPages);
+        let matchVoyages:Array<Voyage>=[]
+        let matchVoyagesBlue:Array<Voyage>=[]
+        this.pageVoyage.content.forEach(voyage=>{
+          if(!voyage.idsUsersPasBesoins.split(',').includes(localStorage.getItem('userId')))
+          {
+            matchVoyages.push(voyage)
+          }
+          else
+          {
+            matchVoyagesBlue.push(voyage)
+          }
         })
+        this.pageVoyage.content=matchVoyages;
+        this.voyagesBlue=matchVoyagesBlue;
+        //
+      }, err=>{
+        console.log(err);
+      })
     //}
   }
 
