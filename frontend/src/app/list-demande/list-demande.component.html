@@ -76,7 +76,7 @@
           <td (dblclick)="gotoDetailDemande(d)">{{d.nomDemander}}</td>
           <!--td><button class="btn btn-link" (click)="gotoDetailDemande(d)">Detail</button></td-->
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
-          <td><button class="btn btn-link" (click)="removeDemande(d)">Desative</button></td>
+          <td><button class="btn btn-link" (click)="removeDemande(d)">Desactive</button></td>
         </tr>
         <tr *ngFor="let d of demandesBlue" style="background-color: lightsteelblue">
           <td>{{today | date: 'yyyy-MM-dd'}}</td>

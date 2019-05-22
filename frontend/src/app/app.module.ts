@@ -49,6 +49,7 @@ import { GeolocationService } from 'src/services/geolocation.service';
 import { MessagesService } from 'src/services/messages.service';
 import { BusinessMessagesComponent } from './business-messages/business-messages.component';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+//import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';

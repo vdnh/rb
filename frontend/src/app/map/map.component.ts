@@ -53,7 +53,7 @@ export class MapComponent implements OnInit {
     numbers.subscribe(x =>{
       this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
         this.camion=data;
-        if(this.camion.uniteMonitor!=null && this.camion.monitor!=null){
+        if((this.camion.uniteMonitor!=null && this.camion.monitor!=null) && (this.camion.monitor.length!=0 && this.camion.monitor.length!=0)){
           this.latitude = this.camion.latitude;
           this.longitude= this.camion.longtitude
           this.marker.setMap(null);

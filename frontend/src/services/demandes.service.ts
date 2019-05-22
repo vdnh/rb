@@ -29,10 +29,10 @@ export class DemandesService{
         }))
     }//*/
 
-    getDemandes(motCle:string, page:number, size:number) //id of shipper or transporter
+    getDemandes(motCle:string, page:number, size:number)
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&id="+"&size="+size+
+        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;

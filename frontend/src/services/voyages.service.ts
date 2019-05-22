@@ -19,10 +19,20 @@ export class VoyagesService{
         this.jwToken=localStorage.getItem('tonken');
     }
     
-    getVoyages(motCle:string, id:string, page:number, size:number) //id of shipper or transporter
+    getAllVoyages()
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/voyages", 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+
+    getVoyages(motCle:string, page:number, size:number) 
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherVoyages?mc="+motCle+"&id="+id+"&size="+size+
+        return this.http.get(this.adServer+":8080/chercherVoyages?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;

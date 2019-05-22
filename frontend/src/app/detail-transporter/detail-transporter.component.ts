@@ -311,7 +311,7 @@ export class DetailTransporterComponent implements OnInit {
       numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
-            if(camion.uniteMonitor!=null && camion.monitor!=null)
+            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
               this.camionsSurMap.push(camion)
           })
           let mapProp = {

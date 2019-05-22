@@ -23,7 +23,7 @@ export class ListVoyageComponent implements OnInit {
   currentPage:number=0;
   size:number=100;
   pages:Array<number>;  // pour tenir des numeros des pages
-  voyages:Array<Voyage>;
+  voyages:Array<Voyage>=[];
   voyagesBlue:Array<Voyage>=[];
   role:string="";
   modeMatching=0;
@@ -48,10 +48,10 @@ export class ListVoyageComponent implements OnInit {
 
 
   //*/
-  async ngOnInit() {
-    this.role=localStorage.getItem("role");
+  ngOnInit() {
+    //this.role=localStorage.getItem("role");
     if(localStorage.getItem('idDemande')!=null)
-      await this.demandesService.getDetailDemande(Number(localStorage.getItem('idDemande').toString())).subscribe((data:Demande)=>{
+      this.demandesService.getDetailDemande(Number(localStorage.getItem('idDemande').toString())).subscribe((data:Demande)=>{
         this.demande=data;
         console.log(this.demande.id)
         console.log(this.demande.originLat)
@@ -62,11 +62,61 @@ export class ListVoyageComponent implements OnInit {
       }, err=>{
         console.log(err)
       })
-      //getDetailDemande(+(localStorage.getItem('idDemande')).subscribe((data:Demande)
     else 
-      await this.doSearch()
+      this.doSearch()
   }
+  
   doSearch(){
+      if(this.demande!=null){ 
+        this.voyagesService.getAllVoyages()
+        .subscribe((data:Array<Voyage>)=>{
+          this.modeMatching=1
+          let matchVoyages:Array<Voyage>=[]
+          let matchVoyagesBlue:Array<Voyage>=[]
+          data.forEach(voyage=>{            
+            if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
+              && !this.demande.idsVoyagePasBesoins.split(',').includes(voyage.id.toString()))
+            {
+              this.setDistanceTravel(voyage, matchVoyages)              
+            }
+            if(this.demande.idsVoyageMatchings.includes(voyage.id.toString())
+              && this.demande.idsVoyagePasBesoins.includes(voyage.id.toString()))
+            {
+              this.setDistanceTravel(voyage, matchVoyagesBlue)
+            }
+          })
+          this.voyages=matchVoyages;
+          this.voyagesBlue=matchVoyagesBlue;
+        }, err=>{
+          console.log(err);
+        })
+      }
+      else
+        this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
+          this.pageVoyage=data;
+          this.pages=new Array(data.totalPages);
+          let matchVoyages:Array<Voyage>=[]
+          let matchVoyagesBlue:Array<Voyage>=[]
+          this.pageVoyage.content.forEach(voyage=>{
+            if(!voyage.idsUsersPasBesoins.split(',').includes(localStorage.getItem('userId')))
+            {
+              matchVoyages.push(voyage)
+            }
+            else
+            {
+              matchVoyagesBlue.push(voyage)
+            }
+          })
+          this.pageVoyage.content=matchVoyages;
+          this.voyagesBlue=matchVoyagesBlue;
+          //
+        }, err=>{
+          console.log(err);
+        })
+    //}
+  }
+
+  bk_doSearch_bk(){
     if(this.role.includes("TRANSPORTER") && localStorage.getItem("userId")!=null){
       this.voyagesService.voyagesDeTransporter(Number(localStorage.getItem("userId")))
       .subscribe((data:Array<Voyage>)=>{
@@ -122,7 +172,7 @@ export class ListVoyageComponent implements OnInit {
       })
     }//*/
     else{
-      this.voyagesService.getVoyages(this.motCle, localStorage.getItem('userId'), this.currentPage, this.size).subscribe((data:PageVoyage)=>{
+      this.voyagesService.getVoyages(this.motCle, this.currentPage, this.size).subscribe((data:PageVoyage)=>{
         this.pageVoyage=data;
         this.pages=new Array(data.totalPages);
       }, err=>{
@@ -219,7 +269,7 @@ export class ListVoyageComponent implements OnInit {
     }, err=>{console.log(err)});
     alert("Votre demande a ete envoye!")
   }
-  
+  /*
   removeVoyage(voyage:Voyage){
     if(this.demande!=null){
       this.demande.idsVoyagePasBesoins = this.demande.idsVoyagePasBesoins+","+voyage.id;
@@ -237,8 +287,51 @@ export class ListVoyageComponent implements OnInit {
       this.voyagesService.saveVoyages(voyage).subscribe(data=>{},err=>{console.log(err)})
       this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the content list
     }
+  }//*/
+  removeVoyage(voyage:Voyage){
+    if(this.demande!=null){
+      //*
+      this.demande.idsVoyagePasBesoins=this.demande.idsVoyagePasBesoins+','+voyage.id;
+      this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+      }, err=>{
+        console.log(err);
+      })//*/
+      this.voyagesBlue.push(voyage)// to keep the voyage blue
+      this.voyages.splice(this.voyages.indexOf(voyage), 1)
+    }
+    if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
+      //*
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins+","+localStorage.getItem("userId");
+      this.voyagesService.saveVoyages(voyage).subscribe(data=>{}, err=>{ console.log(err)})
+      //*/
+      this.voyagesBlue.push(voyage)
+      this.pageVoyage.content.splice(this.pageVoyage.content.indexOf(voyage),1); // remove this voyage from the list
+    }
   }
-
+  unRemoveVoyage(voyage:Voyage){
+    if(this.demande!=null){
+      //*
+      this.demande.idsVoyagePasBesoins=this.demande.idsVoyagePasBesoins+',';
+      this.demande.idsVoyagePasBesoins=this.demande.idsVoyagePasBesoins.replace(','+voyage.id.toString()+',', ',') //+','+voyage.id;
+      this.demande.idsVoyagePasBesoins=this.demande.idsVoyagePasBesoins.replace(',,', ',');
+      this.demandesService.saveDemandes(this.demande).subscribe((data:Demande)=>{
+      }, err=>{
+        console.log(err);
+      })//*/
+      this.voyages.push(voyage)// to keep the voyage
+      this.voyagesBlue.splice(this.voyagesBlue.indexOf(voyage), 1)
+    }
+    if(this.pageVoyage.totalPages!=null && this.pageVoyage.totalPages>0){
+      //*
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins+",";
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins.replace(","+localStorage.getItem("userId")+",", ',');
+      voyage.idsUsersPasBesoins = voyage.idsUsersPasBesoins.replace(',,', ',');
+      this.voyagesService.saveVoyages(voyage).subscribe(data=>{}, err=>{ console.log(err)})
+      //*/
+      this.pageVoyage.content.push(voyage)
+      this.voyagesBlue.splice(this.voyagesBlue.indexOf(voyage),1); // remove this voyage from the list
+    }
+  }
   //* Calculate and set distance travel in miles
   setDistanceTravel(v: Voyage, voyages:Array<Voyage>) {
     //*

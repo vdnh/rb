@@ -23,8 +23,19 @@
             <td>{{v.nomTransporter}}</td>
             <!--td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td-->
             <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
-            <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
+            <td><button class="btn btn-link" (click)="removeVoyage(v)">Desactive</button></td>
         </tr>
+        <tr *ngFor="let v of voyagesBlue"  style="background-color: lightsteelblue">
+          <td>{{today | date: 'yyyy-MM-dd'}}</td>
+          <td>{{v.origin}}</td>
+          <td>{{v.destination}}</td>
+          <!--td>{{v.comments}}</td-->
+          <td><textarea class="form-control" type="text" rows="1" cols="30">{{v.comments}}</textarea></td>
+          <td>{{v.nomTransporter}}</td>
+          <!--td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td-->
+          <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
+          <td><button class="btn btn-link" (click)="unRemoveVoyage(v)">Active</button></td>
+      </tr>        
       </table>
       <div class="container">
         <ul class="nav nav-pills"><strong>page: </strong>
@@ -39,7 +50,7 @@
         <div class="form-group">
           <label for="Mot cle : "></label>
           <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
-          <button class="btn btn-primary" (click)="chercher()">Chercher</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-primary" (click)="chercher()">All Equipments</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <button class="btn btn-primary" (click)="refreshDistance()">Refresh DFO-LD-DFD</button>
         </div>
         <table class="table table-striped">
@@ -55,9 +66,9 @@
             <th (click)="clientSort()">Poste Par</th>
           </tr>
           <tr *ngFor="let v of voyages"  (click)="gotoDetailVoyage(v)">
-            <td>{{today | date: 'yyyy-MM-dd'}}</td>
-            <td>{{v.origin}}</td>
-            <td>{{v.destination}}</td>
+            <td (dblclick)="gotoDetailVoyage(v)">{{today | date: 'yyyy-MM-dd'}}</td>
+            <td (dblclick)="gotoDetailVoyage(v)">{{v.origin}}</td>
+            <td (dblclick)="gotoDetailVoyage(v)">{{v.destination}}</td>
             <td (dblclick)="gotoDetailVoyage(v)">{{v.dfo}}</td>
             <td (dblclick)="gotoDetailVoyage(v)">{{v.ld}}</td>
             <td (dblclick)="gotoDetailVoyage(v)">{{v.dfd}}</td>
@@ -65,8 +76,21 @@
             <td>{{v.nomTransporter}}</td>
             <!--td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td-->
             <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
-            <td><button class="btn btn-link" (click)="removeVoyage(v)">Remove</button></td>
+            <td><button class="btn btn-link" (click)="removeVoyage(v)">Desactive</button></td>
           </tr>
+          <tr *ngFor="let v of voyagesBlue" style="background-color: lightsteelblue">
+            <td>{{today | date: 'yyyy-MM-dd'}}</td>
+            <td>{{v.origin}}</td>
+            <td>{{v.destination}}</td>
+            <td>{{v.dfo}}</td>
+            <td>{{v.ld}}</td>
+            <td>{{v.dfd}}</td>
+            <td><textarea class="form-control" type="text" rows="1" cols="30">{{v.comments}}</textarea></td>
+            <td>{{v.nomTransporter}}</td>
+            <!--td><button class="btn btn-link" (click)="gotoDetailVoyage(v)">Detail</button></td-->
+            <td><button class="btn btn-link" (click)="contactVoyage(v)" [disabled]="disableContactVoyage(v)">Ask</button></td>
+            <td><button class="btn btn-link" (click)="unRemoveVoyage(v)">Active</button></td>
+          </tr>          
         </table>
       </div>
     </div>
