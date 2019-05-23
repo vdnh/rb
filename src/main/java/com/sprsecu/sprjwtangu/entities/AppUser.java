@@ -34,6 +34,7 @@ public class AppUser {
     private Collection<AppRole> roles = new ArrayList<>();
     // to identify what shipper or what transporter  when we know his role
     private Long idUser;
+    private Long idSecond; // to second role
     
     @JsonIgnore
     public String getPassword(){

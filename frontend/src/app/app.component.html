@@ -41,6 +41,7 @@
       <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
       <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
       <button class="btn btn-link"  (click)="refreshData()">Refresh Data</button>
+      <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
       <button (click)="logout()" class="btn btn-link">Logout</button>
       <br>      
     </div>
@@ -52,9 +53,10 @@
         <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>          
         <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
         <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
-          <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
-          <button class="btn btn-link"  (click)="refreshData()">Refresh Data</button>
-          <button (click)="logout()" class="btn btn-link">Logout</button>
+        <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+        <button class="btn btn-link"  (click)="refreshData()">Refresh Data</button>
+        <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
+        <button (click)="logout()" class="btn btn-link">Logout</button>
         <br>
       </div>
       <div class="panel panel-primary" *ngIf="role=='MANAGER'">     

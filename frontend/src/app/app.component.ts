@@ -83,7 +83,8 @@ export class AppComponent implements OnInit{
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);          
-          localStorage.setItem('userId', res.id.toString());
+          if(res.id!=null) localStorage.setItem('userId', res.id.toString());
+          if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
           if(res.roleName.includes('TRANSPORTER')) {         
             //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
             this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
@@ -177,4 +178,30 @@ export class AppComponent implements OnInit{
     else
       this.router.navigateByUrl('/shippers/');
   }
+
+  switchRole(){
+    let temp=localStorage.getItem('userId')   // take userId actual
+    let idSecond=localStorage.getItem('idSecond') //take secondId if it has
+    if(idSecond!=null && idSecond.length>0){ // if it have secondId
+      if(localStorage.getItem('role').includes('SHIPPER')){ // if it was Shipper
+        localStorage.setItem('idSecond', temp)      // modify secondId
+        localStorage.setItem('role', 'TRANSPORTER') // modify role to Transporter
+        localStorage.setItem('userId', idSecond)  // modify userId to second
+        //this.router.navigate(['detail-transporter',idSecond]);
+        //this.onTransporter()
+        this.ngOnInit() // re-init 
+      }
+      else if (localStorage.getItem('role').includes('TRANSPORTER')){
+        localStorage.setItem('idSecond', temp)
+        localStorage.setItem('role', 'SHIPPER') 
+        localStorage.setItem('userId', idSecond) 
+        //this.router.navigate(['detail-shipper',idSecond]);
+        //this.onShipper()
+        this.ngOnInit()
+      }
+    }
+    else 
+      alert("Votre role n'etez que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
+  }
+
 }
