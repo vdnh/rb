@@ -47,7 +47,9 @@ export class BusinessMessagesComponent implements OnInit {
     //this.router.navigate(['detail-demande',id]);
     if(localStorage.getItem('role').includes('SHIPPER'))
       this.router.navigate(['detail-transporter',id]);
+      //this.router.navigate(['/detail-transporter/'+ id], {skipLocationChange: true});
     if(localStorage.getItem('role').includes('TRANSPORTER'))
       this.router.navigate(['detail-shipper',id]);
+      //this.router.navigate(['/detail-shipper/'+ id], {skipLocationChange: true});
   }
 }

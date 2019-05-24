@@ -201,7 +201,7 @@ export class AppComponent implements OnInit{
       }
     }
     else 
-      alert("Votre role n'etez que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
+      alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
   }
 
 }
