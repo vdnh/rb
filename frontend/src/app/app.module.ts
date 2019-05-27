@@ -49,6 +49,8 @@ import { GeolocationService } from 'src/services/geolocation.service';
 import { MessagesService } from 'src/services/messages.service';
 import { BusinessMessagesComponent } from './business-messages/business-messages.component';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { RemorquageComponent } from './remorquage/remorquage.component';
+import { RemorquagesService } from 'src/services/remorquages.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -80,6 +82,7 @@ const appRoutes:Routes=[
   {path:"business-messages", component:BusinessMessagesComponent},
   {path: 'detail-voyage/:id', component:  DetailVoyageComponent},
   {path: 'bank-client', component:  BankClientComponent},
+  {path: 'remorquage', component:  RemorquageComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -110,6 +113,7 @@ const appRoutes:Routes=[
     ListDemandeDeChaqueComponent,
     BankClientComponent,
     BusinessMessagesComponent,
+    RemorquageComponent,
     //MapComponent,
   ],
   imports: [
@@ -122,7 +126,7 @@ const appRoutes:Routes=[
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
-    ReparationsService, BankClientsService, MessagesService, VarsGlobal],
+    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

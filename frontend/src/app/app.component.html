@@ -74,6 +74,14 @@
           <button (click)="logout()" class="btn btn-link">Logout</button>
           <br>
       </div>
+      <div class="panel panel-primary" *ngIf="role=='DISPATCH'">     
+        <button routerLink="/propos" class="btn btn-link">Propos</button>
+        <button routerLink="/bank-client" class="btn btn-link">Publicite</button>
+        <button routerLink="/remorquage" class="btn btn-link">Remorquage</button>
+        <button routerLink="/transport" class="btn btn-link">Transport</button> 
+        <button (click)="logout()" class="btn btn-link">Logout</button>
+        <br>
+      </div>
     </div>
       <p></p>
       <div class="panel panel-primary" *ngIf="role==''">

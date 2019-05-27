@@ -133,6 +133,24 @@ public class SprjwtanguApplication implements CommandLineRunner{
         });//*/
 //        accountService.saveUser(new AppUser(null, "shipper01", "shipper01", null));
 //        accountService.addRoleToUser("shipper01", "SHIPPER");
+        
+/*/ for Dispatch and tecnicien
+        Stream.of("DISPATCH","TECHNICIEN").forEach(r->{
+            accountService.saveRole(new AppRole(null, r));
+        });
+        roleRepository.findAll().forEach(r -> {
+            System.out.println("Role : " + r.getRoleName());
+        });
+        ///
+        ///
+        Stream.of("dispatch1","dispatch2").forEach(u -> {
+            accountService.saveUser(new AppUser(null, u, u, null, null, null));  // id:null automatique, username, password, iduser:null, idsecond:null
+            accountService.addRoleToUser(u, "DISPATCH");
+        });
+        userRepository.findAll().forEach(u -> {
+            System.out.println("User : "+u.getUsername()+" - Role : "+u.getRoles().toString());
+        });
+// end for Dispatch and tecnicien*/
     
         // les tasks qui fonctionnent chaque 1 minute
 //        int i=0;

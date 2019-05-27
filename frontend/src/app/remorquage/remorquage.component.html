@@ -1,0 +1,116 @@
+<div class="container">
+  <div class="col-sm-9 col-sm-offset-1">
+    <div class="panel panel-primary">        
+      <div> <h3><strong>Add Remorquage</strong></h3></div>
+      <p></p><p></p><p></p>
+        <div class="panel-body">
+          <!--form #f="ngForm" (ngSubmit)="onRegister(f.value)"-->
+          <table class="table table-striped">    
+            <tr>
+              <!--th><label class="control-label">Available</label></th-->    
+              <!--th><input disabled type="date" [ngModel]="remorquage.dateDepart | date: 'yyyy-MM-dd'" name="dateDepart" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control"/></th-->    
+              <th><label class="control-label">Type</label></th>                                      
+              <td>
+                <select type="text" [(ngModel)]="remorquage.typeService" (ngModelChange)="typeServiceChange()">
+                  <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
+                </select>
+              </td>
+              <th>Description</th>
+              <td><textarea name="comments" id="" cols="30" rows="2" [(ngModel)]="remorquage.comments"></textarea></td>
+            </tr>
+            <tr>
+              <th><label class="control-label">Adresse</label></th>
+              <th>Numero & Rue</th>
+              <th>Province</th>
+              <th>Ville</th>
+            </tr>       
+            <tr>
+                <th><label class="control-label">Origin</label></th>
+                <td><input type="text" [(ngModel)]="remorquage.originAdresse" name="origin" class="form-control" (change)="originChange()"/></td>
+                <td>
+                  <select type="text" [(ngModel)]="remorquage.originProvince" (ngModelChange)="originChange()">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>
+                <td>
+                  <select type="text" [(ngModel)]="remorquage.originVille" (ngModelChange)="originChange()">
+                    <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+                  </select>
+                  <input type="text" [(ngModel)]="remorquage.originVille" name="originVille" class="form-control" (change)="originChange()">
+                </td>
+              </tr>       
+              <tr>
+                <th><label class="control-label">Destination</label></th>
+                <td><input type="text" [(ngModel)]="remorquage.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
+                <td>
+                  <select type="text" [(ngModel)]="remorquage.destProvince" (ngModelChange)="destinationChange()">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>  
+                <td>
+                  <select type="text" [(ngModel)]="remorquage.destVille" (ngModelChange)="destinationChange()">
+                    <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+                  </select>
+                  <input type="text" [(ngModel)]="remorquage.destVille" name="destVille" class="form-control" (change)="destinationChange()">
+                </td>
+              </tr>               
+            </table>
+          <table class="table table-striped">
+            <!--tr *ngIf="mode==1">
+              <th *ngIf="mode==1" ><label class="control-label">Longueur(pouce)</label></th>                
+              <th *ngIf="mode==1"><label class="control-label">Largeur(pouce)</label></th>                
+              <th *ngIf="mode==1"><label class="control-label">Hauteur(pouce)</label></th>    
+              <th *ngIf="mode==1"><label class="control-label">Poids(lbs)</label></th>
+              <th style="width: 15%"><label class="control-label">Valeur </label></th>
+              <th><label class="control-label">Distance(miles)</label></th>                          
+            </tr-->
+            <tr *ngIf="mode==2">                  
+                <th *ngIf="mode==2"><label class="control-label">Prix Base</label></th>                  
+                <th *ngIf="mode==2"><label class="control-label">Prix Km</label></th>                  
+                <th *ngIf="mode==2"><label class="control-label">Inclus</label></th>  
+                <!--th *ngIf="mode==2"><label class="control-label">Poids(kg)</label></th>
+                <th style="width: 15%"><label class="control-label">Valeur </label></th-->
+                <th><label class="control-label">Distance(km)</label></th>              
+            </tr>
+            <tr>
+              <td><input type="number" [(ngModel)]="remorquage.prixBase" name="longeur" class="form-control"/></td>
+              <td><input type="number" [(ngModel)]="remorquage.prixKm" name="largeur" class="form-control"/></td>
+              <td><input type="number" [(ngModel)]="remorquage.inclus" name="hauteur" class="form-control"/></td>
+              <!--td style="width: 15%"><input type="number" [(ngModel)]="poids" name="poids" class="form-control"/></td>
+              <td style="width: 15%"><input type="number" [(ngModel)]="valeur" name="valeur" class="form-control"/></td>
+              <td *ngIf="mode==1"><input type="number" [(ngModel)]="distance" name="distance" class="form-control" disabled/></td-->
+              <td *ngIf="mode==2"><input type="number" [(ngModel)]="remorquage.distance" name="distance" class="form-control" disabled/></td>
+            </tr>            
+            <tr>
+              <!--th>Total de points : </th>
+              <td> {{totalPoints}} </td-->
+              <th>Total : </th>
+              <td> {{prix}} </td>
+            </tr>
+
+            <tr>
+              <td><button class="btn btn-success" (click)="showMap()" >Sur la Map</button></td>
+              <td style="width: 20%"><button class="btn btn-success" (click)="onPrint()" >Print</button></td>
+              <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
+              <td colspan="3"><button class="btn btn-primary" (click)="onSearchTruck()" [disabled]="searchTruck">Enregistrer</button></td>
+            </tr>  
+          </table>
+        </div>
+      </div>
+  </div>
+
+  <br>
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="text-center">
+        <h3>
+          <div #gmap style="width:100%;height:500px" ></div>
+        </h3>
+      </div>
+    </div>
+  </div>
+<br>
+<!--for test directionService-->
+<div id="right-panel" hidden></div>
+<!--div id="map"></div-->
+</div>

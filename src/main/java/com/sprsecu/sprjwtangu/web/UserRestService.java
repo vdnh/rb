@@ -35,6 +35,10 @@ public class UserRestService {
                  //return new AppRole(user.getIdUser(), "SHIPPER");
          else if (roles.toString().contains("TRANSPORTER"))
                  return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "TRANSPORTER"); //return new AppRole(user.getIdUser(), "TRANSPORTER");
+         else if (roles.toString().contains("DISPATCH"))
+                return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "DISPATCH");
+         else if (roles.toString().contains("TECHNICIEN"))
+                return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "TECHNICIEN");         
          else return new UserRole(null, null, "");
     }    
     /*

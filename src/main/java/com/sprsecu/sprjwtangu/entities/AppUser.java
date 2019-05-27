@@ -2,6 +2,7 @@ package com.sprsecu.sprjwtangu.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.Column;
@@ -21,9 +22,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AppUser {
+@AllArgsConstructor @NoArgsConstructor
+public class AppUser  implements Serializable{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
