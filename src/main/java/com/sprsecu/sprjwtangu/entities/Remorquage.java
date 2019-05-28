@@ -31,11 +31,13 @@ public class Remorquage implements Serializable{
     private Date dateDepart;
     //@Temporal(TemporalType.DATE)
     //private Date dateArrive;
-//    private Float longueur;
-//    private Float largeur;
-//    private Float hauteur;
-//    private Float poids;
-//    private Float valeur;
+    
+    private String nomEntreprise="";
+    private String nomClient="";
+    private String telClient="";
+    private String timeCall;
+    private String timeResrvation;
+    
     private Float distance;
     private String origin;
     private String originAdresse;
@@ -50,25 +52,28 @@ public class Remorquage implements Serializable{
     private Double originLong;
     private Double destLat;
     private Double destLong;
-    //
-    //private Long totalpoints;
-    //private Float prixSugere;
-    //private String typeCamion="";
-    //private String optionDemande="";
-    //private String roleDemander; // possiblement SHIPPER ou TRANSPORTER ou ADMIN
-    //private Long idDemander;   // dans le cas SHIPPER ou TRANSPORTER 
-    //private String nomDemander; // possiblement SHIPPER ou TRANSPORTER
-    //private String idsVoyageMatchings=""; // ids de Voyages matching avec ce Demande
-    //private String idsVoyagePasBesoins=""; // ids de Voyages matching mais pas besoins
-    //private String idsVoyageContactes=""; // ids de Voyages contactes
-    //private String idsUsersPasBesoins=""; // ids de Users (Shipper or Transporter) pas besoins
+
     private String comments;    // description plus
     
     private Float prixBase=0.00f;
     private Float prixKm=0.00f;
     private Float inclus=0.00f;
     private String typeService;
-    
+    // services
+    private Boolean panne=false;
+    private Boolean accident=false;
+    private Boolean pullOut=false;
+    private Boolean debaragePorte=false;
+    private Boolean survoltage=false;
+    private Boolean essence=false;
+    private Boolean changementPneu=false;
+    //fin de service
+    //prix total
+    private Float horstax=0.00f;
+    private Float tps=0.00f;
+    private Float tvq=0.00f;
+    private Float total=0.00f;
+    //fin de prix total
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

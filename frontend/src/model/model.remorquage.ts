@@ -1,6 +1,13 @@
 export class Remorquage{
     id:number;
     dateDepart=new Date();
+    
+    nomEntreprise="";
+    nomClient="";
+    telClient="";
+    timeCall="";
+    timeResrvation="";
+
     distance:number=0.00;
     origin:string="";
     originAdresse="";
@@ -21,4 +28,19 @@ export class Remorquage{
     prixKm:number=0.00;
     inclus:number=0.00;
     typeService="";
+    // services
+    panne=false;
+    accident=false;
+    pullOut=false;
+    debaragePorte=false;
+    survoltage=false;
+    essence=false;
+    changementPneu=false;
+    // fin de service
+    //prix total
+    horstax=0.00;
+    tps=0.00;
+    tvq=0.00;
+    total=0.00;
+    //fin de prix total
 }

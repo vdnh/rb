@@ -111,6 +111,9 @@ export class RemorquageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.remorquage.typeService=this.serviceTypes[0];
+    this.typeServiceChange();
+    this.prixCalcul()
     // this.demande.roleDemander = localStorage.getItem("role");
     // this.demande.idDemander = Number(localStorage.getItem("userId"));
     // this.demande.nomDemander = localStorage.getItem("nom");
@@ -153,8 +156,7 @@ async originChange(){
     // end check the provine
     
     this.remorquage.origin=this.remorquage.originAdresse+', '+this.remorquage.originVille+', '+this.remorquage.originProvince //+', canada'
-    if(this.remorquage.destination!=null && this.remorquage.destination.length>0)
-      this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
+    
     await this.geocoding.codeAddress(this.remorquage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -169,6 +171,11 @@ async originChange(){
             else
               alert("Ne pas trouver de coordonnees de ce origin")
     });//*/
+    if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
+      await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
+      await this.showMap()
+      this.prixCalcul()
+    }
   }
   //this.showMap();
 }
@@ -205,8 +212,6 @@ async destinationChange(){
       this.villeListD=this.YukonVilles;
     // end check the provine
     this.remorquage.destination=this.remorquage.destAdresse+', '+this.remorquage.destVille+', '+this.remorquage.destProvince  //+', canada'
-    if(this.remorquage.origin!=null && this.remorquage.origin.length>0)
-      await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
     await this.geocoding.codeAddress(this.remorquage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -221,7 +226,34 @@ async destinationChange(){
             else
               alert("Ne pas trouver de coordonnees de cet destination")
     });//*/
+    if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
+      await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
+      await this.showMap()
+      this.prixCalcul()
+    }
   }//this.showMap();
+}
+
+printBonDeRemorquage(cmpId){
+  const printContent = document.getElementById(cmpId);
+  //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
+  const WindowPrt = window.open();
+  WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+  WindowPrt.document.write(printContent.innerHTML);
+  WindowPrt.document.close();
+  WindowPrt.focus();
+  WindowPrt.print();
+  WindowPrt.close();
+}
+
+prixCalcul(){
+  this.remorquage.horstax=this.remorquage.prixBase
+  if((this.remorquage.distance-this.remorquage.inclus)>0){
+    this.remorquage.horstax = this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
+  }
+  this.remorquage.tvq = Math.round(this.remorquage.horstax*0.05*100)/100
+  this.remorquage.tps = Math.round(this.remorquage.horstax*0.09975*100)/100
+  this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
 }
 
 showMap() {
@@ -356,6 +388,7 @@ showMap() {
       this.remorquage.inclus=-1.00;
       this.remorquage.prixKm=-1.00;
     }
+    this.prixCalcul()
   }
 
   onReset(){
