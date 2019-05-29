@@ -7,7 +7,16 @@ export class Remorquage{
     telClient="";
     timeCall="";
     timeResrvation="";
-
+    // add more
+    nomContact="";
+    telContact="";
+    extTelContact="";
+    marque="";
+    modele="";
+    plaque="";
+    couleur="";
+    serie="";
+    //
     distance:number=0.00;
     origin:string="";
     originAdresse="";

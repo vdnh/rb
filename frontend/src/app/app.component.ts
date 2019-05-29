@@ -95,6 +95,12 @@ export class AppComponent implements OnInit{
             this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
             //localStorage.setItem('userId', res.id.toString());
           }
+          if(res.roleName.includes('DISPATCH')) {         
+            //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
+            this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+            //localStorage.setItem('userId', res.id.toString());
+          }
+          //http://localhost:4200/remorquage
           this.mode=0;
           this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
             (data:Array<Message>)=>{

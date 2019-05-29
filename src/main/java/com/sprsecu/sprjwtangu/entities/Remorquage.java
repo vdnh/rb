@@ -37,7 +37,16 @@ public class Remorquage implements Serializable{
     private String telClient="";
     private String timeCall;
     private String timeResrvation;
-    
+    // add more
+    private String nomContact="";
+    private String telContact="";
+    private String extTelContact="";
+    private String marque="";
+    private String modele="";
+    private String plaque="";
+    private String couleur="";
+    private String serie="";
+    //
     private Float distance;
     private String origin;
     private String originAdresse;

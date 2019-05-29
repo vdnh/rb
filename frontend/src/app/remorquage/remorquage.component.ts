@@ -112,7 +112,7 @@ export class RemorquageComponent implements OnInit {
 
   ngOnInit() {
     this.remorquage.typeService=this.serviceTypes[0];
-    this.typeServiceChange();
+    this.typeServiceChange(this.serviceTypes[0]);
     this.prixCalcul()
     // this.demande.roleDemander = localStorage.getItem("role");
     // this.demande.idDemander = Number(localStorage.getItem("userId"));
@@ -251,8 +251,8 @@ prixCalcul(){
   if((this.remorquage.distance-this.remorquage.inclus)>0){
     this.remorquage.horstax = this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
   }
-  this.remorquage.tvq = Math.round(this.remorquage.horstax*0.05*100)/100
-  this.remorquage.tps = Math.round(this.remorquage.horstax*0.09975*100)/100
+  this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
+  this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
 }
 
@@ -340,18 +340,27 @@ showMap() {
   });
   //*/
 }
+  onFini(){
 
-  onPrint(){    
-    /* //this.distance=this.calculateDistance() / 1000
-    //this.distance2Ads(this.demande.origin, this.demande.destination)
-    this.setDistanceTravel(this.demande.origin, this.demande.destination)
-    this.totalPoints = this.longeurPointage(this.longeur, this.mode) + this.largeurPointage(this.largeur, this.mode) + this.hauteurPointage(this.hauteur, this.mode) 
-      + this.poidsPointage(this.poids, this.mode); // + this.valeur + this.distance;
-    
-    this.prix = this.prixDepart(this.totalPoints) + this.prixDistance(this.totalPoints) + this.prixToile(this.totalPoints)
-      + this.prixAttendre(this.totalPoints) + this.prixSuplement(this.totalPoints, this.heurs_supl);
-    this.searchTruck=false; //activer poster et rechercher
- */
+  }
+  onCancel(){
+    if(this.remorquage.id>0){
+      this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+        this.remorquage=new Remorquage();;
+      }, err=>{console.log(err)})
+    }
+  }
+  onSave(){
+    this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
+      this.remorquage=data;
+    }, 
+      err=>{console.log(err)
+    })
+  }
+  onPrint(heure){    
+    console.log(heure)
+    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
+    console.log('this.remorquage.timeResrvation : '+this.remorquage.timeResrvation)
   }
 
   //* calculer distance travel en kms
@@ -366,8 +375,10 @@ showMap() {
     });  
   }
 
-  typeServiceChange(){
+  typeServiceChange(type){
     //alert('Must write this function, typeServiceChange')
+    //console.log('type entre : '+type)
+    this.remorquage.typeService=type
     if(this.remorquage.typeService.includes('Leger')){
       this.remorquage.prixBase=85.00;
       this.remorquage.inclus=5.00;
