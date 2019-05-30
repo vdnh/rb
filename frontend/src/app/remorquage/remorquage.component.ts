@@ -236,6 +236,7 @@ async destinationChange(){
 
 printBonDeRemorquage(cmpId){
   const printContent = document.getElementById(cmpId);
+   console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
   //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
   const WindowPrt = window.open();
   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
@@ -340,14 +341,50 @@ showMap() {
   });
   //*/
 }
-  onFini(){
+  
+  autoCharacter(event:any){
+    //event.val(event.val().replace(/(\d{3})\-?(\d{3})\-?(\d{4})/,'$1-$2-$3'))
+    
+    //this.remorquage.telContact = event.target.value
+    //var text = this.remorquage.telContact; 
+    //if (key !== 8 && key !== 9) {
+        if (event.target.value.length === 3) {
+          event.target.value=event.target.value + '-';
+        }
+        if (event.target.value.length === 7) {
+          event.target.value=event.target.value + '-';
+        }
+    //}
+    //console.log('event.target.value : '+event.target.value)
+    //return (key == 8 || key == 9 || key == 46 || (key >= 48 && key <= 57) || (key >= 96 && key <= 105));
+  }
 
+  onFini(){
+    var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(r==true){
+      console.log("Le cas est termine.")
+      this.remorquage.fini=true;
+      this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
+        this.remorquage=new Remorquage();
+      }, err=>{console.log(err)})
+    }
+    else {
+      console.log('Le cas est continue.')
+    }
+    
   }
   onCancel(){
-    if(this.remorquage.id>0){
-      this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
-        this.remorquage=new Remorquage();;
-      }, err=>{console.log(err)})
+    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(r==true){
+      console.log("Le cas est annulle.")
+      if(this.remorquage.id>0){
+        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+          this.remorquage=new Remorquage();;
+        }, err=>{console.log(err)})
+      }
+    }
+    else {
+      console.log('Le cas est continue.')
     }
   }
   onSave(){

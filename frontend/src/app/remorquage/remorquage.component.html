@@ -5,9 +5,9 @@
         <div>     
           <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
           <button (click)="onReset()" class="btn btn-link" [disabled]="(remorquage.id>0)">Reset</button>
-          <button (click)="onSave()" class="btn btn-link">Enregistrer</button> 
-          <button (click)="onFini()" class="btn btn-link">Fini</button>         
-          <button (click)="onCancel()" class="btn btn-link" [disabled]="!(remorquage.id>0)">Cancel</button>
+          <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
+          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
+          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
           <br>
         </div>
         <table class="table table-striped">
@@ -36,17 +36,28 @@
         <table class="table table-striped">    
           <tr>
             <th>Entreprise</th><td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" class="form-control"></td>            
+            <th>#PO</th><td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.numPO" name="numPO" class="form-control"></td>
             <th>HeureAppel</th><td style="width: 8pc"><input type="time" style="width: 8pc" [(ngModel)]="remorquage.timeCall" name="timeCall" class="form-control"></td>
             <th>HeureReserve</th><td style="width: 8pc"><input type="time" style="width: 8pc" [(ngModel)]="remorquage.timeResrvation" name="timeResrvation" class="form-control"></td>
           </tr>
           <tr>
             <th>Contact</th><td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomContact" name="nomContact" class="form-control"></td>            
-            <th>Telephone</th><td><input type="text" [(ngModel)]="remorquage.telContact" name="telContact" class="form-control"></td>
+            <th>Telephone</th>
+            <td>            
+              <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required>
+            </td>
             <th>Extension</th><td><input type="text" [(ngModel)]="remorquage.extTelContact" name="extTelContact" class="form-control"></td>
           </tr>
           <tr>
             <th>Client</th><td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomClient" name="nomClient" class="form-control"></td>
-            <th>Telephone</th><td><input type="text" [(ngModel)]="remorquage.telClient" name="telClient" class="form-control"></td>
+            <th>Tel 1er</th>
+            <td>
+              <input type="tel" [(ngModel)]="remorquage.telClient" name="telClient" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required >
+            </td>
+            <th>Tel 2em</th>
+            <td>
+              <input type="tel" [(ngModel)]="remorquage.telClient2em" name="telClient2em" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required >
+            </td>
           </tr>
         </table>
         </div>
@@ -76,11 +87,11 @@
                 <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
               </select>
             </td>
-            <td><input type="text" style="width: 5pc" [(ngModel)]="remorquage.marque" name="marque" class="form-control"/></td>
-            <td><input type="text" style="width: 5pc" [(ngModel)]="remorquage.modele" name="modele" class="form-control"/></td>
+            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.marque" name="marque" class="form-control"/></td>
+            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.modele" name="modele" class="form-control"/></td>
             <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.plaque" name="plaque" class="form-control"/></td>
             <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.couleur" name="couleur" class="form-control"/></td>
-            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.serie" name="serie" class="form-control"/></td>
+            <td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.serie" name="serie" class="form-control"/></td>
           </tr>
           <tr>
               <th>Description</th>
@@ -95,6 +106,7 @@
               <span> - Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage"></span>
               <span> - Essence <input type="checkbox" [(ngModel)]="remorquage.essence"></span>
               <span> - ChangementPneu <input type="checkbox" [(ngModel)]="remorquage.changementPneu"></span>
+              <span> - Autres <input type="checkbox" [(ngModel)]="remorquage.autres"></span>
             </td>
           </tr>
           <tr>
@@ -170,9 +182,9 @@
   <div>     
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
     <button (click)="onReset()" class="btn btn-link" [disabled]="(remorquage.id>0)">Reset</button>
-    <button (click)="onSave()" class="btn btn-link">Enregistrer</button> 
-    <button (click)="onFini()" class="btn btn-link">Fini</button>         
-    <button (click)="onCancel()" class="btn btn-link"[disabled]="!(remorquage.id>0)">Cancel</button>
+    <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
+    <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
+    <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
     <br>
   </div>
   <br>
@@ -189,45 +201,93 @@
 <!--for test directionService-->
 <div id="right-panel" hidden></div>
 <div id="toprint" hidden>
-    <p style="font-size: 14pt">    
+    <!--p style="font-size: 12pt" style="margin-inline: 5px">    
       
-        <span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage  &nbsp;&nbsp;-&nbsp;&nbsp;  Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}  
-          &nbsp;&nbsp;-&nbsp;&nbsp;  Numero : <label *ngIf="remorquage.id>0">{{remorquage.id}}</label></span><br><br>
+        <span style="font-size: 14pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label> &nbsp;&nbsp;-&nbsp;&nbsp;  Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}  
+        </span><br><br>
 
-        Entreprise : {{remorquage.nomEntreprise}}<br>
-        Contact : {{remorquage.nomContact}}  -  Tel: {{remorquage.telContact}} ext. {{remorquage.extTelContact}} <br><br>
+        Entreprise : {{remorquage.nomEntreprise}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; #PO : {{remorquage.numPO}}  <br><br>
+        Contact : {{remorquage.nomContact}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}} <br><br>
         
-        Client : {{remorquage.nomClient}} <br>
-        Telephone : {{remorquage.telClient}} <br><br>
+        Client : {{remorquage.nomClient}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Telephone : {{remorquage.telClient}} <br><br>
 
-        Heure d'appel : {{remorquage.timeCall}} <br>
-        Heure Reserve : {{remorquage.timeResrvation}} <br><br>
+        Heure d'appel : {{remorquage.timeCall}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Heure Reserve : {{remorquage.timeResrvation}} <br><br>
 
-        Type : {{remorquage.typeService}}<br>
-        Marque : {{remorquage.marque}}  -  Modele : {{remorquage.modele}}  -  Couleur : {{remorquage.couleur}} <br>
-        Plaque : {{remorquage.plaque}}  -  Serie : {{remorquage.serie}} <br>
-        Description : {{remorquage.comments}} <br>
+        Type : {{remorquage.typeService}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Marque : {{remorquage.marque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Modele : {{remorquage.modele}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Couleur : {{remorquage.couleur}} <br><br>
+        Plaque : {{remorquage.plaque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Serie : {{remorquage.serie}} <br><br>
+        Description : {{remorquage.comments}} <br><br>
+        
         <span>Service : </span>
-        <span *ngIf="remorquage.panne">Panne </span>
-        <span *ngIf="remorquage.accident"> - Accident </span>
-        <span *ngIf="remorquage.pullOut"> - PullOut </span>
-        <span *ngIf="remorquage.debaragePorte"> - DebaragePorte </span>
-        <span *ngIf="remorquage.survoltage"> - Survoltage </span>
-        <span *ngIf="remorquage.essence"> - Essence </span>
-        <span *ngIf="remorquage.changementPneu"> - ChangementPneu </span>
+        <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
+        <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
+        <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
+        <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
+        <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
+        <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
+        <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
+        <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
         <br><br>
 
-        De : {{remorquage.origin}} <br>
-        A : {{remorquage.destination}} <br>
+        De : {{remorquage.origin}} <br><br>
+        A : {{remorquage.destination}} <br><br>
         Distance(kms) : {{remorquage.distance}} <br><br>
-      </p>
-    <table>
+      </p-->
+    <table border='1' cellpadding='1' id='Tablbpm1' style="font-size: 12pt" style="margin-inline: 5px">
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td colspan="4" style="text-align: right">
+          <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label></span></td>
+          <td>Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}</td>
+      </tr>
+      <tr>
+        <td>Entreprise : {{remorquage.nomEntreprise}}</td>
+        <td>#PO : {{remorquage.numPO}}</td>
+      </tr>
+      <tr>
+        <td>Contact : {{remorquage.nomContact}}</td>
+        <td>Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}}</td>
+      </tr>
+      <tr>
+        <td>Client : {{remorquage.nomClient}}</td>
+        <td>Tel 1er : {{remorquage.telClient}}</td>
+        <td>Tel 2em : {{remorquage.telClient2em}}</td>
+      </tr>
+      <tr>
+        <td>Heure d'appel : {{remorquage.timeCall}}</td>
+        <td>Heure Reserve : {{remorquage.timeResrvation}}</td>
+      </tr>
+      <tr>
+        <td>Type : {{remorquage.typeService}}</td>
+        <td>Marque : {{remorquage.marque}}</td>
+        <td>Modele : {{remorquage.modele}}</td>
+      </tr>
+      <tr>
+        <td>Couleur : {{remorquage.couleur}}</td>
+        <td>Plaque : {{remorquage.plaque}}</td>
+        <td>Serie : {{remorquage.serie}}</td>
+      </tr>
+      <tr>
+        <td colspan="3">Description : {{remorquage.comments}}</td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <span>Service : </span>
+          <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
+          <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
+          <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
+          <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
+          <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
+          <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
+          <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
+          <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
+        </td>
+      </tr>
+      <tr>
+        <td><textarea cols="25" rows="3" style="font-size: 11pt">De : {{remorquage.origin}}</textarea></td>
+        <td><textarea cols="25" rows="3"style="font-size: 11pt">A : {{remorquage.destination}}</textarea></td>
+        <td>Distance(kms) : {{remorquage.distance}}</td>
+      </tr>
+      <tr>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>        
+        <td colspan="2" style="text-align: right">
           <table style="font-size: 12pt" style="text-align: right">
             <tr><th>HorsTax:</th><td>{{remorquage.horstax | number : '1.2'}}</td></tr>
             <tr><th>TPS:</th><td>{{remorquage.tps | number : '1.2'}}</td></tr>

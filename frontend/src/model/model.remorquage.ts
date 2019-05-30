@@ -8,6 +8,8 @@ export class Remorquage{
     timeCall="";
     timeResrvation="";
     // add more
+    telClient2em="";
+    numPO=""; //Numero PO - Pucharge Number
     nomContact="";
     telContact="";
     extTelContact="";
@@ -45,7 +47,11 @@ export class Remorquage{
     survoltage=false;
     essence=false;
     changementPneu=false;
+    autres=false;
     // fin de service
+    // status
+    fini=false;
+    //
     //prix total
     horstax=0.00;
     tps=0.00;

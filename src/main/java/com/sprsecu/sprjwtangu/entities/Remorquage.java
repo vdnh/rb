@@ -38,6 +38,8 @@ public class Remorquage implements Serializable{
     private String timeCall;
     private String timeResrvation;
     // add more
+    private String telClient2em="";
+    private String numPO=""; // Pucharge Number
     private String nomContact="";
     private String telContact="";
     private String extTelContact="";
@@ -76,7 +78,11 @@ public class Remorquage implements Serializable{
     private Boolean survoltage=false;
     private Boolean essence=false;
     private Boolean changementPneu=false;
+    private Boolean autres=false;
     //fin de service
+    // status
+    private Boolean fini=false;
+    //
     //prix total
     private Float horstax=0.00f;
     private Float tps=0.00f;
