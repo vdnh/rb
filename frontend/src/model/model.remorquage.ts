@@ -5,9 +5,11 @@ export class Remorquage{
     nomEntreprise="";
     nomClient="";
     telClient="";
-    timeCall="";
+    timeCall="00:00";
     timeResrvation="";
     // add more
+    dateReserve=new Date();
+    driverNote="";
     telClient2em="";
     numPO=""; //Numero PO - Pucharge Number
     nomContact="";
@@ -23,11 +25,11 @@ export class Remorquage{
     origin:string="";
     originAdresse="";
     originVille="";
-    originProvince="";
+    originProvince="Quebec";
     destination="";
     destAdresse="";
     destVille="";
-    destProvince="";
+    destProvince="Quebec";
     // il vaut mieur de garder coordonees
     originLat:number=0.00;
     originLong:number=0.00;

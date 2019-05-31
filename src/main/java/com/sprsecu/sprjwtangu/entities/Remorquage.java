@@ -38,6 +38,9 @@ public class Remorquage implements Serializable{
     private String timeCall;
     private String timeResrvation;
     // add more
+    @Temporal(TemporalType.DATE)
+    private Date dateReserve;
+    private String driverNote="";
     private String telClient2em="";
     private String numPO=""; // Pucharge Number
     private String nomContact="";

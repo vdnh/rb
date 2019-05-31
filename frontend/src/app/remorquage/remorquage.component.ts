@@ -25,9 +25,9 @@ export class RemorquageComponent implements OnInit {
   
   provinceList=myGlobals.provinceList ;
   
-  villeListO= myGlobals.villeList ;
+  villeListO= myGlobals.QuebecVilles; //villeList Origin ;
   
-  villeListD=this.villeListO;
+  villeListD=this.villeListO; // villeList destination ;
   
   AlbertaVilles=myGlobals.AlbertaVilles;
   
@@ -110,7 +110,14 @@ export class RemorquageComponent implements OnInit {
         });//*/
   }
 
-  ngOnInit() {
+  ngOnInit() {    
+    console.log(this.remorquage.dateDepart)
+    var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
+      //+':'+
+    var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
+    //if(this.remorquage.timeCall.length)
+    this.remorquage.timeCall=heure+':'+minute
+    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
     this.prixCalcul()
@@ -410,6 +417,12 @@ showMap() {
       this.remorquage.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       //this.distanceKm = Math.round(this.distance*1.609344)
     });  
+  }
+
+  dateChange(date){
+    //(ngModelChange)="dateChange($event)"
+    this.remorquage.dateDepart=date;
+    console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
   }
 
   typeServiceChange(type){
