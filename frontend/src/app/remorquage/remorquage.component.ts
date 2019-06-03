@@ -22,6 +22,12 @@ export class RemorquageComponent implements OnInit {
   //* pour checkBox list
   formGroup: FormGroup;
   serviceTypes = ["Leger", "Moyenne", "Lourd"];
+  ent1:Entreprise={id:1, nom:'Honda Laval'}
+  ent2:Entreprise={id:2, nom:'Albi Eustache'}
+  ent3:Entreprise={id:3, nom:'Incendie Rosemere'}
+  ent4:Entreprise={id:4, nom:'Hyundai Terrebonne'}
+  listEntreprise=[this.ent1, this.ent2, this.ent3, this.ent4];
+  listIdEntreprise=[1, 2, 3, 4];
   
   provinceList=myGlobals.provinceList ;
   
@@ -278,7 +284,7 @@ showMap() {
     center: {lat: 41.85, lng: -87.65}
   });//*/
   directionsDisplay.setMap(this.map); // to see the routes on the map
-  //directionsDisplay.setPanel(document.getElementById('right-panel')); // to see the routes just by the text
+  directionsDisplay.setPanel(document.getElementById('right-panel')); // to see the routes just by the text
 
   this.infoWindow = new google.maps.InfoWindow;
   let markerOrigin = new google.maps.Marker({
@@ -311,7 +317,7 @@ showMap() {
   bounds.extend(this.latLngDestination);
   this.map.fitBounds(bounds);
   //*/
-  //* line fron origin to destination
+  /* line fron origin to destination
   var flightPlanCoordinates = [
     {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
     {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
@@ -338,9 +344,10 @@ showMap() {
     travelMode: google.maps.TravelMode.DRIVING
   }, async function(response, status) {
     if (status === google.maps.DirectionsStatus.OK) {
-      //await directionsDisplay.setDirections(response);
+      document.getElementById('right-panel').innerHTML="";
+      await directionsDisplay.setDirections(response);
       //console.log('response : '+response.routes.toString())
-      let result = await document.getElementById('right-panel').textContent;
+      //let result = await document.getElementById('right-panel').textContent;
       //console.log('result : '+result)
     } else {
       window.alert('Directions request failed due to ' + status);
@@ -424,6 +431,37 @@ showMap() {
     this.remorquage.dateDepart=date;
     console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
   }
+  nomEntrepriseChange(ent){
+    this.remorquage.nomEntreprise=ent.nom
+    console.log('ent.nom : '+ent.nom)
+    console.log('ent.id : '+ent.id)
+    this.prixCalcul()
+  }
+  nomEntrepriseInputChange(){
+    console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
+    //let al=this.remorquage.nomEntreprise.split(';')
+    //this.remorquage.nomEntreprise=al[0]
+    //console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
+    let ent = this.listEntreprise.find(res=>
+      res.nom.trim().includes(this.remorquage.nomEntreprise.trim()) && 
+      res.nom.trim().length==this.remorquage.nomEntreprise.trim().length
+      )
+    if(ent!=null){
+      console.log('ent.id : ' + ent.id)
+      console.log('ent.nom : ' + ent.nom)
+      this.remorquage.nomEntreprise=ent.nom
+    }
+    /*this.listEntreprise.forEach(ent=>{
+      if(ent.nom===this.remorquage.nomEntreprise){
+        console.log('ent.id : ' + ent.id)
+        console.log('ent.nom : ' + ent.nom)
+      }
+      else{
+        console.log('On est pas dans la list Entreprise, on prend le prix ordinaire.')
+      }
+    })//*/
+    this.prixCalcul()
+  }
 
   typeServiceChange(type){
     //alert('Must write this function, typeServiceChange')
@@ -468,6 +506,11 @@ interface marker {
 interface Center{
   lat:number;
   lng:number;
+}
+
+export interface Entreprise{
+  id:number;
+  nom:string;
 }
 
 export interface LatLngLiteral{

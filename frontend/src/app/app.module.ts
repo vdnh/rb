@@ -120,7 +120,7 @@ const appRoutes:Routes=[
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, BrowserModule, ReactiveFormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
-      libraries: ['places', 'drawing', 'geometry'],
+      libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
     }),
   ],
   providers: [AuthenticationService, ContactsService, TransportersService, 
