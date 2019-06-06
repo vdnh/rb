@@ -40,10 +40,13 @@
           <tr>
             <th>Entreprise</th>
             <td>
-              <input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control">
-              <select type="text" [(ngModel)]="remorquage.nomEntreprise" (change)="nomEntrepriseInputChange()" style="margin-bottom: 0px; margin-top: 0px">
+              <input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" (change)="nomEntrepriseInputChange()" (keyup)="filterInputEnt($event)" class="form-control">
+              <!--select type="text" [ngModel]="remorquage.nomEntreprise" (change)="nomEntrepriseInputChange()" style="margin-bottom: 0px; margin-top: 0px">
                 <option *ngFor="let e of listEntreprise" [ngValue]="e.nom">{{e.nom}}</option>
-              </select>              
+              </select-->    
+              <select type="text" [ngModel]="remorquage.nomEntreprise" (ngModelChange)="nomEntrepriseChange($event)" style="margin-bottom: 0px; margin-top: 0px">
+                <option *ngFor="let e of filteredEntreprises" [ngValue]="e">{{e.nom}}</option>
+              </select>          
             </td>            
             <th>#PO</th><td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.numPO" name="numPO" class="form-control"></td>
             <th>DateReserve</th>

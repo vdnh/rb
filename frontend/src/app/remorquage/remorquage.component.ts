@@ -1,13 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Demande } from 'src/model/model.demande';
-import { DemandesService } from 'src/services/demandes.service';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { } from 'googlemaps';
-import { VoyagesService } from 'src/services/voyages.service';
-import { Voyage } from 'src/model/model.voyage';
-import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
+import * as myGlobals from 'src/services/globals';
 import { Remorquage } from 'src/model/model.remorquage';
 import { RemorquagesService } from 'src/services/remorquages.service';
 
@@ -18,7 +14,6 @@ import { RemorquagesService } from 'src/services/remorquages.service';
 })
 export class RemorquageComponent implements OnInit {
 
-  searchTruck=true; //desactiver poster et rechercher
   //* pour checkBox list
   formGroup: FormGroup;
   serviceTypes = ["Leger", "Moyenne", "Lourd"];
@@ -61,27 +56,10 @@ export class RemorquageComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 //*/
-  mode=2; // en pouce et lbs   - Si : mode = 2 on est en cm et kg
-  // // les details de marchandise
-  // longeur:number=0.00;
-  // largeur:number=0.00;
-  // hauteur:number=0.00;
-  // poids:number=0.00;
-  // valeur:number=0.00;
-  // distance:number=0.00; // en miles
-  // distanceKm:number=0.00; // en km
-
-  // heurs_supl:number=0.00;
-
-  // totalPoints:number=0.00;
-  // // le prix sugere
-  // prix:number=0.00;
-
-  // demande:Demande=new Demande();
+  mode=2; // on est en cm et kg
+  
   remorquage:Remorquage=new Remorquage();
 
-  //* Pour ajouter des circles and markers sur la carte
-  // google maps zoom level
   zoom: number = 6;
   
   // initial center position for the map
@@ -101,19 +79,12 @@ export class RemorquageComponent implements OnInit {
   spherical: typeof google.maps.geometry.spherical;
   //fin
   
-  centerCoord={lat:45.568806, lng:-73.918333}  // location of SOS Prestige  
-  // finir ajouter des circles et markes */
+  centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();
+  filteredEntreprises=this.listEntreprise;
 
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, private formBuilder:FormBuilder, public router:Router) { 
-        /* construct for checkbox list
-        const selectAllControl = new FormControl(false);
-        const formControls = this.camionTypes.map(control => new FormControl(false));
-        this.formGroup = this.formBuilder.group({
-          camionTypes: new FormArray(formControls),
-          selectAll: selectAllControl
-        });//*/
   }
 
   ngOnInit() {    
@@ -127,13 +98,7 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
     this.prixCalcul()
-    // this.demande.roleDemander = localStorage.getItem("role");
-    // this.demande.idDemander = Number(localStorage.getItem("userId"));
-    // this.demande.nomDemander = localStorage.getItem("nom");
-    //console.log('this.demande.roleDemander : '+this.demande.roleDemander)
-    //console.log('this.demande.idDemander : '+this.demande.idDemander)
   }
-  //* fonctionnes de checkbox list
 
 //*
 async originChange(){
@@ -300,44 +265,20 @@ showMap() {
   let markerDestination = new google.maps.Marker({
     position: this.latLngDestination,
     map: this.map,
-    //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       scale: 4
     },
     title: this.remorquage.destination
   });
-  //markerDestination.addListener('click', this.simpleMarkerHandler);
-  /*markerDestination.addListener('click', () => {
-    this.markerHandler(markerDestination);
-  });//*/
+
   // centrer la carte
   var bounds = new google.maps.LatLngBounds();
   bounds.extend(this.latLngOrigin);
   bounds.extend(this.latLngDestination);
   this.map.fitBounds(bounds);
   //*/
-  /* line fron origin to destination
-  var flightPlanCoordinates = [
-    {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
-    {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
-  ];
-  var flightPath = new google.maps.Polyline({
-    path: flightPlanCoordinates,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2,
-    icons: [{
-      icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
-      offset: '100%'
-    }]
-  });
-  flightPath.setMap(this.map);
-  //*/
-  //* Totest find my route/
-  //var start = document.getElementById('start').textContent;
-  //var end = document.getElementById('end').textContent;
+  //document.getElementById('right-panel').innerHTML=remorquagre.testInnel
   directionsService.route({
     origin: this.remorquage.origin,
     destination: this.remorquage.destination,
@@ -346,9 +287,6 @@ showMap() {
     if (status === google.maps.DirectionsStatus.OK) {
       document.getElementById('right-panel').innerHTML="";
       await directionsDisplay.setDirections(response);
-      //console.log('response : '+response.routes.toString())
-      //let result = await document.getElementById('right-panel').textContent;
-      //console.log('result : '+result)
     } else {
       window.alert('Directions request failed due to ' + status);
     }
@@ -356,21 +294,34 @@ showMap() {
   //*/
 }
   
+  // For input
+  filterInputEnt(event) {
+    console.log('Exec filterInputEnt !')
+    this.filteredEntreprises = []
+    for(let i = 0; i < this.listEntreprise.length; i++) {
+        let ent = this.listEntreprise[i];
+        if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
+            this.filteredEntreprises.push(ent);
+        }
+    }
+    let ent = this.listEntreprise.find(res=>
+      res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
+      res.nom.length==this.remorquage.nomEntreprise.length
+      )
+    if(ent!=null){
+      console.log('ent.id : ' + ent.id)
+      console.log('ent.nom : ' + ent.nom)
+      this.remorquage.nomEntreprise=ent.nom
+    }
+  }
+
   autoCharacter(event:any){
-    //event.val(event.val().replace(/(\d{3})\-?(\d{3})\-?(\d{4})/,'$1-$2-$3'))
-    
-    //this.remorquage.telContact = event.target.value
-    //var text = this.remorquage.telContact; 
-    //if (key !== 8 && key !== 9) {
         if (event.target.value.length === 3) {
           event.target.value=event.target.value + '-';
         }
         if (event.target.value.length === 7) {
           event.target.value=event.target.value + '-';
         }
-    //}
-    //console.log('event.target.value : '+event.target.value)
-    //return (key == 8 || key == 9 || key == 46 || (key >= 48 && key <= 57) || (key >= 96 && key <= 105));
   }
 
   onFini(){
@@ -439,33 +390,19 @@ showMap() {
   }
   nomEntrepriseInputChange(){
     console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
-    //let al=this.remorquage.nomEntreprise.split(';')
-    //this.remorquage.nomEntreprise=al[0]
-    //console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
     let ent = this.listEntreprise.find(res=>
-      res.nom.trim().includes(this.remorquage.nomEntreprise.trim()) && 
-      res.nom.trim().length==this.remorquage.nomEntreprise.trim().length
+      res.nom.includes(this.remorquage.nomEntreprise) && 
+      res.nom.length==this.remorquage.nomEntreprise.length
       )
     if(ent!=null){
       console.log('ent.id : ' + ent.id)
       console.log('ent.nom : ' + ent.nom)
       this.remorquage.nomEntreprise=ent.nom
     }
-    /*this.listEntreprise.forEach(ent=>{
-      if(ent.nom===this.remorquage.nomEntreprise){
-        console.log('ent.id : ' + ent.id)
-        console.log('ent.nom : ' + ent.nom)
-      }
-      else{
-        console.log('On est pas dans la list Entreprise, on prend le prix ordinaire.')
-      }
-    })//*/
     this.prixCalcul()
   }
 
   typeServiceChange(type){
-    //alert('Must write this function, typeServiceChange')
-    //console.log('type entre : '+type)
     this.remorquage.typeService=type
     if(this.remorquage.typeService.includes('Leger')){
       this.remorquage.prixBase=85.00;
