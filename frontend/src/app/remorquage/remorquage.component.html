@@ -1,4 +1,21 @@
-<div class="container">
+<div class="container" *ngIf="modeHistoire==1">
+    <button (click)="onHistoire()" class="btn btn-link">Retour</button>
+    <table class="table table-striped">
+        <tr>
+          <th>Numero</th><th (click)="dateSort()">Date</th><th (click)="entSort()">Entreprise</th><th (click)="contactSort()">Contact</th><th (click)="clientSort()">Client</th>
+        </tr>
+        <tr *ngFor="let r of listRqs">
+          <td (dblclick)="gotoDetailRemorquage(d)">{{r.id}}</td>
+          <td (dblclick)="gotoDetailRemorquage(d)">{{r.dateDepart}}</td>
+          <td (dblclick)="gotoDetailRemorquage(d)">{{r.nomEntreprise}}</td>
+          <td (dblclick)="gotoDetailRemorquage(d)">{{r.nomContact}}</td>
+          <td (dblclick)="gotoDetailRemorquage(d)">{{r.nomClient}}</td>
+          <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
+          <td><button class="btn btn-link" (click)="onCancel(r)">Delete</button></td>
+        </tr>
+      </table>
+</div>
+<div class="container" *ngIf="modeHistoire==-1">
   <div class="col-sm-9 col-sm-offset-1">
     <div class="panel panel-primary">        
       <div> 
@@ -8,6 +25,7 @@
           <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
+          <button (click)="onHistoire()" class="btn btn-link">Histoire</button>
           <br>
         </div>
         <table class="table table-striped">
@@ -45,7 +63,7 @@
                 <option *ngFor="let e of listEntreprise" [ngValue]="e.nom">{{e.nom}}</option>
               </select-->    
               <select type="text" [ngModel]="remorquage.nomEntreprise" (ngModelChange)="nomEntrepriseChange($event)" style="margin-bottom: 0px; margin-top: 0px">
-                <option *ngFor="let e of filteredEntreprises" [ngValue]="e">{{e.nom}}</option>
+                <option *ngFor="let e of filteredShippers" [ngValue]="e">{{e.nom}}</option>
               </select>          
             </td>            
             <th>#PO</th><td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.numPO" name="numPO" class="form-control"></td>

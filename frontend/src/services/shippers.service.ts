@@ -40,6 +40,14 @@ export class ShippersService{
         }))
     }
 
+    getAllShippers()    //
+        {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/shippers", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
     saveShippers(shipper:Shipper){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/shippers",shipper

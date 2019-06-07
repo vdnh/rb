@@ -5,6 +5,7 @@ export class Contact{
     fonction:string="";
     email:string="";
     tel:number=0;
+    extTel="";
     fax:number=0;
     photo:string="";
     id_shipper:number=0;

@@ -25,8 +25,9 @@ public class Contact implements Serializable{
     private String prenom;
     private String fonction;
     private String email;
-    private long tel;
-    private long fax;
+    private String tel; // old : Long
+    private String extTel="";
+    private String fax; // old : Long
     private String photo;
     private long id_shipper;
     private long id_transporter;

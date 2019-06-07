@@ -6,6 +6,8 @@ import { } from 'googlemaps';
 import * as myGlobals from 'src/services/globals';
 import { Remorquage } from 'src/model/model.remorquage';
 import { RemorquagesService } from 'src/services/remorquages.service';
+import { ShippersService } from 'src/services/shippers.service';
+import { Shipper } from 'src/model/model.shipper';
 
 @Component({
   selector: 'app-remorquage',
@@ -17,13 +19,27 @@ export class RemorquageComponent implements OnInit {
   //* pour checkBox list
   formGroup: FormGroup;
   serviceTypes = ["Leger", "Moyenne", "Lourd"];
-  ent1:Entreprise={id:1, nom:'Honda Laval'}
+  // prix remorquage (bas - km - inclus)
+  prixBase1=85.00;
+  prixKm1=2.65;
+  inclus1=5.00; 
+  prixBase2=95.00;
+  prixKm2=3.15;
+  inclus2=5.00;
+  prixBase3=105.00;
+  prixKm3=3.80;
+  inclus3=7.00;
+  /*ent1:Entreprise={id:1, nom:'Honda Laval'}
   ent2:Entreprise={id:2, nom:'Albi Eustache'}
   ent3:Entreprise={id:3, nom:'Incendie Rosemere'}
   ent4:Entreprise={id:4, nom:'Hyundai Terrebonne'}
   listEntreprise=[this.ent1, this.ent2, this.ent3, this.ent4];
   listIdEntreprise=[1, 2, 3, 4];
-  
+  filteredEntreprises=this.listEntreprise;//*/
+
+  listShipper=[];
+  filteredShippers=[]; //=this.listShipper;
+
   provinceList=myGlobals.provinceList ;
   
   villeListO= myGlobals.QuebecVilles; //villeList Origin ;
@@ -82,13 +98,29 @@ export class RemorquageComponent implements OnInit {
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();
-  filteredEntreprises=this.listEntreprise;
+  modeHistoire: number=-1;
+  listRqs: Remorquage[];
+  
 
-  constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, private formBuilder:FormBuilder, public router:Router) { 
+  constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
+    private formBuilder:FormBuilder, public router:Router, 
+    public shipperservice:ShippersService
+    ) { 
   }
 
-  ngOnInit() {    
+  async ngOnInit() {    
     console.log(this.remorquage.dateDepart)
+    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+      this.listShipper=this.filteredShippers=data;
+      /*this.listShipper.forEach((sh:Shipper)=>{
+        console.log('Shipper nom : '+ sh.nom)
+      })
+      this.filteredShippers.forEach((sh:Shipper)=>{
+        console.log('Shipper filtered nom : '+ sh.nom)
+      })//*/
+    }, err=>{
+      console.log(err);
+    })
     var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
       //+':'+
     var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
@@ -98,6 +130,11 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
     this.prixCalcul()
+  }
+  
+  gotoDetailRemorquage(r:Remorquage){
+    this.remorquage=r;
+    this.modeHistoire=-1;
   }
 
 //*
@@ -297,21 +334,42 @@ showMap() {
   // For input
   filterInputEnt(event) {
     console.log('Exec filterInputEnt !')
-    this.filteredEntreprises = []
-    for(let i = 0; i < this.listEntreprise.length; i++) {
-        let ent = this.listEntreprise[i];
+    //this.filteredEntreprises = []
+    this.filteredShippers = []
+    for(let i = 0; i < this.listShipper.length; i++) {
+        let ent = this.listShipper[i];
         if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
-            this.filteredEntreprises.push(ent);
+            this.filteredShippers.push(ent);
         }
+    }
+    /*
+    for(let i = 0; i < this.listEntreprise.length; i++) {
+      let ent = this.listEntreprise[i];
+      if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
+          this.filteredEntreprises.push(ent);
+      }
     }
     let ent = this.listEntreprise.find(res=>
       res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
       res.nom.length==this.remorquage.nomEntreprise.length
       )
+    //*/
+    let ent = this.listShipper.find(res=>
+      res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
+      res.nom.length==this.remorquage.nomEntreprise.length
+      )
     if(ent!=null){
-      console.log('ent.id : ' + ent.id)
-      console.log('ent.nom : ' + ent.nom)
       this.remorquage.nomEntreprise=ent.nom
+      this.prixBase1=ent.prixBase1;
+      this.inclus1=ent.inclus1;
+      this.prixKm1=ent.prixKm1;
+      this.prixBase2=ent.prixBase2;
+      this.inclus2=ent.inclus2;
+      this.prixKm2=ent.prixKm2;
+      this.prixBase3=ent.prixBase3;
+      this.inclus3=ent.inclus3;
+      this.prixKm3=ent.prixKm3;
+      this.typeServiceChange(this.remorquage.typeService);
     }
   }
 
@@ -338,6 +396,7 @@ showMap() {
     }
     
   }
+
   onCancel(){
     var r = confirm("Etes vous sur d'annuller ce cas ?")
     if(r==true){
@@ -352,6 +411,23 @@ showMap() {
       console.log('Le cas est continue.')
     }
   }
+
+  onDelete(rq:Remorquage){
+    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(r==true){
+      console.log("Le cas est annulle.")
+      if(rq.id>0){
+        this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
+          this.listRqs.splice(this.listRqs.indexOf(rq),1)
+          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
+        }, err=>{console.log(err)})
+      }
+    }
+    else {
+      console.log('Le cas est continue.')
+    }
+  }
+
   onSave(){
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
@@ -384,40 +460,60 @@ showMap() {
   }
   nomEntrepriseChange(ent){
     this.remorquage.nomEntreprise=ent.nom
-    console.log('ent.nom : '+ent.nom)
-    console.log('ent.id : '+ent.id)
-    this.prixCalcul()
+    this.prixBase1=ent.prixBase1;
+    this.inclus1=ent.inclus1;
+    this.prixKm1=ent.prixKm1;
+    this.prixBase2=ent.prixBase2;
+    this.inclus2=ent.inclus2;
+    this.prixKm2=ent.prixKm2;
+    this.prixBase3=ent.prixBase3;
+    this.inclus3=ent.inclus3;
+    this.prixKm3=ent.prixKm3;
+    this.typeServiceChange(this.remorquage.typeService);
   }
   nomEntrepriseInputChange(){
     console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
-    let ent = this.listEntreprise.find(res=>
+    /**
+      let ent = this.listEntreprise.find(res=>
+      res.nom.includes(this.remorquage.nomEntreprise) && 
+      res.nom.length==this.remorquage.nomEntreprise.length
+      )
+     */
+    let ent = this.listShipper.find(res=>
       res.nom.includes(this.remorquage.nomEntreprise) && 
       res.nom.length==this.remorquage.nomEntreprise.length
       )
     if(ent!=null){
-      console.log('ent.id : ' + ent.id)
-      console.log('ent.nom : ' + ent.nom)
       this.remorquage.nomEntreprise=ent.nom
+      this.prixBase1=ent.prixBase1;
+      this.inclus1=ent.inclus1;
+      this.prixKm1=ent.prixKm1;
+      this.prixBase2=ent.prixBase2;
+      this.inclus2=ent.inclus2;
+      this.prixKm2=ent.prixKm2;
+      this.prixBase3=ent.prixBase3;
+      this.inclus3=ent.inclus3;
+      this.prixKm3=ent.prixKm3;
+      this.typeServiceChange(this.remorquage.typeService);
     }
-    this.prixCalcul()
   }
 
   typeServiceChange(type){
     this.remorquage.typeService=type
     if(this.remorquage.typeService.includes('Leger')){
-      this.remorquage.prixBase=85.00;
-      this.remorquage.inclus=5.00;
-      this.remorquage.prixKm=2.65;
+      this.remorquage.prixBase=this.prixBase1;
+      this.remorquage.inclus=this.inclus1;
+      this.remorquage.prixKm=this.prixKm1;
     }
     else if(this.remorquage.typeService.includes('Moyenne')){
-      this.remorquage.prixBase=95.00;
-      this.remorquage.inclus=6.00;
-      this.remorquage.prixKm=3.15;
+      this.remorquage.prixBase=this.prixBase2;
+      this.remorquage.inclus=this.inclus2;
+      this.remorquage.prixKm=this.prixKm2;
     }
     else if(this.remorquage.typeService.includes('Lourd')){
-      this.remorquage.prixBase=105.00;
-      this.remorquage.inclus=7.00;
-      this.remorquage.prixKm=3.80;
+      this.remorquage.prixBase=this.prixBase3;
+      this.remorquage.inclus=this.inclus3;
+      this.remorquage.prixKm=this.prixKm3;
     }
     else{
       this.remorquage.prixBase=-1.00;
@@ -430,7 +526,16 @@ showMap() {
   onReset(){
     this.remorquage=new Remorquage();
   }
-
+  onHistoire(){
+    this.modeHistoire=-this.modeHistoire;
+    if(this.modeHistoire==1){
+      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+        this.listRqs=data;
+      }, err=>{
+        console.log(err)
+      })
+    }
+  }
 }
 
 interface marker {

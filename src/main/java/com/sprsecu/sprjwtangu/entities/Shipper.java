@@ -42,6 +42,17 @@ public class Shipper {
     private String loginName;
     private String password;    
     
+    // prix remorquage (bas - km - inclus)
+    private Float prixBase1=0.00f;
+    private Float prixKm1=0.00f;
+    private Float inclus1=0.00f; 
+    private Float prixBase2=0.00f;
+    private Float prixKm2=0.00f;
+    private Float inclus2=0.00f;
+    private Float prixBase3=0.00f;
+    private Float prixKm3=0.00f;
+    private Float inclus3=0.00f;
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

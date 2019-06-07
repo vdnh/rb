@@ -40,7 +40,7 @@
                       </tr>                                    
                       <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
                       <tr>
-                        <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
+                        <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Ext</th><th>Fax</th><!--th>Photo</th-->
                       </tr>
                       <tr *ngFor="let contact of contacts">
                         <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
@@ -48,6 +48,7 @@
                         <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
                         <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
                         <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
                         <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
                         <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
                         <td><button class="btn btn-primary" (click)="deleteContact(contact.id)">Delete</button></td>
@@ -59,10 +60,26 @@
                           <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
                           <td><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
                           <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
+                          <td><input class="form-control" type="text" [(ngModel)]="addcontact.extTel" /></td>
                           <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
                           <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
                           <td><button class="btn btn-primary" (click)="addContact()">Add</button></td>
                       </tr>   
+                      <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
+                      <tr>
+                        <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
+                      </tr>
+                      <tr>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase1" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase2" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase3" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3" /></td>
+                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+                      </tr>
               </table>            
        
           <table> 
@@ -89,17 +106,17 @@
               </tr>
               <tr><td colspan="2"><strong>Adresse</strong></td></tr>
               <tr>
-                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                  <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
               </tr>     
               <tr *ngFor="let adresse of adresses">
                   <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
               </tr>                                         
               <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
               <tr>
-                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                  <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Ext</th><th>Fax</th>
               </tr>
               <tr *ngFor="let contact of contacts">
-                  <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+                  <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.extTel}}</td><td>{{contact.fax}}</td>
               </tr>                
           </table>
               <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/shippers">Ok</button></div>
@@ -118,17 +135,17 @@
         </tr>
         <tr><td colspan="2"><strong>Adresse</strong></td></tr>
         <tr>
-            <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+            <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
         </tr>     
         <tr *ngFor="let adresse of adresses">
             <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
         </tr>                                         
         <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
         <tr>
-            <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+            <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Ext</th><th>Fax</th>
         </tr>
         <tr *ngFor="let contact of contacts">
-            <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+            <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.extTel}}</td><td>{{contact.fax}}</td>
         </tr>                
     </table>
         <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/business-messages">Retour</button></div>
