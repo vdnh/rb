@@ -1,5 +1,5 @@
 <div class="container" *ngIf="modeHistoire==1">
-    <button (click)="onHistoire()" class="btn btn-link">Retour</button>
+    <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
     <table class="table table-striped">
         <tr>
           <th>Numero</th><th (click)="dateSort()">Date</th><th (click)="entSort()">Entreprise</th><th (click)="contactSort()">Contact</th><th (click)="clientSort()">Client</th>
@@ -26,6 +26,7 @@
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
           <button (click)="onHistoire()" class="btn btn-link">Histoire</button>
+          <button (click)="ononGererEntreprise()" class="btn btn-link">Gerer Entreprise</button>
           <br>
         </div>
         <table class="table table-striped">
@@ -75,7 +76,14 @@
             <th>HeureReserve</th><td><input type="time" style="width: 8pc" [(ngModel)]="remorquage.timeResrvation" name="timeResrvation" class="form-control"></td>
           </tr>
           <tr>
-            <th>Contact</th><td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomContact" name="nomContact" class="form-control"></td>            
+            <th>Contact</th>
+            <td>
+              <input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomContact" name="nomContact" class="form-control">
+              <!--input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" (change)="nomEntrepriseInputChange()" (keyup)="filterInputEnt($event)" class="form-control"-->
+              <select type="text" [ngModel]="remorquage.nomContact" (ngModelChange)="nomContactChange($event)" style="margin-bottom: 0px; margin-top: 0px">
+                <option *ngFor="let c of contacts" [ngValue]="c">{{c.nom}}</option>
+              </select>
+            </td>            
             <th>Telephone</th>
             <td>            
               <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required>

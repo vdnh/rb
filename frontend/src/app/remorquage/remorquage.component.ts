@@ -8,6 +8,8 @@ import { Remorquage } from 'src/model/model.remorquage';
 import { RemorquagesService } from 'src/services/remorquages.service';
 import { ShippersService } from 'src/services/shippers.service';
 import { Shipper } from 'src/model/model.shipper';
+import { ContactsService } from 'src/services/contacts.service';
+import { Contact } from 'src/model/model.contact';
 
 @Component({
   selector: 'app-remorquage',
@@ -100,10 +102,12 @@ export class RemorquageComponent implements OnInit {
   today=new Date();
   modeHistoire: number=-1;
   listRqs: Remorquage[];
+  contacts: Contact[];
   
 
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
+    public contactsService:ContactsService,
     public shipperservice:ShippersService
     ) { 
   }
@@ -129,7 +133,7 @@ export class RemorquageComponent implements OnInit {
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
-    this.prixCalcul()
+    //this.prixCalcul()
   }
   
   gotoDetailRemorquage(r:Remorquage){
@@ -370,6 +374,11 @@ showMap() {
       this.inclus3=ent.inclus3;
       this.prixKm3=ent.prixKm3;
       this.typeServiceChange(this.remorquage.typeService);
+      this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+      }, err=>{
+        console.log(err);
+      });
     }
   }
 
@@ -427,7 +436,12 @@ showMap() {
       console.log('Le cas est continue.')
     }
   }
-
+  ononGererEntreprise(){
+    this.router.navigateByUrl("/shippers");
+  }
+  ononNewEntreprise(){
+    this.router.navigateByUrl("/new-shipper");
+  }
   onSave(){
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
@@ -458,6 +472,10 @@ showMap() {
     this.remorquage.dateDepart=date;
     console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
   }
+  nomContactChange(event){
+    this.remorquage.telContact=event.tel
+    this.remorquage.extTelContact=event.extTel
+  }
   nomEntrepriseChange(ent){
     this.remorquage.nomEntreprise=ent.nom
     this.prixBase1=ent.prixBase1;
@@ -470,6 +488,11 @@ showMap() {
     this.inclus3=ent.inclus3;
     this.prixKm3=ent.prixKm3;
     this.typeServiceChange(this.remorquage.typeService);
+    this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+      this.contacts=data;
+    }, err=>{
+      console.log(err);
+    });
   }
   nomEntrepriseInputChange(){
     console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
@@ -495,6 +518,11 @@ showMap() {
       this.inclus3=ent.inclus3;
       this.prixKm3=ent.prixKm3;
       this.typeServiceChange(this.remorquage.typeService);
+      this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+      }, err=>{
+        console.log(err);
+      });
     }
   }
 
