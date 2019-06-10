@@ -13,4 +13,6 @@ export class BonDeTravail{
     tps:number=0.00;
     tvq:number=0.00;
     total:number=0.00;
+    // status
+    fini=false;
 }

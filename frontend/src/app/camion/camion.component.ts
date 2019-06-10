@@ -283,17 +283,27 @@ export class CamionComponent implements OnInit {
     this.modeBonhist=0;
   }
   async onHistoireDetailler(bon:BonDeTravail){
+    this.bonDeTravail=bon;
     this.bonDeTravailHistoire=bon;
-    //if(this.modeBonhist==0){
+    if(bon.fini==true){
       this.modeBonhist=1;
       await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
         this.reparationsHistoire=data;
       }, err=>{
         console.log(err)
       })
-    //}
-    //else 
-      //this.modeBonhist=0;
+    }
+    else 
+    {
+      this.modeBonhist=0;
+      this.onBonDeTravail()
+      await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
+        this.reparations=data;
+        //this.reparationsHistoire=data;
+      }, err=>{
+        console.log(err)
+      })
+    }  
   }
 
   async onGarantieDetailler(idBon:number){
@@ -853,7 +863,42 @@ export class CamionComponent implements OnInit {
       console.log(err)
     })//*/
   }
-  
+  finiBonDeTravail(){    
+    this.bonDeTravail.idCamion=this.id;
+    this.bonDeTravail.sousTotal =0.00; 
+    this.bonDeTravail.fini=true; //finish, we can not add anymore.
+    this.reparations.forEach(async rep=>{
+      this.bonDeTravail.sousTotal += rep.prix;
+    })
+    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
+    this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
+      this.bonDeTravail=new BonDeTravail();   //data;      
+      console.log("data.id : " + data.id)
+      this.reparations.forEach(async rep=>{
+        rep.idBon=data.id;
+        console.log("rep.idBon : " + rep.idBon)
+        await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
+          rep.id = d.id;
+          //to empty the list reparations after save them
+          this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); //test to remove reparation dans list reparation
+        }, err=>{
+          console.log(err);
+        })
+      })
+    }, err=>{
+      console.log(err)
+    })
+    //* this code block is used to test before dicide
+    this.camionsService.saveCamions(this.camion).subscribe(data=>{      
+      console.log("Mise a jour camion apres valide le BonDeTravail")
+    }, err=>{
+      console.log(err);
+    });
+    //*/
+  }
+
   validBonDeTravail(){
     this.bonDeTravail.idCamion=this.id;
     this.bonDeTravail.sousTotal =0.00; 
@@ -871,7 +916,8 @@ export class CamionComponent implements OnInit {
       this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq                  
     })//*/    
     this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
-      this.bonDeTravail=new BonDeTravail();   //data;      
+      //this.bonDeTravail=new BonDeTravail();   //data;      
+      this.bonDeTravail=data;
       console.log("data.id : " + data.id)
       //console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
       //this.bonDeTravail.sousTotal =0.00; 
@@ -882,7 +928,7 @@ export class CamionComponent implements OnInit {
         await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
           rep.id = d.id;
           //to empty the list reparations after save them
-          this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); //test to remove reparation dans list reparation
+          //this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); //test to remove reparation dans list reparation
         }, err=>{
           console.log(err);
         })

@@ -30,7 +30,7 @@
     <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>
     <div *ngIf="modeDefinirEnt==1"><h3>Entretiens a definir</h3></div>
     <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div>
-    <div *ngIf="modeBonDeTravail==1"><h3>BonDeTravail</h3></div>
+    <div *ngIf="modeBonDeTravail==1"><h3>BonDeTravail {{bonDeTravail.id}}</h3></div>
     <div *ngIf="modeListReparation==1">
       <h3>
         List Reparation 
@@ -497,7 +497,8 @@
                 <tr>
                   <td><br></td><th>TOTAL : </th><td colspan="2">{{bonDeTravail.total | number : '1.2'}}</td> 
                   <td><br></td>
-                  <td><button class="btn btn-primary" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Valider BonDeTravail</button></td>
+                  <td><button class="btn btn-primary" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Enregistrer</button></td>
+                  <td><button class="btn btn-primary" (click)="finiBonDeTravail()" [disabled]="reparations.length==0">Fini</button></td>
                   <!--td><button class="btn btn-primary" (click)="printBonDeTravail('toprint')">Imprimer BonDeTravail</button></td-->
                 </tr>                
               </table>
@@ -612,7 +613,8 @@
           </tr>
           <tr *ngFor="let bon of bonDeTravails">
             <td>{{bon.technicien}}</td><td>{{bon.date}}</td><td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td><td>{{bon.remarque}}</td>
-            <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td>
+            <!--td><span *ngIf="bon.fini">fini</span><span *ngIf="!bon.fini">ouvert</span></td-->
+            <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)"><span *ngIf="bon.fini">fini</span><span *ngIf="!bon.fini"></button></td>
           </tr>
         </table>
         <div *ngIf="modeListGarantie==1">

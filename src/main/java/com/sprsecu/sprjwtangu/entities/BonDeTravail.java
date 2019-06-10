@@ -38,6 +38,8 @@ public class BonDeTravail implements Serializable{
     private Float tps;
     private Float tvq;
     private Float total;
+    // status
+    private Boolean fini=false;
     
     public void setDate(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
