@@ -8,4 +8,6 @@ export class Reparation{
     heures:number;
     taux:number;
     prix:number=0.00;
+    // status
+    saved=false;
 }

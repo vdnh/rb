@@ -863,6 +863,12 @@ export class CamionComponent implements OnInit {
       console.log(err)
     })//*/
   }
+  
+  newBonDeTravail(){
+    this.bonDeTravail=new BonDeTravail();
+    this.reparations=[];
+  }
+  
   finiBonDeTravail(){    
     this.bonDeTravail.idCamion=this.id;
     this.bonDeTravail.sousTotal =0.00; 
@@ -878,7 +884,7 @@ export class CamionComponent implements OnInit {
       console.log("data.id : " + data.id)
       this.reparations.forEach(async rep=>{
         rep.idBon=data.id;
-        console.log("rep.idBon : " + rep.idBon)
+        rep.saved=true;
         await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
           rep.id = d.id;
           //to empty the list reparations after save them
@@ -924,7 +930,7 @@ export class CamionComponent implements OnInit {
       this.reparations.forEach(async rep=>{
         //this.bonDeTravail.sousTotal += rep.prix;
         rep.idBon=data.id;
-        console.log("rep.idBon : " + rep.idBon)
+        rep.saved=true;
         await this.reparationsService.saveReparation(rep).subscribe((d:Reparation)=>{
           rep.id = d.id;
           //to empty the list reparations after save them

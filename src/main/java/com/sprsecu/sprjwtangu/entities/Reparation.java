@@ -33,6 +33,8 @@ public class Reparation implements Serializable{
     private Float heures;
     private Float taux;
     private Float prix;
+    // status
+    private Boolean saved=false;
     
     public void setDate(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

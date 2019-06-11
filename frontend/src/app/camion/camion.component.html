@@ -447,13 +447,13 @@
             <td>
               <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
             </td>
-            <td><input type="text" class="form-control" [(ngModel)]="rep.piece"/></td>
-            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur"/></td>
-            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
-            <td><input type="number" class="form-control" [(ngModel)]="rep.heures"/></td>
-            <td><input type="number" class="form-control" [(ngModel)]="rep.taux"/></td>
-            <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="prixChange()"></td>
-            <td><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.piece" [disabled]="rep.saved"/></td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur" [disabled]="rep.saved"/></td>
+            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.heures" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.taux" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="prixChange()" [disabled]="rep.saved"/></td>
+            <td><button class="btn btn-link" (click)="deleteReparation(rep)" [disabled]="rep.saved">Delete</button></td>
           </tr>  
           <tr>
             <th>Ajouter des Reparations</th>
@@ -496,9 +496,10 @@
                 </tr>    
                 <tr>
                   <td><br></td><th>TOTAL : </th><td colspan="2">{{bonDeTravail.total | number : '1.2'}}</td> 
-                  <td><br></td>
-                  <td><button class="btn btn-primary" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Enregistrer</button></td>
-                  <td><button class="btn btn-primary" (click)="finiBonDeTravail()" [disabled]="reparations.length==0">Fini</button></td>
+                  <td><br>&nbsp;</td>
+                  <td><button class="btn btn-link" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Enregistrer</button></td>
+                  <td><button class="btn btn-link" (click)="finiBonDeTravail()" [disabled]="bonDeTravail.id==null">Fini</button></td>
+                  <td><button class="btn btn-link" (click)="newBonDeTravail()" [disabled]="bonDeTravail.id==null">Nouveau</button></td>
                   <!--td><button class="btn btn-primary" (click)="printBonDeTravail('toprint')">Imprimer BonDeTravail</button></td-->
                 </tr>                
               </table>
@@ -512,12 +513,14 @@
         </table>
         <div id="toprint">
         <!--Review BonDeTravail - begin-->
-        <table *ngIf="modeListReparation==1 && modeBonhist==1">
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
-            <th><h4>BonDeTravail - &nbsp;</h4></th>
-            <th>Technicien : &nbsp;</th><td> {{bonDeTravailHistoire.technicien}} &nbsp;</td>
-            <th>&nbsp; Date : &nbsp;</th><td> {{bonDeTravailHistoire.date}} </td>
-          </tr>
+            <th><h4>BonDeTravail : {{bonDeTravailHistoire.id}}&nbsp;</h4></th>
+            <th>Technicien : {{bonDeTravailHistoire.technicien}} &nbsp;</th>
+            <th>Date : {{bonDeTravailHistoire.date}}</th>
+          </tr> 
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
             <th>Type de reparation : </th>    
             <td *ngIf="bonDeTravailHistoire.mecanique">Mecanique</td>
@@ -527,7 +530,7 @@
             <td *ngIf="bonDeTravailHistoire.entreposage">&nbsp;Entreposage</td>
           </tr>                              
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1  && modeBonhist==1">          
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
           <tr>
             <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th>
           </tr>
@@ -549,7 +552,7 @@
             <td>{{fiche.couleur}}</td>
           </tr>
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1  && modeBonhist==1">
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
             <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
             <th>ReparationAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Heures</th><th>$/heure</th><th style="text-align: center">Prix</th>                    
@@ -574,6 +577,8 @@
             </tr-->
           <!--/table>  
           <table *ngIf="modeListReparation==1 && modeBonhist==1"-->
+        </table>
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
             <th colspan="5">Remarques / Travaux A Prevoir</th>
             <th>&nbsp;</th>
@@ -586,16 +591,16 @@
             <td style="text-align: right" colspan="4" rowspan="4">
               <table>
                 <tr>
-                  <th>HorsTax : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.sousTotal | number : '1.2'}}</td>
+                  <th style="text-align: right">HorsTax : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.sousTotal | number : '1.2'}}</td>
                 </tr>
                 <tr>
-                  <th>TPS : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tps | number : '1.2'}}</td>
+                  <th style="text-align: right">TPS : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tps | number : '1.2'}}</td>
                 </tr>
                 <tr>
-                  <th>TVQ : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tvq | number : '1.2'}}</td>
+                  <th style="text-align: right">TVQ : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tvq | number : '1.2'}}</td>
                 </tr>    
                 <tr>
-                  <th>TOTAL : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.total | number : '1.2'}}</td> 
+                  <th style="text-align: right">TOTAL : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.total | number : '1.2'}}</td> 
                 </tr>                
               </table>
             </td>
@@ -609,12 +614,13 @@
         <!--Review BonDeTravail - end-->
         <table  class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==0">
           <tr>
-            <th>Technicien</th><th>Date</th><th>Prix(hors-tax)</th><th>Remarques - Travaux a prevoir</th><th>Detailler</th>
+            <th>Numero</th><th>Technicien</th><th>Date</th><th>Prix(hors-tax)</th><th>Remarques - Travaux a prevoir</th><th>Status</th><th>Detailler</th>
           </tr>
           <tr *ngFor="let bon of bonDeTravails">
+            <td>{{bon.id}}</td>
             <td>{{bon.technicien}}</td><td>{{bon.date}}</td><td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td><td>{{bon.remarque}}</td>
-            <!--td><span *ngIf="bon.fini">fini</span><span *ngIf="!bon.fini">ouvert</span></td-->
-            <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)"><span *ngIf="bon.fini">fini</span><span *ngIf="!bon.fini"></button></td>
+            <td><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>
+            <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td>
           </tr>
         </table>
         <div *ngIf="modeListGarantie==1">
