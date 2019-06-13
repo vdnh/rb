@@ -30,6 +30,8 @@ public class Reparation implements Serializable{
     private String fournisseur;
     @Temporal(TemporalType.DATE)
     private Date garantie;
+    private Float quantite;
+    private Float prixUnite;
     private Float heures;
     private Float taux;
     private Float prix;

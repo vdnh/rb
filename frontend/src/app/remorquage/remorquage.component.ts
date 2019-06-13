@@ -140,6 +140,7 @@ export class RemorquageComponent implements OnInit {
   gotoDetailRemorquage(r:Remorquage){
     this.remorquage=r;
     this.modeHistoire=-1;
+    this.showMap()
   }
 
 //*
@@ -277,7 +278,7 @@ prixCalcul(){
   this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
 }
 
-showMap() {
+async showMap() {
   let mapProp = {
     center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
     zoom: 6,
@@ -321,7 +322,7 @@ showMap() {
   this.map.fitBounds(bounds);
   //*/
   //document.getElementById('right-panel').innerHTML=remorquagre.testInnel
-  directionsService.route({
+  await directionsService.route({
     origin: this.remorquage.origin,
     destination: this.remorquage.destination,
     travelMode: google.maps.TravelMode.DRIVING
@@ -406,7 +407,16 @@ showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
-          this.remorquage=new Remorquage();;
+          this.remorquage=new Remorquage();
+          this.showMap()
+          /*
+          document.getElementById('right-panel').innerHTML='';
+          let mapProp = {
+            center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
+            zoom: 6,
+            //mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);//*/
         }, err=>{console.log(err)})
       }
     }

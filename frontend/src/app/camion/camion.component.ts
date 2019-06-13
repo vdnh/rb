@@ -823,9 +823,14 @@ export class CamionComponent implements OnInit {
     })
   }
   prixChange(){
-    if(this.reparation.heures>0 && this.reparation.taux>0)
-      this.reparation.prix = new Number((this.reparation.heures*this.reparation.taux).toFixed(2)).valueOf();
-  
+    let prixPieces=0.00, prixHeures = 0.00
+    if(this.reparation.quantite>0 && this.reparation.prixUnite>0){
+      prixPieces = new Number((this.reparation.quantite*this.reparation.prixUnite).toFixed(2)).valueOf();
+    }
+    if(this.reparation.heures>0 && this.reparation.taux>0){
+      prixHeures = new Number((this.reparation.heures*this.reparation.taux).toFixed(2)).valueOf();
+    }
+    this.reparation.prix = prixPieces + prixHeures
     this.bonDeTravail.sousTotal =0.00; 
     this.reparations.forEach(async rep=>{
       this.bonDeTravail.sousTotal += rep.prix;
@@ -896,7 +901,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
-    /* this code block is used to test before dicide
+    //* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
     }, err=>{
@@ -946,7 +951,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
-    /* this code block is used to test before dicide
+    //* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
     }, err=>{

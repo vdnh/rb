@@ -5,6 +5,8 @@ export class Reparation{
     piece:string;
     fournisseur:string;
     garantie:Date;
+    quantite:number;
+    prixUnite:number;
     heures:number;
     taux:number;
     prix:number=0.00;
