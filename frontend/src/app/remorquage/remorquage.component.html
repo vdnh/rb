@@ -15,11 +15,11 @@
         </tr>
       </table>
 </div>
-<div class="container" *ngIf="modeHistoire==-1">
-  <div class="col-sm-9 col-sm-offset-1">
-    <div class="panel panel-primary">        
-      <div> 
-        <div>     
+<!--div class="container" *ngIf="modeHistoire==-1"-->
+<div class="row" *ngIf="modeHistoire==-1">
+    <div class="panel panel-primary">
+      <div class="col-sm-12 col-lg-12 col-md-12">
+        <div class="row">
           <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
           <button (click)="onReset()" class="btn btn-link" [disabled]="(remorquage.id>0)">Reset</button>
           <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
@@ -27,262 +27,418 @@
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
           <button (click)="onHistoire()" class="btn btn-link">Histoire</button>
           <button (click)="ononGererEntreprise()" class="btn btn-link">Gerer Entreprise</button>
-          <br>
+          <!--button (click)="logout()" class="btn btn-link">Logout</button-->
+          <br><br><br>
+          <!--h4 class="first">Basic</h4>
+                    <p-autoComplete [(ngModel)]="remorquage.nomEntreprise" [suggestions]="filteredEntreprisesSingle" (completeMethod)="filterEnts($event)" field="name" [size]="30" [minLength]="1" placeholder="Entreprises" [dropdown]="true"></p-autoComplete>
+                    <span style="margin-left:10px">Entreprise: {{remorquage.nomEntreprise ? remorquage.nomEntreprise||remorquage.nomEntreprise : 'none'}}</span>
+                    <h3>Advanced</h3-->
         </div>
-        <table class="table table-striped">
-          <!--tr>
-            <td style="width: 20%"><button class="btn btn-success" (click)="printBonDeRemorquage('toprint')" >Print</button></td>
-            <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
-            <td><button class="btn btn-primary" (click)="onSave()" >Enregistrer</button></td>
-            <td><button class="btn btn-success" (click)="onFini()">Fini</button></td>
-            <td><button class="btn btn-success" (click)="onCancel()">Cancel</button></td>
-          </tr-->  
-          <tr>
-            <td>
-              <h4><strong>
-                Remorquage  
-              </strong></h4>
-            </td>
-            <td>
-              <h4>
-                {{remorquage.dateDepart | date: 'dd-MMM-yyyy HH:mm'}}
-                <!--input type="datetime-local" style="width: 11pc" [ngModel]="remorquage.dateDepart" name="dateDepart" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control" (ngModelChange)="dateChange($event)" disabled/-->
-              </h4> 
-            </td>
-            <td><h4>BonNumero : {{remorquage.id}} </h4></td>
-          </tr>
-        </table>
+        <div class="row">
+          <div class="col-md-4 col-sm-4 col-lg-4">
+            <h4><strong>Remorquage</strong></h4>
+          </div>
+          <div class="col-md-4 col-sm-4 col-lg-4">
+            <h4>
+              {{remorquage.dateDepart | date: 'dd-MMM-yyyy HH:mm'}}
+              <!--input type="datetime-local" style="width: 11pc" [ngModel]="remorquage.dateDepart" name="dateDepart" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control" (ngModelChange)="dateChange($event)" disabled/-->
+            </h4>
+          </div>
+          <div class="col-md-4 col-sm-4 col-lg-4">
+            <h4>BonNumero : {{remorquage.id}} </h4>
+          </div>
+        </div>
       </div>
       <div class="panel-body">
-        <div>
-        <table class="table table-striped">    
-          <tr>
-            <th>Entreprise</th>
-            <td>
-              <input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" (change)="nomEntrepriseInputChange()" (keyup)="filterInputEnt($event)" class="form-control">
-              <!--select type="text" [ngModel]="remorquage.nomEntreprise" (change)="nomEntrepriseInputChange()" style="margin-bottom: 0px; margin-top: 0px">
-                <option *ngFor="let e of listEntreprise" [ngValue]="e.nom">{{e.nom}}</option>
-              </select-->    
-              <select type="text" [ngModel]="remorquage.nomEntreprise" (ngModelChange)="nomEntrepriseChange($event)" style="margin-bottom: 0px; margin-top: 0px">
+        <div class="row">
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Entreprise</label>
+              <input type="text" [(ngModel)]="remorquage.nomEntreprise"
+                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
+                   (keyup)="filterInputEnt($event)">
+              <select type="text" class="form-control" [(ngModel)]="firstFilteredShipper"
+                  (ngModelChange)="nomEntrepriseChange($event)">
                 <option *ngFor="let e of filteredShippers" [ngValue]="e">{{e.nom}}</option>
-              </select>          
-            </td>            
-            <th>#PO</th><td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.numPO" name="numPO" class="form-control"></td>
-            <th>DateReserve</th>
-            <td>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">#PO</label>
+              <input type="text" [(ngModel)]="remorquage.numPO" name="numPO"
+                   class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">DateReserve</label>
               <!--input type="date"  date='yyyy-MMM-dd' style="width: 11pc" value="remorquage.dateReserve  | date: 'yyyy-MMM-dd'" min="remorquage.dateDepart | date: 'yyyy-MMM-dd'" name="dateReserve" class="form-control"-->
-              <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'" name="dateReserve" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control"/>
-            </td>
-            <th>HeureReserve</th><td><input type="time" style="width: 8pc" [(ngModel)]="remorquage.timeResrvation" name="timeResrvation" class="form-control"></td>
-          </tr>
-          <tr>
-            <th>Contact</th>
-            <td>
-              <input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomContact" name="nomContact" class="form-control">
-              <!--input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomEntreprise" name="nomEntreprise" (change)="nomEntrepriseInputChange()" (keyup)="filterInputEnt($event)" class="form-control"-->
-              <select type="text" [ngModel]="remorquage.nomContact" (ngModelChange)="nomContactChange($event)" style="margin-bottom: 0px; margin-top: 0px">
+              <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
+                   name="dateReserve" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">HeureReserve</label>
+              <input type="time" [(ngModel)]="remorquage.timeResrvation"
+                   name="timeResrvation" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Contact</label>
+              <input type="text"  [(ngModel)]="remorquage.nomContact"
+                   name="nomContact" class="form-control">
+              <select type="text" [(ngModel)]="remorquage.nomContact" (ngModelChange)="nomContactChange($event)" style="margin-bottom: 0px; margin-top: 0px">
                 <option *ngFor="let c of contacts" [ngValue]="c">{{c.nom}}</option>
               </select>
-            </td>            
-            <th>Telephone</th>
-            <td>            
-              <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required>
-            </td>
-            <th>Extension</th><td><input type="text" [(ngModel)]="remorquage.extTelContact" name="extTelContact" class="form-control"></td>
-          </tr>
-          <tr>
-            <th>Client</th><td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.nomClient" name="nomClient" class="form-control"></td>
-            <th>Tel 1er</th>
-            <td>
-              <input type="tel" [(ngModel)]="remorquage.telClient" name="telClient" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required >
-            </td>
-            <th>Tel 2em</th>
-            <td>
-              <input type="tel" [(ngModel)]="remorquage.telClient2em" name="telClient2em" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx" (keyup)="autoCharacter($event)" required >
-            </td>
-          </tr>
-        </table>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (keyup)="autoCharacter($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Extension</label>
+              <input type="text" [(ngModel)]="remorquage.extTelContact" name="extTelContact"
+                   class="form-control">
+            </div>
+          </div>
         </div>
-        <div>
-        <table class="table table-striped" style="margin-bottom: 0px" style="margin-top: 0px">
+        <div class="row">
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Client</label>
+              <input type="text"  [(ngModel)]="remorquage.nomClient"
+                   name="nomClient" class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Tel 1er</label>
+              <input type="tel" [(ngModel)]="remorquage.telClient" name="telClient"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (keyup)="autoCharacter($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Tel 2em</label>
+              <input type="tel" [(ngModel)]="remorquage.telClient2em" name="telClient2em"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (keyup)="autoCharacter($event)" required>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
           <!--tr style="margin: 0px">
-            <th><label class="control-label">Type</label></th>                                      
-            <td>
-              <select type="text" [ngModel]="remorquage.typeService" (ngModelChange)="typeServiceChange($event)"  style="margin-bottom: 0px" style="margin-top: 0px">
-                <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
-              </select>
-            </td>
-            <th>Description</th>
-            <td colspan="5"><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="remorquage.comments"  style="margin-bottom: 0px" style="margin-top: 0px"></textarea></td>
+          <th><label class="control-label">Type</label></th>
+          <td>
+            <select type="text" [ngModel]="remorquage.typeService" (ngModelChange)="typeServiceChange($event)"  style="margin-bottom: 0px" style="margin-top: 0px">
+            <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
+            </select>
+          </td>
+          <th>Description</th>
+          <td colspan="5"><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="remorquage.comments"  style="margin-bottom: 0px" style="margin-top: 0px"></textarea></td>
           </tr-->
-          <tr>
-            <th><label class="control-label">Type</label></th>
-            <th>Marque</th>
-            <th>Modele</th>
-            <th>Plaque</th>
-            <th>Couleur</th>
-            <th>Serie</th>
-          </tr>
-          <tr>
-            <td>
-              <select type="text" [ngModel]="remorquage.typeService" (ngModelChange)="typeServiceChange($event)"  style="margin-bottom: 0px" style="margin-top: 0px">
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label>Type</label>
+              <select type="text"  class="form-control" [ngModel]="remorquage.typeService"
+                  (ngModelChange)="typeServiceChange($event)">
                 <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
               </select>
-            </td>
-            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.marque" name="marque" class="form-control"/></td>
-            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.modele" name="modele" class="form-control"/></td>
-            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.plaque" name="plaque" class="form-control"/></td>
-            <td><input type="text" style="width: 10pc" [(ngModel)]="remorquage.couleur" name="couleur" class="form-control"/></td>
-            <td><input type="text" style="width: 15pc" [(ngModel)]="remorquage.serie" name="serie" class="form-control"/></td>
-          </tr>
-          <tr>    
-            <td colspan="8">
-              <span>Panne <input type="checkbox" [(ngModel)]="remorquage.panne"></span>
-              <span> - Accident <input type="checkbox" [(ngModel)]="remorquage.accident"></span>
-              <span> - PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut"></span>
-              <span> - DebaragePorte <input type="checkbox" [(ngModel)]="remorquage.debaragePorte"></span>
-              <span> - Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage"></span>
-              <span> - Essence <input type="checkbox" [(ngModel)]="remorquage.essence"></span>
-              <span> - ChangementPneu <input type="checkbox" [(ngModel)]="remorquage.changementPneu"></span>
-              <span> - Autres <input type="checkbox" [(ngModel)]="remorquage.autres"></span>
-            </td>
-          </tr>
-          <tr>
-            <th><label class="control-label">Adresse</label></th>
-            <th colspan="2">Numero & Rue</th>            
-            <th>Ville</th>
-            <th>Province</th>
-          </tr>       
-          <tr>
-              <th><label class="control-label">Origin</label></th>
-              <td colspan="2"><input type="text" [(ngModel)]="remorquage.originAdresse" name="origin" class="form-control" (change)="originChange()"/></td>
-              <td>
-                <select type="text" [(ngModel)]="remorquage.originVille" (ngModelChange)="originChange()">
-                  <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
-                </select>
-                <input type="text" [(ngModel)]="remorquage.originVille" name="originVille" class="form-control" (change)="originChange()">
-              </td>
-              <td>
-                <select type="text" [(ngModel)]="remorquage.originProvince" (ngModelChange)="originChange()">
-                  <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-                </select>
-              </td>
-            </tr>       
-            <tr>
-              <th><label class="control-label">Destination</label></th>
-              <td colspan="2"><input type="text" [(ngModel)]="remorquage.destAdresse" name="origin" class="form-control" (change)="destinationChange()"/></td>
-              <td>
-                <select type="text" [(ngModel)]="remorquage.destVille" (ngModelChange)="destinationChange()">
-                  <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-                </select>
-                <input type="text" [(ngModel)]="remorquage.destVille" name="destVille" class="form-control" (change)="destinationChange()">
-              </td>
-              <td>
-                <select type="text" [(ngModel)]="remorquage.destProvince" (ngModelChange)="destinationChange()">
-                  <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-                </select>
-              </td>    
-            </tr>           
-            <tr>
-              <th>Note Additionnelle</th>
-              <td colspan="8"><textarea name="comments" id="" cols="80" rows="1" [(ngModel)]="remorquage.comments"  style="margin-bottom: 0px" style="margin-top: 0px"></textarea></td>
-            </tr>
-            <tr>
-              <th>Note au Chauffeur</th>
-              <td colspan="8"><textarea name="comments" id="" cols="80" rows="1" [(ngModel)]="remorquage.driverNote"  style="margin-bottom: 0px" style="margin-top: 0px"></textarea></td>
-            </tr>
-            </table>
-        <table class="table table-striped">
-          <tr *ngIf="mode==2">                  
-              <th *ngIf="mode==2"><label class="control-label">PrixBase</label></th>                  
-              <th *ngIf="mode==2"><label class="control-label">Prix/Km</label></th>                  
-              <th *ngIf="mode==2"><label class="control-label">Inclus</label></th>  
-              <th><label class="control-label">Distance(kms)</label></th>              
-          </tr>
-          <tr>
-            <td><input type="number" [(ngModel)]="remorquage.prixBase" name="prixBase" class="form-control" (change)="prixCalcul()"/></td>
-            <td><input type="number" [(ngModel)]="remorquage.prixKm" name="prixKm" class="form-control" (change)="prixCalcul()"/></td>
-            <td><input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control" (change)="prixCalcul()"/></td>
-            <td *ngIf="mode==2">{{remorquage.distance}}</td>
-            <td style="text-align: right">
-              <table>
-                <tr><th>HorsTax:</th><td>{{remorquage.horstax | number : '1.2'}}</td></tr>
-                <tr><th>TPS:</th><td>{{remorquage.tps | number : '1.2'}}</td></tr>
-                <tr><th>TVQ:</th><td>{{remorquage.tvq | number : '1.2'}}</td></tr>
-                <tr><th>TOTAL:</th><td>{{remorquage.total | number : '1.2'}}</td></tr>
-              </table>
-            </td>
-          </tr>            
-          <!--tr>
-            <td style="width: 20%"><button class="btn btn-success" (click)="printBonDeRemorquage('toprint')" >Print</button></td>
-            <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
-            <td><button class="btn btn-primary" (click)="onSave()" >Enregistrer</button></td>
-            <td><button class="btn btn-success" (click)="onFini()">Fini</button></td>
-            <td><button class="btn btn-success" (click)="onCancel()">Cancel</button></td>
-          </tr-->  
-        </table>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Marque</label>
+              <input type="text"  [(ngModel)]="remorquage.marque" name="marque"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Modele</label>
+              <input type="text"  [(ngModel)]="remorquage.modele" name="modele"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Plaque</label>
+              <input type="text"  [(ngModel)]="remorquage.plaque" name="plaque"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Couleur</label>
+              <input type="text"  [(ngModel)]="remorquage.couleur" name="couleur"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Serie</label>
+              <input type="text" [(ngModel)]="remorquage.serie" name="serie"
+                   class="form-control" />
+            </div>
+          </div>
         </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>DebaragePorte <input type="checkbox"
+                            [(ngModel)]="remorquage.debaragePorte"></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>ChangementPneu <input type="checkbox"
+                             [(ngModel)]="remorquage.changementPneu"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Autres <input type="checkbox" [(ngModel)]="remorquage.autres"></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">&nbsp;</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Numero & Rue</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Ville</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Province</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">Origin</label>
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="remorquage.originAdresse" name="origin"
+                 class="form-control" (change)="originChange()" />
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
+                (ngModelChange)="originChange()">
+              <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+            </select>
+            <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
+                 class="form-control" (change)="originChange()">
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
+                (ngModelChange)="originChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">Destination</label>
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="remorquage.destAdresse" name="origin"
+                 class="form-control" (change)="destinationChange()" />
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
+                (ngModelChange)="destinationChange()">
+              <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+            </select>
+            <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
+                 class="form-control" (change)="destinationChange()">
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
+                (ngModelChange)="destinationChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3"><label class="control-label">Note Additionnelle</label></div>
+          <div class="col-sm-9">
+            <textarea name="comments" class="form-control" cols="80" rows="1"
+                  [(ngModel)]="remorquage.comments"
+                  style="margin-top: 0px"></textarea>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3"><label class="control-label">Note au Chauffeur</label></div>
+          <div class="col-sm-9">
+            <textarea name="comments" class="form-control" cols="80" rows="1"
+                  [(ngModel)]="remorquage.driverNote" style="margin-bottom: 0px"
+                  style="margin-top: 0px"></textarea>
+          </div>
+        </div>
+        <div *ngIf="mode==2" class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">PrixBase</label>
+              <input type="number" [(ngModel)]="remorquage.prixBase" name="prixBase"
+                   class="form-control" (change)="prixCalcul()" />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">Prix/Km</label>
+              <input type="number" [(ngModel)]="remorquage.prixKm" name="prixKm" class="form-control"
+                   (change)="prixCalcul()" />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">Inclus</label>
+              <input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control"
+                    (change)="prixCalcul()" />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label class="control-label">Kms</label>
+            <div  *ngIf="mode==2">{{remorquage.distance}}</div>
+          </div>
+          <div class="col-md-2">
+            <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
+            <table  >
+              <tr>
+                <td style="text-align: right">HorsTax:</td>
+                <td style="text-align: right">{{remorquage.horstax | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TPS:</td>
+                <td style="text-align: right">{{remorquage.tps | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TVQ:</td>
+                <td style="text-align: right">{{remorquage.tvq | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TOTAL:</td>
+                <td style="text-align: right">{{remorquage.total | number : '1.2'}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <!--tr>
+          <td style="width: 20%"><button class="btn btn-success" (click)="printBonDeRemorquage('toprint')" >Print</button></td>
+          <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
+          <td><button class="btn btn-primary" (click)="onSave()" >Enregistrer</button></td>
+          <td><button class="btn btn-success" (click)="onFini()">Fini</button></td>
+          <td><button class="btn btn-success" (click)="onCancel()">Cancel</button></td>
+        </tr-->
       </div>
     </div>
   </div>
-  <div>     
+  <div>
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
     <button (click)="onReset()" class="btn btn-link" [disabled]="(remorquage.id>0)">Reset</button>
-    <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
-    <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
-    <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
+    <button (click)="onSave()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
+    <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>
+    <button (click)="onCancel()" class="btn btn-link"
+        [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
     <br>
   </div>
   <br>
   <div class="row">
-    <div style="float: left; width:70%" class="row" >
+    <div style="float: left; width:70%" class="row">
       <div class="col-md-12">
         <div class="text-center">
           <h3>
-            <div #gmap style="width:100%;height:500px" ></div>
+            <div #gmap style="width:100%;height:500px"></div>
           </h3>
         </div>
       </div>
     </div>
-<!--for test directionService-->
+    <!--for test directionService-->
     <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
   </div>
-<div id="toprint" hidden>
-    <!--p style="font-size: 12pt" style="margin-inline: 5px">    
-      
-        <span style="font-size: 14pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label> &nbsp;&nbsp;-&nbsp;&nbsp;  Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}  
-        </span><br><br>
-
-        Entreprise : {{remorquage.nomEntreprise}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; #PO : {{remorquage.numPO}}  <br><br>
-        Contact : {{remorquage.nomContact}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}} <br><br>
-        
-        Client : {{remorquage.nomClient}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Telephone : {{remorquage.telClient}} <br><br>
-
-        Heure d'appel : {{remorquage.timeCall}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Heure Reserve : {{remorquage.timeResrvation}} <br><br>
-
-        Type : {{remorquage.typeService}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Marque : {{remorquage.marque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Modele : {{remorquage.modele}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Couleur : {{remorquage.couleur}} <br><br>
-        Plaque : {{remorquage.plaque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Serie : {{remorquage.serie}} <br><br>
-        Description : {{remorquage.comments}} <br><br>
-        
-        <span>Service : </span>
-        <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
-        <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
-        <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
-        <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
-        <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
-        <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
-        <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
-        <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
-        <br><br>
-
-        De : {{remorquage.origin}} <br><br>
-        A : {{remorquage.destination}} <br><br>
-        Distance(kms) : {{remorquage.distance}} <br><br>
-      </p-->
-    <table border='1' cellpadding='1' id='Tablbpm1' style="font-size: 12pt" style="margin-inline: 5px">
+  <div id="toprint" hidden>
+    <!--p style="font-size: 12pt" style="margin-inline: 5px">
+  
+      <span style="font-size: 14pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label> &nbsp;&nbsp;-&nbsp;&nbsp;  Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}
+      </span><br><br>
+  
+      Entreprise : {{remorquage.nomEntreprise}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; #PO : {{remorquage.numPO}}  <br><br>
+      Contact : {{remorquage.nomContact}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}} <br><br>
+  
+      Client : {{remorquage.nomClient}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Telephone : {{remorquage.telClient}} <br><br>
+  
+      Heure d'appel : {{remorquage.timeCall}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Heure Reserve : {{remorquage.timeResrvation}} <br><br>
+  
+      Type : {{remorquage.typeService}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Marque : {{remorquage.marque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Modele : {{remorquage.modele}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Couleur : {{remorquage.couleur}} <br><br>
+      Plaque : {{remorquage.plaque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Serie : {{remorquage.serie}} <br><br>
+      Description : {{remorquage.comments}} <br><br>
+  
+      <span>Service : </span>
+      <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
+      <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
+      <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
+      <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
+      <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
+      <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
+      <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
+      <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
+      <br><br>
+  
+      De : {{remorquage.origin}} <br><br>
+      A : {{remorquage.destination}} <br><br>
+      Distance(kms) : {{remorquage.distance}} <br><br>
+    </p-->
+    <table border='1' cellpadding='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
       <tr>
-          <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label></span></td>
-          <td>Date : {{remorquage.dateDepart | date: 'yyyy-MMM-dd HH:mm'}}</td>
+        <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label
+            *ngIf="remorquage.id>0"> : {{remorquage.id}}</label></span></td>
+        <td>Date : {{remorquage.dateDepart | date: 'yyyy-MMM-dd HH:mm'}}</td>
       </tr>
       <tr>
         <td>Entreprise : {{remorquage.nomEntreprise}}</td>
@@ -312,8 +468,8 @@
         <td>Serie : {{remorquage.serie}}</td>
       </tr>
       <!--tr>
-        <td colspan="3">Description : {{remorquage.comments}}</td>
-      </tr-->
+      <td colspan="3">Description : {{remorquage.comments}}</td>
+    </tr-->
       <tr>
         <td colspan="3">
           <span>Service : </span>
@@ -323,27 +479,42 @@
           <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
           <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
           <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
-          <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
+          <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu
+            </span>
           <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
         </td>
       </tr>
       <tr>
         <td><textarea cols="25" rows="3" style="font-size: 12pt">De : {{remorquage.origin}}</textarea></td>
-        <td><textarea cols="25" rows="3"style="font-size: 12pt">A : {{remorquage.destination}}</textarea></td>
+        <td><textarea cols="25" rows="3" style="font-size: 12pt">A : {{remorquage.destination}}</textarea></td>
         <td>Distance(kms) : {{remorquage.distance}}</td>
       </tr>
       <tr>
-        <td><textarea cols="25" rows="3" style="font-size: 11pt">Notes Additionnelles : {{remorquage.comments}}</textarea></td> 
-        <td><textarea cols="25" rows="3" style="font-size: 11pt">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>       
+        <td><textarea cols="25" rows="3"
+                style="font-size: 11pt">Notes Additionnelles : {{remorquage.comments}}</textarea></td>
+        <td><textarea cols="25" rows="3"
+                style="font-size: 11pt">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>
         <td style="text-align: right">
           <table style="font-size: 12pt" style="text-align: right">
-            <tr><th>HorsTax:</th><td>{{remorquage.horstax | number : '1.2'}}</td></tr>
-            <tr><th>TPS:</th><td>{{remorquage.tps | number : '1.2'}}</td></tr>
-            <tr><th>TVQ:</th><td>{{remorquage.tvq | number : '1.2'}}</td></tr>
-            <tr><th>TOTAL:</th><td>{{remorquage.total | number : '1.2'}}</td></tr>
+            <tr>
+              <th>HorsTax:</th>
+              <td>{{remorquage.horstax | number : '1.2'}}</td>
+            </tr>
+            <tr>
+              <th>TPS:</th>
+              <td>{{remorquage.tps | number : '1.2'}}</td>
+            </tr>
+            <tr>
+              <th>TVQ:</th>
+              <td>{{remorquage.tvq | number : '1.2'}}</td>
+            </tr>
+            <tr>
+              <th>TOTAL:</th>
+              <td>{{remorquage.total | number : '1.2'}}</td>
+            </tr>
           </table>
         </td>
-      </tr>            
+      </tr>
     </table>
   </div>
-</div>
+  

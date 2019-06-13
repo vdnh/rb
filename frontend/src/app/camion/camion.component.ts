@@ -870,15 +870,15 @@ export class CamionComponent implements OnInit {
   }
   
   finiBonDeTravail(){    
-    this.bonDeTravail.idCamion=this.id;
-    this.bonDeTravail.sousTotal =0.00; 
+    //this.bonDeTravail.idCamion=this.id;
+    //this.bonDeTravail.sousTotal =0.00; 
     this.bonDeTravail.fini=true; //finish, we can not add anymore.
-    this.reparations.forEach(async rep=>{
+    /*this.reparations.forEach(async rep=>{
       this.bonDeTravail.sousTotal += rep.prix;
-    })
-    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
-    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
-    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
+    })//*/
+    //this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    //this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    //this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
     this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       this.bonDeTravail=new BonDeTravail();   //data;      
       console.log("data.id : " + data.id)
@@ -896,7 +896,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
-    //* this code block is used to test before dicide
+    /* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
     }, err=>{
@@ -946,7 +946,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
-    //* this code block is used to test before dicide
+    /* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
     }, err=>{

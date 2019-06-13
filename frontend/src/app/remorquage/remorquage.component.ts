@@ -41,6 +41,7 @@ export class RemorquageComponent implements OnInit {
 
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
+  firstFilteredShipper='' //new Shipper();
 
   provinceList=myGlobals.provinceList ;
   
@@ -337,27 +338,20 @@ showMap() {
   
   // For input
   filterInputEnt(event) {
-    console.log('Exec filterInputEnt !')
+    console.log('event.target.value : ' + event.target.value)
     //this.filteredEntreprises = []
     this.filteredShippers = []
+    //this.firstFilteredShipper = '' //new Shipper();
     for(let i = 0; i < this.listShipper.length; i++) {
-        let ent = this.listShipper[i];
+        let ent:Shipper = this.listShipper[i];
         if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
-            this.filteredShippers.push(ent);
+          if(i==0) 
+            this.firstFilteredShipper=ent.nom;
+          console.log('firstFilteredShipper :'+ this.firstFilteredShipper)
+          this.filteredShippers.push(ent);
+          console.log(ent.nom)
         }
     }
-    /*
-    for(let i = 0; i < this.listEntreprise.length; i++) {
-      let ent = this.listEntreprise[i];
-      if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
-          this.filteredEntreprises.push(ent);
-      }
-    }
-    let ent = this.listEntreprise.find(res=>
-      res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
-      res.nom.length==this.remorquage.nomEntreprise.length
-      )
-    //*/
     let ent = this.listShipper.find(res=>
       res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
       res.nom.length==this.remorquage.nomEntreprise.length
@@ -473,6 +467,7 @@ showMap() {
     console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
   }
   nomContactChange(event){
+    this.remorquage.nomContact=event.nom
     this.remorquage.telContact=event.tel
     this.remorquage.extTelContact=event.extTel
   }
@@ -490,6 +485,7 @@ showMap() {
     this.typeServiceChange(this.remorquage.typeService);
     this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
       this.contacts=data;
+      console.log('this.contacts : ' + this.contacts)
     }, err=>{
       console.log(err);
     });
@@ -524,6 +520,7 @@ showMap() {
         console.log(err);
       });
     }
+    this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
 
   typeServiceChange(type){
@@ -563,6 +560,13 @@ showMap() {
         console.log(err)
       })
     }
+  }
+
+  logout(){
+    localStorage.clear();
+    //this.router.navigateByUrl("");
+    this.router.navigateByUrl('/transporters/');
+    this.router.navigate(['']);
   }
 }
 

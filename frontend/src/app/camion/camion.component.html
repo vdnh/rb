@@ -445,7 +445,7 @@
             <!--let reparation of reparations - add line reparation-->
             <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.reparationEffectuer"></td-->
             <td>
-              <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
+              <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer" [disabled]="rep.saved"></textarea>
             </td>
             <td><input type="text" class="form-control" [(ngModel)]="rep.piece" [disabled]="rep.saved"/></td>
             <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur" [disabled]="rep.saved"/></td>
