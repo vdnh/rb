@@ -13,6 +13,8 @@ import { Reparation } from 'src/model/model.reparation';
 import { BonDeTravail } from 'src/model/model.bonDeTravail';
 import { ReparationsService } from 'src/services/reparation.service';
 import { BonDeTravailsService } from 'src/services/bonDeTravail.service';
+import { Garantie } from 'src/model/model.garantie';
+import { GarantiesService } from 'src/services/garantie.service';
 
 @Component({
   selector: 'app-camion',
@@ -75,10 +77,15 @@ export class CamionComponent implements OnInit {
   //ficheCont:FichePhysiqueEntretienCont=new FichePhysiqueEntretienCont();
   fiche:FichePhysiqueEntretien = new FichePhysiqueEntretien();
   ficheCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();  
+
+  //
+  garanties:Array<Garantie>=[];
+  addGarantie:Garantie=new Garantie();
   
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
   public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router, 
-  public reparationsService:ReparationsService, public bonDeTravailsService:BonDeTravailsService){        
+  public reparationsService:ReparationsService, public bonDeTravailsService:BonDeTravailsService,
+  public garantieService:GarantiesService){        
     this.id=activatedRoute.snapshot.params['id'];
   }
 
@@ -258,6 +265,11 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     })
+    await this.garantieService.garantieDeCamion(this.camion.id).subscribe((data:Array<Garantie>)=>{
+      this.garanties=data;
+    }, err=>{
+      console.log(err)
+    })
   }
 
   async onListReparation(){
@@ -333,7 +345,7 @@ export class CamionComponent implements OnInit {
     this.router.navigate(['camion',id]);
   }
   async saveCamion(){
-    await this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
+    await this.camionsService.saveCamions(this.camion).subscribe(async (data:Camion)=>{
       this.camion=data;
       this.couleur01=this.codeCouleurEnt1(this.camion)
       this.couleur02=this.codeCouleurEnt2(this.camion)
@@ -344,43 +356,48 @@ export class CamionComponent implements OnInit {
       this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission)
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
       this.couleur09=this.codeCouleurInspect();
+    //*
     }, err=>{
       console.log(err);
-    });
-    await this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
-      this.fiche=data;
-      if(data!=null)
-        console.log("Existe fiche")
-      else
-        console.log("pas de fiche")            
-    }, err=>{
-      console.log()
-    })
-    await this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
-      this.ficheCont=data;
-      if(data!=null)
-        console.log("Existe fiche")
-      else
-        console.log("pas de fiche")            
-    }, err=>{
-      console.log()
-    })
-    await this.entretiens.forEach(obj => {
-      this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
+    });//*/
+      await this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
+        this.fiche=data;
+        if(data!=null)
+          console.log("Existe fiche")
+        else
+          console.log("pas de fiche")            
       }, err=>{
-        console.log(err)
+        console.log()
       })
-    });
-    await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
-    }, err=>{
-      console.log()
-    });
-    await this.reparations.forEach(obj => {
-      this.reparationsService.saveReparation(obj).subscribe(data=>{
+      await this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+        this.ficheCont=data;
+        if(data!=null)
+          console.log("Existe fiche")
+        else
+          console.log("pas de fiche")            
       }, err=>{
-        console.log(err)
+        console.log()
       })
-    });
+      await this.entretiens.forEach(obj => {
+        this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });
+      await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
+      }, err=>{
+        console.log()
+      });
+      await this.reparations.forEach(obj => {
+        this.reparationsService.saveReparation(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });
+    /*
+    }, err=>{
+      console.log(err);
+    });//*/
     this.router.navigate(['detail-transporter',this.camion.idTransporter]);
   }
   //*
@@ -883,10 +900,17 @@ export class CamionComponent implements OnInit {
     })//*/
     //this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
     //this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
-    //this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
+    //this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq  
+    //* faut pas cette bloc car elle sera fait dans camionService.saveCamion  
     this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       this.bonDeTravail=new BonDeTravail();   //data;      
       console.log("data.id : " + data.id)
+      this.entretiens.forEach(obj => {
+        this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });
       this.reparations.forEach(async rep=>{
         rep.idBon=data.id;
         rep.saved=true;
@@ -900,7 +924,7 @@ export class CamionComponent implements OnInit {
       })
     }, err=>{
       console.log(err)
-    })
+    })//*/
     //* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
@@ -925,13 +949,20 @@ export class CamionComponent implements OnInit {
       this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
       this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
       this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq                  
-    })//*/    
+    })//*/  
+    //* faut pas cette bloc car elle sera fait dans camionService.saveCamion  
     this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{
       //this.bonDeTravail=new BonDeTravail();   //data;      
       this.bonDeTravail=data;
       console.log("data.id : " + data.id)
       //console.log("this.bonDeTravail.id : " + this.bonDeTravail.id)
       //this.bonDeTravail.sousTotal =0.00; 
+      this.entretiens.forEach(obj => {
+        this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });
       this.reparations.forEach(async rep=>{
         //this.bonDeTravail.sousTotal += rep.prix;
         rep.idBon=data.id;
@@ -950,7 +981,7 @@ export class CamionComponent implements OnInit {
       //this.reparations.length = 0;  // empty the list reparations
     }, err=>{
       console.log(err)
-    })
+    })//*/
     //* this code block is used to test before dicide
     this.camionsService.saveCamions(this.camion).subscribe(data=>{      
       console.log("Mise a jour camion apres valide le BonDeTravail")
@@ -1013,5 +1044,18 @@ export class CamionComponent implements OnInit {
     if((this.camion.odometre-entretien.odoFait)<(entretien.kmTrage-entretien.kmAvertir))
       return true;
     return false;
+  }
+
+  onAddGarantie(){
+    if(this.addGarantie.nom.length>0){
+      this.addGarantie.idCamion=this.camion.id;
+      this.garantieService.saveGarantie(this.addGarantie).subscribe(data=>{}, err=>{});
+      this.garanties.push(this.addGarantie);
+      this.addGarantie=new Garantie();
+    }
+  }
+  onDeleteGarantie(g:Garantie){
+    this.garanties.splice(this.garanties.indexOf(g), 1)
+    this.garantieService.deleteGarantie(g.id).subscribe(data=>{},err=>{console.log(err)})
   }
 }

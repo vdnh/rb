@@ -51,6 +51,7 @@ import { BusinessMessagesComponent } from './business-messages/business-messages
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { RemorquageComponent } from './remorquage/remorquage.component';
 import { RemorquagesService } from 'src/services/remorquages.service';
+import { GarantiesService } from 'src/services/garantie.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -126,7 +127,7 @@ const appRoutes:Routes=[
   providers: [AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
-    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService],
+    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService, GarantiesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -571,7 +571,7 @@
         <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
           <tr>
             <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
-            <th>ReparationAFaire</th><th>Piece</th><!--th>Fournisseur</th--><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><!--th>$/heure</th--><th style="text-align: center">Prix</th>                    
+            <th>ReparationAFaire</th><th>Piece</th><!--th>Fournisseur</th--><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><th>$/heure</th><th style="text-align: center">Prix</th>                    
           </tr>
           <tr *ngFor="let rep of reparationsHistoire">
             <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.reparationEffectuer" disabled></td-->
@@ -587,7 +587,7 @@
             <td style="text-align: center">{{rep.quantite}}</td>
             <td style="text-align: right">{{rep.prixUnite | number : '1.2'}}</td>
             <td style="text-align: center">{{rep.heures}}</td>
-            <!--td style="text-align: right">{{rep.taux | number : '1.2'}}</td-->
+            <td style="text-align: right">{{rep.taux | number : '1.2'}}</td>
             <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
           </tr>
             <!--tr>
@@ -641,21 +641,47 @@
             <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td>
           </tr>
         </table>
-        <div *ngIf="modeListGarantie==1">
-          <table class="table table-striped table-sm table-responsive">
+        <div class="row" *ngIf="modeListGarantie==1">
+          <table class="table table-sm table-responsive" style="border:2px; border: slategray; float: left; width: 50%">
             <tr>
               <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
-              <td><button class="btn btn-primary" (click)="onListGarantie()">Chercher Piece</button></td>
+              <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Chercher Piece</button></td>
             </tr>
             <tr>
-              <th>Piece</th><th>Fournisseur</th><th>Prix Achete</th><th>Date Expiration</th>
+              <th>Piece</th><th>Fournisseur</th><th>Prix</th><th>Expiration</th>
             </tr>
             <tr *ngFor="let rep of reparations">
               <td>{{rep.piece}}</td>
               <td>{{rep.fournisseur}}</td>
               <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
               <td>{{rep.garantie}}</td>
-              <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Voir BonDetravail</button></td>
+              <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
+            </tr>
+          </table>
+          <table class="table table-sm table-responsive" style="border:2px; border: rgb(8, 10, 12); float: right; width: 50%">
+              <tr>
+                <td style="font-size: 14pt; font-weight: bold" colspan="2">Autre Garantie</td>
+              </tr>
+            <tr>
+              <th>Garantie</th>
+              <th>Prix</th>
+              <th>Expiration</th>
+              <th>Note</th>
+            </tr>
+            <tr>
+              <td><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+              <td><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+              <td><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration"/></td>
+              <td style="width: 10pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+              <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
+            </tr>
+            <tr style="font-size: 14pt; font-weight: bold">List</tr>
+            <tr  *ngFor="let g of garanties">
+                <td>{{g.nom}}</td>
+                <td>{{g.prix}}</td>
+                <td>{{g.expiration}}</td>
+                <td>{{g.note}}</td>
+                <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
             </tr>
           </table>
         </div>
