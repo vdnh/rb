@@ -1048,13 +1048,17 @@ export class CamionComponent implements OnInit {
 
   onAddGarantie(){
     if(this.addGarantie.nom.length>0){
+      let g=this.addGarantie;
       this.addGarantie.idCamion=this.camion.id;
-      this.garantieService.saveGarantie(this.addGarantie).subscribe(data=>{}, err=>{});
-      this.garanties.push(this.addGarantie);
+      this.garantieService.saveGarantie(this.addGarantie).subscribe((data:Garantie)=>{
+        g.id=data.id
+        this.garanties.push(g);
+      }, err=>{});
       this.addGarantie=new Garantie();
     }
   }
   onDeleteGarantie(g:Garantie){
+    console.log('g:garantie : '+g.id)
     this.garanties.splice(this.garanties.indexOf(g), 1)
     this.garantieService.deleteGarantie(g.id).subscribe(data=>{},err=>{console.log(err)})
   }

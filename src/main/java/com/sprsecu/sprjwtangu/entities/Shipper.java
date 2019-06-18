@@ -53,6 +53,29 @@ public class Shipper {
     private Float prixKm3=0.00f;
     private Float inclus3=0.00f;
     
+    // prix remorquage par cas
+    private Float panne1=85.00f;
+    private Float panne2=85.00f;
+    private Float panne3=85.00f;
+    private Float accident1=385.00f;
+    private Float accident2=385.00f;
+    private Float accident3=385.00f;
+    private Float pullOut1=85.00f;
+    private Float pullOut2=85.00f;
+    private Float pullOut3=85.00f;
+    private Float debarragePorte1=65.00f;
+    private Float debarragePorte2=65.00f;
+    private Float debarragePorte3=65.00f;
+    private Float boost1=65.00f;
+    private Float boost2=65.00f;
+    private Float boost3=65.00f;
+    private Float essence1=65.00f;
+    private Float essence2=65.00f;
+    private Float essence3=65.00f;
+    private Float changementPneu1=85.00f;
+    private Float changementPneu2=85.00f;
+    private Float changementPneu3=85.00f;
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

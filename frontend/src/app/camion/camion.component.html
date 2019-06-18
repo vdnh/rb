@@ -642,7 +642,7 @@
           </tr>
         </table>
         <div class="row" *ngIf="modeListGarantie==1">
-          <table class="table table-sm table-responsive" style="border:2px; border: slategray; float: left; width: 50%">
+          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 48%">
             <tr>
               <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
               <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Chercher Piece</button></td>
@@ -658,7 +658,10 @@
               <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
             </tr>
           </table>
-          <table class="table table-sm table-responsive" style="border:2px; border: rgb(8, 10, 12); float: right; width: 50%">
+          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 4%">
+            <tr></tr>
+          </table>
+          <table class="table table-sm table-responsive" style="border: slategray; float: right; width: 48%">
               <tr>
                 <td style="font-size: 14pt; font-weight: bold" colspan="2">Autre Garantie</td>
               </tr>
@@ -669,13 +672,13 @@
               <th>Note</th>
             </tr>
             <tr>
-              <td><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
-              <td><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
-              <td><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration"/></td>
-              <td style="width: 10pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+              <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+              <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+              <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+              <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
               <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
             </tr>
-            <tr style="font-size: 14pt; font-weight: bold">List</tr>
+            <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
             <tr  *ngFor="let g of garanties">
                 <td>{{g.nom}}</td>
                 <td>{{g.prix}}</td>

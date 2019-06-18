@@ -266,12 +266,12 @@
                  class="form-control" (change)="originChange()" />
           </div>
           <div class="col-sm-3">
+            <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
+            class="form-control" (change)="originChange()">
             <select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
                 (ngModelChange)="originChange()">
               <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
             </select>
-            <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
-                 class="form-control" (change)="originChange()">
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
@@ -290,12 +290,12 @@
                  class="form-control" (change)="destinationChange()" />
           </div>
           <div class="col-sm-3">
+            <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
+            class="form-control" (change)="destinationChange()">
             <select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
                 (ngModelChange)="destinationChange()">
               <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
             </select>
-            <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
-                 class="form-control" (change)="destinationChange()">
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
@@ -486,15 +486,15 @@
         </td>
       </tr>
       <tr>
-        <td><textarea cols="25" rows="3" style="font-size: 12pt">De : {{remorquage.origin}}</textarea></td>
-        <td><textarea cols="25" rows="3" style="font-size: 12pt">A : {{remorquage.destination}}</textarea></td>
+        <td><textarea cols="29" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">De : {{remorquage.origin}}</textarea></td>
+        <td><textarea cols="29" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">A : {{remorquage.destination}}</textarea></td>
         <td>Distance(kms) : {{remorquage.distance}}</td>
       </tr>
       <tr>
-        <td><textarea cols="25" rows="3"
-                style="font-size: 11pt">Notes Additionnelles : {{remorquage.comments}}</textarea></td>
-        <td><textarea cols="25" rows="3"
-                style="font-size: 11pt">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>
+        <td><textarea cols="30" rows="10"
+                style="font-size: 11pt; border: none; scroll-margin: unset">Notes Additionnelles : {{remorquage.comments}}</textarea></td>
+        <td><textarea cols="30" rows="10"
+                style="font-size: 11pt; border: none; scroll-margin: unset">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>
         <td style="text-align: right">
           <table style="font-size: 12pt" style="text-align: right">
             <tr>
