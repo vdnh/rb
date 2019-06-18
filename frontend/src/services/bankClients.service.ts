@@ -55,6 +55,14 @@ export class BankClientsService{
         .pipe(map(res => {return res}));
     }
 
+    envoyerMail(em:EmailMessage){  // to use with remorquage
+        this.loadTonken();
+        return this.http.post(this.adServer+":8080/email",em
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+
+    }
+
     envoyerMailToAll(em:EmailMessage){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/emailToAll",em

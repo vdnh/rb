@@ -20,6 +20,9 @@ export class Remorquage{
     plaque="";
     couleur="";
     serie="";
+    nomIntervenent="";
+    telIntervenent="";
+    emailIntervenent="";
     //
     distance:number=0.00;
     origin:string="";

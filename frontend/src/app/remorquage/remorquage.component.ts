@@ -10,6 +10,8 @@ import { ShippersService } from 'src/services/shippers.service';
 import { Shipper } from 'src/model/model.shipper';
 import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
+import { BankClientsService } from 'src/services/bankClients.service';
+import { EmailMessage } from 'src/model/model.emailMessage';
 
 @Component({
   selector: 'app-remorquage',
@@ -39,6 +41,7 @@ export class RemorquageComponent implements OnInit {
   listIdEntreprise=[1, 2, 3, 4];
   filteredEntreprises=this.listEntreprise;//*/
 
+  shipper=new Shipper();
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
@@ -105,11 +108,13 @@ export class RemorquageComponent implements OnInit {
   listRqs: Remorquage[];
   contacts: Contact[];
   
+  em:EmailMessage=new EmailMessage();
 
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
-    public shipperservice:ShippersService
+    public shipperservice:ShippersService,
+    public bankClientsService:BankClientsService, // use to send email
     ) { 
   }
 
@@ -485,6 +490,7 @@ async showMap() {
     this.remorquage.extTelContact=event.extTel
   }
   nomEntrepriseChange(ent){
+    this.shipper=ent
     this.remorquage.nomEntreprise=ent.nom
     this.prixBase1=ent.prixBase1;
     this.inclus1=ent.inclus1;
@@ -516,6 +522,7 @@ async showMap() {
       res.nom.length==this.remorquage.nomEntreprise.length
       )
     if(ent!=null){
+      this.shipper=ent
       this.remorquage.nomEntreprise=ent.nom
       this.prixBase1=ent.prixBase1;
       this.inclus1=ent.inclus1;
@@ -533,25 +540,71 @@ async showMap() {
         console.log(err);
       });
     }
+    else this.shipper=new Shipper()
     this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
 
+  calculePrixbase(){
+    let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
+    if(this.remorquage.typeService.includes('Leger')){ 
+      if(this.remorquage.panne) panne=this.shipper.panne1
+      if(this.remorquage.accident) accident=this.shipper.accident1
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut1
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte1
+      if(this.remorquage.survoltage) boost=this.shipper.boost1
+      if(this.remorquage.essence) essence=this.shipper.essence1
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu1
+      
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
+      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
+    }
+    else if(this.remorquage.typeService.includes('Moyenne')){ 
+      if(this.remorquage.panne) panne=this.shipper.panne2
+      if(this.remorquage.accident) accident=this.shipper.accident2
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte2
+      if(this.remorquage.survoltage) boost=this.shipper.boost2
+      if(this.remorquage.essence) essence=this.shipper.essence2
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu2
+
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
+      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
+    }
+    else if(this.remorquage.typeService.includes('Lourd')){ 
+      if(this.remorquage.panne) panne=this.shipper.panne3
+      if(this.remorquage.accident) accident=this.shipper.accident3
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut3
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte3
+      if(this.remorquage.survoltage) boost=this.shipper.boost3
+      if(this.remorquage.essence) essence=this.shipper.essence3
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu3
+
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
+      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
+    }
+  }
   typeServiceChange(type){
     this.remorquage.typeService=type
     if(this.remorquage.typeService.includes('Leger')){
-      this.remorquage.prixBase=this.prixBase1;
-      this.remorquage.inclus=this.inclus1;
-      this.remorquage.prixKm=this.prixKm1;
+      //this.remorquage.prixBase=this.prixBase1;
+      this.calculePrixbase()
+      this.remorquage.inclus=this.shipper.inclus1;
+      this.remorquage.prixKm=this.shipper.prixKm1;
     }
     else if(this.remorquage.typeService.includes('Moyenne')){
-      this.remorquage.prixBase=this.prixBase2;
-      this.remorquage.inclus=this.inclus2;
-      this.remorquage.prixKm=this.prixKm2;
+      //this.remorquage.prixBase=this.prixBase2;
+      this.calculePrixbase()
+      this.remorquage.inclus=this.shipper.inclus2;
+      this.remorquage.prixKm=this.shipper.prixKm2;
     }
     else if(this.remorquage.typeService.includes('Lourd')){
-      this.remorquage.prixBase=this.prixBase3;
-      this.remorquage.inclus=this.inclus3;
-      this.remorquage.prixKm=this.prixKm3;
+      //this.remorquage.prixBase=this.prixBase3;
+      this.calculePrixbase()
+      this.remorquage.inclus=this.shipper.inclus3;
+      this.remorquage.prixKm=this.shipper.prixKm3;
     }
     else{
       this.remorquage.prixBase=-1.00;
@@ -573,6 +626,20 @@ async showMap() {
         console.log(err)
       })
     }
+  }
+  
+  onEnvoyer(){
+    if(this.remorquage.emailIntervenent.length>10){
+      this.em.titre="Case numero : " + this.remorquage.id.toString()
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
+      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        alert("Votre courriel a ete envoye.")
+      }, err=>{
+        console.log()
+      })//*/
+    }
+    else 
+      alert("Checkez le courriel de chauffer, SVP!!!")
   }
 
   logout(){

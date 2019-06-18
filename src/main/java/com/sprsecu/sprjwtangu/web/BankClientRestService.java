@@ -82,6 +82,39 @@ import org.springframework.web.bind.annotation.RestController;
         return bankClientRepository.chercher("%"+mc+"%");
     }
 
+    @RequestMapping(value = "/email", method = RequestMethod.POST)  // to use with remorquage
+    public void email(@RequestBody EmailMessage em) throws MessagingException{
+        String titre = em.getTitre();
+        String contain = em.getContent();
+        mailServerProperties = System.getProperties();
+	mailServerProperties.put("mail.smtp.port", "587");
+	mailServerProperties.put("mail.smtp.auth", "true");
+	mailServerProperties.put("mail.smtp.starttls.enable", "true");
+
+	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+
+        Transport transport = getMailSession.getTransport("smtp");
+	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
+        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ventes18$$$9");
+        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
+        //*/
+	if(EmailValidator.getInstance().isValid(em.getEmailDest())){
+            //System.out.println("client.getEmail : "+ client.getEmail());
+            try {
+                generateAndSendEmail(contain, em.getEmailDest(), titre, transport);
+            } catch (AddressException ex) {
+                Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MessagingException ex) {
+                Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        
+        
+        //*we can move Transport to EmailAll function to avoid login many time
+        transport.close();
+        //*/
+        //generateAndSendEmail(contain, emails, titre);
+    }
+    
     @RequestMapping(value = "/emailToAll", method = RequestMethod.POST)
     public void emailToAll(@RequestBody EmailMessage em) throws MessagingException{
         String titre = em.getTitre();

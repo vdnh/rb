@@ -51,6 +51,9 @@ public class Remorquage implements Serializable{
     private String plaque="";
     private String couleur="";
     private String serie="";
+    private String nomIntervenent="";
+    private String telIntervenent="";
+    private String emailIntervenent="";
     //
     private Float distance;
     private String origin;

@@ -24,6 +24,7 @@
           <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
           <button (click)="onReset()" class="btn btn-link" [disabled]="(remorquage.id>0)">Reset</button>
           <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.fini">Enregistrer</button> 
+          <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini">Envoyer</button>
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Fini</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">Cancel</button>
           <button (click)="onHistoire()" class="btn btn-link">Histoire</button>
@@ -57,7 +58,10 @@
               <label for="">Entreprise</label>
               <input type="text" [(ngModel)]="remorquage.nomEntreprise"
                    name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
-                   (keyup)="filterInputEnt($event)">
+                   (focusout)="typeServiceChange(remorquage.typeService)" list="defaultShippers">
+              <datalist id="defaultShippers">
+                <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+              </datalist>
               <select type="text" class="form-control" [(ngModel)]="firstFilteredShipper"
                   (ngModelChange)="nomEntrepriseChange($event)">
                 <option *ngFor="let e of filteredShippers" [ngValue]="e">{{e.nom}}</option>
@@ -93,7 +97,10 @@
             <div class="form-group">
               <label for="">Contact</label>
               <input type="text"  [(ngModel)]="remorquage.nomContact"
-                   name="nomContact" class="form-control">
+                   name="nomContact" class="form-control" list="defaultContacts">
+              <datalist id="defaultContacts">
+                <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+              </datalist>
               <select type="text" [(ngModel)]="remorquage.nomContact" (ngModelChange)="nomContactChange($event)" style="margin-bottom: 0px; margin-top: 0px">
                 <option *ngFor="let c of contacts" [ngValue]="c">{{c.nom}}</option>
               </select>
@@ -140,7 +147,40 @@
             </div>
           </div>
         </div>
-  
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+              <div class="form-group">
+                <label for="">Chauffeur</label>
+                <input type="text"  [(ngModel)]="remorquage.nomIntervenant"
+                     name="nomIntervenant" class="form-control">
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+              <div class="form-group">
+                <label for="">Telephone</label>
+                <input type="tel" [(ngModel)]="remorquage.telIntervenant" name="telIntervenant"
+                     class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                     (keyup)="autoCharacter($event)" required>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+              <div class="form-group">
+                <label for="">Courriel</label>
+                <!--input type="email" [(ngModel)]="remorquage.emailIntervenent" name="emailIntervenent"
+                     class="form-control" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="xxx@yyy.zzz" required-->
+                <input type="text" [(ngModel)]="remorquage.emailIntervenent" name="emailIntervenent" class="form-control" list="defaultEmails" 
+                required>
+                  <datalist id="defaultEmails">
+                    <!--option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+                    <option value="jbond007@mi6.defence.com">
+                    <option value="jbourne@unknown.net">
+                    <option value="nfury@shield.org">
+                    <option value="tony@starkindustries.com">
+                    <option value="hulk@grrrrrrrr.arg"-->
+                  </datalist>
+              </div>
+            </div>
+          </div>
         <div class="row">
           <!--tr style="margin: 0px">
           <th><label class="control-label">Type</label></th>
@@ -200,48 +240,48 @@
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne"></label>
+              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident"></label>
+              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut"></label>
+              <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label>DebaragePorte <input type="checkbox"
-                            [(ngModel)]="remorquage.debaragePorte"></label>
+                            [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage"></label>
+              <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence"></label>
+              <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label>ChangementPneu <input type="checkbox"
-                             [(ngModel)]="remorquage.changementPneu"></label>
+                             [(ngModel)]="remorquage.changementPneu" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+          <!--div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label>Autres <input type="checkbox" [(ngModel)]="remorquage.autres"></label>
             </div>
-          </div>
+          </div-->
         </div>
         <div class="row">
           <div class="col-sm-3">
@@ -267,7 +307,10 @@
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
-            class="form-control" (change)="originChange()">
+            class="form-control" (change)="originChange()" list="defaultVilles">
+            <datalist id="defaultVilles">
+                <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+            </datalist>
             <select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
                 (ngModelChange)="originChange()">
               <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
@@ -291,7 +334,10 @@
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
-            class="form-control" (change)="destinationChange()">
+            class="form-control" (change)="destinationChange()" list="defaultVilles">
+            <!--datalist id="defaultVilles">
+                <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+            </datalist-->
             <select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
                 (ngModelChange)="destinationChange()">
               <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
@@ -455,6 +501,11 @@
         <td>Tel 2em : {{remorquage.telClient2em}}</td>
       </tr>
       <tr>
+        <td>Chauffeur : {{remorquage.nomIntervenant}}</td>
+        <td>Tel : {{remorquage.telIntervenant}}</td>
+        <td>Courriel : {{remorquage.emailIntervenent}}</td>
+      </tr>
+      <tr>
         <td>Date Reserve : {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}}</td>
         <td>Heure Reserve : {{remorquage.timeResrvation}}</td>
       </tr>
@@ -482,7 +533,7 @@
           <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
           <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu
             </span>
-          <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
+          <!--span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span-->
         </td>
       </tr>
       <tr>

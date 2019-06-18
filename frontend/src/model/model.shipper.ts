@@ -17,4 +17,26 @@ export class Shipper{
     prixBase3=105.00;
     prixKm3=3.80;
     inclus3=7.00;
+    // prix remorquage par cas
+    panne1=85;
+    panne2=85;
+    panne3=85;
+    accident1=385;
+    accident2=385;
+    accident3=385;
+    pullOut1=85;
+    pullOut2=85;
+    pullOut3=85;
+    debarragePorte1=65;
+    debarragePorte2=65;
+    debarragePorte3=65;
+    boost1=65;
+    boost2=65;
+    boost3=65;
+    essence1=65;
+    essence2=65;
+    essence3=65;
+    changementPneu1=85;
+    changementPneu2=85;
+    changementPneu3=85;
 }
