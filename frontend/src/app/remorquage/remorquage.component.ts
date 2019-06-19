@@ -200,7 +200,7 @@ async originChange(){
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
       await this.showMap()
-      this.prixCalcul()
+      this.typeServiceChange(this.remorquage.typeService)
     }
   }
   //this.showMap();
@@ -255,7 +255,7 @@ async destinationChange(){
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
       await this.showMap()
-      this.prixCalcul()
+      this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();
 }
@@ -588,23 +588,62 @@ async showMap() {
   }
   typeServiceChange(type){
     this.remorquage.typeService=type
+    if(this.remorquage.accident){
+      this.remorquage.inclus=0
+      this.remorquage.panne=false
+      this.remorquage.pullOut=false
+      this.remorquage.debaragePorte=false
+      this.remorquage.survoltage=false
+      this.remorquage.essence=false
+      this.remorquage.changementPneu=false
+    }
+    else if(this.remorquage.panne){
+      this.remorquage.accident=false
+      this.remorquage.pullOut=false
+      this.remorquage.debaragePorte=false
+      this.remorquage.survoltage=false
+      this.remorquage.essence=false
+      this.remorquage.changementPneu=false
+    }
+    else{
+      this.remorquage.prixKm=0;
+      this.remorquage.inclus=0;
+    }
     if(this.remorquage.typeService.includes('Leger')){
       //this.remorquage.prixBase=this.prixBase1;
       this.calculePrixbase()
-      this.remorquage.inclus=this.shipper.inclus1;
-      this.remorquage.prixKm=this.shipper.prixKm1;
+      if(this.remorquage.accident){
+        this.remorquage.inclus=0
+        this.remorquage.prixKm=this.shipper.prixKm1;
+      }
+      else if(this.remorquage.panne){
+        this.remorquage.inclus=this.shipper.inclus1;
+        this.remorquage.prixKm=this.shipper.prixKm1;
+      }
     }
     else if(this.remorquage.typeService.includes('Moyenne')){
       //this.remorquage.prixBase=this.prixBase2;
       this.calculePrixbase()
-      this.remorquage.inclus=this.shipper.inclus2;
-      this.remorquage.prixKm=this.shipper.prixKm2;
+      if(this.remorquage.accident){
+        this.remorquage.inclus=0
+        this.remorquage.prixKm=this.shipper.prixKm2;
+      }
+      else if(this.remorquage.panne){
+        this.remorquage.inclus=this.shipper.inclus2;
+        this.remorquage.prixKm=this.shipper.prixKm2;
+      }
     }
     else if(this.remorquage.typeService.includes('Lourd')){
       //this.remorquage.prixBase=this.prixBase3;
       this.calculePrixbase()
-      this.remorquage.inclus=this.shipper.inclus3;
-      this.remorquage.prixKm=this.shipper.prixKm3;
+      if(this.remorquage.accident){
+        this.remorquage.inclus=0
+        this.remorquage.prixKm=this.shipper.prixKm3;
+      }
+      else if(this.remorquage.panne){
+        this.remorquage.inclus=this.shipper.inclus3;
+        this.remorquage.prixKm=this.shipper.prixKm3;
+      }
     }
     else{
       this.remorquage.prixBase=-1.00;
@@ -629,10 +668,14 @@ async showMap() {
   }
   
   onEnvoyer(){
-    if(this.remorquage.emailIntervenent.length>10){
+    if(this.remorquage.emailIntervenant.length>10){
+      this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        //console.log('this.em.titre : ' + this.em.titre)
+        //console.log('this.em.emailDest : '+ this.em.emailDest)
+        //console.log('this.em.content : ' + this.em.content)
         alert("Votre courriel a ete envoye.")
       }, err=>{
         console.log()

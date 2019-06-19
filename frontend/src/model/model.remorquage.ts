@@ -5,7 +5,7 @@ export class Remorquage{
     nomEntreprise="";
     nomClient="";
     telClient="";
-    timeCall="00:00";
+    timeCall=this.dateDepart.getHours().toString+' : '+this.dateDepart.getMinutes().toString()  //"00:00";
     timeResrvation="";
     // add more
     dateReserve=new Date();
@@ -20,9 +20,9 @@ export class Remorquage{
     plaque="";
     couleur="";
     serie="";
-    nomIntervenent="";
-    telIntervenent="";
-    emailIntervenent="";
+    nomIntervenant="";
+    telIntervenant="";
+    emailIntervenant="";
     //
     distance:number=0.00;
     origin:string="";
