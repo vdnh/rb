@@ -171,7 +171,7 @@ import org.springframework.web.bind.annotation.RestController;
 	generateMailMessage = new MimeMessage(getMailSession);
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         generateMailMessage.setSubject(titre+",");
-        generateMailMessage.setSender(new InternetAddress("5147283785@vmobile.ca")); // teste to add sender
+        //generateMailMessage.setSender(new InternetAddress("5147283785@vmobile.ca")); // teste to add sender , but don't work 
 
         //* parse emailBody to find each line
         List<String> lines =Arrays.asList(emailBody.split("\n"));

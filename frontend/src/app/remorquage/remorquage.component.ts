@@ -448,10 +448,10 @@ async showMap() {
       console.log('Le cas est continue.')
     }
   }
-  ononGererEntreprise(){
+  onGererEntreprise(){
     this.router.navigateByUrl("/shippers");
   }
-  ononNewEntreprise(){
+  onNewEntreprise(){
     this.router.navigateByUrl("/new-shipper");
   }
   onSave(){
@@ -661,6 +661,13 @@ async showMap() {
     if(this.modeHistoire==1){
       this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
         this.listRqs=data;
+        this.listRqs.sort((b, a)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        })
       }, err=>{
         console.log(err)
       })

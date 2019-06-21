@@ -12,7 +12,7 @@
           <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td>
           <td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td>
           <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
-          <td><button class="btn btn-link" (click)="onCancel(r)">Delete</button></td>
+          <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
         </tr>
       </table>
 </div>
@@ -29,7 +29,7 @@
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">FinirCeCas</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerCeCas</button>
           <button (click)="onHistoire()" class="btn btn-link">Histoire</button>
-          <button (click)="ononGererEntreprise()" class="btn btn-link">Gerer Entreprise</button>
+          <!--button (click)="onGererEntreprise()" class="btn btn-link">Gerer Entreprise</button-->
           <!--button (click)="logout()" class="btn btn-link">Logout</button-->
           <br><br><br>
           <!--h4 class="first">Basic</h4>
