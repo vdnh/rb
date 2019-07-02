@@ -63,7 +63,7 @@
               <datalist id="defaultShippers">
                 <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
               </datalist>
-              <select type="text" class="form-control" [(ngModel)]="firstFilteredShipper"
+              <select type="text" class="form-control" [(ngModel)]="remorquage.nomEntreprise"
                   (ngModelChange)="nomEntrepriseChange($event)">
                 <option *ngFor="let e of filteredShippers" [ngValue]="e">{{e.nom}}</option>
               </select>

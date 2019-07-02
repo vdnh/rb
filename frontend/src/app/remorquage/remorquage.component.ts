@@ -487,6 +487,18 @@ async showMap() {
   nomContactChange(event){
     this.remorquage.nomContact=event.nom
     this.remorquage.telContact=event.tel
+    //console.log('this.remorquage.telContact : '+ this.remorquage.telContact)
+    if(this.remorquage.telContact.indexOf('-')<0)
+      {
+        let sub1 = this.remorquage.telContact.substr(0,3)
+        let sub2 = this.remorquage.telContact.substr(3,3)
+        let sub3 = this.remorquage.telContact.substr(6,this.remorquage.telContact.length-6)
+        //console.log('sub1 : '+ sub1)
+        //console.log('sub2 : '+ sub2)
+        //console.log('sub3 : '+ sub3)
+        this.remorquage.telContact=sub1+'-'+sub2+'-'+sub3
+      }
+      //console.log('this.remorquage.telContact after : '+ this.remorquage.telContact)
     this.remorquage.extTelContact=event.extTel
   }
   nomEntrepriseChange(ent){
