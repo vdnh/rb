@@ -52,6 +52,8 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 import { RemorquageComponent } from './remorquage/remorquage.component';
 import { RemorquagesService } from 'src/services/remorquages.service';
 import { GarantiesService } from 'src/services/garantie.service';
+import { RemorquageClientComponent } from './remorquage-client/remorquage-client.component';
+import { DetailRemorquageComponent } from './detail-remorquage/detail-remorquage.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -84,6 +86,8 @@ const appRoutes:Routes=[
   {path: 'detail-voyage/:id', component:  DetailVoyageComponent},
   {path: 'bank-client', component:  BankClientComponent},
   {path: 'remorquage', component:  RemorquageComponent},
+  {path: 'remorquage-client/:id', component:  RemorquageClientComponent},
+  {path: 'detail-remorquage/:id', component:  DetailRemorquageComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -115,6 +119,8 @@ const appRoutes:Routes=[
     BankClientComponent,
     BusinessMessagesComponent,
     RemorquageComponent,
+    RemorquageClientComponent,
+    DetailRemorquageComponent,
     //MapComponent,
   ],
   imports: [

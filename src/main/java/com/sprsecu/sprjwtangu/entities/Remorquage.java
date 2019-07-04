@@ -32,7 +32,7 @@ public class Remorquage implements Serializable{
     //@Temporal(TemporalType.DATE)
     //private Date dateArrive;
     
-    private String nomEntreprise="";
+    private String nomEntreprise=""; // bientot nom de Shipper
     private String nomClient="";
     private String telClient="";
     private String timeCall;
@@ -54,6 +54,8 @@ public class Remorquage implements Serializable{
     private String nomIntervenant="";
     private String telIntervenant="";
     private String emailIntervenant="";
+    private Long idEntreprise;  // bientot id de Shipper
+    private Boolean sent=false; // sent or didn't send to driver
     //
     private Float distance;
     private String origin;

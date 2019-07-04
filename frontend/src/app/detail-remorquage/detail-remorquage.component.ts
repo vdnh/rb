@@ -1,6 +1,7 @@
+import {Title} from '@angular/platform-browser';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { } from 'googlemaps';
 import * as myGlobals from 'src/services/globals';
@@ -14,11 +15,11 @@ import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
 
 @Component({
-  selector: 'app-remorquage',
-  templateUrl: './remorquage.component.html',
-  styleUrls: ['./remorquage.component.css']
+  selector: 'app-detail-remorquage',
+  templateUrl: './detail-remorquage.component.html',
+  styleUrls: ['./detail-remorquage.component.css']
 })
-export class RemorquageComponent implements OnInit {
+export class DetailRemorquageComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -111,41 +112,41 @@ export class RemorquageComponent implements OnInit {
   contacts: Contact[];
   
   em:EmailMessage=new EmailMessage();
-
+  id:number;
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
+    public activatedRoute:ActivatedRoute,
+    private titleService: Title,
     ) { 
-  }
+      this.id=activatedRoute.snapshot.params['id'];
+    }
 
   async ngOnInit() {    
-    console.log(this.remorquage.dateDepart)
-    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
+    sessionStorage.setItem('temporary', 'yes')
+    await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+      this.remorquage=data;
+      this.titleService.setTitle('Case : '+this.remorquage.id)
+      if(!this.remorquage.fini){
+        this.latLngOrigin= new google.maps.LatLng(
+          this.remorquage.originLat,
+          this.remorquage.originLong                                          
+        )
+        this.latLngDestination= new google.maps.LatLng(
+          this.remorquage.destLat,
+          this.remorquage.destLong                                          
+        )
+        this.showMap()
+      }
     }, err=>{
       console.log(err);
     })
-    var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
-      //+':'+
-    var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
-    //if(this.remorquage.timeCall.length)
-    this.remorquage.timeCall=heure+':'+minute
-    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
-    this.remorquage.typeService=this.serviceTypes[0];
-    this.typeServiceChange(this.serviceTypes[0]);
-    //this.prixCalcul()
+    
   }
   
   async gotoDetailRemorquage(r:Remorquage){
-    /*
     this.remorquage=r;
     this.modeHistoire=-1;
     if(!this.remorquage.fini){
@@ -158,8 +159,8 @@ export class RemorquageComponent implements OnInit {
         this.remorquage.destLong                                          
       )
       this.showMap()
-    }//*/
-    window.open("/detail-remorquage/"+r.id, "_blank")
+    }
+    //this.refreshMap()
   }
 
 //*

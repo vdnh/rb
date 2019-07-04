@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { } from 'googlemaps';
 import * as myGlobals from 'src/services/globals';
@@ -15,10 +15,10 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 
 @Component({
   selector: 'app-remorquage',
-  templateUrl: './remorquage.component.html',
-  styleUrls: ['./remorquage.component.css']
+  templateUrl: './remorquage-client.component.html',
+  styleUrls: ['./remorquage-client.component.css']
 })
-export class RemorquageComponent implements OnInit {
+export class RemorquageClientComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -105,10 +105,10 @@ export class RemorquageComponent implements OnInit {
 
   today=new Date();
   modeHistoire: number=-1;
-  listRqs: Remorquage[]; // appels waitting
-  listRqsSent: Remorquage[]; // appels sent
-  listRqsFini: Remorquage[]; // appels finished
+  listRqs: Remorquage[];
   contacts: Contact[];
+
+  id:number; // this is the id of shipper
   
   em:EmailMessage=new EmailMessage();
 
@@ -117,19 +117,22 @@ export class RemorquageComponent implements OnInit {
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
+    public activatedRoute:ActivatedRoute
     ) { 
+    this.id=activatedRoute.snapshot.params['id'];
   }
 
   async ngOnInit() {    
     console.log(this.remorquage.dateDepart)
-    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
+    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
+      this.shipper=data;
+      this.remorquage.nomEntreprise=this.shipper.nom
+      this.remorquage.idEntreprise=this.id
+      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+      }, err=>{
+        console.log(err);
+      });
     }, err=>{
       console.log(err);
     })
@@ -144,22 +147,10 @@ export class RemorquageComponent implements OnInit {
     //this.prixCalcul()
   }
   
-  async gotoDetailRemorquage(r:Remorquage){
-    /*
+  gotoDetailRemorquage(r:Remorquage){
     this.remorquage=r;
     this.modeHistoire=-1;
-    if(!this.remorquage.fini){
-      this.latLngOrigin= new google.maps.LatLng(
-        this.remorquage.originLat,
-        this.remorquage.originLong                                          
-      )
-      this.latLngDestination= new google.maps.LatLng(
-        this.remorquage.destLat,
-        this.remorquage.destLong                                          
-      )
-      this.showMap()
-    }//*/
-    window.open("/detail-remorquage/"+r.id, "_blank")
+    this.showMap()
   }
 
 //*
@@ -273,15 +264,6 @@ async destinationChange(){
     }
   }//this.showMap();
 }
-/* async refreshMap(){
-  //if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
-    //await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-    await this.showMap()
-    //await this.originChange();
-    //await this.destinationChange();
-    //this.typeServiceChange(this.remorquage.typeService)
-  //}
-}//*/
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
@@ -407,40 +389,14 @@ async showMap() {
       });
     }
   }
-  //(keyup)="autoCharacter($event)"  in html
-  autoCharacter(event:any){
-    if (event.target.value.length === 3) {
-      event.target.value=event.target.value + '-';
-    }
-    if (event.target.value.length === 7) {
-      event.target.value=event.target.value + '-';
-    }
-  }
-  
-  reformTel(tel:any){
-    console.log("tel before: " + tel)
-    if(tel.indexOf('-')<0)
-      {
-        let sub1 = tel.substr(0,3)
-        let sub2 = tel.substr(3,3)
-        let sub3 = tel.substr(6,tel.length-6)
-        tel=sub1+'-'+sub2+'-'+sub3
-      }
-      console.log("tel after: " + tel)
-    return tel;
-  }
 
-  reformTelEvent(tel:any){
-    //console.log("tel before: " + tel.target.value)
-    if(tel.target.value.indexOf('-')<0)
-      {
-        let sub1 = tel.target.value.substr(0,3)
-        let sub2 = tel.target.value.substr(3,3)
-        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
-        tel.target.value=sub1+'-'+sub2+'-'+sub3
-      }
-    //console.log("tel after: " + tel.target.value)
-    return tel.target.value;
+  autoCharacter(event:any){
+        if (event.target.value.length === 3) {
+          event.target.value=event.target.value + '-';
+        }
+        if (event.target.value.length === 7) {
+          event.target.value=event.target.value + '-';
+        }
   }
 
   onFini(){
@@ -465,7 +421,7 @@ async showMap() {
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
           this.remorquage=new Remorquage();
-          //this.showMap();
+          this.showMap()
           /*
           document.getElementById('right-panel').innerHTML='';
           let mapProp = {
@@ -488,11 +444,7 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
-          if(rq.fini)
-            this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
-          else if(rq.sent)
-            this.listRqsSent.splice(this.listRqsSent.indexOf(rq),1)
-          else this.listRqs.splice(this.listRqs.indexOf(rq),1)
+          this.listRqs.splice(this.listRqs.indexOf(rq),1)
           //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
         }, err=>{console.log(err)})
       }
@@ -503,7 +455,6 @@ async showMap() {
   }
   onGererEntreprise(){
     this.router.navigateByUrl("/shippers");
-    //window.open("/shippers", "_blank")  // to test open in new tab
   }
   onNewEntreprise(){
     this.router.navigateByUrl("/new-shipper");
@@ -654,7 +605,7 @@ async showMap() {
   }
   typeServiceChange(type){
     this.remorquage.typeService=type
-    /*if(this.remorquage.accident){
+    if(this.remorquage.accident){
       this.remorquage.inclus=0
       this.remorquage.panne=false
       this.remorquage.pullOut=false
@@ -670,8 +621,8 @@ async showMap() {
       this.remorquage.survoltage=false
       this.remorquage.essence=false
       this.remorquage.changementPneu=false
-    }//*/
-    if(!this.remorquage.accident && !this.remorquage.panne){
+    }
+    else{
       this.remorquage.prixKm=0;
       this.remorquage.inclus=0;
     }
@@ -721,29 +672,20 @@ async showMap() {
 
   onReset(){
     this.remorquage=new Remorquage();
+    this.remorquage.nomEntreprise=this.shipper.nom
+    this.remorquage.idEntreprise=this.id
   }
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
-        this.listRqs=[]  //data;
-        this.listRqsSent=[]
-        this.listRqsFini=[]
-        //*
-        data.sort((b, a)=>{
+      this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
+        this.listRqs=data;
+        this.listRqs.sort((b, a)=>{
           if(a.id>b.id)
             return 1;
           if(a.id<b.id)
             return -1;
           return 0;
-        })//*/
-        data.forEach(rq=>{
-          //if(!rq.sent && !rq.fini) 
-          //this.listRqs.push(rq)
-          //*
-          if(rq.fini) this.listRqsFini.push(rq)
-          else if (rq.sent) this.listRqsSent.push(rq)
-          else this.listRqs.push(rq)//*/
         })
       }, err=>{
         console.log(err)
@@ -752,7 +694,7 @@ async showMap() {
   }
   
   onEnvoyer(){
-    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+    if(this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
@@ -761,8 +703,6 @@ async showMap() {
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
         alert("Votre courriel a ete envoye.")
-        this.remorquage.sent=true;
-        this.onSave();
       }, err=>{
         console.log()
       })//*/

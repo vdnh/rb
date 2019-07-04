@@ -84,8 +84,8 @@
                   <!--button routerLink="/propos" class="btn btn-link">Propos</button>
                   <button routerLink="/bank-client" class="btn btn-link">Publicite</button>                  
                   <button routerLink="/transport" class="btn btn-link">Transport</button-->
-                  <button routerLink="/remorquage" class="btn btn-link">Remorquage</button> 
-                  <button (click)="logout()" class="btn btn-link">Logout</button>
+                  <button routerLink="/remorquage" class="btn btn-link" *ngIf="{{sessionStorage.getItem('temporary')}}.includes('yes')">Remorquage</button> 
+                  <button (click)="logout()" class="btn btn-link" *ngIf="{{sessionStorage.getItem('temporary')}}.includes('yes')">Logout</button>
                 </div>
               </div>
                 <!--p></p-->

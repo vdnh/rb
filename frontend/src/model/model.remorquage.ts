@@ -24,6 +24,8 @@ export class Remorquage{
     nomIntervenant="";
     telIntervenant="";
     emailIntervenant="";
+    idEntreprise:number;  // bientot id de Shipper
+    sent=false; // sent or didn't send to driver
     //
     distance:number=0.00;
     origin:string="";

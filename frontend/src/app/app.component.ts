@@ -84,6 +84,7 @@ export class AppComponent implements OnInit{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);          
           if(res.id!=null) localStorage.setItem('userId', res.id.toString());
+          console.log('res.id : '+res.id)
           if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
           if(res.roleName.includes('TRANSPORTER')) {         
             //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
@@ -96,8 +97,8 @@ export class AppComponent implements OnInit{
             //localStorage.setItem('userId', res.id.toString());
           }
           if(res.roleName.includes('DISPATCH')) {         
-            //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
-            this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+            if(res.id!=null) this.router.navigate(['/remorquageClient/'+ res.id], {skipLocationChange: true});
+            else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
             //localStorage.setItem('userId', res.id.toString());
           }
           //http://localhost:4200/remorquage
@@ -148,7 +149,7 @@ export class AppComponent implements OnInit{
     this.router.navigateByUrl("");
     //window.close();
   }
-  // on close window
+  /*/ on close window
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event){
     //alert("I'm leaving the app");
@@ -161,7 +162,7 @@ export class AppComponent implements OnInit{
     localStorage.removeItem('userId');
     this.role="";
     this.router.navigateByUrl("");
-  }
+  }//*/
   onTransporter(){
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
