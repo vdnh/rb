@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
@@ -119,7 +119,27 @@ export class RemorquageComponent implements OnInit {
     public bankClientsService:BankClientsService, // use to send email
     ) { 
   }
-
+  /*/ on close window
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event){
+    //alert("I'm leaving the app");
+    //localStorage.clear();
+    localStorage.removeItem('tonken');
+    localStorage.removeItem('nom');
+    localStorage.removeItem('tel');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
+    this.role="";
+    this.router.navigateByUrl("");
+  }//*/
+  
+  // on focus windows
+  @HostListener('window:focus', ['$event'])
+  onfocus(event:any):void {
+    this.onRefresh()
+  }
+  
   async ngOnInit() {    
     console.log(this.remorquage.dateDepart)
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
@@ -273,15 +293,40 @@ async destinationChange(){
     }
   }//this.showMap();
 }
-/* async refreshMap(){
-  //if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
-    //await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-    await this.showMap()
-    //await this.originChange();
-    //await this.destinationChange();
-    //this.typeServiceChange(this.remorquage.typeService)
-  //}
-}//*/
+onSortDate(data:Array<Remorquage>){
+  data.sort((a, b)=>{
+    if(a.dateReserve>b.dateReserve)
+      return 1;
+    if(a.dateReserve<b.dateReserve)
+      return -1;
+    return 0;
+  })
+}
+onRefresh(){
+  this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+    this.listRqs=[]  //data;
+    this.listRqsSent=[]
+    this.listRqsFini=[]
+    //*
+    data.sort((b, a)=>{
+      if(a.id>b.id)
+        return 1;
+      if(a.id<b.id)
+        return -1;
+      return 0;
+    })//*/
+    data.forEach(rq=>{
+      //if(!rq.sent && !rq.fini) 
+      //this.listRqs.push(rq)
+      //*
+      if(rq.fini) this.listRqsFini.push(rq)
+      else if (rq.sent) this.listRqsSent.push(rq)
+      else this.listRqs.push(rq)//*/
+    })
+  }, err=>{
+    console.log(err)
+  })
+}
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;

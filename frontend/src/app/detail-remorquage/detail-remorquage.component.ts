@@ -13,6 +13,7 @@ import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
+import {VarsGlobal} from 'src/services/VarsGlobal'
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -120,16 +121,18 @@ export class DetailRemorquageComponent implements OnInit {
     public bankClientsService:BankClientsService, // use to send email
     public activatedRoute:ActivatedRoute,
     private titleService: Title,
+    public varsGlobal:VarsGlobal,
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
 
   async ngOnInit() {    
-    sessionStorage.setItem('temporary', 'yes')
+    sessionStorage.setItem('temporary', 'yes') // to control we are in session
+    this.varsGlobal.session='yes'  // to control we are in session
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
-      this.titleService.setTitle('Case : '+this.remorquage.id)
-      if(!this.remorquage.fini){
+      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.remorquage.originLat,
           this.remorquage.originLong                                          
@@ -450,7 +453,8 @@ async showMap() {
       console.log("Le cas est termine.")
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
-        this.remorquage=new Remorquage();
+        //this.remorquage=new Remorquage();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{console.log(err)})
     }
     else {
@@ -465,7 +469,8 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
-          this.remorquage=new Remorquage();
+          //this.remorquage=new Remorquage();
+          window.close();
           //this.showMap();
           /*
           document.getElementById('right-panel').innerHTML='';
@@ -764,6 +769,7 @@ async showMap() {
         alert("Votre courriel a ete envoye.")
         this.remorquage.sent=true;
         this.onSave();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/

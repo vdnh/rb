@@ -17,6 +17,10 @@ export class AppComponent implements OnInit{
   role:string="";
   modeSignUp=0;
   textSign="Nouveau Transporter ou Shipper"
+
+  // to control if we are in the session
+  session='no';
+
   //nombreMessages: number=this.varsGlobal.nombreMessages;
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
               public varsGlobal:VarsGlobal, private router:Router) { }
@@ -46,6 +50,9 @@ export class AppComponent implements OnInit{
       //console.log("this role : "+this.role)
     }
     //*/
+    sessionStorage.setItem('temporary', 'no')
+    if(sessionStorage.getItem('temporary')!=null)
+      this.session=this.varsGlobal.session; // sessionStorage.getItem('temporary')
   }
 
   signing(){

@@ -50,7 +50,7 @@
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
-          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">TerminerAppel</button>         
+          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAppel</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerAppel</button>
           <br><br><br>
           <!--h4 class="first">Basic</h4>
@@ -467,9 +467,9 @@
     <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
     <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
-        <span *ngIf="!remorquage.sent">EnvoyerAuChauffer</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffer</span>
+        <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
     </button>
-    <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffer</button-->
+    <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffeur</button-->
     <!--button (click)="refreshMap()" class="btn btn-link" [disabled]="remorquage.id==null">RafraichirMap</button-->
     <br>
   </div>
@@ -534,14 +534,14 @@
         <td>Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}}</td>
       </tr>
       <tr>
-        <td>Client : {{remorquage.nomClient}}</td>
-        <td>Tel 1er : {{remorquage.telClient}}</td>
-        <td>Tel 2em : {{remorquage.telClient2em}}</td>
-      </tr>
-      <tr>
         <td>Chauffeur : {{remorquage.nomIntervenant}}</td>
         <td>Tel : {{remorquage.telIntervenant}}</td>
         <td>Courriel : {{remorquage.emailIntervenant}}</td>
+      </tr>
+      <tr>
+        <td>Client : {{remorquage.nomClient}}</td>
+        <td>Tel 1er : {{remorquage.telClient}}</td>
+        <td>Tel 2em : {{remorquage.telClient2em}}</td>
       </tr>
       <tr>
         <td>Date Reserve : {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}}</td>

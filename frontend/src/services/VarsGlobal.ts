@@ -6,6 +6,7 @@ import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 export class VarsGlobal{
   
   nombreMessages:number=0; // number of messages 
+  session='no';
   
   constructor(public messagesService: MessagesService){}
   refreshData(){

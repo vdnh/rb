@@ -1,6 +1,63 @@
+<hr style="border: 1px dotted black"/>
 <div class="container" *ngIf="modeHistoire==1">
-    <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
-    <table class="table">
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
+      En attente
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
+      En cours
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
+      Fini
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqs" style="color: green; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqsSent)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqsSent" style="color:orange; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqsFini" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+    <!--table class="table">
       <tr>
         <th>code couleur - </th>
         <th>vert : en attent</th>
@@ -15,8 +72,6 @@
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td-->
-        <!--td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
         <td>en attente</td>
         <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
         <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
@@ -26,8 +81,6 @@
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td>
-        <td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
         <td>en cours</td>
         <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
         <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
@@ -37,13 +90,11 @@
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
         <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td>
-        <td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
         <td>fini</td>
         <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
         <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
       </tr>
-    </table>
+    </table-->
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
 <div class="container" *ngIf="modeHistoire==-1">
@@ -54,7 +105,7 @@
           <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
           <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.id!=null">NumeroterAppel</button>
           <button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button> 
-          <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null">EnvoyerAuChauffer</button-->
+          <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null">EnvoyerAuChauffeur</button-->
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">TerminerAppel</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerAppel</button>
           <button (click)="onHistoire()" class="btn btn-link">HistoriqueAppel</button>
@@ -112,7 +163,7 @@
               <label for="">DateReserve</label>
               <!--input type="date"  date='yyyy-MMM-dd' style="width: 11pc" value="remorquage.dateReserve  | date: 'yyyy-MMM-dd'" min="remorquage.dateDepart | date: 'yyyy-MMM-dd'" name="dateReserve" class="form-control"-->
               <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-                   name="dateReserve" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}"
+                   name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
                    class="form-control" />
             </div>
           </div>
@@ -475,9 +526,9 @@
     <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
     <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
-        <span *ngIf="!remorquage.sent">EnvoyerAuChauffer</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffer</span>
+        <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
     </button>
-    <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffer</button-->
+    <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffeur</button-->
     <!--button (click)="refreshMap()" class="btn btn-link" [disabled]="remorquage.id==null">RafraichirMap</button-->
     <br>
   </div>
@@ -542,14 +593,14 @@
         <td>Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}}</td>
       </tr>
       <tr>
-        <td>Client : {{remorquage.nomClient}}</td>
-        <td>Tel 1er : {{remorquage.telClient}}</td>
-        <td>Tel 2em : {{remorquage.telClient2em}}</td>
-      </tr>
-      <tr>
         <td>Chauffeur : {{remorquage.nomIntervenant}}</td>
         <td>Tel : {{remorquage.telIntervenant}}</td>
         <td>Courriel : {{remorquage.emailIntervenant}}</td>
+      </tr>
+      <tr>
+        <td>Client : {{remorquage.nomClient}}</td>
+        <td>Tel 1er : {{remorquage.telClient}}</td>
+        <td>Tel 2em : {{remorquage.telClient2em}}</td>
       </tr>
       <tr>
         <td>Date Reserve : {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}}</td>

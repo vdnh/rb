@@ -99,8 +99,13 @@ public class Remorquage implements Serializable{
     //fin de prix total
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
-        if(date == null)
+        if(date == null){
             this.dateDepart = null; 
-        else this.dateDepart = ft.parse(date.toString());
+            //this.dateReserve = null;
+        }
+        else { 
+            this.dateDepart = ft.parse(date.toString());
+            //this.dateReserve = ft.parse(date.toString());
+        }
     }
 }
