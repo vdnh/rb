@@ -539,10 +539,14 @@ async showMap() {
     });  
   }
 
-  dateChange(date){
+  dateChange(event){
     //(ngModelChange)="dateChange($event)"
-    this.remorquage.dateDepart=date;
-    console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
+    console.log('event : '+event.target.value.toString())
+    //this.remorquage.dateReserve = new Date(this.datePipe.transform(event.target.value,"yyyy-MM-dd"));
+    this.remorquage.dateReserve = new Date(event.target.value);
+    this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
+    //this.remorquage.dateDepart=event.value;
+    console.log('this.remorquage.dateDepart : '+this.remorquage.dateReserve)
   }
   nomContactChange(event){
     this.remorquage.nomContact=event.nom

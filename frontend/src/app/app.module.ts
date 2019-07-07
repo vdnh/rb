@@ -54,6 +54,7 @@ import { RemorquagesService } from 'src/services/remorquages.service';
 import { GarantiesService } from 'src/services/garantie.service';
 import { RemorquageClientComponent } from './remorquage-client/remorquage-client.component';
 import { DetailRemorquageComponent } from './detail-remorquage/detail-remorquage.component';
+import {DatePipe} from '@angular/common';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -130,7 +131,7 @@ const appRoutes:Routes=[
       libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
     }),
   ],
-  providers: [AuthenticationService, ContactsService, TransportersService, 
+  providers: [DatePipe, AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
     ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService, GarantiesService],

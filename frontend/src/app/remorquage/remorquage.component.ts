@@ -12,6 +12,7 @@ import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-remorquage',
@@ -117,6 +118,7 @@ export class RemorquageComponent implements OnInit {
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
+    private datePipe: DatePipe,
     ) { 
   }
   /*/ on close window
@@ -554,6 +556,10 @@ async showMap() {
     this.router.navigateByUrl("/new-shipper");
   }
   onSave(){
+    //this.remorquage.dateDepart = new Date(this.datePipe.transform(this.remorquage.dateDepart,"yyyy-MM-dd"));
+    //this.remorquage.dateReserve = new Date(this.datePipe.transform(this.remorquage.dateReserve,"yyyy-MM-dd"));
+    //this.remorquage.dateDepart.setDate(this.remorquage.dateDepart.getDate()+1)
+    //this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
     }, 
@@ -578,10 +584,14 @@ async showMap() {
     });  
   }
 
-  dateChange(date){
+  dateChange(event){
     //(ngModelChange)="dateChange($event)"
-    this.remorquage.dateDepart=date;
-    console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
+    console.log('event : '+event.target.value.toString())
+    //this.remorquage.dateReserve = new Date(this.datePipe.transform(event.target.value,"yyyy-MM-dd"));
+    this.remorquage.dateReserve = new Date(event.target.value);
+    this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
+    //this.remorquage.dateDepart=event.value;
+    console.log('this.remorquage.dateDepart : '+this.remorquage.dateReserve)
   }
   nomContactChange(event){
     this.remorquage.nomContact=event.nom

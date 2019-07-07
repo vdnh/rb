@@ -164,7 +164,7 @@
               <!--input type="date"  date='yyyy-MMM-dd' style="width: 11pc" value="remorquage.dateReserve  | date: 'yyyy-MMM-dd'" min="remorquage.dateDepart | date: 'yyyy-MMM-dd'" name="dateReserve" class="form-control"-->
               <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
                    name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-                   class="form-control" />
+                   class="form-control" (change)="dateChange($event)"/>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
