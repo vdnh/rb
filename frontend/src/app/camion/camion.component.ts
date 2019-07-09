@@ -587,9 +587,10 @@ export class CamionComponent implements OnInit {
 
   onEntretien01(){
     alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message01 //ent01.message
-    this.reparations.push(rep)
+    //let rep:Reparation=new Reparation();
+    //rep.reparationEffectuer= this.camion.message01 //ent01.message
+    //this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message01 //ent01.message
     this.camion.odo1Fait=this.camion.odometre; //to test before dicide
     this.camion.ent1Fait=new Date(); //to test before dicide
     this.couleur01=this.codeCouleurEnt1(this.camion); // to test before dicide
@@ -605,9 +606,10 @@ export class CamionComponent implements OnInit {
   
   onEntretien02(){
     alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message02 //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= this.camion.message02 //ent02.message
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message02 //ent02.message
     this.camion.odo2Fait=this.camion.odometre; //to test before dicide
     this.camion.ent2Fait=new Date(); //to test before dicide
     this.couleur02=this.codeCouleurEnt2(this.camion); // to test before dicide
@@ -627,9 +629,10 @@ export class CamionComponent implements OnInit {
 
   onEntretien03(){
     alert("Entretien 3 - Changement filtre a polene");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message03 //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= this.camion.message03 //ent03.message
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message03 //ent03.message
     this.camion.odo3Fait=this.camion.odometre; //to test before dicide
     this.camion.ent3Fait=new Date(); //to test before dicide
     this.couleur03=this.codeCouleurEnt3(this.camion); // to test before dicide
@@ -648,9 +651,10 @@ export class CamionComponent implements OnInit {
 
   onEntretien04(){
     alert("Entretien 4 - Changement filtre hydrolique");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message04 //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= this.camion.message04 //ent04.message
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message04 //ent04.message
     this.camion.odo4Fait=this.camion.odometre; //to test before dicide
     this.camion.ent4Fait=new Date(); //to test before dicide
     this.couleur04=this.codeCouleur(this.camion.odo4Fait, this.camion.filHydrolique); // to test before dicide
@@ -667,8 +671,9 @@ export class CamionComponent implements OnInit {
   onEntretien05(){
     alert("Entretien 5 - Changement filtre antigel");
     let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message05 //ent01.message
+    rep.reparationEffectuer= this.camion.message05 //ent05.message
     this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message05 //ent05.message
     this.camion.odo5Fait=this.camion.odometre; //to test before dicide
     this.camion.ent5Fait=new Date(); //to test before dicide
     this.couleur05=this.codeCouleur(this.camion.odo5Fait, this.camion.filAntigel); // to test before dicide
@@ -684,9 +689,10 @@ export class CamionComponent implements OnInit {
 
   onEntretien06(){
     alert("Entretien 6 - Changement huile antigel");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message06 //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= this.camion.message06 //ent06.message
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message06 //ent06.message
     this.camion.odo6Fait=this.camion.odometre; //to test before dicide
     this.camion.ent6Fait=new Date(); //to test before dicide
     this.couleur06=this.codeCouleur(this.camion.odo6Fait, this.camion.huileAntigel); // to test before dicide
@@ -705,6 +711,7 @@ export class CamionComponent implements OnInit {
     let rep:Reparation=new Reparation();
     rep.reparationEffectuer= this.camion.message07 //ent01.message
     this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message07 //ent07.message
     this.camion.odo7Fait=this.camion.odometre; //to test before dicide
     this.camion.ent7Fait=new Date(); //to test before dicide
     this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission); // to test before dicide
@@ -720,9 +727,10 @@ export class CamionComponent implements OnInit {
 
   onEntretien08(){
     alert("Entretien 8 - Changement huile differentiel");
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= this.camion.message08 //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= this.camion.message08 //ent01.message
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= this.camion.message08 //ent08.message
     this.camion.odo8Fait=this.camion.odometre; //to test before dicide
     this.camion.ent8Fait=new Date(); //to test before dicide
     this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel); // to test before dicide
@@ -738,9 +746,10 @@ export class CamionComponent implements OnInit {
 
   onInspect6(){
     alert('Inspection aux 6 mois.');
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= "Inspection aux 6 mois."; //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= "Inspection aux 6 mois."; 
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= 'Inspection aux 6 mois.'
     this.camion.inspect6m=new Date();
     this.couleur09=this.codeCouleurInspect();
     /*
@@ -753,9 +762,10 @@ export class CamionComponent implements OnInit {
   }
   onAutreEntretien(entretien:AutreEntretien){
     alert("Entretien - "+entretien.nom);
-    let rep:Reparation=new Reparation();
-    rep.reparationEffectuer= entretien.message; //ent01.message
-    this.reparations.push(rep)
+    // let rep:Reparation=new Reparation();
+    // rep.reparationEffectuer= entretien.message;
+    // this.reparations.push(rep)
+    this.reparation.reparationEffectuer= entretien.message
     entretien.odoFait=this.camion.odometre; //to test before dicide
     entretien.dateFait=new Date(); // to test before dicide
     /* stop to test

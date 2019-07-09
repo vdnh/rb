@@ -560,6 +560,11 @@ async showMap() {
     //this.remorquage.dateReserve = new Date(this.datePipe.transform(this.remorquage.dateReserve,"yyyy-MM-dd"));
     //this.remorquage.dateDepart.setDate(this.remorquage.dateDepart.getDate()+1)
     //this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
+    if(this.remorquage.id==null){
+      this.remorquage.dateDepart=new Date()
+      this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+' : '+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+    }
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
     }, 
@@ -803,6 +808,11 @@ async showMap() {
       }, err=>{
         console.log(err)
       })
+    }
+    else {
+      this.remorquage.dateDepart = new Date()
+      this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+' : '+ 
+        (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
   }
   
