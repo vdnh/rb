@@ -866,6 +866,42 @@ export class CamionComponent implements OnInit {
     this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
     this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq    
   }
+
+  repsPrixChange(){ 
+    if(this.reparations.length>0){
+      this.bonDeTravail.sousTotal =0.00;
+      this.reparations.forEach(r=>{
+        let prixPieces=0.00, prixHeures = 0.00
+        if(r.quantite>0 && r.prixUnite>0){
+          prixPieces = new Number((r.quantite*r.prixUnite).toFixed(2)).valueOf();
+        }
+        if(r.heures>0 && r.taux>0){
+          prixHeures = new Number((r.heures*r.taux).toFixed(2)).valueOf();
+        }
+        if((prixPieces + prixHeures)>0) r.prix = prixPieces + prixHeures
+        this.bonDeTravail.sousTotal += r.prix;
+      })
+      this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+      this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq
+    }
+    /*
+    let prixPieces=0.00, prixHeures = 0.00
+    if(this.reparation.quantite>0 && this.reparation.prixUnite>0){
+      prixPieces = new Number((this.reparation.quantite*this.reparation.prixUnite).toFixed(2)).valueOf();
+    }
+    if(this.reparation.heures>0 && this.reparation.taux>0){
+      prixHeures = new Number((this.reparation.heures*this.reparation.taux).toFixed(2)).valueOf();
+    }
+    this.reparation.prix = prixPieces + prixHeures
+    this.bonDeTravail.sousTotal =0.00; 
+    this.reparations.forEach(async rep=>{
+      this.bonDeTravail.sousTotal += rep.prix;
+    })
+    this.bonDeTravail.tps = new Number((0.05*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.tvq =  new Number((0.09975*this.bonDeTravail.sousTotal).toFixed(2)).valueOf()
+    this.bonDeTravail.total=this.bonDeTravail.sousTotal+this.bonDeTravail.tps+this.bonDeTravail.tvq//*/    
+  }
   
   addReparation(){
     /*await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe((data:BonDeTravail)=>{

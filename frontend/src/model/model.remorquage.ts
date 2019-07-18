@@ -9,6 +9,7 @@ export class Remorquage{
         (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     timeResrvation="";
     // add more
+    nomDispatch="";
     dateReserve=new Date();
     driverNote="";
     telClient2em="";
@@ -16,6 +17,7 @@ export class Remorquage{
     nomContact="";
     telContact="";
     extTelContact="";
+    emailContact="";
     marque="";
     modele="";
     plaque="";
@@ -26,6 +28,7 @@ export class Remorquage{
     emailIntervenant="";
     idEntreprise:number;  // bientot id de Shipper
     sent=false; // sent or didn't send to driver
+    camionAttribue="";
     //
     distance:number=0.00;
     origin:string="";

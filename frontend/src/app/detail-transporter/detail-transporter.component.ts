@@ -302,6 +302,7 @@ export class DetailTransporterComponent implements OnInit {
   onPress(){
     this.carte=-this.carte;
     if(this.carte==-1){
+      this.camionsSurMap=[];// to empty this list
       this.carteText='Voir la carte'
       this.subscription.unsubscribe();
     }
@@ -351,7 +352,7 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
       let camionsSurMap:Array<Camion>=new Array<Camion>();
       data.forEach(camion=>{
-        if(camion.uniteMonitor!=null && camion.monitor!=null)
+        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           camionsSurMap.push(camion)
       })
       this.camionsSurMap=camionsSurMap;

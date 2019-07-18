@@ -46,6 +46,7 @@ public class Remorquage implements Serializable{
     private String nomContact="";
     private String telContact="";
     private String extTelContact="";
+    private String emailContact="";
     private String marque="";
     private String modele="";
     private String plaque="";
@@ -56,6 +57,8 @@ public class Remorquage implements Serializable{
     private String emailIntervenant="";
     private Long idEntreprise;  // bientot id de Shipper
     private Boolean sent=false; // sent or didn't send to driver
+    private String nomDispatch="";
+    private String camionAttribue="";
     //
     private Float distance;
     private String origin;

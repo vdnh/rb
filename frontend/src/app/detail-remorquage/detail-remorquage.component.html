@@ -61,7 +61,17 @@
         <hr style="border: 2px solid lightgray"/>
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
-            <h4><strong>Remorquage</strong></h4>
+            <table>
+              <tr>
+                <td><h4>Repartiteur &nbsp;</h4></td>
+                <td><input style="size: 5pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch"></td>
+              </tr>
+            </table>
+            <!--div class="row">
+              <div><h4>Dispatch  </h4></div>
+              <div><h4><input style="size: 14pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control"></h4></div>
+            </div-->
+              <!--h4>Dispatch  <input type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control"></h4-->
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
             <h4>
@@ -120,7 +130,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-3 col-lg-">
             <div class="form-group">
               <label for="">Contact</label>
               <input type="text"  [(ngModel)]="remorquage.nomContact"
@@ -133,7 +143,7 @@
               </select-->
             </div>
           </div>
-          <div class="col-sm-12 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-3 col-lg-">
             <div class="form-group">
               <label for="">Telephone</label>
               <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact"
@@ -141,48 +151,20 @@
                    (focusout)="remorquage.telContact=reformTelEvent($event)" required>
             </div>
           </div>
-          <div class="col-sm-12 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-3 col-lg-">
             <div class="form-group">
               <label for="">Extension</label>
               <input type="text" [(ngModel)]="remorquage.extTelContact" name="extTelContact"
                    class="form-control">
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 col-md-4 col-lg-4">
-            <div class="form-group">
-              <label for="">Chauffeur</label>
-              <input type="text"  [(ngModel)]="remorquage.nomIntervenant"
-                    name="nomIntervenant" class="form-control">
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-4 col-lg-4">
-            <div class="form-group">
-              <label for="">Telephone</label>
-              <input type="tel" [(ngModel)]="remorquage.telIntervenant" name="telIntervenant"
-                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                    (focusout)="remorquage.telIntervenant=reformTelEvent($event)" required>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Courriel</label>
-              <!--input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant"
-                    class="form-control" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="xxx@yyy.zzz" required-->
-              <input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
-              required>
-                <datalist id="defaultEmails">
-                  <!--option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-                  <option value="jbond007@mi6.defence.com">
-                  <option value="jbourne@unknown.net">
-                  <option value="nfury@shield.org">
-                  <option value="tony@starkindustries.com">
-                  <option value="hulk@grrrrrrrr.arg"-->
-                </datalist>
+              <input type="email" [(ngModel)]="remorquage.emailContact" name="emailContact" class="form-control" required>
             </div>
           </div>
-        </div>
+        </div>        
 
         <hr style="border: 2px solid lightgray"/>
         
@@ -347,10 +329,10 @@
             <datalist id="defaultVilles">
                 <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
             </datalist>
-            <select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
+            <!--select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
                 (ngModelChange)="originChange()">
               <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
-            </select>
+            </select-->
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
@@ -370,14 +352,14 @@
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
-            class="form-control" (change)="destinationChange()" list="defaultVilles">
-            <!--datalist id="defaultVilles">
+            class="form-control" (change)="destinationChange()" list="defaultVillesD">
+            <datalist id="defaultVillesD">
                 <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-            </datalist-->
-            <select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
+            </datalist>
+            <!--select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
                 (ngModelChange)="destinationChange()">
               <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-            </select>
+            </select-->
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
@@ -396,6 +378,52 @@
           </div>
         </div>
         <hr style="border: 2px solid lightgray"/>
+
+        <div class="row">
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Camion</label>
+              <input type="text" [(ngModel)]="remorquage.camionAttribue" 
+                name="camionAttribue" list="defaultCamions" class="form-control" required>
+              <datalist id="defaultCamions">
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Chauffeur</label>
+              <input type="text"  [(ngModel)]="remorquage.nomIntervenant"
+                    name="nomIntervenant" class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="remorquage.telIntervenant" name="telIntervenant"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="remorquage.telIntervenant=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Courriel</label>
+              <!--input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant"
+                    class="form-control" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="xxx@yyy.zzz" required-->
+              <input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
+              required>
+                <datalist id="defaultEmails">
+                  <!--option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+                  <option value="jbond007@mi6.defence.com">
+                  <option value="jbourne@unknown.net">
+                  <option value="nfury@shield.org">
+                  <option value="tony@starkindustries.com">
+                  <option value="hulk@grrrrrrrr.arg"-->
+                </datalist>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-sm-3"><label class="control-label">Note au Chauffeur</label></div>
           <div class="col-sm-9">
@@ -404,6 +432,9 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
+        
+        <hr style="border: 2px solid lightgray"/>
+
         <div *ngIf="mode==2" class="row" style="margin-top: 10px">
           <div class="col-md-3">
             <div class="form-group">
@@ -462,6 +493,7 @@
       </div>
     </div>
   </div>
+  <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
     <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
@@ -491,38 +523,55 @@
     <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
   </div>
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
-    <!--p style="font-size: 12pt" style="margin-inline: 5px">
-  
-      <span style="font-size: 14pt" style="font-weight: bold"> Bon de Remorquage <label *ngIf="remorquage.id>0"> : {{remorquage.id}}</label> &nbsp;&nbsp;-&nbsp;&nbsp;  Date : {{remorquage.dateDepart | date: 'yyyy-MM-dd'}}
-      </span><br><br>
-  
-      Entreprise : {{remorquage.nomEntreprise}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; #PO : {{remorquage.numPO}}  <br><br>
-      Contact : {{remorquage.nomContact}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}} <br><br>
-  
-      Client : {{remorquage.nomClient}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Telephone : {{remorquage.telClient}} <br><br>
-  
-      Heure d'appel : {{remorquage.timeCall}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Heure Reserve : {{remorquage.timeResrvation}} <br><br>
-  
-      Type : {{remorquage.typeService}} &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Marque : {{remorquage.marque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Modele : {{remorquage.modele}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Couleur : {{remorquage.couleur}} <br><br>
-      Plaque : {{remorquage.plaque}}  &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;  Serie : {{remorquage.serie}} <br><br>
-      Description : {{remorquage.comments}} <br><br>
-  
-      <span>Service : </span>
-      <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
-      <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
-      <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
-      <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
-      <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
-      <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
-      <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu </span>
-      <span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span>
-      <br><br>
-  
-      De : {{remorquage.origin}} <br><br>
-      A : {{remorquage.destination}} <br><br>
-      Distance(kms) : {{remorquage.distance}} <br><br>
-    </p-->
-    <table border='1' cellpadding='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
+    <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
+      <tr>
+        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Dispatch <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
+        <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
+        <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{remorquage.id}}</span></td>
+      </tr>
+      <tr>
+        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+        <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
+        <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
+      </tr>
+      <tr>
+        <td colspan="5">Client: 
+          <span>&nbsp;{{remorquage.nomClient}}</span>
+          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
+          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient2em}}</span>
+          <br> &nbsp;</td>  
+      </tr>
+      <tr>
+        <td colspan="5">De: <span>&nbsp;{{remorquage.origin}}</span> <br> &nbsp;</td>
+      </tr>
+      <tr>
+          <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> &nbsp;</td>
+      </tr>
+      <tr>
+        <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
+          <span>&nbsp;{{remorquage.marque}}</span>
+          <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
+          <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
+          <br><span>&nbsp;</span>
+        </td> 
+        <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
+        <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
+      </tr>
+      <tr> 
+        <td colspan="5"style="text-align: left; text-anchor: start ">
+          Detail: <span>&nbsp;{{remorquage.comments}} <br>&nbsp;</span>
+        </td>
+      </tr>
+      <tr> 
+        <td colspan="5"style="text-align: left; text-anchor: start ">
+          Note au Chauffeur: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
+        </td>
+      </tr>
+    </table>
+    <!--table border='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
       <tr>
         <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label
             *ngIf="remorquage.id!=null"> : {{remorquage.id}}</label></span></td>
@@ -560,9 +609,7 @@
         <td>Plaque : {{remorquage.plaque}}</td>
         <td>Serie : {{remorquage.serie}}</td>
       </tr>
-      <!--tr>
-      <td colspan="3">Description : {{remorquage.comments}}</td>
-    </tr-->
+      
       <tr>
         <td colspan="3">
           <span>Service : </span>
@@ -574,7 +621,6 @@
           <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
           <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu
             </span>
-          <!--span *ngIf="remorquage.autres">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Autres </span-->
         </td>
       </tr>
       <tr>
@@ -608,6 +654,6 @@
           </table>
         </td>
       </tr>
-    </table>
+    </table-->
   </div>
   

@@ -8,19 +8,20 @@
           <div *ngIf="modeSignUp==0">
               <div class="panel panel-primary" *ngIf="role==''">
                      <!--button routerLink="/propos" class="btn btn-link">Propos</button-->
-                      <div> <h4>  <strong> Bienvenue au CTS Transport Resolution </strong> </h4>
-                            <!--h5> <strong>Transport Resolution.</strong></h5-->
-                            <h6> <strong>Un outil performant pour simplifier des operations et diminuer des frais de transport.</strong></h6>
+                      <div> <h3>  <strong> CTS - Complete Transport Solution </strong> </h3>
+                            <!--h5> <strong>Plus Loads et Plus Equipements</strong></h5-->
+                            <h5> <strong>Simplifier des operations de Transport.</strong></h5>
+                            <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens</strong></h6>
                       </div>
-                      <br><br>
+                      <br>
                       <div class="col-md-5 col-md-offset-1">
                         <div class="alert alert-danger" *ngIf="mode==1">
                             <strong>Identification erronee ...</strong>
                         </div>
                       </div>
                     <div class="col-md-5 col-md-offset-1">
-                      <div class="panel-heading">Veuillez vous identifier.</div>
-                      <br><br>
+                      <!--div class="panel-heading">Veuillez vous identifier.</div-->
+                      <br>
                       <div class="panel-body">
                         <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                           <div class="form-group">
@@ -113,7 +114,7 @@
   <footer>
       <div class="row">
         <div>
-          <span class="label label-primary">Author: CTS Transport Solution, © 2019 CTS.COM, All Rights Reserved </span>
+          <span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span>
         </div>
       </div>
     </footer>

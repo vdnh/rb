@@ -457,17 +457,25 @@
             <td><input type="number" class="form-control" [(ngModel)]="" (change)="prixChange()" [disabled]="rep.saved"/></td>
             <td><button class="btn btn-link" (click)="deleteReparation(rep)" [disabled]="rep.saved">Delete</button></td-->
             <td>
-                <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer" disabled></textarea>
-            </td>
-            <td>{{rep.piece}}</td>
-            <td>{{rep.fournisseur}}</td>
-            <td>{{rep.garantie}}</td>
+                <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
+            </td> <!-- disabled-->
+            <!--td>{{rep.piece}}</td-->
+            <td><input type="text" class="form-control" [(ngModel)]="rep.piece"/></td>
+            <!--td>{{rep.fournisseur}}</td-->
+            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur"/></td>
+            <!--td>{{rep.garantie}}</td>
             <td>{{rep.quantite | number : '1.2'}}</td>
             <td>{{rep.prixUnite | number : '1.2'}}</td>
             <td>{{rep.heures | number : '1.2'}}</td>
             <td>{{rep.taux | number : '1.2'}}</td>
-            <td>{{rep.prix | number : '1.2'}}</td>
-            <td><button class="btn btn-link" (click)="deleteReparation(rep)" [disabled]="rep.saved">Delete</button></td>
+            <td>{{rep.prix | number : '1.2'}}</td-->
+            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.quantite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prixUnite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.heures" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.taux" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="repsPrixChange()"/></td>            
+            <td><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
           </tr>  
           <tr>
             <th>Ajouter des Reparations</th>

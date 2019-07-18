@@ -13,6 +13,8 @@ import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
+import { Camion } from 'src/model/model.camion';
+import { CamionsService } from 'src/services/camions.service';
 
 @Component({
   selector: 'app-remorquage',
@@ -23,7 +25,7 @@ export class RemorquageComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
-  serviceTypes = ["Leger", "Moyenne", "Lourd"];
+  serviceTypes = ["Leger", "Moyen", "Lourd"];
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
   prixKm1=2.65;
@@ -113,12 +115,15 @@ export class RemorquageComponent implements OnInit {
   
   em:EmailMessage=new EmailMessage();
 
+  camions:Array<Camion>;
+
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
+    public camionsService:CamionsService,
     ) { 
   }
   /*/ on close window
@@ -143,7 +148,13 @@ export class RemorquageComponent implements OnInit {
   }
   
   async ngOnInit() {    
-    console.log(this.remorquage.dateDepart)
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+      this.camions = data
+    }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data;
       /*this.listShipper.forEach((sh:Shipper)=>{
@@ -685,7 +696,7 @@ async showMap() {
       if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
       else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
     }
-    else if(this.remorquage.typeService.includes('Moyenne')){ 
+    else if(this.remorquage.typeService.includes('Moyen')){ 
       if(this.remorquage.panne) panne=this.shipper.panne2
       if(this.remorquage.accident) accident=this.shipper.accident2
       if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
@@ -747,7 +758,7 @@ async showMap() {
         this.remorquage.prixKm=this.shipper.prixKm1;
       }
     }
-    else if(this.remorquage.typeService.includes('Moyenne')){
+    else if(this.remorquage.typeService.includes('Moyen')){
       //this.remorquage.prixBase=this.prixBase2;
       this.calculePrixbase()
       if(this.remorquage.accident){

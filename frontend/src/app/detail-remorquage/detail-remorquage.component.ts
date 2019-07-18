@@ -14,6 +14,8 @@ import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
 import {VarsGlobal} from 'src/services/VarsGlobal'
+import { CamionsService } from 'src/services/camions.service';
+import { Camion } from 'src/model/model.camion';
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -114,6 +116,8 @@ export class DetailRemorquageComponent implements OnInit {
   
   em:EmailMessage=new EmailMessage();
   id:number;
+  camions:Array<Camion>;
+  
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
@@ -122,6 +126,7 @@ export class DetailRemorquageComponent implements OnInit {
     public activatedRoute:ActivatedRoute,
     private titleService: Title,
     public varsGlobal:VarsGlobal,
+    public camionsService:CamionsService,
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
@@ -129,6 +134,13 @@ export class DetailRemorquageComponent implements OnInit {
   async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+      this.camions = data
+    }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
       this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
