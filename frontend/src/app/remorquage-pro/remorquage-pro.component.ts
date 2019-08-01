@@ -15,13 +15,14 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
 import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
-  selector: 'app-remorquage',
-  templateUrl: './remorquage.component.html',
-  styleUrls: ['./remorquage.component.css']
+  selector: 'app-remorquage-pro',
+  templateUrl: './remorquage-pro.component.html',
+  styleUrls: ['./remorquage-pro.component.css']
 })
-export class RemorquageComponent implements OnInit {
+export class RemorquageProComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -116,6 +117,7 @@ export class RemorquageComponent implements OnInit {
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
+  id: number;
 
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -124,7 +126,9 @@ export class RemorquageComponent implements OnInit {
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
     public camionsService:CamionsService,
+    public varsGlobal:VarsGlobal,
     ) { 
+      this.id = Number (localStorage.getItem("userId"));
   }
   /*/ on close window
   @HostListener('window:beforeunload', ['$event'])
@@ -148,27 +152,16 @@ export class RemorquageComponent implements OnInit {
   }
   
   async ngOnInit() {    
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-      })
-    }, err=>{
-      console.log();
-    })
-    // end of taking list camion SOSPrestige
-    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
+    this.varsGlobal.pro='yes'  // to control we are in professionnal
+    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
+      this.shipper=data;
+      this.remorquage.nomEntreprise=this.shipper.nom
+      this.remorquage.idEntreprise=this.id
+      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+      }, err=>{
+        console.log(err);
+      });
     }, err=>{
       console.log(err);
     })
@@ -184,20 +177,6 @@ export class RemorquageComponent implements OnInit {
   }
   
   async gotoDetailRemorquage(r:Remorquage){
-    /*
-    this.remorquage=r;
-    this.modeHistoire=-1;
-    if(!this.remorquage.fini){
-      this.latLngOrigin= new google.maps.LatLng(
-        this.remorquage.originLat,
-        this.remorquage.originLong                                          
-      )
-      this.latLngDestination= new google.maps.LatLng(
-        this.remorquage.destLat,
-        this.remorquage.destLong                                          
-      )
-      this.showMap()
-    }//*/
     window.open("/detail-remorquage/"+r.id, "_blank")
   }
 
@@ -322,7 +301,7 @@ onSortDate(data:Array<Remorquage>){
   })
 }
 onRefresh(){
-  this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+  this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
     this.listRqs=[]  //data;
     this.listRqsSent=[]
     this.listRqsFini=[]
@@ -666,7 +645,6 @@ async showMap() {
       )
     if(ent!=null){
       this.shipper=ent
-      this.remorquage.idEntreprise=ent.id
       this.remorquage.nomEntreprise=ent.nom
       this.prixBase1=ent.prixBase1;
       this.inclus1=ent.inclus1;
@@ -803,7 +781,7 @@ async showMap() {
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
         this.listRqs=[]  //data;
         this.listRqsSent=[]
         this.listRqsFini=[]

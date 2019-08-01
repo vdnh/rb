@@ -5,7 +5,7 @@ export class Remorquage{
     nomEntreprise="";
     nomClient="";
     telClient="";
-    timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+' : '+ 
+    timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
         (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     timeResrvation="";
     // add more

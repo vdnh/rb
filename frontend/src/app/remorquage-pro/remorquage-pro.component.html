@@ -1,84 +1,82 @@
+<hr style="border: 1px dotted black"/>
 <div class="container" *ngIf="modeHistoire==1">
-    <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
-    <table class="table">
-      <tr>
-        <th>code couleur - </th>
-        <th>vert : en attent</th>
-        <th>jaune : en cours</th>
-        <th>rouge : fini</th>
-      </tr>
-      <tr style="background-color: whitesmoke">
-        <th>Numero</th><th (click)="dateSort()">Date</th><th (click)="entSort()">Entreprise</th><th (click)="contactSort()">Contact</th><th>Status</th><th></th>
-      </tr>
-      <tr *ngFor="let r of listRqs" style="color: green; background-color: whitesmoke">
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.id}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td-->
-        <!--td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
-        <td>en attente</td>
-        <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
-        <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
-      </tr>
-      <tr *ngFor="let r of listRqsSent" style="color:orange; background-color: whitesmoke">
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.id}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td>
-        <td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
-        <td>en cours</td>
-        <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
-        <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
-      </tr>
-      <tr *ngFor="let r of listRqsFini" style="color: red; background-color: whitesmoke">
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.id}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.dateDepart}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
-        <td (dblclick)="gotoDetailRemorquage(r)">{{r.nomContact}}</td>
-        <!--td (dblclick)="gotoDetailRemorquage(r)">{{r.nomClient}}</td>
-        <td><span *ngIf="r.fini">Fini</span><span *ngIf="!r.fini">Ouvert</span></td-->
-        <td>fini</td>
-        <td><button class="btn btn-link" (click)="gotoDetailRemorquage(r)">Detail</button></td>
-        <td><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
-      </tr>
-    </table>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
+    </div>
+  </div>
+  <hr style="border: 1px dotted black"/>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
+      En attente
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
+      En cours
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
+      Fini
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqs" style="color: green; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqsSent)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqsSent" style="color:orange; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>Entreprise</th>
+        </tr>
+        <tr *ngFor="let r of listRqsFini" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.dateReserve}}</td>
+          <td (click)="gotoDetailRemorquage(r)">{{r.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
 <div class="container" *ngIf="modeHistoire==-1">
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
-          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAppel</button>         
+          <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.id!=null">NumeroterAppel</button>
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button> 
+          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">TerminerAppel</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerAppel</button>
-          <button (click)="onFermer()" class="btn btn-link" >Fermer</button>          
+          <button (click)="onHistoire()" class="btn btn-link">HistoriqueAppel</button>
           <br><br><br>
-          <!--h4 class="first">Basic</h4>
-                    <p-autoComplete [(ngModel)]="remorquage.nomEntreprise" [suggestions]="filteredEntreprisesSingle" (completeMethod)="filterEnts($event)" field="name" [size]="30" [minLength]="1" placeholder="Entreprises" [dropdown]="true"></p-autoComplete>
-                    <span style="margin-left:10px">Entreprise: {{remorquage.nomEntreprise ? remorquage.nomEntreprise||remorquage.nomEntreprise : 'none'}}</span>
-                    <h3>Advanced</h3-->
         </div>
         <hr style="border: 2px solid lightgray"/>
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
-            <!--table>
-              <tr>
-                <td><h4>Repartiteur &nbsp;</h4></td>
-                <td><input style="size: 5pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch"></td>
-              </tr>
-            </table-->
-            <!--div class="row">
-              <div><h4>Dispatch  </h4></div>
-              <div><h4><input style="size: 14pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control"></h4></div>
-            </div-->
-            <h4><label>Repartiteur <input type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control">
-            </label></h4>
-          </div>
-          <div class="col-md-4 col-sm-4 col-lg-4">
             <h4>
               {{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}
-              <!--input type="datetime-local" style="width: 11pc" [ngModel]="remorquage.dateDepart" name="dateDepart" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control" (ngModelChange)="dateChange($event)" disabled/-->
             </h4>
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
@@ -91,17 +89,13 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Entreprise</label>
+              <label for="">Professionnel</label>
               <input type="text" [(ngModel)]="remorquage.nomEntreprise"
-                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
-                   (focusout)="typeServiceChange(remorquage.typeService)" list="defaultShippers">
+                  name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
+                  (focusout)="typeServiceChange(remorquage.typeService)" list="defaultShippers" disabled>
               <!--datalist id="defaultShippers">
                 <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-              </datalist>
-              <select type="text" class="form-control" [(ngModel)]="remorquage.nomEntreprise"
-                  (ngModelChange)="nomEntrepriseChange($event)">
-                <option *ngFor="let e of filteredShippers" [ngValue]="e">{{e.nom}}</option>
-              </select-->
+              </datalist-->
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
@@ -114,13 +108,9 @@
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">DateReserve</label>
-              <!--input type="date"  date='yyyy-MMM-dd' style="width: 11pc" value="remorquage.dateReserve  | date: 'yyyy-MMM-dd'" min="remorquage.dateDepart | date: 'yyyy-MMM-dd'" name="dateReserve" class="form-control"-->
-              <!--input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-                   name="dateReserve" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}"
-                   class="form-control" /-->
               <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-              name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-              class="form-control" (change)="dateChange($event)"/>
+                   name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
+                   class="form-control" (change)="dateChange($event)"/>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
@@ -132,20 +122,17 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-6 col-md-3 col-lg-">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Contact</label>
               <input type="text"  [(ngModel)]="remorquage.nomContact"
                    name="nomContact" class="form-control" list="defaultContacts">
-              <!--datalist id="defaultContacts">
+              <datalist id="defaultContacts">
                 <option *ngFor="let e of contacts" [ngValue]="e">{{e.nom}}</option>
               </datalist>
-              <select type="text" [(ngModel)]="remorquage.nomContact" (ngModelChange)="nomContactChange($event)" style="margin-bottom: 0px; margin-top: 0px">
-                <option *ngFor="let c of contacts" [ngValue]="c">{{c.nom}}</option>
-              </select-->
             </div>
           </div>
-          <div class="col-sm-6 col-md-3 col-lg-">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Telephone</label>
               <input type="tel" [(ngModel)]="remorquage.telContact" name="telContact"
@@ -153,7 +140,7 @@
                    (focusout)="remorquage.telContact=reformTelEvent($event)" required>
             </div>
           </div>
-          <div class="col-sm-6 col-md-3 col-lg-">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Extension</label>
               <input type="text" [(ngModel)]="remorquage.extTelContact" name="extTelContact"
@@ -166,7 +153,8 @@
               <input type="email" [(ngModel)]="remorquage.emailContact" name="emailContact" class="form-control" required>
             </div>
           </div>
-        </div>        
+        </div>
+        
 
         <hr style="border: 2px solid lightgray"/>
         
@@ -197,16 +185,6 @@
         </div>
 
         <div class="row">
-          <!--tr style="margin: 0px">
-          <th><label class="control-label">Type</label></th>
-          <td>
-            <select type="text" [ngModel]="remorquage.typeService" (ngModelChange)="typeServiceChange($event)"  style="margin-bottom: 0px" style="margin-top: 0px">
-            <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
-            </select>
-          </td>
-          <th>Description</th>
-          <td colspan="5"><textarea name="comments" id="" cols="50" rows="1" [(ngModel)]="remorquage.comments"  style="margin-bottom: 0px" style="margin-top: 0px"></textarea></td>
-          </tr-->
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label>Type</label>
@@ -253,11 +231,6 @@
           </div>
         </div>
         <div class="row">
-          <!--
-             [disabled]="remorquage.accident || remorquage.panne"
-              [disabled]="remorquage.accident"
-               [disabled]="remorquage.panne"
-          -->
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="typeServiceChange(remorquage.typeService)"></label>
@@ -297,11 +270,6 @@
                              [(ngModel)]="remorquage.changementPneu" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
-          <!--div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>Autres <input type="checkbox" [(ngModel)]="remorquage.autres"></label>
-            </div>
-          </div-->
         </div>
         <div class="row">
           <div class="col-sm-3">
@@ -331,10 +299,6 @@
             <datalist id="defaultVilles">
                 <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
             </datalist>
-            <!--select type="text" class="form-control" [(ngModel)]="remorquage.originVille"
-                (ngModelChange)="originChange()">
-              <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
-            </select-->
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
@@ -358,10 +322,6 @@
             <datalist id="defaultVillesD">
                 <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
             </datalist>
-            <!--select type="text" class="form-control" [(ngModel)]="remorquage.destVille"
-                (ngModelChange)="destinationChange()">
-              <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-            </select-->
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
@@ -380,83 +340,27 @@
           </div>
         </div>
         <hr style="border: 2px solid lightgray"/>
-
-        <div class="row">
-          <div class="col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label for="">Camion</label>
-              <input type="text" [(ngModel)]="remorquage.camionAttribue" 
-                name="camionAttribue" list="defaultCamions" class="form-control" required>
-              <datalist id="defaultCamions">
-                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
-              </datalist>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label for="">Chauffeur</label>
-              <input type="text"  [(ngModel)]="remorquage.nomIntervenant"
-                    name="nomIntervenant" class="form-control">
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label for="">Telephone</label>
-              <input type="tel" [(ngModel)]="remorquage.telIntervenant" name="telIntervenant"
-                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                    (focusout)="remorquage.telIntervenant=reformTelEvent($event)" required>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label for="">Courriel</label>
-              <!--input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant"
-                    class="form-control" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="xxx@yyy.zzz" required-->
-              <input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
-              required>
-                <datalist id="defaultEmails">
-                  <!--option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-                  <option value="jbond007@mi6.defence.com">
-                  <option value="jbourne@unknown.net">
-                  <option value="nfury@shield.org">
-                  <option value="tony@starkindustries.com">
-                  <option value="hulk@grrrrrrrr.arg"-->
-                </datalist>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-3"><label class="control-label">Note au Chauffeur</label></div>
-          <div class="col-sm-9">
-            <textarea name="comments" class="form-control" cols="80" rows="1"
-                  [(ngModel)]="remorquage.driverNote" style="margin-bottom: 0px"
-                  style="margin-top: 0px"></textarea>
-          </div>
-        </div>
         
-        <hr style="border: 2px solid lightgray"/>
-
         <div *ngIf="mode==2" class="row" style="margin-top: 10px">
           <div class="col-md-3">
             <div class="form-group">
               <label *ngIf="mode==2" class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="remorquage.prixBase" name="prixBase"
-                   class="form-control" (change)="prixCalcul()" />
+                   class="form-control" (change)="prixCalcul()" disabled />
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="remorquage.prixKm" name="prixKm" class="form-control"
-                   (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
+                   (change)="prixCalcul()" disabled />
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
               <label *ngIf="mode==2" class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control"
-                    (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
+                    (change)="prixCalcul()" disabled/>
             </div>
           </div>
           <div class="col-md-2">
@@ -485,29 +389,17 @@
             </table>
           </div>
         </div>
-        <!--tr>
-          <td style="width: 20%"><button class="btn btn-success" (click)="printBonDeRemorquage('toprint')" >Print</button></td>
-          <td><button class="btn btn-danger" (click)="onReset()" >Reset</button></td>
-          <td><button class="btn btn-primary" (click)="onSave()" >Enregistrer</button></td>
-          <td><button class="btn btn-success" (click)="onFini()">Fini</button></td>
-          <td><button class="btn btn-success" (click)="onCancel()">Cancel</button></td>
-        </tr-->
+
       </div>
     </div>
   </div>
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
-    <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
-    <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button-->
     <button (click)="onSave()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
-    <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
-    <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
         <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
     </button>
-    <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffeur</button-->
-    <!--button (click)="refreshMap()" class="btn btn-link" [disabled]="remorquage.id==null">RafraichirMap</button-->
     <br>
   </div>
   <br>
@@ -573,89 +465,6 @@
         </td>
       </tr>
     </table>
-    <!--table border='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
-      <tr>
-        <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label
-            *ngIf="remorquage.id!=null"> : {{remorquage.id}}</label></span></td>
-        <td>Date : {{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</td>
-      </tr>
-      <tr>
-        <td>Entreprise : {{remorquage.nomEntreprise}}</td>
-        <td>#PO : {{remorquage.numPO}}</td>
-      </tr>
-      <tr>
-        <td>Contact : {{remorquage.nomContact}}</td>
-        <td>Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}}</td>
-      </tr>
-      <tr>
-        <td>Chauffeur : {{remorquage.nomIntervenant}}</td>
-        <td>Tel : {{remorquage.telIntervenant}}</td>
-        <td>Courriel : {{remorquage.emailIntervenant}}</td>
-      </tr>
-      <tr>
-        <td>Client : {{remorquage.nomClient}}</td>
-        <td>Tel 1er : {{remorquage.telClient}}</td>
-        <td>Tel 2em : {{remorquage.telClient2em}}</td>
-      </tr>
-      <tr>
-        <td>Date Reserve : {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}}</td>
-        <td>Heure Reserve : {{remorquage.timeResrvation}}</td>
-      </tr>
-      <tr>
-        <td>Type : {{remorquage.typeService}}</td>
-        <td>Marque : {{remorquage.marque}}</td>
-        <td>Modele : {{remorquage.modele}}</td>
-      </tr>
-      <tr>
-        <td>Couleur : {{remorquage.couleur}}</td>
-        <td>Plaque : {{remorquage.plaque}}</td>
-        <td>Serie : {{remorquage.serie}}</td>
-      </tr>
-      
-      <tr>
-        <td colspan="3">
-          <span>Service : </span>
-          <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
-          <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
-          <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
-          <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
-          <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
-          <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
-          <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu
-            </span>
-        </td>
-      </tr>
-      <tr>
-        <td><textarea cols="25" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">De : {{remorquage.origin}}</textarea></td>
-        <td><textarea cols="25" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">A : {{remorquage.destination}}</textarea></td>
-        <td>Distance(kms) : {{remorquage.distance}}</td>
-      </tr>
-      <tr>
-        <td><textarea cols="25" rows="10"
-                style="font-size: 11pt; border: none; scroll-margin: unset">Notes Additionnelles : {{remorquage.comments}}</textarea></td>
-        <td><textarea cols="25" rows="10"
-                style="font-size: 11pt; border: none; scroll-margin: unset">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>
-        <td style="text-align: right">
-          <table style="font-size: 12pt" style="text-align: right">
-            <tr>
-              <th>HorsTax:</th>
-              <td>{{remorquage.horstax | number : '1.2'}}</td>
-            </tr>
-            <tr>
-              <th>TPS:</th>
-              <td>{{remorquage.tps | number : '1.2'}}</td>
-            </tr>
-            <tr>
-              <th>TVQ:</th>
-              <td>{{remorquage.tvq | number : '1.2'}}</td>
-            </tr>
-            <tr>
-              <th>TOTAL:</th>
-              <td>{{remorquage.total | number : '1.2'}}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table-->
+
   </div>
   

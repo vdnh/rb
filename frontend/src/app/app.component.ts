@@ -13,10 +13,11 @@ import {VarsGlobal} from 'src/services/VarsGlobal'
 })
 export class AppComponent implements OnInit{
   title = 'CTS';
-  mode:number=0;  // to control password
+  mode:number=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
   role:string="";
   modeSignUp=0;
   textSign="Nouveau Transporter ou Shipper"
+  userId=""; // use to identify dispatch of shipper or dispatch general (by defaul "" general)
 
   // to control if we are in the session
   session='no';
@@ -27,6 +28,16 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     //*
+    
+    if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
+    {
+      this.mode=2 // show the message for bad url
+      console.log('Notre site : cts.sosprestige.com')
+    }
+    if(localStorage.getItem('userId')!=null) {
+      //console.log('res.id : '+res.id)
+      this.userId=localStorage.getItem('userId')
+    }
     if (localStorage.getItem('role')!=null){
       this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
         (data:Array<Message>)=>{
@@ -37,6 +48,26 @@ export class AppComponent implements OnInit{
       )
       this.role=localStorage.getItem('role');
       if(this.role.includes('TRANSPORTER')) {         
+        //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
+        this.router.navigate(['/detail-transporter/'+ this.userId], {skipLocationChange: true});
+        //localStorage.setItem('userId', res.id.toString());
+      }  
+      if(this.role.includes('SHIPPER')) {         
+        //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
+        this.router.navigate(['/detail-shipper/'+ this.userId], {skipLocationChange: true});
+        //localStorage.setItem('userId', res.id.toString());
+      }
+      //*
+      if(this.role.includes('DISPATCH')) {         
+        //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
+        if(!location.href.includes("detail-remorquage")){
+          if(this.userId.length>0) this.router.navigate(['/remorquage-pro/']); //, {skipLocationChange: true});
+          else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+        }
+        //localStorage.setItem('userId', res.id.toString());
+      }//*/
+      /*
+      if(this.role.includes('TRANSPORTER')) {         
         this.router.navigateByUrl('/detail-transporter/'+ localStorage.getItem('userId'));
         //this.router.navigateByUrl('/business-messages/');
         //localStorage.setItem('userId', res.id.toString());
@@ -45,7 +76,7 @@ export class AppComponent implements OnInit{
         this.router.navigateByUrl('/detail-shipper/'+ localStorage.getItem('userId'));
         //this.router.navigateByUrl('/business-messages/');
         //localStorage.setItem('userId', res.id.toString());
-      }
+      }//*/
       this.mode=0;
       //console.log("this role : "+this.role)
     }
@@ -90,8 +121,11 @@ export class AppComponent implements OnInit{
         this.authService.getUserInfo().subscribe((res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);          
-          if(res.id!=null) localStorage.setItem('userId', res.id.toString());
-          console.log('res.id : '+res.id)
+          if(res.id!=null) {
+            localStorage.setItem('userId', res.id.toString());
+            //console.log('res.id : '+res.id)
+            this.userId=localStorage.getItem('userId')
+          }
           if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
           if(res.roleName.includes('TRANSPORTER')) {         
             //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
@@ -104,7 +138,8 @@ export class AppComponent implements OnInit{
             //localStorage.setItem('userId', res.id.toString());
           }
           if(res.roleName.includes('DISPATCH')) {         
-            if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
+            //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
+            if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
             else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
             //localStorage.setItem('userId', res.id.toString());
           }

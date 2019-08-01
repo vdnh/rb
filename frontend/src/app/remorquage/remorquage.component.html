@@ -121,12 +121,12 @@
         <hr style="border: 2px solid lightgray"/>
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
-            <table>
+            <!--table>
               <tr>
                 <td><h4>Repartiteur &nbsp;</h4></td>
                 <td><input style="size: 5pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch"></td>
               </tr>
-            </table>
+            </table-->
               <!--div class="row"-->
                 <!--div><h4>
                   <span>Dispatch &nbsp;&nbsp; <input style="size: 6pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch"></span--> 
@@ -135,11 +135,13 @@
                   <!--input style="size: 6pc" type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch"-->
                 <!--/h4></div-->
               <!--/div-->
-            <!--h4>Dispatch  <input type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control"></h4-->
+              <h4><label>
+              Repartiteur <input type="text" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control">
+              </label></h4> 
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
             <h4>
-              {{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}
+              {{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}
               <!--input type="datetime-local" style="width: 11pc" [ngModel]="remorquage.dateDepart" name="dateDepart" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control" (ngModelChange)="dateChange($event)" disabled/-->
             </h4>
           </div>
@@ -588,13 +590,13 @@
     <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
       <tr>
         <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</span></td>
-        <td style="text-align: center; text-anchor: start ">Dispatch <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
         <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
         <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
         <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{remorquage.id}}</span></td>
       </tr>
       <tr>
-        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'yyyy-MMM-dd'}} - {{remorquage.timeResrvation}}</td>
         <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
         <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
         <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>

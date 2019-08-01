@@ -136,7 +136,13 @@ export class DetailRemorquageComponent implements OnInit {
     this.varsGlobal.session='yes'  // to control we are in session
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      this.camions = data
+      //this.camions = data
+      // this will take camions with gps monitor
+      this.camions=[];
+      data.forEach(camion=>{
+        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+          this.camions.push(camion)
+      })
     }, err=>{
       console.log();
     })
@@ -473,6 +479,10 @@ async showMap() {
       console.log('Le cas est continue.')
     }
     
+  }
+  
+  onFermer(){
+    window.close();
   }
 
   onCancel(){

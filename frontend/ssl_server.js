@@ -5,8 +5,10 @@ const path = require('path');
 const https = require('https');
 const fs = require('fs');
 const options = {
-  key: fs.readFileSync('/local_ssl/private-key.key'),
-  cert: fs.readFileSync('/local_ssl/csr.txt')
+  servername: 'cts.sosprestige.com',
+  key : fs.readFileSync('private.key'),
+  cert : fs.readFileSync('certificate.crt'),
+  ca : fs.readFileSync('ca_bundle.crt')
 };
 
 
@@ -14,7 +16,6 @@ const options = {
 const app = express();
 
 app.use(express.static(__dirname + '/dist'));
-
 app.get('/*', function(req,res) {
  	res.sendFile(path.join(__dirname + '/dist/index.html'));
 });
