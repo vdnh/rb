@@ -61,7 +61,7 @@ export class AppComponent implements OnInit{
       if(this.role.includes('DISPATCH')) {         
         //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
         if(!location.href.includes("detail-remorquage")){
-          if(this.userId.length>0) this.router.navigate(['/remorquage-pro/']); //, {skipLocationChange: true});
+          if(this.userId.length>0) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
           else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
         }
         //localStorage.setItem('userId', res.id.toString());

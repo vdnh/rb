@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import {Title} from '@angular/platform-browser';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { } from 'googlemaps';
 import * as myGlobals from 'src/services/globals';
@@ -12,21 +13,20 @@ import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
-import {DatePipe} from '@angular/common';
-import { Camion } from 'src/model/model.camion';
+import {VarsGlobal} from 'src/services/VarsGlobal'
 import { CamionsService } from 'src/services/camions.service';
-import { VarsGlobal } from 'src/services/VarsGlobal';
+import { Camion } from 'src/model/model.camion';
 
 @Component({
-  selector: 'app-remorquage-pro',
-  templateUrl: './remorquage-pro.component.html',
-  styleUrls: ['./remorquage-pro.component.css']
+  selector: 'app-detail-remorquage-pro',
+  templateUrl: './detail-remorquage-pro.component.html',
+  styleUrls: ['./detail-remorquage-pro.component.css']
 })
-export class RemorquageProComponent implements OnInit {
+export class DetailRemorquageProComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
-  serviceTypes = ["Leger", "Moyen", "Lourd"];
+  serviceTypes = ["Leger", "Moyenne", "Lourd"];
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
   prixKm1=2.65;
@@ -115,69 +115,73 @@ export class RemorquageProComponent implements OnInit {
   contacts: Contact[];
   
   em:EmailMessage=new EmailMessage();
-
+  id:number;
   camions:Array<Camion>;
-  id: number;
-
+  
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
-    private datePipe: DatePipe,
-    public camionsService:CamionsService,
+    public activatedRoute:ActivatedRoute,
+    private titleService: Title,
     public varsGlobal:VarsGlobal,
+    public camionsService:CamionsService,
     ) { 
-      this.id = Number (localStorage.getItem("userId"));
-  }
-  /*/ on close window
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunloadHandler(event){
-    //alert("I'm leaving the app");
-    //localStorage.clear();
-    localStorage.removeItem('tonken');
-    localStorage.removeItem('nom');
-    localStorage.removeItem('tel');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userId');
-    this.role="";
-    this.router.navigateByUrl("");
-  }//*/
-  
-  // on focus windows
-  @HostListener('window:focus', ['$event'])
-  onfocus(event:any):void {
-    this.onRefresh()
-  }
-  
+      this.id=activatedRoute.snapshot.params['id'];
+    }
+
   async ngOnInit() {    
-    this.varsGlobal.pro='yes'  // to control we are in professionnal
-    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
-      this.shipper=data;
-      this.remorquage.nomEntreprise=this.shipper.nom
-      this.remorquage.idEntreprise=this.id
-      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-        this.contacts=data;
-      }, err=>{
-        console.log(err);
-      });
+    sessionStorage.setItem('temporary', 'yes') // to control we are in session
+    this.varsGlobal.session='yes'  // to control we are in session
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+      //this.camions = data
+      // this will take camions with gps monitor
+      this.camions=[];
+      data.forEach(camion=>{
+        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+          this.camions.push(camion)
+      })
+    }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
+    await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+      this.remorquage=data;
+      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
+        this.latLngOrigin= new google.maps.LatLng(
+          this.remorquage.originLat,
+          this.remorquage.originLong                                          
+        )
+        this.latLngDestination= new google.maps.LatLng(
+          this.remorquage.destLat,
+          this.remorquage.destLong                                          
+        )
+        this.showMap()
+      }
     }, err=>{
       console.log(err);
     })
-    var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
-      //+':'+
-    var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
-    //if(this.remorquage.timeCall.length)
-    this.remorquage.timeCall=heure+':'+minute
-    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
-    this.remorquage.typeService=this.serviceTypes[0];
-    this.typeServiceChange(this.serviceTypes[0]);
-    //this.prixCalcul()
+    
   }
   
   async gotoDetailRemorquage(r:Remorquage){
-    window.open("/detail-remorquage-pro/"+r.id, "_blank")
+    this.remorquage=r;
+    this.modeHistoire=-1;
+    if(!this.remorquage.fini){
+      this.latLngOrigin= new google.maps.LatLng(
+        this.remorquage.originLat,
+        this.remorquage.originLong                                          
+      )
+      this.latLngDestination= new google.maps.LatLng(
+        this.remorquage.destLat,
+        this.remorquage.destLong                                          
+      )
+      this.showMap()
+    }
+    //this.refreshMap()
   }
 
 //*
@@ -291,40 +295,15 @@ async destinationChange(){
     }
   }//this.showMap();
 }
-onSortDate(data:Array<Remorquage>){
-  data.sort((a, b)=>{
-    if(a.dateReserve>b.dateReserve)
-      return 1;
-    if(a.dateReserve<b.dateReserve)
-      return -1;
-    return 0;
-  })
-}
-onRefresh(){
-  this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
-    this.listRqs=[]  //data;
-    this.listRqsSent=[]
-    this.listRqsFini=[]
-    //*
-    data.sort((b, a)=>{
-      if(a.id>b.id)
-        return 1;
-      if(a.id<b.id)
-        return -1;
-      return 0;
-    })//*/
-    data.forEach(rq=>{
-      //if(!rq.sent && !rq.fini) 
-      //this.listRqs.push(rq)
-      //*
-      if(rq.fini) this.listRqsFini.push(rq)
-      else if (rq.sent) this.listRqsSent.push(rq)
-      else this.listRqs.push(rq)//*/
-    })
-  }, err=>{
-    console.log(err)
-  })
-}
+/* async refreshMap(){
+  //if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
+    //await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
+    await this.showMap()
+    //await this.originChange();
+    //await this.destinationChange();
+    //this.typeServiceChange(this.remorquage.typeService)
+  //}
+}//*/
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
@@ -492,13 +471,18 @@ async showMap() {
       console.log("Le cas est termine.")
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
-        this.remorquage=new Remorquage();
+        //this.remorquage=new Remorquage();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{console.log(err)})
     }
     else {
       console.log('Le cas est continue.')
     }
     
+  }
+  
+  onFermer(){
+    window.close();
   }
 
   onCancel(){
@@ -507,7 +491,8 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
-          this.remorquage=new Remorquage();
+          //this.remorquage=new Remorquage();
+          window.close();
           //this.showMap();
           /*
           document.getElementById('right-panel').innerHTML='';
@@ -552,15 +537,6 @@ async showMap() {
     this.router.navigateByUrl("/new-shipper");
   }
   onSave(){
-    //this.remorquage.dateDepart = new Date(this.datePipe.transform(this.remorquage.dateDepart,"yyyy-MM-dd"));
-    //this.remorquage.dateReserve = new Date(this.datePipe.transform(this.remorquage.dateReserve,"yyyy-MM-dd"));
-    //this.remorquage.dateDepart.setDate(this.remorquage.dateDepart.getDate()+1)
-    //this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
-    if(this.remorquage.id==null){
-      this.remorquage.dateDepart=new Date()
-      this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
-      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
-    }
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
     }, 
@@ -681,7 +657,7 @@ async showMap() {
       if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
       else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
     }
-    else if(this.remorquage.typeService.includes('Moyen')){ 
+    else if(this.remorquage.typeService.includes('Moyenne')){ 
       if(this.remorquage.panne) panne=this.shipper.panne2
       if(this.remorquage.accident) accident=this.shipper.accident2
       if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
@@ -743,7 +719,7 @@ async showMap() {
         this.remorquage.prixKm=this.shipper.prixKm1;
       }
     }
-    else if(this.remorquage.typeService.includes('Moyen')){
+    else if(this.remorquage.typeService.includes('Moyenne')){
       //this.remorquage.prixBase=this.prixBase2;
       this.calculePrixbase()
       if(this.remorquage.accident){
@@ -781,7 +757,7 @@ async showMap() {
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
+      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
         this.listRqs=[]  //data;
         this.listRqsSent=[]
         this.listRqsFini=[]
@@ -805,11 +781,6 @@ async showMap() {
         console.log(err)
       })
     }
-    else {
-      this.remorquage.dateDepart = new Date()
-      this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
-        (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
-    }
   }
   
   onEnvoyer(){
@@ -824,6 +795,7 @@ async showMap() {
         alert("Votre courriel a ete envoye.")
         this.remorquage.sent=true;
         this.onSave();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/

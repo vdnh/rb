@@ -56,6 +56,7 @@ import { RemorquageClientComponent } from './remorquage-client/remorquage-client
 import { DetailRemorquageComponent } from './detail-remorquage/detail-remorquage.component';
 import {DatePipe} from '@angular/common';
 import { RemorquageProComponent } from './remorquage-pro/remorquage-pro.component';
+import { DetailRemorquageProComponent } from './detail-remorquage-pro/detail-remorquage-pro.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -91,6 +92,7 @@ const appRoutes:Routes=[
   {path: 'remorquage-client/:id', component:  RemorquageClientComponent},
   {path: 'detail-remorquage/:id', component:  DetailRemorquageComponent},
   {path: 'remorquage-pro', component:  RemorquageProComponent},
+  {path: 'detail-remorquage-pro/:id', component:  DetailRemorquageProComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -125,6 +127,7 @@ const appRoutes:Routes=[
     RemorquageClientComponent,
     DetailRemorquageComponent,
     RemorquageProComponent,
+    DetailRemorquageProComponent,
     //MapComponent,
   ],
   imports: [

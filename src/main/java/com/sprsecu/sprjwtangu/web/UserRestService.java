@@ -42,6 +42,17 @@ public class UserRestService {
          else return new UserRole(null, null, "");
     }    
     /*
+        Stream.of("admin","user","manager").forEach(u -> {
+            accountService.saveUser(new AppUser(null, u, u, null));
+            accountService.addRoleToUser(u, u.toUpperCase());
+            //userRepository.save(new AppUser(null, u, u, null));
+        });
+        Stream.of("dispatch1","dispatch2").forEach(u -> {
+            accountService.saveUser(new AppUser(null, u, u, null, null, null));  // id:null automatique, username, password, iduser:null, idsecond:null
+            accountService.addRoleToUser(u, "DISPATCH");
+        });
+    */
+    /*
         public AppRole getRole(@PathVariable String username){
         AppUser user =  accountService.findUserByUsername(username);
          Collection<AppRole> roles = accountService.findUserByUsername(username).getRoles();
