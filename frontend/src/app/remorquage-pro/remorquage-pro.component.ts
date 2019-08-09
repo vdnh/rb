@@ -110,8 +110,8 @@ export class RemorquageProComponent implements OnInit {
 @ViewChild(SignaturePad) signaturePad: SignaturePad;
 private signaturePadOptions: Object = {
   'minWidth': 1,
-  'canvasWidth': 250,
-  'canvasHeight': 100,
+  //'canvasWidth': 250,
+  //'canvasHeight': 100,
 };
 drawComplete(data) {
   //console.log(this.signaturePad.toDataURL('image/png', 0.5));

@@ -110,8 +110,8 @@ export class DetailRemorquageComponent implements OnInit {
   @ViewChild(SignaturePad) signaturePad: SignaturePad;
   private signaturePadOptions: Object = {
     'minWidth': 1,
-    'canvasWidth': 250,
-    'canvasHeight': 100,
+    //'canvasWidth': 250,
+    //'canvasHeight': 100,
   };
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -817,7 +817,8 @@ async showMap() {
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/1733'>Ouvrir la Facture</a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
