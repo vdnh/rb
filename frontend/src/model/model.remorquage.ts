@@ -29,6 +29,7 @@ export class Remorquage{
     idEntreprise:number;  // bientot id de Shipper
     sent=false; // sent or didn't send to driver
     camionAttribue="";
+    signature="";
     //
     distance:number=0.00;
     origin:string="";

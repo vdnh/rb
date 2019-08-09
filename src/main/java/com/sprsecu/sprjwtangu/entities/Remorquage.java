@@ -59,6 +59,7 @@ public class Remorquage implements Serializable{
     private Boolean sent=false; // sent or didn't send to driver
     private String nomDispatch="";
     private String camionAttribue="";
+    private String signature="";
     //
     private Float distance;
     private String origin;

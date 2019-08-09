@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
@@ -105,6 +106,35 @@ export class RemorquageProComponent implements OnInit {
   spherical: typeof google.maps.geometry.spherical;
   //fin
   
+//for signature pad
+@ViewChild(SignaturePad) signaturePad: SignaturePad;
+private signaturePadOptions: Object = {
+  'minWidth': 1,
+  'canvasWidth': 250,
+  'canvasHeight': 100,
+};
+drawComplete(data) {
+  //console.log(this.signaturePad.toDataURL('image/png', 0.5));
+  //this.remorquage.signature=this.signaturePad.toDataURL()
+  //console.log('this.remorquage.signature.length : '+ this.remorquage.signature.length)
+}
+
+drawStart() {
+  //console.log('begin drawing');
+}
+
+okHandler(){
+  //console.log(this.signaturePad.toDataURL('image/png', 0.5));
+  this.remorquage.signature=this.signaturePad.toDataURL()
+  //window.open(this.signaturePad.toDataURL(), ' blank')
+}
+
+clearHandler(){
+  //this.signaturePad.clear();
+  this.remorquage.signature="";
+}
+//end for signature pad
+
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();

@@ -23,6 +23,7 @@
     "@angular/router": "^7.2.10",
     "@auth0/angular-jwt": "^2.1.0",
     "@types/googlemaps": "^3.30.16",
+    "angular2-signaturepad": "^2.9.0",
     "bootstrap": "^4.2.1",
     "core-js": "^2.5.4",
     "forever-monitor": "^1.7.1",

@@ -1,6 +1,6 @@
 import { BrowserModule} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { SignaturePadModule } from 'angular2-signaturepad';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { TasksComponent } from './tasks/tasks.component';
@@ -132,6 +132,7 @@ const appRoutes:Routes=[
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, BrowserModule, ReactiveFormsModule,
+    SignaturePadModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
       libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
