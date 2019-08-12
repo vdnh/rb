@@ -30,6 +30,9 @@ export class Remorquage{
     sent=false; // sent or didn't send to driver
     camionAttribue="";
     signature="";
+    nomSignature="";
+    porterAuCompte:number=0.00; 
+    collecterArgent:number=0.00; 
     //
     distance:number=0.00;
     origin:string="";

@@ -181,6 +181,7 @@ export class RemorquageComponent implements OnInit {
   
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -395,14 +396,15 @@ printBonDeRemorquage(cmpId){
   WindowPrt.close();
 }
 
-prixCalcul(){
+async prixCalcul(){
   this.remorquage.horstax=this.remorquage.prixBase
   if((this.remorquage.distance-this.remorquage.inclus)>0){
-    this.remorquage.horstax = this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
+    this.remorquage.horstax =await this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
   }
-  this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
-  this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
-  this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
+  this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+  this.remorquage.total=await Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {
@@ -870,7 +872,10 @@ async showMap() {
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
+      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)

@@ -130,7 +130,8 @@ export class DetailRemorquageComponent implements OnInit {
   }
 
   clearHandler(){
-    //this.signaturePad.clear();
+    if(this.signaturePad)
+    this.signaturePad.clear();
     this.remorquage.signature="";
   }
   //end for signature pad
@@ -358,7 +359,8 @@ prixCalcul(){
   }
   this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
-  this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {
@@ -512,7 +514,10 @@ async showMap() {
   }
   
   onFermer(){
+    window.open('location','_self','');
     window.close();
+    var win = window.open("about:blank", "_self");
+    win.close();
   }
 
   onCancel(){
@@ -818,7 +823,9 @@ async showMap() {
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/1733'>Ouvrir la Facture</a>" +" </p></div>"    
+      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
+      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)

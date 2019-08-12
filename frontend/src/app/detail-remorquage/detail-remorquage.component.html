@@ -380,8 +380,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-3"><label class="control-label">Signature</label></div>
-          <div class="col-sm-9" style="border: 2px dotted gray">
+          <!--div class="col-sm-4"-->
+          <div class="col-sm-12 col-md-5 col-lg-3">
+            <!--label class="control-label">Signature</label-->
+            <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
+            class="form-control">
+          </div>
+          <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
             <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
               (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)" *ngIf="!remorquage.signature.length>0">
             </signature-pad>
@@ -472,11 +477,17 @@
               <label *ngIf="mode==2" class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control"
                     (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
+              <label class="control-label">Porter au Compte</label>
+              <input type="number" [(ngModel)]="remorquage.porterAuCompte" name="porterAuCompte" class="form-control"
+              (change)="prixCalcul()"/>
             </div>
           </div>
           <div class="col-md-2">
             <label class="control-label">Kms</label>
-            <div  *ngIf="mode==2">{{remorquage.distance}}</div>
+            <input type="number" [(ngModel)]="remorquage.distance" name="distance" class="form-control" disabled/>
+            <!--div  *ngIf="mode==2">{{remorquage.distance}}</div-->
+            <label class="control-label">Collecter d'argent</label>
+            <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>
           <div class="col-md-2">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
@@ -554,6 +565,10 @@
         <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
         <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
       </tr>
+      <tr style="border: 0px">
+        <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+        <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td>
+      </tr>
       <tr>
         <td colspan="5">Client: 
           <span>&nbsp;{{remorquage.nomClient}}</span>
@@ -589,8 +604,8 @@
       </tr>
       <tr>
         <td colspan="5"style="text-align: left; text-anchor: start ">
-          Signature Client : <span>&nbsp;
-            <img [src]="remorquage.signature" height="100" width="250" alt="Signature" *ngIf="remorquage.signature.length>0">
+          {{remorquage.nomSignature}}  <span>&nbsp;
+            <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
           <br>&nbsp;</span>
         </td>
       </tr>
