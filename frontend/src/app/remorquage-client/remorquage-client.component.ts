@@ -12,6 +12,11 @@ import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
+import { Camion } from 'src/model/model.camion';
+import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+import { CamionsService } from 'src/services/camions.service';
+import { Title } from '@angular/platform-browser';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-remorquage',
@@ -101,56 +106,116 @@ export class RemorquageClientComponent implements OnInit {
   spherical: typeof google.maps.geometry.spherical;
   //fin
   
+  //for signature pad
+  @ViewChild(SignaturePad) signaturePad: SignaturePad;
+  private signaturePadOptions: Object = {
+    'minWidth': 1,
+    //'canvasWidth': 250,
+    //'canvasHeight': 100,
+  };
+  drawComplete(data) {
+    //console.log(this.signaturePad.toDataURL('image/png', 0.5));
+    //this.remorquage.signature=this.signaturePad.toDataURL()
+    //console.log('this.remorquage.signature.length : '+ this.remorquage.signature.length)
+  }
+ 
+  drawStart() {
+    //console.log('begin drawing');
+  }
+
+  okHandler(){
+    //console.log(this.signaturePad.toDataURL('image/png', 0.5));
+    this.remorquage.signature=this.signaturePad.toDataURL()
+    this.onSave();
+    //window.open(this.signaturePad.toDataURL(), ' blank')
+  }
+
+  clearHandler(){
+    if(this.signaturePad)
+    this.signaturePad.clear();
+    this.remorquage.signature="";
+  }
+  //end for signature pad
+
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();
   modeHistoire: number=-1;
-  listRqs: Remorquage[];
+  listRqs: Remorquage[]; // appels waitting
+  listRqsSent: Remorquage[]; // appels sent
+  listRqsFini: Remorquage[]; // appels finished
   contacts: Contact[];
-
-  id:number; // this is the id of shipper
   
   em:EmailMessage=new EmailMessage();
-
+  id:number;
+  camions:Array<Camion>;
+  
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
-    public activatedRoute:ActivatedRoute
+    public activatedRoute:ActivatedRoute,
+    private titleService: Title,
+    public varsGlobal:VarsGlobal,
+    public camionsService:CamionsService,
     ) { 
-    this.id=activatedRoute.snapshot.params['id'];
-  }
+      this.id=activatedRoute.snapshot.params['id'];
+    }
 
   async ngOnInit() {    
-    console.log(this.remorquage.dateDepart)
-    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
-      this.shipper=data;
-      this.remorquage.nomEntreprise=this.shipper.nom
-      this.remorquage.idEntreprise=this.id
-      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-        this.contacts=data;
-      }, err=>{
-        console.log(err);
-      });
+    sessionStorage.setItem('temporary', 'yes') // to control we are in session
+    this.varsGlobal.session='yes'  // to control we are in session
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+      //this.camions = data
+      // this will take camions with gps monitor
+      this.camions=[];
+      data.forEach(camion=>{
+        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+          this.camions.push(camion)
+      })
+    }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
+    await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+      this.remorquage=data;
+      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
+        this.latLngOrigin= new google.maps.LatLng(
+          this.remorquage.originLat,
+          this.remorquage.originLong                                          
+        )
+        this.latLngDestination= new google.maps.LatLng(
+          this.remorquage.destLat,
+          this.remorquage.destLong                                          
+        )
+        this.showMap()
+      }
     }, err=>{
       console.log(err);
+      console.log("Il n'existe pas ce Bon.")
+      //window.close();
     })
-    var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
-      //+':'+
-    var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
-    //if(this.remorquage.timeCall.length)
-    this.remorquage.timeCall=heure+':'+minute
-    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
-    this.remorquage.typeService=this.serviceTypes[0];
-    this.typeServiceChange(this.serviceTypes[0]);
-    //this.prixCalcul()
+    
   }
   
-  gotoDetailRemorquage(r:Remorquage){
+  async gotoDetailRemorquage(r:Remorquage){
     this.remorquage=r;
     this.modeHistoire=-1;
-    this.showMap()
+    if(!this.remorquage.fini){
+      this.latLngOrigin= new google.maps.LatLng(
+        this.remorquage.originLat,
+        this.remorquage.originLong                                          
+      )
+      this.latLngDestination= new google.maps.LatLng(
+        this.remorquage.destLat,
+        this.remorquage.destLong                                          
+      )
+      this.showMap()
+    }
+    //this.refreshMap()
   }
 
 //*
@@ -264,6 +329,15 @@ async destinationChange(){
     }
   }//this.showMap();
 }
+/* async refreshMap(){
+  //if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
+    //await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
+    await this.showMap()
+    //await this.originChange();
+    //await this.destinationChange();
+    //this.typeServiceChange(this.remorquage.typeService)
+  //}
+}//*/
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
@@ -288,7 +362,8 @@ prixCalcul(){
   }
   this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
-  this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {
@@ -389,14 +464,40 @@ async showMap() {
       });
     }
   }
-
+  //(keyup)="autoCharacter($event)"  in html
   autoCharacter(event:any){
-        if (event.target.value.length === 3) {
-          event.target.value=event.target.value + '-';
-        }
-        if (event.target.value.length === 7) {
-          event.target.value=event.target.value + '-';
-        }
+    if (event.target.value.length === 3) {
+      event.target.value=event.target.value + '-';
+    }
+    if (event.target.value.length === 7) {
+      event.target.value=event.target.value + '-';
+    }
+  }
+  
+  reformTel(tel:any){
+    console.log("tel before: " + tel)
+    if(tel.indexOf('-')<0)
+      {
+        let sub1 = tel.substr(0,3)
+        let sub2 = tel.substr(3,3)
+        let sub3 = tel.substr(6,tel.length-6)
+        tel=sub1+'-'+sub2+'-'+sub3
+      }
+      console.log("tel after: " + tel)
+    return tel;
+  }
+
+  reformTelEvent(tel:any){
+    //console.log("tel before: " + tel.target.value)
+    if(tel.target.value.indexOf('-')<0)
+      {
+        let sub1 = tel.target.value.substr(0,3)
+        let sub2 = tel.target.value.substr(3,3)
+        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
+        tel.target.value=sub1+'-'+sub2+'-'+sub3
+      }
+    //console.log("tel after: " + tel.target.value)
+    return tel.target.value;
   }
 
   onFini(){
@@ -405,13 +506,23 @@ async showMap() {
       console.log("Le cas est termine.")
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
-        this.remorquage=new Remorquage();
+        //this.remorquage=new Remorquage();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{console.log(err)})
     }
     else {
       console.log('Le cas est continue.')
     }
     
+  }
+  
+  onFermer(){
+    //window.open('location','_self','');
+    localStorage.clear();
+    this.router.navigate(['']); //1753//location.href
+    window.close();
+    //var win = window.open("about:blank", "_self");
+    //win.close();
   }
 
   onCancel(){
@@ -420,8 +531,9 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
-          this.remorquage=new Remorquage();
-          this.showMap()
+          //this.remorquage=new Remorquage();
+          window.close();
+          //this.showMap();
           /*
           document.getElementById('right-panel').innerHTML='';
           let mapProp = {
@@ -444,7 +556,11 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
-          this.listRqs.splice(this.listRqs.indexOf(rq),1)
+          if(rq.fini)
+            this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
+          else if(rq.sent)
+            this.listRqsSent.splice(this.listRqsSent.indexOf(rq),1)
+          else this.listRqs.splice(this.listRqs.indexOf(rq),1)
           //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
         }, err=>{console.log(err)})
       }
@@ -455,6 +571,7 @@ async showMap() {
   }
   onGererEntreprise(){
     this.router.navigateByUrl("/shippers");
+    //window.open("/shippers", "_blank")  // to test open in new tab
   }
   onNewEntreprise(){
     this.router.navigateByUrl("/new-shipper");
@@ -484,10 +601,14 @@ async showMap() {
     });  
   }
 
-  dateChange(date){
+  dateChange(event){
     //(ngModelChange)="dateChange($event)"
-    this.remorquage.dateDepart=date;
-    console.log('this.remorquage.dateDepart : '+this.remorquage.dateDepart)
+    console.log('event : '+event.target.value.toString())
+    //this.remorquage.dateReserve = new Date(this.datePipe.transform(event.target.value,"yyyy-MM-dd"));
+    this.remorquage.dateReserve = new Date(event.target.value);
+    this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
+    //this.remorquage.dateDepart=event.value;
+    console.log('this.remorquage.dateDepart : '+this.remorquage.dateReserve)
   }
   nomContactChange(event){
     this.remorquage.nomContact=event.nom
@@ -605,7 +726,7 @@ async showMap() {
   }
   typeServiceChange(type){
     this.remorquage.typeService=type
-    if(this.remorquage.accident){
+    /*if(this.remorquage.accident){
       this.remorquage.inclus=0
       this.remorquage.panne=false
       this.remorquage.pullOut=false
@@ -621,8 +742,8 @@ async showMap() {
       this.remorquage.survoltage=false
       this.remorquage.essence=false
       this.remorquage.changementPneu=false
-    }
-    else{
+    }//*/
+    if(!this.remorquage.accident && !this.remorquage.panne){
       this.remorquage.prixKm=0;
       this.remorquage.inclus=0;
     }
@@ -672,20 +793,29 @@ async showMap() {
 
   onReset(){
     this.remorquage=new Remorquage();
-    this.remorquage.nomEntreprise=this.shipper.nom
-    this.remorquage.idEntreprise=this.id
   }
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.remorquagesService.getRemorquagesEntreprise(this.id).subscribe((data:Array<Remorquage>)=>{
-        this.listRqs=data;
-        this.listRqs.sort((b, a)=>{
+      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+        this.listRqs=[]  //data;
+        this.listRqsSent=[]
+        this.listRqsFini=[]
+        //*
+        data.sort((b, a)=>{
           if(a.id>b.id)
             return 1;
           if(a.id<b.id)
             return -1;
           return 0;
+        })//*/
+        data.forEach(rq=>{
+          //if(!rq.sent && !rq.fini) 
+          //this.listRqs.push(rq)
+          //*
+          if(rq.fini) this.listRqsFini.push(rq)
+          else if (rq.sent) this.listRqsSent.push(rq)
+          else this.listRqs.push(rq)//*/
         })
       }, err=>{
         console.log(err)
@@ -694,15 +824,21 @@ async showMap() {
   }
   
   onEnvoyer(){
-    if(this.remorquage.emailIntervenant.length>10){
+    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+' </p></div>'    
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
+      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
         alert("Votre courriel a ete envoye.")
+        this.remorquage.sent=true;
+        this.onSave();
+        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/

@@ -26,6 +26,15 @@ export class AuthenticationService{
         return this.http.post(this.host+"/login", user, { observe: 'response' });
     }
 
+    loginDefaultDriver(user){
+      //var user: any;
+      //user.username="dispatch2";
+      //user.password="dispatch2";
+      this.userName=user.username;
+      //console.log(this.userName);
+      return this.http.post(this.host+"/login", user, { observe: 'response' });
+  }
+
     getUserInfo(){
         console.log("From authentication services, getUserInfo() : "+this.hostUserInfo+ this.userName + " "+this.jwToken)
         return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})})
@@ -56,4 +65,8 @@ export class AuthenticationService{
         localStorage.removeItem('tonken');
         this.jwToken=null;
       }
+}
+export interface User{
+  username:string;
+  password:string;
 }

@@ -194,6 +194,8 @@ export class DetailRemorquageComponent implements OnInit {
       }
     }, err=>{
       console.log(err);
+      console.log("Il n'existe pas ce Bon.")
+      window.close();
     })
     
   }
@@ -514,10 +516,10 @@ async showMap() {
   }
   
   onFermer(){
-    window.open('location','_self','');
+    //window.open('location','_self','');
     window.close();
-    var win = window.open("about:blank", "_self");
-    win.close();
+    //var win = window.open("about:blank", "_self");
+    //win.close();
   }
 
   onCancel(){
@@ -823,7 +825,7 @@ async showMap() {
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
+      " <br> <a href='https://cts.sosprestige.com/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{

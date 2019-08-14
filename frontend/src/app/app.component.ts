@@ -1,10 +1,11 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Role } from 'src/model/model.role';
 import { MessagesService } from 'src/services/messages.service';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import {VarsGlobal} from 'src/services/VarsGlobal'
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -23,12 +24,60 @@ export class AppComponent implements OnInit{
   session='no';
 
   //nombreMessages: number=this.varsGlobal.nombreMessages;
+
+  form:FormGroup;
+  idRemorquage: any;
+
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
-              public varsGlobal:VarsGlobal, private router:Router) { }
+    private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router) 
+    {
+      this.form = fb.group({
+        username:'dispatch1',
+        password:'dispatch1'
+      })
+  }
 
   ngOnInit() {
     //*
-    
+    if(location.href.includes("/remorquage-client/"))
+    {
+      //this.mode=2 // show the message for bad url
+      console.log('Nous sommes dans : /remorquage-client/')
+      console.log('location.href : '+location.href)
+      const stringsd:string[]=location.href.split('/remorquage-client/')
+      //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
+      this.idRemorquage=stringsd[1]
+      //this.idRemorquage=location.href.substring
+      console.log('this.idRemorquage : '+this.idRemorquage)
+      const user=this.form.value;
+      //*
+      this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          let jwtToken=resp.headers.get('Authorization');
+          this.authService.saveTonken(jwtToken);
+          //console.log(jwtToken);        
+          this.authService.getUserInfo().subscribe((res:Role)=>{
+            this.role = res.roleName;
+            localStorage.setItem('role', this.role);          
+            if(res.id!=null) {
+              localStorage.setItem('userId', res.id.toString());
+              //console.log('res.id : '+res.id)
+              this.userId=localStorage.getItem('userId')
+            }
+            this.router.navigate(['/remorquage-client/'+this.idRemorquage]); //1753//location.href
+            /*/if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
+            if(res.roleName.includes('DISPATCH')) {         
+              if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
+              else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+            }//*/
+          }, err=>{          
+            console.log(err);
+          });
+          this.router.navigateByUrl('/propos');
+      },err=>{
+        this.mode=1; // appear the message bad password
+        console.log(err);  
+      });//*/
+    }
     if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
     {
       this.mode=2 // show the message for bad url
@@ -253,4 +302,8 @@ export class AppComponent implements OnInit{
       alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
   }
 
+}
+export interface User{
+  username:string;
+  password:string;
 }
