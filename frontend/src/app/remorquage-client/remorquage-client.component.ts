@@ -196,7 +196,7 @@ export class RemorquageClientComponent implements OnInit {
     }, err=>{
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
-      //window.close();
+      localStorage.clear();
     })
     
   }
@@ -516,11 +516,13 @@ async showMap() {
     
   }
   
-  onFermer(){
+  async onFermer(){
     //window.open('location','_self','');
     localStorage.clear();
-    this.router.navigate(['']); //1753//location.href
-    window.close();
+    //await this.router.navigate(['cts.sosprestige.com/propos']); //1753//location.href
+    //this.router.navigateByUrl("https://cts.sosprestige.com")
+    window.open("https://cts.sosprestige.com", "_self");
+    //window.close();
     //var win = window.open("about:blank", "_self");
     //win.close();
   }

@@ -8,6 +8,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,12 @@ public class UserRestService {
                 return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "TECHNICIEN");         
          else return new UserRole(null, null, "");
     }    
+    
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public void save(@RequestBody AppUser appUser){
+        accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, null, null, appUser.getRoleSimple()));  // id:null automatique, username, password, iduser:null, idsecond:null
+        accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
+    }
     /*
         Stream.of("admin","user","manager").forEach(u -> {
             accountService.saveUser(new AppUser(null, u, u, null));

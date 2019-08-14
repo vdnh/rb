@@ -45,8 +45,10 @@
       </tr>
     </table>
 </div>
-<!--div class="container" *ngIf="modeHistoire==-1"-->
-<div class="container" *ngIf="modeHistoire==-1">
+<div class="container" *ngIf="(modeHistoire==-1 && remorquage.id==null)">
+  <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3>
+</div>
+<div class="container" *ngIf="(modeHistoire==-1 && remorquage.id!=null)">
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
@@ -323,7 +325,7 @@
         <div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
-            class="form-control">
+            class="form-control" [disabled]="remorquage.fini">
           </div>
           <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
             <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
@@ -331,9 +333,9 @@
             </signature-pad>
             <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
             <div>
-              <button (click)="clearHandler()">Re-sign</button>
+              <button (click)="clearHandler()" *ngIf="!remorquage.fini">Re-sign</button>
               <span>&nbsp;&nbsp;</span>
-              <button (click)="okHandler()" *ngIf="!remorquage.signature.length>0">Ok</button>
+              <button (click)="okHandler()" *ngIf="(!remorquage.signature.length>0 && !remorquage.fini)">Ok</button>
             </div>
           </div>
         </div>

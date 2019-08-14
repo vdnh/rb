@@ -1,5 +1,3 @@
-import {Title} from '@angular/platform-browser';
-import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -14,16 +12,18 @@ import { ContactsService } from 'src/services/contacts.service';
 import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
-import {VarsGlobal} from 'src/services/VarsGlobal'
-import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
+import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+import { CamionsService } from 'src/services/camions.service';
+import { Title } from '@angular/platform-browser';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
-  selector: 'app-detail-remorquage',
-  templateUrl: './detail-remorquage.component.html',
-  styleUrls: ['./detail-remorquage.component.css']
+  selector: 'app-remorquage',
+  templateUrl: './remorquage-client.component.html',
+  styleUrls: ['./remorquage-client.component.css']
 })
-export class DetailRemorquageComponent implements OnInit {
+export class RemorquageClientComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -126,6 +126,7 @@ export class DetailRemorquageComponent implements OnInit {
   okHandler(){
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     this.remorquage.signature=this.signaturePad.toDataURL()
+    this.onSave();
     //window.open(this.signaturePad.toDataURL(), ' blank')
   }
 
@@ -146,7 +147,7 @@ export class DetailRemorquageComponent implements OnInit {
   contacts: Contact[];
   
   em:EmailMessage=new EmailMessage();
-  id:number;
+  id:any;
   camions:Array<Camion>;
   
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
@@ -163,6 +164,9 @@ export class DetailRemorquageComponent implements OnInit {
     }
 
   async ngOnInit() {    
+    //console.log('location.href from remorquage-client : '+location.href)
+    //const stringsd:string[]=location.href.split('/remorquage-client/')
+    //this.id=stringsd[1]
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
@@ -178,7 +182,9 @@ export class DetailRemorquageComponent implements OnInit {
       console.log();
     })
     // end of taking list camion SOSPrestige
-    await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+    console.log('this.id before remorquagesService.getDetailRemorquage : '+this.id)
+    this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+      console.log('this.id in remorquagesService.getDetailRemorquage : '+this.id)
       this.remorquage=data;
       this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
@@ -195,7 +201,8 @@ export class DetailRemorquageComponent implements OnInit {
     }, err=>{
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
-      window.close();
+      //console.log('this.id in err of remorquagesService.getDetailRemorquage : '+this.id)
+      //window.close();
     })
     
   }
@@ -527,21 +534,18 @@ async showMap() {
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
-        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(async data=>{          
-          // commence d'envoyer email
-          if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
-            this.em.emailDest=this.remorquage.emailIntervenant
-            this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
-            this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
-            await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
-              window.close();
-            }, err=>{
-              console.log()
-            })
-          }
-          //*/
-          else window.close();
+        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+          //this.remorquage=new Remorquage();
+          window.close();
+          //this.showMap();
+          /*
+          document.getElementById('right-panel').innerHTML='';
+          let mapProp = {
+            center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
+            zoom: 6,
+            //mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);//*/
         }, err=>{console.log(err)})
       }
     }
@@ -828,14 +832,14 @@ async showMap() {
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/remorquage-client/"
+      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
+        alert("Votre courriel a ete envoye.")
         this.remorquage.sent=true;
         this.onSave();
         this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))

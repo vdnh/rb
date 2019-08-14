@@ -35,6 +35,7 @@ public class AppUser  implements Serializable{
     // to identify what shipper or what transporter  when we know his role
     private Long idUser;
     private Long idSecond; // to second role
+    private String roleSimple; // add for adapte with angular
     
     @JsonIgnore
     public String getPassword(){

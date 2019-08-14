@@ -562,16 +562,19 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+          // commence d'envoyer email
+          if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+            this.em.emailDest=this.remorquage.emailIntervenant
+            this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
+            this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
+            this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+            }, err=>{
+              console.log()
+            })
+          }
+          //*/
           this.remorquage=new Remorquage();
-          //this.showMap();
-          /*
-          document.getElementById('right-panel').innerHTML='';
-          let mapProp = {
-            center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
-            zoom: 6,
-            //mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
-          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);//*/
         }, err=>{console.log(err)})
       }
     }
@@ -880,7 +883,7 @@ async showMap() {
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
-        alert("Votre courriel a ete envoye.")
+        alert("Le courriel a ete envoye au chauffeur.")
         this.remorquage.sent=true;
         this.onSave();
       }, err=>{
