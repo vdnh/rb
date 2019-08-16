@@ -5,6 +5,7 @@ import com.sprsecu.sprjwtangu.entities.AppUser;
 import com.sprsecu.sprjwtangu.entities.UserRole;
 import com.sprsecu.sprjwtangu.services.AccountService;
 import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class UserRestService {
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     public UserRole getRole(@PathVariable String username){
         AppUser user =  accountService.findUserByUsername(username);
+        /*
          Collection<AppRole> roles = accountService.findUserByUsername(username).getRoles();
          if (roles.toString().contains("ADMIN"))
                  return new UserRole(null, null, "ADMIN");
@@ -40,13 +42,37 @@ public class UserRestService {
                 return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "DISPATCH");
          else if (roles.toString().contains("TECHNICIEN"))
                 return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "TECHNICIEN");         
-         else return new UserRole(null, null, "");
+         else if (roles.toString().contains("CHAUFFEUR"))
+                return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "CHAUFFEUR");         
+         else return new UserRole(null, null, "");//*/
+         return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, user.getRoleSimple());         
     }    
     
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public void save(@RequestBody AppUser appUser){
-        accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, null, null, appUser.getRoleSimple()));  // id:null automatique, username, password, iduser:null, idsecond:null
-        accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
+    public Boolean save(@RequestBody AppUser appUser){
+        //accountService.saveUser(appUser);
+        try{
+            accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, null, null, appUser.getRoleSimple()));  // id:null automatique, username, password, iduser:null, idsecond:null
+            return true;
+        }catch (Exception e){
+            System.err.println("Error occurred:" + e);
+            return false;
+        }//accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
+    }
+    @RequestMapping(value = "/userModify", method = RequestMethod.POST)
+    public Boolean modify(@RequestBody AppUser appUser){
+        //accountService.saveUser(appUser);
+        try{
+            accountService.saveUser(appUser);  
+            return true;
+        }catch (Exception e){
+            System.err.println("Error occurred:" + e);
+            return false;
+        }//accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
+    }
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public List<AppUser> getAllUsers(){
+        return accountService.getAllUsers();
     }
     /*
         Stream.of("admin","user","manager").forEach(u -> {

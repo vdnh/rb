@@ -2,6 +2,7 @@ package com.sprsecu.sprjwtangu.services;
 
 import com.sprsecu.sprjwtangu.entities.AppRole;
 import com.sprsecu.sprjwtangu.entities.AppUser;
+import java.util.List;
 
 /**
  *
@@ -12,4 +13,5 @@ public interface AccountService {
     public AppRole saveRole(AppRole role);
     public void addRoleToUser(String username, String roleName);
     public AppUser findUserByUsername(String username);
+    public List<AppUser> getAllUsers();
 }

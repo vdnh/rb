@@ -57,6 +57,7 @@ import { DetailRemorquageComponent } from './detail-remorquage/detail-remorquage
 import {DatePipe} from '@angular/common';
 import { RemorquageProComponent } from './remorquage-pro/remorquage-pro.component';
 import { DetailRemorquageProComponent } from './detail-remorquage-pro/detail-remorquage-pro.component';
+import { AppUsersComponent } from './app-users/app-users.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -64,7 +65,8 @@ import { DetailRemorquageProComponent } from './detail-remorquage-pro/detail-rem
 //import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
-  {path:"login", component:LoginComponent},
+  //{path:"login", component:LoginComponent},
+  {path:"appUsers", component:AppUsersComponent},
   {path:"propos", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},
   {path:"register", component:RegistrationComponent},
@@ -128,6 +130,7 @@ const appRoutes:Routes=[
     DetailRemorquageComponent,
     RemorquageProComponent,
     DetailRemorquageProComponent,
+    AppUsersComponent,
     //MapComponent,
   ],
   imports: [

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 //import { Role } from 'src/model/model.role';
 //import {JwtHelper} from '@auth0/angular-jwt'
 import * as myGlobals from './globals'; //<==== to use variables from globals.ts
+import { AppUser } from 'src/model/model.appUser';
 
 @Injectable()
 export class AuthenticationService{
@@ -20,6 +21,30 @@ export class AuthenticationService{
     loadTonken(){
         this.jwToken=localStorage.getItem('tonken');
     }
+    
+    getAllAppUsers()    //
+    {    
+      this.loadTonken();
+      return this.http.get(this.host+"/users", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(resp =>{
+          return resp;
+      }))
+    }
+    
+    modifyAppUser(appUser:AppUser){
+      this.loadTonken();
+      return this.http.post(this.host+"/userModify",appUser
+      , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(res => {return res;}));
+    }
+
+    createAppUser(appUser:AppUser){
+      this.loadTonken();
+      return this.http.post(this.host+"/users",appUser
+      , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(res => {return res;}));
+    }
+
     login(user){
         this.userName=user.username;
         //console.log(this.userName);
@@ -55,10 +80,6 @@ export class AuthenticationService{
       getShippers(){
         //if(this.jwToken==null) this.loadTonken() // we don't need the authorization for access to shipper
         return this.http.get(this.host+"/shippers");//, {headers:new HttpHeaders({'Authorization':this.jwToken})});
-      }
-
-      createShipper(){
-
       }
 
       logout(): any {

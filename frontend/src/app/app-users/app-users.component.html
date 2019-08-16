@@ -1,0 +1,151 @@
+
+<hr style="border: 1px dotted black"/>
+<div class="container">
+    <h3>Creer user pour application</h3>
+    <hr style="border: 1px dotted black"/>
+<div class="panel-body">
+  <div class="row">
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Username</label>
+        <input type="text"  [(ngModel)]="appUser.username" name="username"
+              class="form-control"/>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Password</label>
+        <input type="password"  [(ngModel)]="appUser.password" name="password" placeholder="Password" 
+        class="form-control" required #password="ngModel" />
+        <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
+          <div *ngIf="password.errors.required"> Password est denamde required. </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Confirmer Password</label>
+        <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
+        class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
+      <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
+        <div *ngIf="confirmpassword.errors.required"> Confirm password is required. </div>
+        <div *ngIf="confirmpassword.errors.pattern"> Password & Confirm Password does not match.</div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Role</label>
+        <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
+          (ngModelChange)="typeRoleChange($event)" required>
+          <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >IdUser(Sh/Tr)</label>
+        <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
+              class="form-control" [disabled]="disabledIdUser"/-->
+        <input type="text" [(ngModel)]="appUser.idUser"
+              name="idUser" (change)="idUserChange()" class="form-control" list="defaultPros"
+              [disabled]="disabledIdUser">
+         <datalist id="defaultPros">
+           <option *ngFor="let e of listPros" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
+           <option *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
+         </datalist>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >IdSecond(Sh/Tr)</label>
+        <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
+              class="form-control" [disabled]="disabledIdSecond || appUser.idUser==''"/-->
+        <input type="text" [(ngModel)]="appUser.idSecond"
+          name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
+          [disabled]="disabledIdSecond || appUser.idUser==''"/>
+         <datalist id="defaultPros2em">
+           <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
+         </datalist>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button [disabled]="!(passwordCheck==appUser.password && passwordCheck!='')" (click)="onCreatUser()">OK</button>
+  </div>
+</div>
+<hr style="border: 1px dotted black"/>
+<h3>Modifier un user</h3>
+<hr style="border: 1px dotted black"/>
+<div class="row">
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Username</label>
+        
+            <select type="text" [(ngModel)]="appUserToMod">
+                <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+            </select>
+        
+        <!--input type="text" [(ngModel)]="appUserToMod.username"
+              name="usernameToMod" (change)="usernameToModChange()" class="form-control" list="listAppUsers">
+         <datalist id="listAppUsers">
+           <option *ngFor="let a of listAppUsers" [ngValue]="a" >{{a.username}}</option>
+         </datalist-->
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Password</label>
+        <input type="password"  [(ngModel)]="appUserToMod.password" name="passwordToMod" placeholder="Password" 
+        class="form-control" required #passwordToMod="ngModel" />
+        <div *ngIf="passwordToMod.invalid && passwordToMod.touched" class="alert alert-danger">
+          <div *ngIf="passwordToMod.errors.required"> Password est denamde required. </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Confirmer Password</label>
+        <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
+        class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
+      <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
+        <div *ngIf="confirmpasswordToMod.errors.required"> Confirm password is required. </div>
+        <div *ngIf="confirmpasswordToMod.errors.pattern"> Password & Confirm Password does not match.</div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Role</label>
+        <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
+          (ngModelChange)="typeRoleChange($event)" required disabled>
+          <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >IdUser(Sh/Tr)</label>
+        <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
+              class="form-control" [disabled]="disabledIdUser"/-->
+        <input type="text" [(ngModel)]="appUserToMod.idUser"
+              name="idUserToMod" class="form-control" disabled>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >IdSecond(Sh/Tr)</label>
+        <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
+              class="form-control" [disabled]="disabledIdSecond || appUser.idUser==''"/-->
+        <input type="text" [(ngModel)]="appUserToMod.idSecond"
+          name="idSecondToMod" class="form-control" disabled/>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button [disabled]="!(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!='')" (click)="onModifyUser()">Modifier</button>
+    <span>&nbsp;&nbsp;</span>
+    <button (click)="onDeleteUser()">Delete</button>
+  </div>
+<hr style="border: 1px dotted black"/>
+</div>

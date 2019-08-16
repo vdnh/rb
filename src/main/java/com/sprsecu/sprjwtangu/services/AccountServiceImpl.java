@@ -4,6 +4,7 @@ import com.sprsecu.sprjwtangu.dao.RoleRepository;
 import com.sprsecu.sprjwtangu.dao.UserRepository;
 import com.sprsecu.sprjwtangu.entities.AppRole;
 import com.sprsecu.sprjwtangu.entities.AppUser;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,4 +54,8 @@ public class AccountServiceImpl implements AccountService{
         return user;
     }
     
+    @Override
+    public List<AppUser> getAllUsers(){
+        return userRepository.findAll();
+    }
 }

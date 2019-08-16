@@ -15,6 +15,14 @@ export class TransportersService{
         this.jwToken = localStorage.getItem('tonken');
     }
 
+    getAllTransporters()    //
+        {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/transporters", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
 
     getTransporters(motCle:string, page:number, size:number){
         this.loadTonken();

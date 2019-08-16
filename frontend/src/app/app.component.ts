@@ -32,8 +32,8 @@ export class AppComponent implements OnInit{
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router) 
     {
       this.form = fb.group({
-        username:'dispatch1',
-        password:'dispatch1'
+        username:'chauffeur',
+        password:'chauffeur'
       })
   }
 
