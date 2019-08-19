@@ -52,7 +52,7 @@ public class UserRestService {
     public Boolean save(@RequestBody AppUser appUser){
         //accountService.saveUser(appUser);
         try{
-            accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, null, null, appUser.getRoleSimple()));  // id:null automatique, username, password, iduser:null, idsecond:null
+            accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, appUser.getIdUser(), appUser.getIdSecond(), appUser.getRoleSimple()));  // id:null automatique, username, password, iduser:null, idsecond:null
             return true;
         }catch (Exception e){
             System.err.println("Error occurred:" + e);
@@ -70,6 +70,19 @@ public class UserRestService {
             return false;
         }//accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
     }
+    
+    @RequestMapping(value = "/userDelete", method = RequestMethod.POST)
+    public Boolean delete(@RequestBody AppUser appUser){
+        //accountService.saveUser(appUser);
+        try{
+            accountService.delUser(appUser);//.saveUser(appUser);  
+            return true;
+        }catch (Exception e){
+            System.err.println("Error occurred:" + e);
+            return false;
+        }//accountService.addRoleToUser(appUser.getUsername(), appUser.getRoleSimple());
+    }
+    
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<AppUser> getAllUsers(){
         return accountService.getAllUsers();

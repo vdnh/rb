@@ -51,7 +51,7 @@
               name="idUser" (change)="idUserChange()" class="form-control" list="defaultPros"
               [disabled]="disabledIdUser">
          <datalist id="defaultPros">
-           <option *ngFor="let e of listPros" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
+           <option *ngFor="let e of listShippers" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
            <option *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
          </datalist>
       </div>

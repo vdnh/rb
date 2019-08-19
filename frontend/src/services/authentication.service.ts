@@ -38,6 +38,13 @@ export class AuthenticationService{
       .pipe(map(res => {return res;}));
     }
 
+    deleteAppUser(appUser:AppUser){
+      this.loadTonken();
+      return this.http.post(this.host+"/userDelete",appUser
+      , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(res => {return res;}));
+    }
+    
     createAppUser(appUser:AppUser){
       this.loadTonken();
       return this.http.post(this.host+"/users",appUser

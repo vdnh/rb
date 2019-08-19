@@ -117,11 +117,34 @@ export class AppUsersComponent implements OnInit {
   }
 
   onModifyUser(){
-    this.authenticationService.modifyAppUser(this.appUser).subscribe((data:AppUser)=>{
+    this.authenticationService.modifyAppUser(this.appUserToMod).subscribe((data:AppUser)=>{
       //this.appUser = new AppUser();
       //this.passwordCheckToMod='';
       alert('User was modified.')
       console.log('User was modified.')
+      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+        this.listAppUsers=data;
+      },
+      err=>{
+        console.log(err)
+      })
+    }, err=>{
+      console.log(err);
+    });
+  }
+
+  onDeleteUser(){
+    this.authenticationService.deleteAppUser(this.appUserToMod).subscribe((data:AppUser)=>{
+      //this.appUser = new AppUser();
+      //this.passwordCheckToMod='';
+      alert('User was deleted.')
+      console.log('User was deleted.')
+      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+        this.listAppUsers=data;
+      },
+      err=>{
+        console.log(err)
+      })
     }, err=>{
       console.log(err);
     });

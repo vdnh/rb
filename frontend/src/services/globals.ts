@@ -1,9 +1,9 @@
 //
 // ===== File globals.ts    
 //
-'use strict';
+'use strict'; // with strict mode, we cannot, for example use undeclared variables
 
-export const adServer: string="https://192.168.0.131" //"https://cts.sosprestige.com";//"https://192.168.0.131"; // adresse de server java - spring
+export const adServer: string="https://cts.sosprestige.com" //"https://cts.sosprestige.com";//"https://192.168.0.131"; // adresse de server java - spring
 export const host: string=adServer+":8080"; // adresse de server avec :8080
 export const hostUserInfo: string=host+"/users/"; // adresse de server avec  /users/
 export const version: string="1.0.0"; 

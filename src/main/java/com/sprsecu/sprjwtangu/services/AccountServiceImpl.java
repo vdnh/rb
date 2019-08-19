@@ -58,4 +58,10 @@ public class AccountServiceImpl implements AccountService{
     public List<AppUser> getAllUsers(){
         return userRepository.findAll();
     }
+    
+    @Override
+    public void delUser(AppUser user){
+        userRepository.deleteById(user.getId());
+    }
+    
 }
