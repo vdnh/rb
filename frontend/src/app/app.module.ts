@@ -58,6 +58,8 @@ import {DatePipe} from '@angular/common';
 import { RemorquageProComponent } from './remorquage-pro/remorquage-pro.component';
 import { DetailRemorquageProComponent } from './detail-remorquage-pro/detail-remorquage-pro.component';
 import { AppUsersComponent } from './app-users/app-users.component';
+import { TransportComponent } from './transport/transport.component';
+import { TransportsService } from 'src/services/transports.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -95,6 +97,7 @@ const appRoutes:Routes=[
   {path: 'detail-remorquage/:id', component:  DetailRemorquageComponent},
   {path: 'remorquage-pro', component:  RemorquageProComponent},
   {path: 'detail-remorquage-pro/:id', component:  DetailRemorquageProComponent},
+  {path: 'transport', component:  TransportComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -131,6 +134,7 @@ const appRoutes:Routes=[
     RemorquageProComponent,
     DetailRemorquageProComponent,
     AppUsersComponent,
+    TransportComponent,
     //MapComponent,
   ],
   imports: [
@@ -144,7 +148,7 @@ const appRoutes:Routes=[
   providers: [DatePipe, AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
-    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService, GarantiesService],
+    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService, GarantiesService, TransportsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

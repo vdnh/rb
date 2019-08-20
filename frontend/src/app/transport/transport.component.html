@@ -1,0 +1,648 @@
+<h4>Des Transports</h4>
+<hr style="border: 1px dotted black"/>
+<div class="container" *ngIf="modeHistoire==1">
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
+    </div>
+  </div>
+  <hr style="border: 1px dotted black"/>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
+      En attente
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
+      En cours
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
+      Fini
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Provenant</th>
+        </tr>
+        <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Provenant</th>
+        </tr>
+        <tr *ngFor="let t of listTrsSent" style="color:orange; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-4 col-sm-4 col-lg-4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Provenant</th>
+        </tr>
+        <tr *ngFor="let r of listTrsFini" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<!--div class="container" *ngIf="modeHistoire==-1"-->
+<div class="container" *ngIf="modeHistoire==-1">
+    <div class="panel panel-primary">
+      <div class="col-sm-12 col-lg-12 col-md-12">
+        <div class="row">
+          <button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button> 
+      
+          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
+          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>
+          <button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button>
+          
+          <br><br><br>
+        </div>
+        <hr style="border: 2px solid lightgray"/>
+        <div class="row">
+          <div class="col-md-4 col-sm-4 col-lg-4">
+
+              <h4><label>
+              Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
+              </label></h4> 
+          </div>
+          <div class="col-md-4 col-sm-4 col-lg-4">
+            <h4>
+              {{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}
+            </h4>
+          </div>
+          <div class="col-md-4 col-sm-4 col-lg-4">
+            <h4>BonNumero : {{transport.id}} </h4>
+          </div>
+        </div>
+        <hr style="border: 1px solid lightgray"/>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Provenant</label>
+              <input type="text" [(ngModel)]="transport.nomEntreprise"
+                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
+                   list="defaultShippers"> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
+              <datalist id="defaultShippers">
+                <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+              </datalist>
+              
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">#PO</label>
+              <input type="text" [(ngModel)]="transport.numPO" name="numPO"
+                   class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">DateReserve</label>
+              <input type="date" [ngModel]="transport.dateReserve | date: 'yyyy-MM-dd'"
+                   name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
+                   class="form-control" (change)="dateChange($event)"/>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">HeureReserve</label>
+              <input type="time" [(ngModel)]="transport.timeResrvation"
+                   name="timeResrvation" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Contact</label>
+              <input type="text"  [(ngModel)]="transport.nomContact"
+                   name="nomContact" class="form-control" list="defaultContacts">
+              <datalist id="defaultContacts">
+                <option *ngFor="let e of contacts" [ngValue]="e">{{e.nom}}</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="transport.telContact" name="telContact"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (focusout)="transport.telContact=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Extension</label>
+              <input type="text" [(ngModel)]="transport.extTelContact" name="extTelContact"
+                   class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Courriel</label>
+              <input type="email" [(ngModel)]="transport.emailContact" name="emailContact" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        
+
+        <hr style="border: 2px solid lightgray"/>
+        
+        <div class="row">
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Client</label>
+              <input type="text"  [(ngModel)]="transport.nomClient"
+                   name="nomClient" class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Tel 1er</label>
+              <input type="tel" [(ngModel)]="transport.telClient" name="telClient"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (focusout)="transport.telClient=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Tel 2em</label>
+              <input type="tel" [(ngModel)]="transport.telClient2em" name="telClient2em"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (focusout)="transport.telClient2em=reformTelEvent($event)">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Longueur(pouce)</label>
+              <label *ngIf="mode==2">Longueur(cm)</label>
+              <input type="number" [(ngModel)]="transport.longueur" name="longueur" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Largeur(pouce)</label>
+              <label *ngIf="mode==2">Largeur(cm)</label>
+              <input type="number" [(ngModel)]="transport.largeur" name="largeur" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Hauteur(pouce)</label>
+              <label *ngIf="mode==2">Hauteur(cm)</label>
+              <input type="number" [(ngModel)]="transport.hauteur" name="hauteur" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Poids(lbs)</label>
+              <label *ngIf="mode==2">Poids(kgs)</label>
+              <input type="number" [(ngModel)]="transport.poids" name="poids" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Valeur</label>
+              <input type="number" [(ngModel)]="transport.valeur" name="valeur" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Distance(miles)</label>
+              <label *ngIf="mode==2">Distance(kms)</label>
+              <input type="number" [(ngModel)]="transport.distance" name="distance" class="form-control"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group">
+              <label class="control-label">Type Camion : </label>
+              <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
+            </div>
+          </div>
+          <!--div class="col-sm-9 col-md-9 col-lg-9"><input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/></div-->
+        </div>
+        <div class="row">
+            <!--div class="col-sm-12 col-md-12 col-lg-12"-->
+              <form [formGroup]="formGroup" >
+                <table border="1px">
+                  <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                    <tr *ngIf="((i % 8 === 0) && (i<16))">
+                      <td style="font-size: 10" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                          {{camionTypes[x].name}}
+                          <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </table>
+              </form>
+            <!--/div-->
+        </div>
+
+        <div class="=row">
+          <label class="control-label">Options : </label>
+          <input type="text" [(ngModel)]="transport.option" name="option" class="form-control"/>
+        </div>
+        <div class="=row">
+          <form [formGroup]="formGroup" >
+            <table border="1px">
+              <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                <tr *ngIf="i % 8 === 0 && i>=16">
+                  <td style="font-size: 10" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                      {{camionTypes[x].name}}
+                      <input type="checkbox" [formControlName]='x' (change)="onChangeOption()"/>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </form>
+        </div>
+        
+        <!--div class="row">
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label>Type</label>
+              <select type="text"  class="form-control" [ngModel]="remorquage.typeService"
+                  (ngModelChange)="typeServiceChange($event)">
+                <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Marque</label>
+              <input type="text"  [(ngModel)]="remorquage.marque" name="marque"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Modele</label>
+              <input type="text"  [(ngModel)]="remorquage.modele" name="modele"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Plaque</label>
+              <input type="text"  [(ngModel)]="remorquage.plaque" name="plaque"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Couleur</label>
+              <input type="text"  [(ngModel)]="remorquage.couleur" name="couleur"
+                   class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Serie</label>
+              <input type="text" [(ngModel)]="remorquage.serie" name="serie"
+                   class="form-control" />
+            </div>
+          </div>
+        </div-->
+        <!--div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>DebaragePorte <input type="checkbox"
+                            [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>ChangementPneu <input type="checkbox"
+                             [(ngModel)]="remorquage.changementPneu" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
+        </div-->
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">&nbsp;</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Numero & Rue</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Ville</label>
+          </div>
+          <div class="col-sm-3">
+            <label class="control-label">Province</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">Origin</label>
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="transport.originAdresse" name="origin"
+                 class="form-control" (change)="originChange()" />
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="transport.originVille" name="originVille"
+            class="form-control" (change)="originChange()" list="defaultVilles">
+            <datalist id="defaultVilles">
+                <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+            </datalist>
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="transport.originProvince"
+                (ngModelChange)="originChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3">
+            <label class="control-label">Destination</label>
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="transport.destAdresse" name="origin"
+                 class="form-control" (change)="destinationChange()" />
+          </div>
+          <div class="col-sm-3">
+            <input type="text" [(ngModel)]="transport.destVille" name="destVille"
+            class="form-control" (change)="destinationChange()" list="defaultVillesD">
+            <datalist id="defaultVillesD">
+                <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+            </datalist>
+          </div>
+          <div class="col-sm-3">
+            <select type="text" class="form-control" [(ngModel)]="transport.destProvince"
+                (ngModelChange)="destinationChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3"><label class="control-label">Note Additionnelle</label></div>
+          <div class="col-sm-9">
+            <textarea name="comments" class="form-control" cols="80" rows="1"
+                  [(ngModel)]="transport.comments"
+                  style="margin-top: 0px"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-5 col-lg-3">
+            <!--label class="control-label">Signature </label-->
+            <input type="text" placeholder="Nom de Signateur" [(ngModel)]="transport.nomSignature" name="nomSignature"
+            class="form-control">
+          </div>
+          <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
+            <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
+              (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)" *ngIf="!transport.signature.length>0">
+            </signature-pad>
+            <img [src]="transport.signature" alt="Signature" *ngIf="transport.signature.length>0">
+            <div>
+              <button (click)="clearHandler()">Re-sign</button>
+              <span>&nbsp;&nbsp;</span>
+              <button (click)="okHandler()" *ngIf="!transport.signature.length>0">Ok</button>
+            </div>
+          </div>
+        </div>
+        <hr style="border: 2px solid lightgray"/>
+        
+        <div class="row">
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Camion</label>
+              <input type="text" [(ngModel)]="transport.camionAttribue" 
+                name="camionAttribue" list="defaultCamions" class="form-control" required>
+              <datalist id="defaultCamions">
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
+              </datalist>
+            </div>
+          </div>          
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Chauffeur</label>
+              <input type="text"  [(ngModel)]="transport.nomIntervenant"
+                    name="nomIntervenant" class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="transport.telIntervenant" name="telIntervenant"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="transport.telIntervenant=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label for="">Courriel</label>
+              <input type="email" [(ngModel)]="transport.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
+              required>
+                <datalist id="defaultEmails">
+                </datalist>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3"><label class="control-label">Note au Chauffeur</label></div>
+          <div class="col-sm-9">
+            <textarea name="comments" class="form-control" cols="80" rows="1"
+                  [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
+                  style="margin-top: 0px"></textarea>
+          </div>
+        </div>
+
+        <hr style="border: 2px solid lightgray"/>
+
+        <div *ngIf="mode==2" class="row" style="margin-top: 10px">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">PrixBase</label>
+              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
+                   class="form-control" (change)="prixCalcul()" />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">Prix/Km</label>
+              <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
+                   (change)="prixCalcul()"/> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label *ngIf="mode==2" class="control-label">Inclus</label>
+              <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
+                    (change)="prixCalcul()"/><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
+              <label class="control-label">Porter au Compte</label>
+              <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
+              (change)="prixCalcul()"/>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label class="control-label">Kms</label>
+            <input type="number" [(ngModel)]="transport.distance" name="distance" class="form-control" disabled/>
+            <label class="control-label">Collecter d'argent</label>
+            <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
+          </div>
+          <div class="col-md-2">
+            <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
+            <table  >
+              <tr>
+                <td style="text-align: right">HorsTax:</td>
+                <td style="text-align: right">{{transport.horstax | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TPS:</td>
+                <td style="text-align: right">{{transport.tps | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TVQ:</td>
+                <td style="text-align: right">{{transport.tvq | number : '1.2'}}</td>
+              </tr>
+              <tr>
+                <td style="text-align: right">TOTAL:</td>
+                <td style="text-align: right">{{transport.total | number : '1.2'}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr style="border: 2px solid lightgray"/>
+  <div *ngIf="modeHistoire==-1">
+    <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
+    <button (click)="onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
+    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
+        <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
+    </button>
+    <br>
+  </div>
+  <br>
+  <div class="row" [hidden]="modeHistoire==1 || transport.fini || transport.id==null">
+    <div style="float: left; width:70%" class="row">
+      <div class="col-md-12">
+        <div class="text-center">
+          <h3>
+            <div #gmap style="width:100%;height:500px"></div>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <!--for test directionService-->
+    <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
+  </div>
+  <div id="toprint" hidden  *ngIf="modeHistoire==-1">
+    <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
+      <tr>
+        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{transport.nomDispatch}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{transport.nomIntervenant}}</span></td>
+        <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{transport.numPO}}</span></td>
+        <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{transport.id}}</span></td>
+      </tr>
+      <tr>
+        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{transport.dateReserve | date : 'yyyy-MMM-dd'}} - {{transport.timeResrvation}}</td>
+        <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{transport.camionAttribue}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <!--span>&nbsp;{{transport.typeService}}</span--></td>
+        <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td>
+      </tr>
+      <tr style="border: 0px">
+        <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte}}</td>
+        <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{transport.collecterArgent}}</td>
+      </tr>
+      <tr>
+        <td colspan="5">Client: 
+          <span>&nbsp;{{transport.nomClient}}</span>
+          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + transport.telClient}}</span>
+          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + transport.telClient2em}}</span>
+          <br> &nbsp;</td>  
+      </tr>
+      <tr>
+        <td colspan="5">De: <span>&nbsp;{{transport.origin}}</span> <br> &nbsp;</td>
+      </tr>
+      <tr>
+          <td colspan="5">A: <span>&nbsp;{{transport.destination}}</span> <br> &nbsp;</td>
+      </tr>
+      <!--tr>
+        <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
+          <span>&nbsp;{{remorquage.marque}}</span>
+          <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
+          <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
+          <br><span>&nbsp;</span>
+        </td> 
+        <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
+        <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
+      </tr-->
+      <tr> 
+        <td colspan="5"style="text-align: left; text-anchor: start ">
+          Detail: <span>&nbsp;{{transport.comments}} <br>&nbsp;</span>
+        </td>
+      </tr>
+      <tr> 
+        <td colspan="5"style="text-align: left; text-anchor: start ">
+          Note au Chauffeur: <span>&nbsp;{{transport.driverNote}} <br>&nbsp;</span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="5"style="text-align: left; text-anchor: start ">
+          {{transport.nomSignature}}  <span>&nbsp;
+            <img [src]="transport.signature" height="100" width="250" *ngIf="transport.signature.length>0">
+          <br>&nbsp;</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
