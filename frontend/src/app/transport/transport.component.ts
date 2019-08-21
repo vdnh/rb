@@ -76,7 +76,7 @@ export class TransportComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 //*/
-  mode=2; // on est en cm et kg
+  mode=2; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
 
@@ -236,9 +236,109 @@ export class TransportComponent implements OnInit {
       .filter(i => i !== null);
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
-    this.transport.option = selectedCamionTypesNames.toString();
+    this.transport.optionDemande = selectedCamionTypesNames.toString();
   }
 
+  changeUnite(){
+    if (this.mode==1){
+      this.mode=2; // pouce en cm/0.39370, kg en 2.2046 lb, km en 0.621371 mile 
+      this.transport.poids=Math.round(this.transport.poids / 2.2046);
+      this.transport.longueur=Math.round(this.transport.longueur / 0.39370);
+      this.transport.largeur=Math.round(this.transport.largeur / 0.39370);
+      this.transport.hauteur=Math.round(this.transport.hauteur / 0.39370);
+      this.transport.distance = Math.round(this.transport.distance / 0.621371);
+    }
+    else{
+      this.mode=1; // cm en pouce
+      this.transport.poids=Math.round(this.transport.poids * 2.2046);
+      this.transport.longueur=Math.round(this.transport.longueur * 0.39370);
+      this.transport.largeur=Math.round(this.transport.largeur * 0.39370);
+      this.transport.hauteur=Math.round(this.transport.hauteur * 0.39370);
+      this.transport.distance = Math.round(this.transport.distance * 0.621371);
+    }
+  }
+  
+  // kg en lbs   ---    lb = kg * 2.2046
+  kgEnLbs(poids:number){
+    poids = poids * 2.2046;
+    console.log(poids);
+  }
+  
+  // cm en pouce  ---   pouce = cm * 0.39370
+  cmEnPouce(longeur:number){
+    longeur = longeur * 0.39370;
+    console.log(longeur);
+  }
+  
+  // km en mile
+  kmEnMile(distance:number){
+    distance = distance * 0.621371;
+    console.log(distance);
+  }
+
+  // calcule le pointage de poids (en lbs)
+  poidsPointage(poids:number, mode:number){
+    if (mode == 2)
+      poids = poids * 2.2046;
+    if (poids>0 && poids<=10000)    
+      return 1;
+    if (poids>10000 && poids<=20000)    
+      return 2;
+    if (poids>20000 && poids<=30000)    
+      return 3;
+    if (poids>30000 && poids<=40000)    
+      return 4;
+    if (poids>40000 )    
+      return 5;    
+    return 0;        
+  }
+
+  // calcule le pointage de longueur (en pouce)
+  longeurPointage(longeur:number, mode:number){
+    if (mode == 2)
+      longeur = longeur * 0.39370;
+    if (longeur>0 && longeur<=120)    
+      return 1;
+    if (longeur>121 && longeur<=240)    
+      return 2;
+    if (longeur>240 && longeur<=360)    
+      return 3;
+    if (longeur>360 && longeur<=480)    
+      return 4;
+    if (longeur>480 )    
+      return 5;
+    return 0;            
+  }
+
+  // calcule le pointage de largeur (en pouce)
+  largeurPointage(largeur:number, mode:number){
+    if (mode == 2)
+      largeur = largeur * 0.39370;
+    if (largeur>0 && largeur<=48)    
+      return 1;
+    if (largeur>48 && largeur<=102)    
+      return 2;
+    if (largeur>102 && largeur<=120)    
+      return 4;
+    if (largeur>120 && largeur<=144)    
+      return 6;
+    if (largeur>144)   // on va ajouter encore des paremes
+      return 6;
+    return 0;            
+  }
+
+  // calcule le pointage de hauteur (en pouce)
+  hauteurPointage(hauteur:number, mode:number){
+    if (mode == 2)
+      hauteur = hauteur * 0.39370;
+    if (hauteur>0 && hauteur<=92)    
+      return 1;
+    if (hauteur>92 && hauteur<=120)    
+      return 2;
+    if (hauteur>120)  // on va ajouter encore des paremes  
+      return 4;   
+    return 0;            
+  }
 
 //*
 async originChange(){

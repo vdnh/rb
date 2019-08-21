@@ -26,7 +26,7 @@ export class Transport{
     valeur:number;
     totalpoints:number;
     typeCamion="";
-    option="";       
+    optionDemande="";       
 
     nomIntervenant="";
     telIntervenant="";

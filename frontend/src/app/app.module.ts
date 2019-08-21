@@ -67,7 +67,7 @@ import { TransportsService } from 'src/services/transports.service';
 //import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
-  //{path:"login", component:LoginComponent},
+  {path:"login", component:LoginComponent},
   {path:"appUsers", component:AppUsersComponent},
   {path:"propos", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},

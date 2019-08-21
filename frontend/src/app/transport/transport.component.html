@@ -1,6 +1,6 @@
 <h4>Des Transports</h4>
 <hr style="border: 1px dotted black"/>
-<div class="container" *ngIf="modeHistoire==1">
+<div *ngIf="modeHistoire==1">
   <div class="row">
     <div class="col-md-4 col-sm-4 col-lg-4">
       <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
@@ -61,7 +61,8 @@
   </div>
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
-<div class="container" *ngIf="modeHistoire==-1">
+<div *ngIf="modeHistoire==-1">
+    <div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div>
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
@@ -237,22 +238,22 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-12">
-            <div class="form-group">
+        <div>
+          <!--div class="col-sm-12 col-md-12 col-lg-12"-->
+            <!--div class="form-group"-->
               <label class="control-label">Type Camion : </label>
               <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
-            </div>
-          </div>
+            <!--/div-->
+          <!--/div-->
           <!--div class="col-sm-9 col-md-9 col-lg-9"><input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/></div-->
         </div>
-        <div class="row">
+        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
             <!--div class="col-sm-12 col-md-12 col-lg-12"-->
               <form [formGroup]="formGroup" >
                 <table border="1px">
                   <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
                     <tr *ngIf="((i % 8 === 0) && (i<16))">
-                      <td style="font-size: 10" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                      <td style="font-size: 8" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
                           {{camionTypes[x].name}}
                           <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
                       </td>
@@ -263,16 +264,16 @@
             <!--/div-->
         </div>
 
-        <div class="=row">
+        <div>
           <label class="control-label">Options : </label>
-          <input type="text" [(ngModel)]="transport.option" name="option" class="form-control"/>
+          <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control"/>
         </div>
-        <div class="=row">
+        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
           <form [formGroup]="formGroup" >
             <table border="1px">
               <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
                 <tr *ngIf="i % 8 === 0 && i>=16">
-                  <td style="font-size: 10" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                  <td style="font-size: 8" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
                       {{camionTypes[x].name}}
                       <input type="checkbox" [formControlName]='x' (change)="onChangeOption()"/>
                   </td>
@@ -505,16 +506,17 @@
 
         <hr style="border: 2px solid lightgray"/>
 
-        <div *ngIf="mode==2" class="row" style="margin-top: 10px">
+        <div class="row" style="margin-top: 10px">
           <div class="col-md-3">
             <div class="form-group">
-              <label *ngIf="mode==2" class="control-label">PrixBase</label>
+              <label class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
                    class="form-control" (change)="prixCalcul()" />
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
+              <label *ngIf="mode==1" class="control-label">Prix/Mile</label>
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
                    (change)="prixCalcul()"/> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
@@ -522,7 +524,7 @@
           </div>
           <div class="col-md-2">
             <div class="form-group">
-              <label *ngIf="mode==2" class="control-label">Inclus</label>
+              <label class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
                     (change)="prixCalcul()"/><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
               <label class="control-label">Porter au Compte</label>
@@ -531,8 +533,8 @@
             </div>
           </div>
           <div class="col-md-2">
-            <label class="control-label">Kms</label>
-            <input type="number" [(ngModel)]="transport.distance" name="distance" class="form-control" disabled/>
+            <label class="control-label">Total Points</label>
+            <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/>
             <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>

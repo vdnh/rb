@@ -54,8 +54,8 @@ public class Transport implements Serializable{
     private Float poids=0.00f;
     private Float valeur=0.00f;
     private Long totalpoints;
+    private String optionDemande="";
     private String typeCamion="";
-    private String option="";
 
     private String nomIntervenant="";
     private String telIntervenant="";
