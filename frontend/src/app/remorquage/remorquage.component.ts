@@ -610,10 +610,6 @@ async showMap() {
     this.router.navigateByUrl("/new-shipper");
   }
   onSave(){
-    //this.remorquage.dateDepart = new Date(this.datePipe.transform(this.remorquage.dateDepart,"yyyy-MM-dd"));
-    //this.remorquage.dateReserve = new Date(this.datePipe.transform(this.remorquage.dateReserve,"yyyy-MM-dd"));
-    //this.remorquage.dateDepart.setDate(this.remorquage.dateDepart.getDate()+1)
-    //this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
     if(this.remorquage.id==null){
       this.remorquage.dateDepart=new Date()
       this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
@@ -624,6 +620,10 @@ async showMap() {
     }, 
       err=>{console.log(err)
     })
+  }
+  onSavePlusAlert(){
+    this.onSave();
+    alert("C'est enregistre.")
   }
   onPrint(heure){    
     console.log(heure)
@@ -873,10 +873,11 @@ async showMap() {
   
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      let stringsd:string[]=location.href.split('/remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/remorquage-client/"
+      " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
@@ -889,6 +890,11 @@ async showMap() {
       }, err=>{
         console.log()
       })//*/
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top  
     }
     else 
       alert("Checkez le courriel de chauffer, SVP!!!")

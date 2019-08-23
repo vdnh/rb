@@ -1,4 +1,4 @@
-<h4>Des Remorquage</h4>
+<!--h4>Des Remorquage</h4-->
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
   <div class="row">
@@ -442,9 +442,8 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
-            <!--label class="control-label">Signature </label-->
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
             class="form-control">
           </div>
@@ -459,7 +458,7 @@
               <button (click)="okHandler()" *ngIf="!remorquage.signature.length>0">Ok</button>
             </div>
           </div>
-        </div>
+        </div-->
         <hr style="border: 2px solid lightgray"/>
         
         <div class="row">
@@ -587,7 +586,7 @@
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
     <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
     <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button-->
-    <button (click)="onSave()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
+    <button (click)="onSavePlusAlert()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
     <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
     <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">

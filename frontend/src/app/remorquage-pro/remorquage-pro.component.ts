@@ -380,6 +380,7 @@ prixCalcul(){
   this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {
@@ -841,7 +842,35 @@ async showMap() {
         (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
   }
-  
+  onEnvoyer(){
+    let stringsd:string[]=location.href.split('/detail-remorquage-express/')
+    //window.open(stringsd[0], '_self');
+    this.onSave();
+    //if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      this.em.emailDest=myGlobals.emailPrincipal; //this.remorquage.emailIntervenant
+      this.em.titre= this.remorquage.nomEntreprise + " - Case numero : " + this.remorquage.id.toString()
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+      " <br> <a href='"+stringsd[0]+"/detail-remorquage-express/"
+      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        //console.log('this.em.titre : ' + this.em.titre)
+        //console.log('this.em.emailDest : '+ this.em.emailDest)
+        //console.log('this.em.content : ' + this.em.content)
+        alert("Cette appel a ete envoye a SOS Prestige.")
+        this.remorquage.sent=true;
+        this.remorquage = new Remorquage() // declare one new case
+        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      }, err=>{
+        console.log()
+      })//*/
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top  
+    }
+  /*
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
@@ -856,11 +885,11 @@ async showMap() {
         this.onSave();
       }, err=>{
         console.log()
-      })//*/
+      })
     }
     else 
       alert("Checkez le courriel de chauffer, SVP!!!")
-  }
+  }//*/
 
   logout(){
     localStorage.clear();

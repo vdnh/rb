@@ -199,41 +199,41 @@
             <div class="form-group">
               <label *ngIf="mode==1">Longueur(pouce)</label>
               <label *ngIf="mode==2">Longueur(cm)</label>
-              <input type="number" [(ngModel)]="transport.longueur" name="longueur" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Largeur(pouce)</label>
               <label *ngIf="mode==2">Largeur(cm)</label>
-              <input type="number" [(ngModel)]="transport.largeur" name="largeur" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.largeur" name="largeur" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Hauteur(pouce)</label>
               <label *ngIf="mode==2">Hauteur(cm)</label>
-              <input type="number" [(ngModel)]="transport.hauteur" name="hauteur" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.hauteur" name="hauteur" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Poids(lbs)</label>
               <label *ngIf="mode==2">Poids(kgs)</label>
-              <input type="number" [(ngModel)]="transport.poids" name="poids" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.poids" name="poids" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label >Valeur</label>
-              <input type="number" [(ngModel)]="transport.valeur" name="valeur" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Distance(miles)</label>
               <label *ngIf="mode==2">Distance(kms)</label>
-              <input type="number" [(ngModel)]="transport.distance" name="distance" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
         </div>
@@ -509,32 +509,44 @@
         <div class="row" style="margin-top: 10px">
           <div class="col-md-3">
             <div class="form-group">
-              <label class="control-label">PrixBase</label>
+              <label class="control-label">Total Points</label>
+              <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/>
+              <!--label class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                   class="form-control" (change)="prixCalcul()" />
+                   class="form-control" (change)="prixCalcul()" /-->
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label *ngIf="mode==1" class="control-label">Prix/Mile</label>
+              <label class="control-label">PrixBase</label>
+              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
+                    class="form-control" (change)="prixCalcul()" />
+              <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                   (change)="prixCalcul()"/> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
+                   (change)="prixCalcul()"/--> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
-              <label class="control-label">Inclus</label>
+              <label *ngIf="mode==1" class="control-label">Prix/Mile</label>
+              <label *ngIf="mode==2" class="control-label">Prix/Km</label>
+              <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
+                   (change)="prixCalcul()"/>
+              <!--label class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
-                    (change)="prixCalcul()"/><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
+                    (change)="prixCalcul()"/--><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
               <label class="control-label">Porter au Compte</label>
               <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
               (change)="prixCalcul()"/>
             </div>
           </div>
           <div class="col-md-2">
-            <label class="control-label">Total Points</label>
-            <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/>
+              <label class="control-label">Inclus</label>
+              <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
+                    (change)="prixCalcul()"/>
+            <!--label class="control-label">Total Points</label>
+            <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
             <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>

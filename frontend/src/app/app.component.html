@@ -1,11 +1,11 @@
 <!--p></p-->
-<div class="container; bg" style="margin-left: 20px; margin-right: 10px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
+<div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
   <div *ngIf="mode==2"><br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3> </div>
   <div class="row" *ngIf="mode!=2">
   
-<div class="col-sm-12 col-lg-12 col-md-12">
-  <div class="row"> 
-      <div class="col-md-8 col-sm-8 col-lg-8">
+  <div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="row"> 
+      <div  class="col-md-8 col-sm-8 col-lg-8">
           <div *ngIf="modeSignUp==0">
               <div class="panel panel-primary" *ngIf="role==''">
                      <!--button routerLink="/propos" class="btn btn-link">Propos</button-->
@@ -87,9 +87,9 @@
                   <!--button routerLink="/propos" class="btn btn-link">Propos</button>
                   <button routerLink="/bank-client" class="btn btn-link">Publicite</button>                  
                   <button routerLink="/transport" class="btn btn-link">Transport</button-->
-                  <button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Remorquage</button> 
-                  <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Remorquage</button> 
-                  <button routerLink="/transport" class="btn btn-link">Transports</button> 
+                  <button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
+                  <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button> 
+                  <!--button routerLink="/transport" class="btn btn-link">Transports</button--> 
                   <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
                 </div>
               </div>
@@ -97,18 +97,22 @@
           
       </div>
       <div class="col-md-4 col-sm-4 col-lg-4">
-          <div class="panel panel-primary" *ngIf="role==''">
-              <button (click)="signing()">{{textSign}}</button>
-            </div>
-            <p></p>
-            <div class="panel panel-primary" *ngIf="modeSignUp==1">
-              <label>Registrer en tant que : </label>
-              <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
-              <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
-            </div>
+        <div class="panel panel-primary" *ngIf="role==''">
+          <button (click)="signing()">{{textSign}}</button>
+        </div>
+        <p></p>
+        <div class="panel panel-primary" *ngIf="modeSignUp==1">
+          <label>Registrer en tant que : </label>
+          <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
+          <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
+        </div>
       </div>
+      <!--div class="col-md-4 col-sm-4 col-lg-4" *ngIf="role==''">
+        <iframe width="500" height="250" class="e2e-iframe-trusted-src" src="https://www.sosprestige.com/">
+        </iframe>
+      </div-->
+    </div>
   </div>
-</div>
 
 
   <br>

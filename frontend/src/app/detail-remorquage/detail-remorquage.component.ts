@@ -180,6 +180,7 @@ export class DetailRemorquageComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
+      this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
       this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
@@ -514,10 +515,47 @@ async showMap() {
     }
     
   }
-  
-  onFermer(){
-    //window.open('location','_self','');
+  //*/ des fonctionnes 
+  CloseWindow()
+  {
+    console.log('*** 1 ****')
+  window.close();
+  }
+
+  CloseOpenerWindow()
+  {
+    console.log('*** 2 ****')
+  window.opener = window;
+  window.close();
+  }
+
+  CloseOpenerHikks()
+  {
+    console.log('*** 3 ****')
+  window.opener = "HikksNotAtHome";
+  window.close();
+  }
+
+  CloseWithWindowOpenTrick()
+  {
+    //console.log('*** 4 ****')
+    //console.log('window.parent : ' + window.parent)
+    let stringsd:string[]=location.href.split('/detail-remorquage-express/')
+    //let objWindow = window //window.open(location.href, "_self");
+    window.open(stringsd[0], '_self');
+    //window = objWindow
     window.close();
+  }
+  //*/
+  async onFermer(){
+    //window.open('location','_self','');
+    //await this.router.navigateByUrl("");
+    //window.close();
+    //this.CloseWindow();
+    //this.CloseOpenerWindow();
+    //this.CloseOpenerHikks();
+    this.CloseWithWindowOpenTrick();
+
     //var win = window.open("about:blank", "_self");
     //win.close();
   }
@@ -535,13 +573,15 @@ async showMap() {
             this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
             await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               alert("Un courriel annulation a ete aussi envoye au chauffeur.")
-              window.close();
+              this.CloseWithWindowOpenTrick();
             }, err=>{
               console.log()
             })
+            //this.CloseWithWindowOpenTrick();
           }
           //*/
-          else window.close();
+          else 
+            this.CloseWithWindowOpenTrick();
         }, err=>{console.log(err)})
       }
     }
@@ -576,6 +616,7 @@ async showMap() {
   onNewEntreprise(){
     this.router.navigateByUrl("/new-shipper");
   }
+  
   onSave(){
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
@@ -583,6 +624,12 @@ async showMap() {
       err=>{console.log(err)
     })
   }
+
+  onSavePlusAlert(){
+    this.onSave();
+    alert("C'est enregistre." );
+  }
+  
   onPrint(heure){    
     console.log(heure)
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
@@ -825,10 +872,11 @@ async showMap() {
   
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      let stringsd:string[]=location.href.split('/detail-remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case numero : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/remorquage-client/"
+      " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
@@ -842,6 +890,11 @@ async showMap() {
       }, err=>{
         console.log()
       })//*/
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top  
     }
     else 
       alert("Checkez le courriel de chauffer, SVP!!!")

@@ -1,4 +1,4 @@
-<div class="container" *ngIf="modeHistoire==1">
+<div *ngIf="modeHistoire==1">
     <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
     <table class="table">
       <tr>
@@ -45,8 +45,12 @@
       </tr>
     </table>
 </div>
-<!--div class="container" *ngIf="modeHistoire==-1"-->
-<div class="container" *ngIf="modeHistoire==-1">
+<div *ngIf="(modeHistoire==-1 && remorquage.id==null)">
+  <h3>Ce bon {{id}} a ete annule ou n'existe pas !!</h3>
+  <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
+</div>
+<div *ngIf="(modeHistoire==-1 && remorquage.id!=null)">
+<!--div *ngIf="modeHistoire==-1"-->
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
@@ -379,7 +383,7 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="remorquage.sent || remorquage.fini">
           <!--div class="col-sm-4"-->
           <div class="col-sm-12 col-md-5 col-lg-3">
             <!--label class="control-label">Signature</label-->
@@ -522,11 +526,11 @@
     </div>
   </div>
   <hr style="border: 2px solid lightgray"/>
-  <div *ngIf="modeHistoire==-1">
+  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null)">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
     <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
     <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button-->
-    <button (click)="onSave()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
+    <button (click)="onSavePlusAlert()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
     <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
     <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">

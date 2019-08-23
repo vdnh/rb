@@ -25,7 +25,8 @@ export class AppComponent implements OnInit{
 
   //nombreMessages: number=this.varsGlobal.nombreMessages;
 
-  form:FormGroup;
+  form:FormGroup;  // use for chauffeur
+  formExpress:FormGroup;  // use for dispatch express
   idRemorquage: any;
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
@@ -34,6 +35,10 @@ export class AppComponent implements OnInit{
       this.form = fb.group({
         username:'chauffeur',
         password:'chauffeur'
+      })
+      this.formExpress = fb.group({
+        username:'dispatch1',
+        password:'dispatch1'
       })
   }
 
@@ -78,11 +83,52 @@ export class AppComponent implements OnInit{
         console.log(err);  
       });//*/
     }
-    if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
+    //*
+    else if(location.href.includes("/detail-remorquage-express/"))
+    {
+      //this.mode=2 // show the message for bad url
+      console.log('Nous sommes dans : /detail-remorquage-express/')
+      console.log('location.href : '+location.href)
+      const stringsd:string[]=location.href.split('/detail-remorquage-express/')
+      //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
+      this.idRemorquage=stringsd[1]
+      //this.idRemorquage=location.href.substring
+      console.log('this.idRemorquage : '+this.idRemorquage)
+      const user=this.formExpress.value;
+      //*
+      this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          let jwtToken=resp.headers.get('Authorization');
+          this.authService.saveTonken(jwtToken);
+          //console.log(jwtToken);        
+          this.authService.getUserInfo().subscribe((res:Role)=>{
+            this.role = res.roleName;
+            localStorage.setItem('role', this.role);          
+            if(res.id!=null) {
+              localStorage.setItem('userId', res.id.toString());
+              //console.log('res.id : '+res.id)
+              this.userId=localStorage.getItem('userId')
+            }
+            this.router.navigate(['/detail-remorquage-express/'+this.idRemorquage]); //1753//location.href
+            /*/if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
+            if(res.roleName.includes('DISPATCH')) {         
+              if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
+              else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+            }//*/
+          }, err=>{          
+            console.log(err);
+          });
+          this.router.navigateByUrl('/propos');
+      },err=>{
+        this.mode=1; // appear the message bad password
+        console.log(err);  
+      });//*/
+    }
+    else if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
     {
       this.mode=2 // show the message for bad url
       console.log('Notre site : cts.sosprestige.com')
     }
+    else { console.log("There is no cas special!")}
     if(localStorage.getItem('userId')!=null) {
       //console.log('res.id : '+res.id)
       this.userId=localStorage.getItem('userId')

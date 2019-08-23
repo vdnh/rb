@@ -214,9 +214,18 @@ export class TransportComponent implements OnInit {
     console.log('this.transport.timeCall : '+this.transport.timeCall)
     //this.transport.typeService=this.serviceTypes[0];
     //this.typeServiceChange(this.serviceTypes[0]);
+    this.calculTotalpoints() 
     this.prixCalcul()
   }
   
+  calculTotalpoints(){ // calculate the base price in the same time
+    this.transport.totalpoints = this.longeurPointage(this.transport.longueur, this.mode) 
+      + this.largeurPointage(this.transport.largeur, this.mode) 
+      + this.hauteurPointage(this.transport.hauteur, this.mode) 
+      + this.poidsPointage(this.transport.poids, this.mode);
+    this.prixBase(this.transport.totalpoints)
+  }
+
   async gotoDetailTransport(t:Transport){
     window.open("/detail-transport/"+t.id, "_blank")
   }
@@ -247,6 +256,7 @@ export class TransportComponent implements OnInit {
       this.transport.largeur=Math.round(this.transport.largeur / 0.39370);
       this.transport.hauteur=Math.round(this.transport.hauteur / 0.39370);
       this.transport.distance = Math.round(this.transport.distance / 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm / 0.621371);
     }
     else{
       this.mode=1; // cm en pouce
@@ -255,6 +265,7 @@ export class TransportComponent implements OnInit {
       this.transport.largeur=Math.round(this.transport.largeur * 0.39370);
       this.transport.hauteur=Math.round(this.transport.hauteur * 0.39370);
       this.transport.distance = Math.round(this.transport.distance * 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm * 0.621371);
     }
   }
   
@@ -340,6 +351,26 @@ export class TransportComponent implements OnInit {
     return 0;            
   }
 
+  // prix base
+  prixBase(totalPoints:number){
+    this.transport.prixBase = 250.00;
+  }
+  prixDistance(totalPoints:number){
+    
+    return 250.00;
+  }
+  prixToile(totalPoints:number){
+    
+    return 250.00;
+  }
+  prixAttendre(totalPoints:number){
+    
+    return 0.00;
+  }
+  prixSuplement(totalPoints:number, heurs_supl:number){
+    
+    return 0.00;
+  }
 //*
 async originChange(){
   //*

@@ -1,5 +1,5 @@
 <hr style="border: 1px dotted black"/>
-<div class="container" *ngIf="modeHistoire==1">
+<div *ngIf="modeHistoire==1">
   <div class="row">
     <div class="col-md-4 col-sm-4 col-lg-4">
       <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
@@ -61,7 +61,7 @@
 
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
-<div class="container" *ngIf="modeHistoire==-1">
+<div *ngIf="modeHistoire==-1">
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
@@ -339,7 +339,7 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-3"><label class="control-label">Signature</label></div>
           <div class="col-sm-9" style="border: 2px dotted gray">
             <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
@@ -352,7 +352,7 @@
               <button (click)="okHandler()" *ngIf="!remorquage.signature.length>0">Ok</button>
             </div>
           </div>
-        </div>
+        </div-->
         <hr style="border: 2px solid lightgray"/>
         
         <div *ngIf="mode==2" class="row" style="margin-top: 10px">
@@ -410,7 +410,7 @@
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
-    <button (click)="onSave()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
+    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
     <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
         <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
     </button-->

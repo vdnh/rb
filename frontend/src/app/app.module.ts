@@ -95,6 +95,7 @@ const appRoutes:Routes=[
   {path: 'remorquage', component:  RemorquageComponent},
   {path: 'remorquage-client/:id', component:  RemorquageClientComponent},
   {path: 'detail-remorquage/:id', component:  DetailRemorquageComponent},
+  {path: 'detail-remorquage-express/:id', component:  DetailRemorquageComponent},
   {path: 'remorquage-pro', component:  RemorquageProComponent},
   {path: 'detail-remorquage-pro/:id', component:  DetailRemorquageProComponent},
   {path: 'transport', component:  TransportComponent},
