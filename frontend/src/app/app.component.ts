@@ -14,6 +14,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class AppComponent implements OnInit{
   title = 'CTS';
+  usernameLogin='';
   mode:number=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
   role:string="";
   modeSignUp=0;
@@ -43,6 +44,8 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
+    if(localStorage.getItem('usernameLogin')) 
+      this.usernameLogin = localStorage.getItem('usernameLogin')
     //*
     if(location.href.includes("/remorquage-client/"))
     {
@@ -57,6 +60,9 @@ export class AppComponent implements OnInit{
       const user=this.form.value;
       //*
       this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          this.usernameLogin=user.username;  // to get usename
+          localStorage.setItem('usernameLogin', this.usernameLogin)
+          console.log('this.usernameLogin : '+ this.usernameLogin)
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
@@ -97,6 +103,9 @@ export class AppComponent implements OnInit{
       const user=this.formExpress.value;
       //*
       this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          this.usernameLogin=user.username;  // to get usename
+          localStorage.setItem('usernameLogin', this.usernameLogin)
+          console.log('this.usernameLogin : '+ this.usernameLogin)
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
@@ -255,7 +264,10 @@ export class AppComponent implements OnInit{
         //this.role=this.authService.role;
         //console.log('Role is : '+this.role);
         //if(this.roles.
-        this.router.navigateByUrl('/propos');
+        //this.router.navigateByUrl('/propos');
+        this.usernameLogin=dataForm.username;  // to get usename
+        localStorage.setItem('usernameLogin', this.usernameLogin)
+        console.log('this.usernameLogin : '+ this.usernameLogin)
     },err=>{
       this.mode=1; // appear the message bad password
       console.log(err);  

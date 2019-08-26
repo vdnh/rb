@@ -89,7 +89,7 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Professionnel</label>
+              <label for="">Entreprise</label>
               <input type="text" [(ngModel)]="remorquage.nomEntreprise"
                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
                   (focusout)="typeServiceChange(remorquage.typeService)" list="defaultShippers" disabled>
@@ -410,10 +410,8 @@
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
-    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
-    <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
-        <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
-    </button-->
+    <button (click)="gotoTop()" class="btn btn-link"  *ngIf="remorquage.id==null">Vou devez NumeroterAppel </button>
+    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini || remorquage.id==null">Enregistrer</button>
     <br>
   </div>
   <br>

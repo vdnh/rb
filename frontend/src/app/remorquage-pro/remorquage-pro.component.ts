@@ -870,6 +870,14 @@ async showMap() {
         behavior: 'smooth' 
       });  // go to top  
     }
+
+    gotoTop(){
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top  
+    }
   /*
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){

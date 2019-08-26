@@ -196,7 +196,7 @@ export class DetailRemorquageComponent implements OnInit {
     }, err=>{
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
-      window.close();
+      //window.close();
     })
     
   }

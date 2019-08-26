@@ -83,14 +83,18 @@
                     <button (click)="logout()" class="btn btn-link">Logout</button>
                     <br>
                 </div>
-                <div class="panel panel-primary" *ngIf="role=='DISPATCH'">     
-                  <!--button routerLink="/propos" class="btn btn-link">Propos</button>
-                  <button routerLink="/bank-client" class="btn btn-link">Publicite</button>                  
-                  <button routerLink="/transport" class="btn btn-link">Transport</button-->
-                  <button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
-                  <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button> 
+                <div class="row" *ngIf="role=='DISPATCH'">     
+                  <div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
+                    <h6 style="text-decoration-line: underline">Session de : {{usernameLogin.toUpperCase()}}</h6>
+                  </div>
+                  
+                  <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
+                  <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
                   <!--button routerLink="/transport" class="btn btn-link">Transports</button--> 
-                  <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
+                  <div class="col-md-4 col-sm-4 col-lg-4">
+                    <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
+                  </div>
+                  
                 </div>
               </div>
                 <!--p>*ngIf="{{sessionStorage.getItem('temporary')}}.includes('yes')"</p-->
