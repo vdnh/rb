@@ -19,6 +19,13 @@ export class Transport{
     extTelContact="";
     emailContact="";
     
+    insurrance="";
+    equifax="";
+    transCreditCA="";
+    authority="";
+    transCreditUS="";
+    webInfo="";
+    
     longueur:number;
     largeur:number;
     hauteur:number;

@@ -3,7 +3,10 @@ import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { ImageService } from 'src/services/image.service';
+
 import { } from 'googlemaps';
+
 import * as myGlobals from 'src/services/globals';
 import { Transport } from 'src/model/model.transport';
 import { TransportsService } from 'src/services/transports.service';
@@ -23,6 +26,10 @@ import { CamionsService } from 'src/services/camions.service';
   styleUrls: ['./transport.component.css']
 })
 export class TransportComponent implements OnInit {
+
+  imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
+  imageToShow: any;
+  isImageLoading: boolean;
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -107,6 +114,12 @@ export class TransportComponent implements OnInit {
     //'canvasWidth': 'auto',
     //'canvasHeight': 'auto',
   };
+  disableInsurrance=false;
+  disableEquifax=false;
+  disableTransCreditCA=false;
+  disableWebInfo=false;
+  disableAuthority=false;
+  disableTransCreditUS=false;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -130,6 +143,38 @@ export class TransportComponent implements OnInit {
   }
   //end for signature pad
 
+  // funtions for photo
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+       this.imageToShow = reader.result;
+    }, false);
+ 
+    if (image) {
+       reader.readAsDataURL(image);
+    }
+   }
+ 
+   getImageFromService() {
+       this.isImageLoading = true;
+       this.imageService.getImage(this.imgUrl).subscribe(data => {
+         this.createImageFromBlob(data);
+         this.isImageLoading = false;
+       }, error => {
+         this.isImageLoading = false;
+         console.log(error);
+       });
+   }
+   onFileUpLoad(event){
+    //this.imgUrl=event.target.files[0]
+    let selectedFile : File=event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ()=>{this.imgUrl=reader.result.toString();}
+    reader.readAsDataURL(selectedFile)
+    console.log('imgUrl : '+this.imgUrl)
+    //this.getImageFromService();
+   }
+  //end funcions for photo
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();
@@ -150,6 +195,7 @@ export class TransportComponent implements OnInit {
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
     public camionsService:CamionsService,
+    private imageService: ImageService,
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
@@ -230,6 +276,32 @@ export class TransportComponent implements OnInit {
     window.open("/detail-transport/"+t.id, "_blank")
   }
 
+  gotoTop(){
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });  // go to top  
+  }
+
+  mouseOverInsurance(){
+    this.disableInsurrance = !this.disableInsurrance
+  }
+  mouseOverEquifax(){
+    this.disableEquifax = !this.disableEquifax
+  }
+  mouseOverTransCreditCA(){
+    this.disableTransCreditCA = !this.disableTransCreditCA
+  }
+  mouseOverAuthority(){
+    this.disableAuthority = !this.disableAuthority
+  }
+  mouseOverTransCreditUS(){
+    this.disableTransCreditUS = !this.disableTransCreditUS
+  }
+  mouseOverWebInfo(){
+    this.disableWebInfo = !this.disableWebInfo
+  }
   onChangeTypeCamion() {
     const selectedCamionTypesNames = this.formGroup.value.camionTypes
       .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
@@ -539,6 +611,18 @@ async prixCalcul(){
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total=await Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
   this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+}
+
+prixCalculWithHorsTax(){
+  /*
+  this.transport.horstax=this.transport.prixBase
+  if((this.transport.distance-this.transport.inclus)>0){
+    this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+  }//*/
+  this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+  this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+  this.transport.total=Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
+  this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
 async showMap() {

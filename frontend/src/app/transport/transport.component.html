@@ -62,7 +62,17 @@
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
 <div *ngIf="modeHistoire==-1">
-    <div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div>
+    <!--div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div-->
+    <!--div class="col-sm-12 col-lg-12 col-md-12">
+      <div class="row">
+        <button class="btn btn-link" (mouseover)="mouseOverInsurance()" (click)="gotoTop()">Insurance</button>
+        <button class="btn btn-link" (click)="gotoTop()">Equifax</button>
+        <button class="btn btn-link" (click)="gotoTop()">TransCredit CA</button>
+        <button class="btn btn-link" (click)="gotoTop()">Authority</button>
+        <button class="btn btn-link" (click)="gotoTop()">TransCredit US</button>
+        <button class="btn btn-link" (click)="gotoTop()">Web Info</button>
+      </div>
+    </div-->              
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
@@ -193,7 +203,64 @@
             </div>
           </div>
         </div>
-
+        <!--div><button class="btn btn-link" (click)="changeUnite()"style="text-decoration-line: underline">Changer unite</button></div-->
+        <div class="row; col-sm-12 col-md-12 col-lg-12">
+          <button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer unite</button>  
+          <button class="btn btn-link" (click)="mouseOverInsurance()" style="text-decoration-line: underline">Insurance</button>
+          <button class="btn btn-link" (click)="mouseOverEquifax()" style="text-decoration-line: underline">Equifax</button>
+          <button class="btn btn-link" (click)="mouseOverTransCreditCA()" style="text-decoration-line: underline">TransCredit CA</button>
+          <button class="btn btn-link" (click)="mouseOverAuthority()" style="text-decoration-line: underline">Authority</button>
+          <button class="btn btn-link" (click)="mouseOverTransCreditUS()" style="text-decoration-line: underline">TransCredit US</button>
+          <button class="btn btn-link" (click)="mouseOverWebInfo()" style="text-decoration-line: underline">Web Info</button>
+          <!--input type="file" accept="image/x-png,image/gif,image/jpeg"-->
+          <!--input type="file" accept="image/*"-->
+        </div>
+        <div class="container">
+          <div *ngIf="disableInsurrance">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+              [(ngModel)]="transport.insurrance" placeholder="Insurrance : "
+              style="margin-top: 0px"></textarea>
+          </div>
+          <div *ngIf="disableEquifax">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+            [(ngModel)]="transport.equifax" placeholder="Equifax : "
+            style="margin-top: 0px"></textarea>
+          </div>
+          <div *ngIf="disableTransCreditCA">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+            [(ngModel)]="transport.transCreditCA" placeholder="TransCredit CA : "
+            style="margin-top: 0px"></textarea>
+          </div>
+          <div *ngIf="disableAuthority">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+            [(ngModel)]="transport.authority" placeholder="Authority : "
+            style="margin-top: 0px"></textarea>
+          </div>
+          <div *ngIf="disableTransCreditUS">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+            [(ngModel)]="transport.transCreditUS" placeholder="TransCredit US : "
+            style="margin-top: 0px"></textarea>
+          </div>
+          <div *ngIf="disableWebInfo">
+            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
+            [(ngModel)]="transport.webInfo" placeholder="Web Info : "
+            style="margin-top: 0px"></textarea>
+          </div>
+        </div>
+        <!--div class="row">
+          <div class="form-group">
+            <label>PrendrePhoto</label>
+            <input type="file"  accept="image/*" name="image" (change)="onFileUpLoad($event)" class="form-control"/>
+            <img [src]="imgUrl" alt="photo load" *ngIf="imgUrl.length>0">
+          </div-->
+          <!--button type="button" (click)="getImageFromService()">Get Image</button-->
+          <!--img [src]="imageToShow"
+                alt="Place image title"
+                *ngIf="!isImageLoading; else noImageFound">
+          <ng-template #noImageFound>
+                <img src="fallbackImage.png" alt="Fallbackimage">
+          </ng-template-->
+        <!--/div-->
         <div class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
@@ -218,21 +285,21 @@
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label *ngIf="mode==1">Poids(lbs)</label>
-              <label *ngIf="mode==2">Poids(kgs)</label>
+              <label *ngIf="mode==1">Poids(lb)</label>
+              <label *ngIf="mode==2">Poids(kg)</label>
               <input type="number" [(ngModel)]="transport.poids" name="poids" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label >Valeur</label>
+              <label >Valeur($)</label>
               <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label *ngIf="mode==1">Distance(miles)</label>
-              <label *ngIf="mode==2">Distance(kms)</label>
+              <label *ngIf="mode==1">Distance(mile)</label>
+              <label *ngIf="mode==2">Distance(km)</label>
               <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control"/>
             </div>
           </div>
@@ -438,9 +505,8 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
-            <!--label class="control-label">Signature </label-->
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="transport.nomSignature" name="nomSignature"
             class="form-control">
           </div>
@@ -455,7 +521,7 @@
               <button (click)="okHandler()" *ngIf="!transport.signature.length>0">Ok</button>
             </div>
           </div>
-        </div>
+        </div-->
         <hr style="border: 2px solid lightgray"/>
         
         <div class="row">
@@ -509,8 +575,8 @@
         <div class="row" style="margin-top: 10px">
           <div class="col-md-3">
             <div class="form-group">
-              <label class="control-label">Total Points</label>
-              <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/>
+              <!--label class="control-label">Total Points</label>
+              <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
               <!--label class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
                    class="form-control" (change)="prixCalcul()" /-->
@@ -518,9 +584,9 @@
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label class="control-label">PrixBase</label>
+              <!--label class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                    class="form-control" (change)="prixCalcul()" />
+                    class="form-control" (change)="prixCalcul()" /-->
               <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
@@ -529,33 +595,34 @@
           </div>
           <div class="col-md-2">
             <div class="form-group">
-              <label *ngIf="mode==1" class="control-label">Prix/Mile</label>
+              <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                   (change)="prixCalcul()"/>
+                   (change)="prixCalcul()"/-->
               <!--label class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
                     (change)="prixCalcul()"/--><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
               <label class="control-label">Porter au Compte</label>
               <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
-              (change)="prixCalcul()"/>
+              (change)="prixCalculWithHorsTax()"/>
             </div>
           </div>
           <div class="col-md-2">
-              <label class="control-label">Inclus</label>
+              <!--label class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
-                    (change)="prixCalcul()"/>
+                    (change)="prixCalcul()"/-->
             <!--label class="control-label">Total Points</label>
             <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
             <label class="control-label">Collecter d'argent</label>
-            <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
+            <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control" disabled/>
           </div>
           <div class="col-md-2">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
             <table  >
               <tr>
                 <td style="text-align: right">HorsTax:</td>
-                <td style="text-align: right">{{transport.horstax | number : '1.2'}}</td>
+                <!--td style="text-align: right">{{transport.horstax | number : '1.2'}}</td-->
+                <input style="text-align: right" type="number" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.horstax" name="horstax" class="form-control"/>
               </tr>
               <tr>
                 <td style="text-align: right">TPS:</td>
@@ -631,14 +698,16 @@
           <td colspan="5">A: <span>&nbsp;{{transport.destination}}</span> <br> &nbsp;</td>
       </tr>
       <!--tr>
-        <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
-          <span>&nbsp;{{remorquage.marque}}</span>
-          <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
-          <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
-          <br><span>&nbsp;</span>
-        </td> 
-        <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
-        <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
+        <td colspan="5">Taille de Load: &nbsp; Longueur: {{this.transport.longueur}} - largeur: {{this.transport.largeur}} - 
+          hauter: {{this.transport.hauteur}}- poids: {{this.transport.poids}} </td>
+      </tr>
+      <tr>
+        <td>Type de Camion </td>
+        <td>{{this.transport.typeCamion}}</td>
+      </tr>
+      <tr>
+        <td>Option </td>
+        <td>{{this.transport.optionDemande}}</td>
       </tr-->
       <tr> 
         <td colspan="5"style="text-align: left; text-anchor: start ">

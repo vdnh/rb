@@ -47,7 +47,12 @@ public class Transport implements Serializable{
     private String telContact="";
     private String extTelContact="";
     private String emailContact="";
-
+    private String insurrance="";
+    private String equifax="";
+    private String transCreditCA="";
+    private String authority="";
+    private String transCreditUS="";
+    private String webInfo="";
     private Float longueur=0.00f;
     private Float largeur=0.00f;
     private Float hauteur=0.00f;

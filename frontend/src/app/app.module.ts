@@ -60,6 +60,7 @@ import { DetailRemorquageProComponent } from './detail-remorquage-pro/detail-rem
 import { AppUsersComponent } from './app-users/app-users.component';
 import { TransportComponent } from './transport/transport.component';
 import { TransportsService } from 'src/services/transports.service';
+import { ImageService } from 'src/services/image.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -148,8 +149,9 @@ const appRoutes:Routes=[
   ],
   providers: [DatePipe, AuthenticationService, ContactsService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
-    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, BonDeTravailsService, 
-    ReparationsService, BankClientsService, MessagesService, VarsGlobal, RemorquagesService, GarantiesService, TransportsService],
+    AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
+    BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
+    RemorquagesService, GarantiesService, TransportsService, ImageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
