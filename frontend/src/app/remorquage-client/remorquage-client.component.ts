@@ -516,7 +516,7 @@ async showMap() {
     
   }
   
-  async onFermer(){
+  onFermer(){
     //window.open('location','_self','');
     localStorage.clear();
     //await this.router.navigate(['cts.sosprestige.com/propos']); //1753//location.href

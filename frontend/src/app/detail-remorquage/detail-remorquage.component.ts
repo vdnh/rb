@@ -508,6 +508,8 @@ async showMap() {
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
         //this.remorquage=new Remorquage();
         this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        window.close();
+        this.router.navigate(['/remorquage']);
       }, err=>{console.log(err)})
     }
     else {
@@ -538,26 +540,13 @@ async showMap() {
 
   CloseWithWindowOpenTrick()
   {
-    //console.log('*** 4 ****')
-    //console.log('window.parent : ' + window.parent)
     let stringsd:string[]=location.href.split('/detail-remorquage-express/')
-    //let objWindow = window //window.open(location.href, "_self");
     window.open(stringsd[0], '_self');
-    //window = objWindow
     window.close();
   }
   //*/
-  async onFermer(){
-    //window.open('location','_self','');
-    //await this.router.navigateByUrl("");
-    //window.close();
-    //this.CloseWindow();
-    //this.CloseOpenerWindow();
-    //this.CloseOpenerHikks();
+  onFermer(){
     this.CloseWithWindowOpenTrick();
-
-    //var win = window.open("about:blank", "_self");
-    //win.close();
   }
 
   onCancel(){

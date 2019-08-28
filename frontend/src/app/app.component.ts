@@ -29,6 +29,7 @@ export class AppComponent implements OnInit{
   form:FormGroup;  // use for chauffeur
   formExpress:FormGroup;  // use for dispatch express
   idRemorquage: any;
+  idTransport: string;
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router) 
@@ -90,6 +91,41 @@ export class AppComponent implements OnInit{
       });//*/
     }
     //*
+    if(location.href.includes("/transport-client/"))
+    {
+      //this.mode=2 // show the message for bad url
+      console.log('Nous sommes dans : /transport-client/')
+      console.log('location.href : '+location.href)
+      const stringsd:string[]=location.href.split('/transport-client/')
+      this.idTransport=stringsd[1]
+      console.log('this.idTransport : '+this.idTransport)
+      const user=this.form.value;
+      //*
+      this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          this.usernameLogin=user.username;  // to get usename
+          localStorage.setItem('usernameLogin', this.usernameLogin)
+          console.log('this.usernameLogin : '+ this.usernameLogin)
+          let jwtToken=resp.headers.get('Authorization');
+          this.authService.saveTonken(jwtToken);
+          //console.log(jwtToken);        
+          this.authService.getUserInfo().subscribe((res:Role)=>{
+            this.role = res.roleName;
+            localStorage.setItem('role', this.role);          
+            if(res.id!=null) {
+              localStorage.setItem('userId', res.id.toString());
+              //console.log('res.id : '+res.id)
+              this.userId=localStorage.getItem('userId')
+            }
+            this.router.navigate(['/transport-client/'+this.idTransport]); 
+          }, err=>{          
+            console.log(err);
+          });
+          this.router.navigateByUrl('/propos');
+      },err=>{
+        this.mode=1; // appear the message bad password
+        console.log(err);  
+      });//*/
+    }
     else if(location.href.includes("/detail-remorquage-express/"))
     {
       //this.mode=2 // show the message for bad url
@@ -132,6 +168,43 @@ export class AppComponent implements OnInit{
         console.log(err);  
       });//*/
     }
+    else if(location.href.includes("/detail-transport-express/"))
+    {
+      //this.mode=2 // show the message for bad url
+      console.log('Nous sommes dans : /detail-transport-express/')
+      console.log('location.href : '+location.href)
+      const stringsd:string[]=location.href.split('/detail-transport-express/')
+      //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
+      this.idTransport=stringsd[1]
+      //this.idRemorquage=location.href.substring
+      console.log('this.idTransport : '+this.idTransport)
+      const user=this.formExpress.value;
+      //*
+      this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          this.usernameLogin=user.username;  // to get usename
+          localStorage.setItem('usernameLogin', this.usernameLogin)
+          console.log('this.usernameLogin : '+ this.usernameLogin)
+          let jwtToken=resp.headers.get('Authorization');
+          this.authService.saveTonken(jwtToken);
+          //console.log(jwtToken);        
+          this.authService.getUserInfo().subscribe((res:Role)=>{
+            this.role = res.roleName;
+            localStorage.setItem('role', this.role);          
+            if(res.id!=null) {
+              localStorage.setItem('userId', res.id.toString());
+              //console.log('res.id : '+res.id)
+              this.userId=localStorage.getItem('userId')
+            }
+            this.router.navigate(['/detail-transport-express/'+this.idTransport]); 
+          }, err=>{          
+            console.log(err);
+          });
+          this.router.navigateByUrl('/propos');
+      },err=>{
+        this.mode=1; // appear the message bad password
+        console.log(err);  
+      });//*/
+    }
     else if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
     {
       this.mode=2 // show the message for bad url
@@ -165,7 +238,15 @@ export class AppComponent implements OnInit{
       if(this.role.includes('DISPATCH')) {         
         //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
         if(!location.href.includes("detail-remorquage")){
-          if(this.userId.length>0) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
+          if(location.href.includes("detail-transport")){
+            const stringsd:string[]=location.href.split('/detail-transport/')
+            let id=stringsd[1]
+            this.router.navigate(['/detail-transport/'+ id], {skipLocationChange: true})
+          }
+          else if(location.href.includes("/transport")){
+            this.router.navigate(['/transport/'], {skipLocationChange: true})            
+          }
+          else if(this.userId.length>0) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
           else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
         }
         //localStorage.setItem('userId', res.id.toString());

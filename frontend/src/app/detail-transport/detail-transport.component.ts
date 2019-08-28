@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ImageService } from 'src/services/image.service';
 
@@ -19,13 +19,15 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
 import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
+import { Title } from '@angular/platform-browser';
+
 
 @Component({
-  selector: 'app-transport',
-  templateUrl: './transport.component.html',
-  styleUrls: ['./transport.component.css']
+  selector: 'app-detail-transport',
+  templateUrl: './detail-transport.component.html',
+  styleUrls: ['./detail-transport.component.css']
 })
-export class TransportComponent implements OnInit {
+export class DetailTransportComponent implements OnInit {
 
   imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -120,6 +122,7 @@ export class TransportComponent implements OnInit {
   disableWebInfo=false;
   disableAuthority=false;
   disableTransCreditUS=false;
+  id: any;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -133,6 +136,11 @@ export class TransportComponent implements OnInit {
   okHandler(){
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     this.transport.signature=this.signaturePad.toDataURL()
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+    }, 
+      err=>{console.log(err)
+    })
     //window.open(this.signaturePad.toDataURL(), ' blank')
   }
 
@@ -194,9 +202,12 @@ export class TransportComponent implements OnInit {
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
+    public activatedRoute:ActivatedRoute,
+    private titleService: Title,
     public camionsService:CamionsService,
     private imageService: ImageService,
     ) { 
+      this.id=activatedRoute.snapshot.params['id'];
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
       const formControls = this.camionTypes.map(control => new FormControl(false));
@@ -241,27 +252,40 @@ export class TransportComponent implements OnInit {
       console.log();
     })
     // end of taking list camion SOSPrestige
+    await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
+      this.transport=data;
+      this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+      this.titleService.setTitle('Case : '+this.transport.id + (this.transport.fini? " - fini" : this.transport.sent? " - encours" : ' - en attente'))
+      if(!this.transport.fini && this.transport.originLat!=0 && this.transport.destLat!=0){
+        this.latLngOrigin= new google.maps.LatLng(
+          this.transport.originLat,
+          this.transport.originLong                                          
+        )
+        this.latLngDestination= new google.maps.LatLng(
+          this.transport.destLat,
+          this.transport.destLong                                          
+        )
+        this.showMap()
+      }
+    }, err=>{
+      console.log(err);
+      console.log("Il n'existe pas ce Bon.")
+      //window.close();
+    })
+    /*
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
     }, err=>{
       console.log(err);
     })
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
-      //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
     
     this.transport.timeCall=heure+':'+minute
     console.log('this.transport.timeCall : '+this.transport.timeCall)
-    //this.transport.typeService=this.serviceTypes[0];
-    //this.typeServiceChange(this.serviceTypes[0]);
     this.calculTotalpoints() 
     this.prixCalcul()
+    //*/
   }
   
   calculTotalpoints(){ // calculate the base price in the same time
@@ -758,6 +782,17 @@ async showMap() {
     //console.log("tel after: " + tel.target.value)
     return tel.target.value;
   }
+  
+  CloseWithWindowOpenTrick()
+  {
+    let stringsd:string[]=location.href.split('/detail-transport-express/')
+    window.open(stringsd[0]+"/transport", '_self');
+    window.close();
+  }
+  //*/
+  onFermer(){
+    this.CloseWithWindowOpenTrick();
+  }
 
   onFini(){
     var r = confirm("Etes vous sur que ce cas est fini ?")
@@ -766,6 +801,8 @@ async showMap() {
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
+        window.close()
+        this.router.navigate(['/transport']);
       }, err=>{console.log(err)})
     }
     else {
@@ -792,7 +829,8 @@ async showMap() {
             })
           }
           //*/
-          this.transport=new Transport();
+          window.close()
+          this.router.navigate(['/transport']);
         }, err=>{console.log(err)})
       }
     }
@@ -829,6 +867,7 @@ async showMap() {
     }
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
+      alert("C'est enregistre.")
     }, 
       err=>{console.log(err)
     })
@@ -1063,7 +1102,7 @@ async showMap() {
       this.em.emailDest=this.transport.emailIntervenant
       this.em.titre="Case numero : " + this.transport.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+ stringsd[0] +"/transport-client/"
+      " <br> <a href='"+stringsd[0]+"/transport-client/"
       + this.transport.id   //1733  // replace by Number of Bon Transport
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
@@ -1073,6 +1112,7 @@ async showMap() {
         alert("Le courriel a ete envoye au chauffeur.")
         this.transport.sent=true;
         this.onSave();
+        this.gotoTop();
       }, err=>{
         console.log()
       })//*/

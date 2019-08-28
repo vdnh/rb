@@ -61,6 +61,8 @@ import { AppUsersComponent } from './app-users/app-users.component';
 import { TransportComponent } from './transport/transport.component';
 import { TransportsService } from 'src/services/transports.service';
 import { ImageService } from 'src/services/image.service';
+import { DetailTransportComponent } from './detail-transport/detail-transport.component';
+import { TransportClientComponent } from './transport-client/transport-client.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -100,6 +102,9 @@ const appRoutes:Routes=[
   {path: 'remorquage-pro', component:  RemorquageProComponent},
   {path: 'detail-remorquage-pro/:id', component:  DetailRemorquageProComponent},
   {path: 'transport', component:  TransportComponent},
+  {path: 'transport-client/:id', component:  TransportClientComponent},
+  {path: 'detail-transport/:id', component:  DetailTransportComponent},
+  {path: 'detail-transport-express/:id', component:  DetailTransportComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -137,6 +142,8 @@ const appRoutes:Routes=[
     DetailRemorquageProComponent,
     AppUsersComponent,
     TransportComponent,
+    TransportClientComponent,
+    DetailTransportComponent,
     //MapComponent,
   ],
   imports: [
