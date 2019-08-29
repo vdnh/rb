@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ImageService } from 'src/services/image.service';
 
@@ -19,16 +19,14 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
 import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
-import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
-
 @Component({
-  selector: 'app-detail-transport',
-  templateUrl: './detail-transport.component.html',
-  styleUrls: ['./detail-transport.component.css']
+  selector: 'app-transport-pro',
+  templateUrl: './transport-pro.component.html',
+  styleUrls: ['./transport-pro.component.css']
 })
-export class DetailTransportComponent implements OnInit {
+export class TransportProComponent implements OnInit {
 
   imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -123,7 +121,7 @@ export class DetailTransportComponent implements OnInit {
   disableWebInfo=false;
   disableAuthority=false;
   disableTransCreditUS=false;
-  id: any;
+  id: number;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -137,11 +135,6 @@ export class DetailTransportComponent implements OnInit {
   okHandler(){
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     this.transport.signature=this.signaturePad.toDataURL()
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-    }, 
-      err=>{console.log(err)
-    })
     //window.open(this.signaturePad.toDataURL(), ' blank')
   }
 
@@ -203,13 +196,11 @@ export class DetailTransportComponent implements OnInit {
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
-    public activatedRoute:ActivatedRoute,
-    private titleService: Title,
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
     private imageService: ImageService,
     ) { 
-      this.id=activatedRoute.snapshot.params['id'];
+      this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
       const formControls = this.camionTypes.map(control => new FormControl(false));
@@ -240,9 +231,24 @@ export class DetailTransportComponent implements OnInit {
   }
   
   async ngOnInit() {    
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.varsGlobal.session='yes'  // to control we are in session
+    //
+    this.varsGlobal.pro='yes'  // to control we are in professionnal
+    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
+      this.shipper=data;
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.id
+      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log(err);
+    })
+    //
     this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+
+    /*/ begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige    
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -254,41 +260,29 @@ export class DetailTransportComponent implements OnInit {
     }, err=>{
       console.log();
     })
-    // end of taking list camion SOSPrestige
-    await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
-      this.transport=data;
-      this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-      this.titleService.setTitle('Case : '+this.transport.id + (this.transport.fini? " - fini" : this.transport.sent? " - encours" : ' - en attente'))
-      if(!this.transport.fini && this.transport.originLat!=0 && this.transport.destLat!=0){
-        this.latLngOrigin= new google.maps.LatLng(
-          this.transport.originLat,
-          this.transport.originLong                                          
-        )
-        this.latLngDestination= new google.maps.LatLng(
-          this.transport.destLat,
-          this.transport.destLong                                          
-        )
-        this.showMap()
-      }
-    }, err=>{
-      console.log(err);
-      console.log("Il n'existe pas ce Bon.")
-      //window.close();
-    })
-    /*
+    // end of taking list camion SOSPrestige //*/
+
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data;
+      /*this.listShipper.forEach((sh:Shipper)=>{
+        console.log('Shipper nom : '+ sh.nom)
+      })
+      this.filteredShippers.forEach((sh:Shipper)=>{
+        console.log('Shipper filtered nom : '+ sh.nom)
+      })//*/
     }, err=>{
       console.log(err);
     })
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
+      //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
     
     this.transport.timeCall=heure+':'+minute
     console.log('this.transport.timeCall : '+this.transport.timeCall)
+    //this.transport.typeService=this.serviceTypes[0];
+    //this.typeServiceChange(this.serviceTypes[0]);
     this.calculTotalpoints() 
     this.prixCalcul()
-    //*/
   }
   
   calculTotalpoints(){ // calculate the base price in the same time
@@ -299,8 +293,10 @@ export class DetailTransportComponent implements OnInit {
     this.prixBase(this.transport.totalpoints)
   }
 
-  async gotoDetailTransport(t:Transport){
-    window.open("/detail-transport/"+t.id, "_blank")
+  gotoDetailTransport(t:Transport){
+    window.open("/detail-transport-pro/"+t.id, "_blank");
+    //window.open("/detail-transport-pro/"+t.id, "mywindow", "menubar=1");
+    //this.router.navigate([], {skipLocationChange: true}).then(result=>{window.open("/detail-transport-pro/"+t.id, "_blank"); });
   }
 
   gotoTop(){
@@ -785,17 +781,6 @@ async showMap() {
     //console.log("tel after: " + tel.target.value)
     return tel.target.value;
   }
-  
-  CloseWithWindowOpenTrick()
-  {
-    let stringsd:string[]=location.href.split('/detail-transport-express/')
-    window.open(stringsd[0]+"/transport", '_self');
-    window.close();
-  }
-  //*/
-  onFermer(){
-    this.CloseWithWindowOpenTrick();
-  }
 
   onFini(){
     var r = confirm("Etes vous sur que ce cas est fini ?")
@@ -804,8 +789,6 @@ async showMap() {
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
-        window.close()
-        this.router.navigate(['/transport']);
       }, err=>{console.log(err)})
     }
     else {
@@ -832,8 +815,7 @@ async showMap() {
             })
           }
           //*/
-          window.close()
-          this.router.navigate(['/transport']);
+          this.transport=new Transport();
         }, err=>{console.log(err)})
       }
     }
@@ -873,7 +855,6 @@ async showMap() {
     }
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
-      alert("C'est enregistre.")
     }, 
       err=>{console.log(err)
     })
@@ -1110,7 +1091,7 @@ async showMap() {
       this.em.emailDest=this.transport.emailIntervenant
       this.em.titre="Case numero : " + this.transport.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+stringsd[0]+"/transport-client/"
+      " <br> <a href='"+ stringsd[0] +"/transport-client/"
       + this.transport.id   //1733  // replace by Number of Bon Transport
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
@@ -1120,7 +1101,6 @@ async showMap() {
         alert("Le courriel a ete envoye au chauffeur.")
         this.transport.sent=true;
         this.onSave();
-        this.gotoTop();
       }, err=>{
         console.log()
       })//*/

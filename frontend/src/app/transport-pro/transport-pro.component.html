@@ -51,7 +51,7 @@
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Provenant</th>
         </tr>
-        <tr *ngFor="let r of listTrsFini" style="color: red; background-color: whitesmoke">
+        <tr *ngFor="let t of listTrsFini" style="color: red; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
@@ -76,13 +76,12 @@
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
-          <!--button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
-          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button--> 
+          <button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button> 
       
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>
-          <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
-          <!--button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button-->
+          <button (click)="onHistoire()" class="btn btn-link">HistoriqueAppels</button>
           
           <br><br><br>
         </div>
@@ -504,7 +503,7 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="transport.nomSignature" name="nomSignature"
             class="form-control">
@@ -515,12 +514,12 @@
             </signature-pad>
             <img [src]="transport.signature" alt="Signature" *ngIf="transport.signature.length>0">
             <div>
-              <button (click)="clearHandler()" *ngIf="!transport.fini">Refaire</button>
+              <button (click)="clearHandler()">Re-sign</button>
               <span>&nbsp;&nbsp;</span>
               <button (click)="okHandler()" *ngIf="!transport.signature.length>0">Ok</button>
             </div>
           </div>
-        </div>
+        </div-->
         <hr style="border: 2px solid lightgray"/>
         
         <div class="row">

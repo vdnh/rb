@@ -203,50 +203,48 @@
             </div>
           </div>
         </div>
-        <!--div><button class="btn btn-link" (click)="changeUnite()"style="text-decoration-line: underline">Changer unite</button></div-->
-        <div class="row; col-sm-12 col-md-12 col-lg-12">
-          <button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer unite</button>  
-          <button class="btn btn-link" (click)="mouseOverInsurance()" style="text-decoration-line: underline">Insurance</button>
-          <button class="btn btn-link" (click)="mouseOverEquifax()" style="text-decoration-line: underline">Equifax</button>
-          <button class="btn btn-link" (click)="mouseOverTransCreditCA()" style="text-decoration-line: underline">TransCredit CA</button>
-          <button class="btn btn-link" (click)="mouseOverAuthority()" style="text-decoration-line: underline">Authority</button>
-          <button class="btn btn-link" (click)="mouseOverTransCreditUS()" style="text-decoration-line: underline">TransCredit US</button>
-          <button class="btn btn-link" (click)="mouseOverWebInfo()" style="text-decoration-line: underline">Web Info</button>
-          <!--input type="file" accept="image/x-png,image/gif,image/jpeg"-->
-          <!--input type="file" accept="image/*"-->
+        <div><button class="btn btn-primary" (click)="changeUnite()"style="text-decoration-line: underline">Changer Unite Mesure</button></div>
+        <!--div class="row; col-sm-12 col-md-12 col-lg-12">
+          <button class="btn btn-primary" (click)="changeUnite()" style="text-decoration-line: underline">Changer unite</button>  
+          <button class="btn btn-primary" (click)="mouseOverInsurance()" style="text-decoration-line: underline">Insurance</button>
+          <button class="btn btn-primary" (click)="mouseOverEquifax()" style="text-decoration-line: underline">Equifax</button>
+          <button class="btn btn-primary" (click)="mouseOverTransCreditCA()" style="text-decoration-line: underline">TransCredit CA</button>
+          <button class="btn btn-primary" (click)="mouseOverAuthority()" style="text-decoration-line: underline">Authority</button>
+          <button class="btn btn-primary" (click)="mouseOverTransCreditUS()" style="text-decoration-line: underline">TransCredit US</button>
+          <button class="btn btn-primary" (click)="mouseOverWebInfo()" style="text-decoration-line: underline">Web Info</button>
         </div>
-        <div class="container">
-          <div *ngIf="disableInsurrance">
+        <div class="container" style="margin-left: 25px; margin-right: 25px">
+          <div *ngIf="disableInsurrance" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
               [(ngModel)]="transport.insurrance" placeholder="Insurrance : "
               style="margin-top: 0px"></textarea>
           </div>
-          <div *ngIf="disableEquifax">
+          <div *ngIf="disableEquifax" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
             [(ngModel)]="transport.equifax" placeholder="Equifax : "
             style="margin-top: 0px"></textarea>
           </div>
-          <div *ngIf="disableTransCreditCA">
+          <div *ngIf="disableTransCreditCA" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
             [(ngModel)]="transport.transCreditCA" placeholder="TransCredit CA : "
             style="margin-top: 0px"></textarea>
           </div>
-          <div *ngIf="disableAuthority">
+          <div *ngIf="disableAuthority" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
             [(ngModel)]="transport.authority" placeholder="Authority : "
             style="margin-top: 0px"></textarea>
           </div>
-          <div *ngIf="disableTransCreditUS">
+          <div *ngIf="disableTransCreditUS" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
             [(ngModel)]="transport.transCreditUS" placeholder="TransCredit US : "
             style="margin-top: 0px"></textarea>
           </div>
-          <div *ngIf="disableWebInfo">
+          <div *ngIf="disableWebInfo" class="form-group">
             <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
             [(ngModel)]="transport.webInfo" placeholder="Web Info : "
             style="margin-top: 0px"></textarea>
           </div>
-        </div>
+        </div-->
         <!--div class="row">
           <div class="form-group">
             <label>PrendrePhoto</label>
@@ -320,7 +318,7 @@
                 <table border="1px">
                   <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
                     <tr *ngIf="((i % 8 === 0) && (i<16))">
-                      <td style="font-size: 8" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                      <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
                           {{camionTypes[x].name}}
                           <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
                       </td>
@@ -340,7 +338,7 @@
             <table border="1px">
               <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
                 <tr *ngIf="i % 8 === 0 && i>=16">
-                  <td style="font-size: 8" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                  <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
                       {{camionTypes[x].name}}
                       <input type="checkbox" [formControlName]='x' (change)="onChangeOption()"/>
                   </td>

@@ -85,7 +85,7 @@ export class TransportClientComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 //*/
-  mode=2; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
+  mode=1; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
 
@@ -866,6 +866,9 @@ async showMap() {
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
+    if(this.mode==2){
+      this.changeUnite();
+    }
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
       alert("C'est enregistre.")
@@ -886,8 +889,10 @@ async showMap() {
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
     }, (results: any) => {    
-      this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
-      //this.distanceKm = Math.round(this.distance*1.609344)
+      if(this.mode==1){
+        this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+      }
+      else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
     });  
   }
 

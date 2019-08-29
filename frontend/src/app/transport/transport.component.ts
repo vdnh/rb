@@ -83,7 +83,7 @@ export class TransportComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 //*/
-  mode=2; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
+  mode=1; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
 
@@ -827,8 +827,13 @@ async showMap() {
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
+    if(this.mode==2){
+      this.changeUnite();
+    }
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
+      if(this.transport.total>0)
+        alert("C'est enregistre.")
     }, 
       err=>{console.log(err)
     })
@@ -846,8 +851,10 @@ async showMap() {
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
     }, (results: any) => {    
-      this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
-      //this.distanceKm = Math.round(this.distance*1.609344)
+      if(this.mode==1){
+        this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+      }
+      else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
     });  
   }
 
@@ -926,99 +933,10 @@ async showMap() {
   }
 
   calculePrixbase(){
-    /*/
-    let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
-    if(this.remorquage.typeService.includes('Leger')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne1
-      if(this.remorquage.accident) accident=this.shipper.accident1
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut1
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte1
-      if(this.remorquage.survoltage) boost=this.shipper.boost1
-      if(this.remorquage.essence) essence=this.shipper.essence1
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu1
-      
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
-    }
-    else if(this.remorquage.typeService.includes('Moyen')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne2
-      if(this.remorquage.accident) accident=this.shipper.accident2
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte2
-      if(this.remorquage.survoltage) boost=this.shipper.boost2
-      if(this.remorquage.essence) essence=this.shipper.essence2
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu2
-
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
-    }
-    else if(this.remorquage.typeService.includes('Lourd')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne3
-      if(this.remorquage.accident) accident=this.shipper.accident3
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut3
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte3
-      if(this.remorquage.survoltage) boost=this.shipper.boost3
-      if(this.remorquage.essence) essence=this.shipper.essence3
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu3
-
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
-    }
-    //*/
   }
 
   /*/
   typeServiceChange(type){
-    this.remorquage.typeService=type
-    if(!this.remorquage.accident && !this.remorquage.panne){
-      this.remorquage.prixKm=0;
-      this.remorquage.inclus=0;
-    }
-    if(this.remorquage.typeService.includes('Leger')){
-      //this.remorquage.prixBase=this.prixBase1;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm1;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus1;
-        this.remorquage.prixKm=this.shipper.prixKm1;
-      }
-    }
-    else if(this.remorquage.typeService.includes('Moyen')){
-      //this.remorquage.prixBase=this.prixBase2;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm2;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus2;
-        this.remorquage.prixKm=this.shipper.prixKm2;
-      }
-    }
-    else if(this.remorquage.typeService.includes('Lourd')){
-      //this.remorquage.prixBase=this.prixBase3;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm3;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus3;
-        this.remorquage.prixKm=this.shipper.prixKm3;
-      }
-    }
-    else{
-      this.remorquage.prixBase=-1.00;
-      this.remorquage.inclus=-1.00;
-      this.remorquage.prixKm=-1.00;
-    }
-    this.prixCalcul()
   }
   //*/
 
@@ -1072,7 +990,12 @@ async showMap() {
         //console.log('this.em.content : ' + this.em.content)
         alert("Le courriel a ete envoye au chauffeur.")
         this.transport.sent=true;
-        this.onSave();
+        this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+          this.transport=data;
+        }, 
+          err=>{console.log(err)
+        })
+        this.gotoTop();
       }, err=>{
         console.log()
       })//*/

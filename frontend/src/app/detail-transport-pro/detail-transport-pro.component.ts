@@ -22,13 +22,12 @@ import { CamionsService } from 'src/services/camions.service';
 import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
-
 @Component({
-  selector: 'app-detail-transport',
-  templateUrl: './detail-transport.component.html',
-  styleUrls: ['./detail-transport.component.css']
+  selector: 'app-detail-transport-pro',
+  templateUrl: './detail-transport-pro.component.html',
+  styleUrls: ['./detail-transport-pro.component.css']
 })
-export class DetailTransportComponent implements OnInit {
+export class DetailTransportProComponent implements OnInit {
 
   imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -240,8 +239,8 @@ export class DetailTransportComponent implements OnInit {
   }
   
   async ngOnInit() {    
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.varsGlobal.session='yes'  // to control we are in session
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
