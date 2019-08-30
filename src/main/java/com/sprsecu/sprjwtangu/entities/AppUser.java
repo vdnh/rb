@@ -36,7 +36,7 @@ public class AppUser  implements Serializable{
     private Long idUser;
     private Long idSecond; // to second role
     private String roleSimple; // add for adapte with angular
-    
+    private String entrepriseNom; // name of principal entreprise
     @JsonIgnore
     public String getPassword(){
         //System.out.println("AppUser.class -- Here is your password : " + this.password);

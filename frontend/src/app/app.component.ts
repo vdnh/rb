@@ -313,7 +313,7 @@ export class AppComponent implements OnInit{
           localStorage.setItem('role', this.role);          
           if(res.id!=null) {
             localStorage.setItem('userId', res.id.toString());
-            //console.log('res.id : '+res.id)
+            localStorage.setItem('entrepriseNom', res.entrepriseNom);
             this.userId=localStorage.getItem('userId')
           }
           if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());

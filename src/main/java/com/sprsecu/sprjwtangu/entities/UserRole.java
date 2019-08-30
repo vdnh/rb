@@ -24,5 +24,6 @@ public class UserRole {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long idSecond;
-    private String roleName;    
+    private String roleName;
+    private String entrepriseNom; // name of principal entreprise    
 }

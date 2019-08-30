@@ -105,8 +105,10 @@ export class AppUsersComponent implements OnInit {
   }
   
   idUserChange(){
-    let strings:Array<string>=this.appUser.idUser.split(" ")
-    this.appUser.idUser=strings[1]
+    let temp = this.appUser.idUser;
+    let strings:Array<string>=this.appUser.idUser.split(" ");
+    this.appUser.idUser=strings[1];
+    this.appUser.entrepriseNom = temp.split(this.appUser.idUser)[1]
     if(strings[0]=='Trans') this.listPros2em = this.listShippers
     else if(strings[0]=='Ship') this.listPros2em = this.listTrans
   }
