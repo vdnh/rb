@@ -831,9 +831,9 @@ async showMap() {
       this.changeUnite();
     }
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-      if(this.transport.total>0)
+      if(this.transport.id!=null)
         alert("C'est enregistre.")
+      this.transport=data;
     }, 
       err=>{console.log(err)
     })

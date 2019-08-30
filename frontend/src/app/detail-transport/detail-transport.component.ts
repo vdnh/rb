@@ -242,7 +242,7 @@ export class DetailTransportComponent implements OnInit {
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.varsGlobal.session='yes'  // to control we are in session
-    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor

@@ -25,7 +25,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -37,7 +37,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let t of listTrsSent" style="color:orange; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -49,7 +49,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let r of listTrsFini" style="color: red; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -79,8 +79,8 @@
           <!--button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
           <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button--> 
       
-          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
-          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>
+          <!--<button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
+          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>-->
           <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
           <!--button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button-->
           
@@ -91,7 +91,7 @@
           <div class="col-md-4 col-sm-4 col-lg-4">
 
               <h4><label>
-              Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
+              Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control" disabled>
               </label></h4> 
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
@@ -109,10 +109,10 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Provenant</label>
+              <label for="">Entreprise</label>
               <input type="text" [(ngModel)]="transport.nomEntreprise"
                    name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
-                   list="defaultShippers"> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
+                   list="defaultShippers" disabled> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
               <datalist id="defaultShippers">
                 <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
               </datalist>
@@ -123,7 +123,7 @@
             <div class="form-group">
               <label for="">#PO</label>
               <input type="text" [(ngModel)]="transport.numPO" name="numPO"
-                   class="form-control">
+                   class="form-control" disabled>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
@@ -131,14 +131,14 @@
               <label for="">DateReserve</label>
               <input type="date" [ngModel]="transport.dateReserve | date: 'yyyy-MM-dd'"
                    name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-                   class="form-control" (change)="dateChange($event)"/>
+                   class="form-control" (change)="dateChange($event)" disabled/>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">HeureReserve</label>
               <input type="time" [(ngModel)]="transport.timeResrvation"
-                   name="timeResrvation" class="form-control">
+                   name="timeResrvation" class="form-control" disabled>
             </div>
           </div>
         </div>
@@ -147,7 +147,7 @@
             <div class="form-group">
               <label for="">Contact</label>
               <input type="text"  [(ngModel)]="transport.nomContact"
-                   name="nomContact" class="form-control" list="defaultContacts">
+                   name="nomContact" class="form-control" list="defaultContacts" disabled>
               <datalist id="defaultContacts">
                 <option *ngFor="let e of contacts" [ngValue]="e">{{e.nom}}</option>
               </datalist>
@@ -158,20 +158,20 @@
               <label for="">Telephone</label>
               <input type="tel" [(ngModel)]="transport.telContact" name="telContact"
                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                   (focusout)="transport.telContact=reformTelEvent($event)" required>
+                   (focusout)="transport.telContact=reformTelEvent($event)" required disabled>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Extension</label>
               <input type="text" [(ngModel)]="transport.extTelContact" name="extTelContact"
-                   class="form-control">
+                   class="form-control" disabled>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Courriel</label>
-              <input type="email" [(ngModel)]="transport.emailContact" name="emailContact" class="form-control" required>
+              <input type="email" [(ngModel)]="transport.emailContact" name="emailContact" class="form-control" required disabled>
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@
             <div class="form-group">
               <label for="">Client</label>
               <input type="text"  [(ngModel)]="transport.nomClient"
-                   name="nomClient" class="form-control">
+                   name="nomClient" class="form-control" disabled>
             </div>
           </div>
           <div class="col-sm-12 col-md-4 col-lg-4">
@@ -192,7 +192,7 @@
               <label for="">Tel 1er</label>
               <input type="tel" [(ngModel)]="transport.telClient" name="telClient"
                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                   (focusout)="transport.telClient=reformTelEvent($event)" required>
+                   (focusout)="transport.telClient=reformTelEvent($event)" required disabled>
             </div>
           </div>
           <div class="col-sm-12 col-md-4 col-lg-4">
@@ -200,106 +200,52 @@
               <label for="">Tel 2em</label>
               <input type="tel" [(ngModel)]="transport.telClient2em" name="telClient2em"
                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                   (focusout)="transport.telClient2em=reformTelEvent($event)">
+                   (focusout)="transport.telClient2em=reformTelEvent($event)" disabled>
             </div>
           </div>
         </div>
         <div><button class="btn btn-primary" (click)="changeUnite()"style="text-decoration-line: underline">Changer unite</button></div>
-        <!--div class="row; col-sm-12 col-md-12 col-lg-12">
-          <button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer unite</button>  
-          <button class="btn btn-link" (click)="mouseOverInsurance()" style="text-decoration-line: underline">Insurance</button>
-          <button class="btn btn-link" (click)="mouseOverEquifax()" style="text-decoration-line: underline">Equifax</button>
-          <button class="btn btn-link" (click)="mouseOverTransCreditCA()" style="text-decoration-line: underline">TransCredit CA</button>
-          <button class="btn btn-link" (click)="mouseOverAuthority()" style="text-decoration-line: underline">Authority</button>
-          <button class="btn btn-link" (click)="mouseOverTransCreditUS()" style="text-decoration-line: underline">TransCredit US</button>
-          <button class="btn btn-link" (click)="mouseOverWebInfo()" style="text-decoration-line: underline">Web Info</button>
-        </div>
-        <div class="container">
-          <div *ngIf="disableInsurrance">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-              [(ngModel)]="transport.insurrance" placeholder="Insurrance : "
-              style="margin-top: 0px"></textarea>
-          </div>
-          <div *ngIf="disableEquifax">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-            [(ngModel)]="transport.equifax" placeholder="Equifax : "
-            style="margin-top: 0px"></textarea>
-          </div>
-          <div *ngIf="disableTransCreditCA">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-            [(ngModel)]="transport.transCreditCA" placeholder="TransCredit CA : "
-            style="margin-top: 0px"></textarea>
-          </div>
-          <div *ngIf="disableAuthority">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-            [(ngModel)]="transport.authority" placeholder="Authority : "
-            style="margin-top: 0px"></textarea>
-          </div>
-          <div *ngIf="disableTransCreditUS">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-            [(ngModel)]="transport.transCreditUS" placeholder="TransCredit US : "
-            style="margin-top: 0px"></textarea>
-          </div>
-          <div *ngIf="disableWebInfo">
-            <textarea name="comments" class="col-sm-8 col-md-8 col-lg-8" cols="80" rows="3"
-            [(ngModel)]="transport.webInfo" placeholder="Web Info : "
-            style="margin-top: 0px"></textarea>
-          </div>
-        </div-->
-        <!--div class="row">
-          <div class="form-group">
-            <label>PrendrePhoto</label>
-            <input type="file"  accept="image/*" name="image" (change)="onFileUpLoad($event)" class="form-control"/>
-            <img [src]="imgUrl" alt="photo load" *ngIf="imgUrl.length>0">
-          </div-->
-          <!--button type="button" (click)="getImageFromService()">Get Image</button-->
-          <!--img [src]="imageToShow"
-                alt="Place image title"
-                *ngIf="!isImageLoading; else noImageFound">
-          <ng-template #noImageFound>
-                <img src="fallbackImage.png" alt="Fallbackimage">
-          </ng-template-->
-        <!--/div-->
+        
         <div class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Longueur(pouce)</label>
               <label *ngIf="mode==2">Longueur(cm)</label>
-              <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Largeur(pouce)</label>
               <label *ngIf="mode==2">Largeur(cm)</label>
-              <input type="number" [(ngModel)]="transport.largeur" name="largeur" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.largeur" name="largeur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Hauteur(pouce)</label>
               <label *ngIf="mode==2">Hauteur(cm)</label>
-              <input type="number" [(ngModel)]="transport.hauteur" name="hauteur" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.hauteur" name="hauteur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Poids(lb)</label>
               <label *ngIf="mode==2">Poids(kg)</label>
-              <input type="number" [(ngModel)]="transport.poids" name="poids" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.poids" name="poids" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label >Valeur($)</label>
-              <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label *ngIf="mode==1">Distance(mile)</label>
               <label *ngIf="mode==2">Distance(km)</label>
-              <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control"/>
+              <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
         </div>
@@ -308,33 +254,31 @@
           <!--div class="col-sm-12 col-md-12 col-lg-12"-->
             <!--div class="form-group"-->
               <label class="control-label">Type Camion : </label>
-              <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
+              <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control" disabled/>
             <!--/div-->
           <!--/div-->
           <!--div class="col-sm-9 col-md-9 col-lg-9"><input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/></div-->
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
-            <!--div class="col-sm-12 col-md-12 col-lg-12"-->
-              <form [formGroup]="formGroup" >
-                <table border="1px">
-                  <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
-                    <tr *ngIf="((i % 8 === 0) && (i<16))">
-                      <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
-                          {{camionTypes[x].name}}
-                          <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </table>
-              </form>
-            <!--/div-->
-        </div>
+        <!--div class="container" style="margin-left: 20px; margin-bottom: 10px">
+          <form [formGroup]="formGroup" >
+            <table border="1px">
+              <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
+                <tr *ngIf="((i % 8 === 0) && (i<16))">
+                  <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                      {{camionTypes[x].name}}
+                      <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </form>
+        </div-->
 
         <div>
           <label class="control-label">Options : </label>
-          <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control"/>
+          <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control" disabled/>
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
+        <!--div class="container" style="margin-left: 20px; margin-bottom: 10px">
           <form [formGroup]="formGroup" >
             <table border="1px">
               <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
@@ -347,95 +291,8 @@
               </ng-container>
             </table>
           </form>
-        </div>
+        </div-->
         
-        <!--div class="row">
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label>Type</label>
-              <select type="text"  class="form-control" [ngModel]="remorquage.typeService"
-                  (ngModelChange)="typeServiceChange($event)">
-                <option *ngFor="let s of serviceTypes" [ngValue]="s">{{s}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label >Marque</label>
-              <input type="text"  [(ngModel)]="remorquage.marque" name="marque"
-                   class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label >Modele</label>
-              <input type="text"  [(ngModel)]="remorquage.modele" name="modele"
-                   class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label >Plaque</label>
-              <input type="text"  [(ngModel)]="remorquage.plaque" name="plaque"
-                   class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label >Couleur</label>
-              <input type="text"  [(ngModel)]="remorquage.couleur" name="couleur"
-                   class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
-              <label >Serie</label>
-              <input type="text" [(ngModel)]="remorquage.serie" name="serie"
-                   class="form-control" />
-            </div>
-          </div>
-        </div-->
-        <!--div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>DebaragePorte <input type="checkbox"
-                            [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <div class="form-group">
-              <label>ChangementPneu <input type="checkbox"
-                             [(ngModel)]="remorquage.changementPneu" (change)="typeServiceChange(remorquage.typeService)"></label>
-            </div>
-          </div>
-        </div-->
         <div class="row">
           <div class="col-sm-3">
             <label class="control-label">&nbsp;</label>
@@ -456,18 +313,18 @@
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="transport.originAdresse" name="origin"
-                 class="form-control" (change)="originChange()" />
+                 class="form-control" (change)="originChange()" disabled/>
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="transport.originVille" name="originVille"
-            class="form-control" (change)="originChange()" list="defaultVilles">
+            class="form-control" (change)="originChange()" list="defaultVilles" disabled>
             <datalist id="defaultVilles">
                 <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
             </datalist>
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="transport.originProvince"
-                (ngModelChange)="originChange()">
+                (ngModelChange)="originChange()" disabled>
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -479,18 +336,18 @@
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="transport.destAdresse" name="origin"
-                 class="form-control" (change)="destinationChange()" />
+                 class="form-control" (change)="destinationChange()" disabled/>
           </div>
           <div class="col-sm-3">
             <input type="text" [(ngModel)]="transport.destVille" name="destVille"
-            class="form-control" (change)="destinationChange()" list="defaultVillesD">
+            class="form-control" (change)="destinationChange()" list="defaultVillesD" disabled>
             <datalist id="defaultVillesD">
                 <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
             </datalist>
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="transport.destProvince"
-                (ngModelChange)="destinationChange()">
+                (ngModelChange)="destinationChange()" disabled>
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -501,13 +358,13 @@
           <div class="col-sm-9">
             <textarea name="comments" class="form-control" cols="80" rows="1"
                   [(ngModel)]="transport.comments"
-                  style="margin-top: 0px"></textarea>
+                  style="margin-top: 0px" disabled></textarea>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="transport.nomSignature" name="nomSignature"
-            class="form-control">
+            class="form-control" disabled>
           </div>
           <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
             <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
@@ -523,7 +380,7 @@
         </div>
         <hr style="border: 2px solid lightgray"/>
         
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Camion</label>
@@ -567,7 +424,7 @@
                   [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
                   style="margin-top: 0px"></textarea>
           </div>
-        </div>
+        </div-->
 
         <hr style="border: 2px solid lightgray"/>
 
@@ -603,7 +460,7 @@
                     (change)="prixCalcul()"/--><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
               <label class="control-label">Porter au Compte</label>
               <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
-              (change)="prixCalculWithHorsTax()"/>
+              (change)="prixCalculWithHorsTax()" disabled/>
             </div>
           </div>
           <div class="col-md-2">
@@ -621,7 +478,7 @@
               <tr>
                 <td style="text-align: right">HorsTax:</td>
                 <!--td style="text-align: right">{{transport.horstax | number : '1.2'}}</td-->
-                <input style="text-align: right" type="number" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.horstax" name="horstax" class="form-control"/>
+                <input style="text-align: right" type="number" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.horstax" name="horstax" class="form-control" disabled/>
               </tr>
               <tr>
                 <td style="text-align: right">TPS:</td>
@@ -644,10 +501,10 @@
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
-    <button (click)="onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
+    <!--button (click)="onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
         <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
-    </button>
+    </button-->
     <br>
   </div>
   <br>

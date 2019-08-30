@@ -122,7 +122,7 @@ export class DetailTransportProComponent implements OnInit {
   disableWebInfo=false;
   disableAuthority=false;
   disableTransCreditUS=false;
-  id: any;
+  id: number;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -240,8 +240,8 @@ export class DetailTransportProComponent implements OnInit {
   
   async ngOnInit() {    
     this.varsGlobal.session='yes'  // to control we are in session
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    /*/ begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -253,7 +253,7 @@ export class DetailTransportProComponent implements OnInit {
     }, err=>{
       console.log();
     })
-    // end of taking list camion SOSPrestige
+    // end of taking list camion SOSPrestige //*/
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
       this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte

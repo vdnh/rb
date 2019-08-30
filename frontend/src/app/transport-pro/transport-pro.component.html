@@ -25,7 +25,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -37,7 +37,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let t of listTrsSent" style="color:orange; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -49,7 +49,7 @@
     <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Provenant</th>
+          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Entreprise</th>
         </tr>
         <tr *ngFor="let t of listTrsFini" style="color: red; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
@@ -88,10 +88,9 @@
         <hr style="border: 2px solid lightgray"/>
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
-
-              <h4><label>
-              Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
-              </label></h4> 
+            <!--h4><label>
+            Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
+            </label></h4--> 
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
             <h4>
@@ -108,10 +107,10 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Provenant</label>
+              <label for="">Entreprise</label>
               <input type="text" [(ngModel)]="transport.nomEntreprise"
                    name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
-                   list="defaultShippers"> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
+                   list="defaultShippers" disabled> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
               <datalist id="defaultShippers">
                 <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
               </datalist>
@@ -522,7 +521,7 @@
         </div-->
         <hr style="border: 2px solid lightgray"/>
         
-        <div class="row">
+        <!--div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Camion</label>
@@ -566,7 +565,7 @@
                   [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
                   style="margin-top: 0px"></textarea>
           </div>
-        </div>
+        </div-->
 
         <hr style="border: 2px solid lightgray"/>
 
@@ -643,10 +642,9 @@
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
-    <button (click)="onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
-    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
-        <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
-    </button>
+    <!--button (click)="onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button-->
+    <button (click)="gotoTop()" class="btn btn-link"  *ngIf="transport.id==null">Vou devez NumeroterAppel </button>
+    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.fini || transport.id==null">Enregistrer</button>
     <br>
   </div>
   <br>

@@ -843,7 +843,7 @@ async showMap() {
     }
   }
   onEnvoyer(){
-    let stringsd:string[]=location.href.split('/detail-remorquage-express/')
+    let stringsd:string[]=location.href.split('/remorquage-pro')
     //window.open(stringsd[0], '_self');
     this.onSave();
     //if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){

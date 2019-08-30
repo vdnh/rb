@@ -238,7 +238,12 @@ export class AppComponent implements OnInit{
       if(this.role.includes('DISPATCH')) {         
         //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
         if(!location.href.includes("detail-remorquage")){
-          if(location.href.includes("detail-transport")){
+          if(location.href.includes("detail-transport-pro")){
+            const stringsd:string[]=location.href.split('/detail-transport-pro/')
+            let id=stringsd[1]
+            this.router.navigate(['/detail-transport-pro/'+ id], {skipLocationChange: true})
+          }
+          else if(location.href.includes("detail-transport")){
             const stringsd:string[]=location.href.split('/detail-transport/')
             let id=stringsd[1]
             this.router.navigate(['/detail-transport/'+ id], {skipLocationChange: true})

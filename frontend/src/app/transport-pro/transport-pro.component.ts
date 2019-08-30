@@ -247,32 +247,13 @@ export class TransportProComponent implements OnInit {
     })
     //
     this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-
-    /*/ begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige    
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-      })
-    }, err=>{
-      console.log();
-    })
-    // end of taking list camion SOSPrestige //*/
-
+    
+    /*
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
     }, err=>{
       console.log(err);
-    })
+    })//*/
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
@@ -587,7 +568,7 @@ onSortDate(data:Array<Transport>){
   })
 }
 onRefresh(){
-  this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+  this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
     this.listTrs=[]  //data;
     this.listTrsSent=[]
     this.listTrsFini=[]
@@ -606,7 +587,7 @@ onRefresh(){
     })
   }, err=>{
     console.log(err)
-  })
+  })//*/
 }
 
 printBonDeTransport(cmpId){
@@ -1057,7 +1038,7 @@ async showMap() {
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
         this.listTrs=[]  //data;
         this.listTrsSent=[]
         this.listTrsFini=[]
@@ -1086,27 +1067,32 @@ async showMap() {
   }
   
   onEnvoyer(){
-    let stringsd:string[]=location.href.split('/transport-client/')
-    if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
-      this.em.emailDest=this.transport.emailIntervenant
-      this.em.titre="Case numero : " + this.transport.id.toString()
+    let stringsd:string[]=location.href.split('/transport-pro')
+    //window.open(stringsd[0], '_self');
+    this.onSave();
+    //if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      this.em.emailDest=myGlobals.emailPrincipal; //this.remorquage.emailIntervenant
+      this.em.titre= this.transport.nomEntreprise + " - Case numero : " + this.transport.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+ stringsd[0] +"/transport-client/"
-      + this.transport.id   //1733  // replace by Number of Bon Transport
+      " <br> <a href='"+stringsd[0]+"/detail-transport-express/"
+      + this.transport.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
+        alert("Cette appel a ete envoye a SOS Prestige.")
         this.transport.sent=true;
-        this.onSave();
+        this.transport = new Transport() // declare one new case
+        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/
-    }
-    else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top
   }
 
   logout(){
