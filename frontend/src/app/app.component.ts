@@ -15,6 +15,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 export class AppComponent implements OnInit{
   title = 'CTS';
   usernameLogin='';
+  entrepriseNom='';
   mode:number=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
   role:string="";
   modeSignUp=0;
@@ -315,6 +316,7 @@ export class AppComponent implements OnInit{
             localStorage.setItem('userId', res.id.toString());
             localStorage.setItem('entrepriseNom', res.entrepriseNom);
             this.userId=localStorage.getItem('userId')
+            this.entrepriseNom=localStorage.getItem('entrepriseNom')
           }
           if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
           if(res.roleName.includes('TRANSPORTER')) {         
@@ -371,17 +373,21 @@ export class AppComponent implements OnInit{
 
   logout(){
     localStorage.clear();
-    // localStorage.removeItem('tonken');
-    // localStorage.removeItem('nom');
-    // localStorage.removeItem('tel');
-    // localStorage.removeItem('role');
-    // localStorage.removeItem('email');
-    // localStorage.removeItem('userId');
-    //this.router.navigateByUrl("");
     this.role="";
-    //this.log=1;
-    //window.open("http://192.168.0.131")
+    
+    this.usernameLogin='';
+    this.entrepriseNom='';
+    this.mode=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
+    this.role="";
+    this.modeSignUp=0;
+    this.textSign="Nouveau Transporter ou Shipper"
+    this.userId="";
+    this.varsGlobal.nombreMessages=0;
+    this.varsGlobal.session='no'; 
+    this.varsGlobal.pro='no';
+
     this.router.navigateByUrl("");
+    //location.reload();
     //window.close();
   }
   /*/ on close window

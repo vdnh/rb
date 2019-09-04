@@ -7,6 +7,12 @@
     <div class="row"> 
       <div  class="col-md-8 col-sm-8 col-lg-8">
           <div *ngIf="modeSignUp==0">
+              <div *ngIf="usernameLogin.length>1">
+                <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+                  <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                </h6>
+              </div>
+              
               <div class="panel panel-primary" *ngIf="role==''">
                      <!--button routerLink="/propos" class="btn btn-link">Propos</button-->
                       <div> <h3>  <strong> CTS - Complete Transport Solution </strong> </h3>
@@ -84,9 +90,11 @@
                     <br>
                 </div>
                 <div class="row" *ngIf="role=='DISPATCH'">     
-                  <div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
-                    <h6 style="text-decoration-line: underline">Session de : {{usernameLogin.toUpperCase()}}</h6>
-                  </div>
+                  <!--div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
+                    <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+                      <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                    </h6>
+                  </div-->
                   
                   <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
                   <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
