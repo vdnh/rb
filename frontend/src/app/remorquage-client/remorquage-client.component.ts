@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
@@ -162,6 +162,13 @@ export class RemorquageClientComponent implements OnInit {
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
+
+// on close window
+@HostListener('window:beforeunload', ['$event'])
+beforeunloadHandler(event){
+  localStorage.clear();
+  //this.router.navigateByUrl("");
+}//*/
 
   async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session

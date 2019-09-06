@@ -321,8 +321,8 @@
               <form [formGroup]="formGroup" >
                 <table border="1px">
                   <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
-                    <tr *ngIf="((i % 8 === 0) && (i<16))">
-                      <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
+                    <tr *ngIf="((i % 9 === 0) && (i<18))">
+                      <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7,i+8,i+9]">  
                           {{camionTypes[x].name}}
                           <input type="checkbox" [formControlName]='x' (change)="onChangeTypeCamion()"/>
                       </td>
@@ -340,10 +340,10 @@
         <div class="container" style="margin-left: 20px; margin-bottom: 10px">
           <form [formGroup]="formGroup" >
             <table border="1px">
-              <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
-                <tr *ngIf="i % 8 === 0 && i>=16">
+              <ng-container formArrayName="optionTypes" *ngFor="let optionType of formGroup.controls.optionTypes['controls']; let i = index" >      
+                <tr *ngIf="i % 8 === 0 && i<16">
                   <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  
-                      {{camionTypes[x].name}}
+                      {{optionTypes[x].name}}
                       <input type="checkbox" [formControlName]='x' (change)="onChangeOption()"/>
                   </td>
                 </tr>

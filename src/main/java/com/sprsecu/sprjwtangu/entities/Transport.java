@@ -61,6 +61,8 @@ public class Transport implements Serializable{
     private Long totalpoints;
     private String optionDemande="";
     private String typeCamion="";
+    private String askDescription;
+    private Integer quantity;
 
     private String nomIntervenant="";
     private String telIntervenant="";

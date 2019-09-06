@@ -216,19 +216,11 @@ export class TransportClientComponent implements OnInit {
         selectAll: selectAllControl
       });//*/
   }
-  /*/ on close window
+  // on close window
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event){
-    //alert("I'm leaving the app");
-    //localStorage.clear();
-    localStorage.removeItem('tonken');
-    localStorage.removeItem('nom');
-    localStorage.removeItem('tel');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userId');
-    this.role="";
-    this.router.navigateByUrl("");
+    localStorage.clear();
+    //this.router.navigateByUrl("");
   }//*/
   
   // on focus windows

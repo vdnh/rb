@@ -46,6 +46,8 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
+    if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
+      localStorage.clear();
     if(localStorage.getItem('usernameLogin')) 
       this.usernameLogin = localStorage.getItem('usernameLogin')
     //*

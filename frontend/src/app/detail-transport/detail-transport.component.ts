@@ -38,6 +38,7 @@ export class DetailTransportComponent implements OnInit {
   formGroup: FormGroup;
   serviceTypes = ["Leger", "Moyen", "Lourd"];
   camionTypes = myGlobals.camionTypes;
+  optionTypes = myGlobals.optionTypes;
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
   prixKm1=2.65;
@@ -212,8 +213,11 @@ export class DetailTransportComponent implements OnInit {
       this.id=activatedRoute.snapshot.params['id'];
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
+      const formControls01 = this.optionTypes.map(control => new FormControl(false));
       const formControls = this.camionTypes.map(control => new FormControl(false));
+      //testArray : new FormArray(formControls01).setValue([true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true])
       this.formGroup = this.formBuilder.group({
+        optionTypes: new FormArray(formControls01),  //.setValue([true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]),
         camionTypes: new FormArray(formControls),
         selectAll: selectAllControl
       });//*/
@@ -337,7 +341,7 @@ export class DetailTransportComponent implements OnInit {
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
     this.transport.typeCamion = selectedCamionTypesNames.toString();
   }
-
+  /*
   onChangeOption() {
     const selectedCamionTypesNames = this.formGroup.value.camionTypes
       .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
@@ -345,7 +349,19 @@ export class DetailTransportComponent implements OnInit {
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
     this.transport.optionDemande = selectedCamionTypesNames.toString();
+  }//*/
+  onChangeOption() {
+    const selectedOptionTypesNames = this.formGroup.value.optionTypes
+      .map((v, i) => (v==true && i<16) ? this.optionTypes[i].name : null)
+      .filter(i => i !== null);
+    const selectedOptionTypesNamesTest = this.formGroup.value.optionTypes
+      .map((v, i) => (v==true && i<16) ? this.optionTypes[i].name : null);
+    console.log(selectedOptionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedOptionTypesNames.toString());
+    console.log('selectedCamionTypesNamesTest.toString() : '+selectedOptionTypesNamesTest.toString());
+    this.transport.optionDemande = selectedOptionTypesNames.toString();
   }
+
 
   changeUnite(){
     if (this.mode==1){

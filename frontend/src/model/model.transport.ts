@@ -34,6 +34,8 @@ export class Transport{
     totalpoints:number;
     typeCamion="";
     optionDemande="";       
+    askDescription="";
+    quantity: Number;
 
     nomIntervenant="";
     telIntervenant="";

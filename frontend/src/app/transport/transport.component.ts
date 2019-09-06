@@ -33,8 +33,10 @@ export class TransportComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
+  //formGroup01: FormGroup;
   serviceTypes = ["Leger", "Moyen", "Lourd"];
   camionTypes = myGlobals.camionTypes;
+  optionTypes = myGlobals.optionTypes;
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
   prixKm1=2.65;
@@ -199,10 +201,17 @@ export class TransportComponent implements OnInit {
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
+      //const selectAllControl01 = new FormControl(false);
       const formControls = this.camionTypes.map(control => new FormControl(false));
+      const formControls01 = this.optionTypes.map(control => new FormControl(false));
       this.formGroup = this.formBuilder.group({
-        camionTypes: new FormArray(formControls),
+        optionTypes: new FormArray(formControls01),
+        camionTypes: new FormArray(formControls),        
         selectAll: selectAllControl
+      });/*/
+      this.formGroup01 = this.formBuilder.group({
+        optionTypes: new FormArray(formControls01),
+        selectAll: selectAllControl01
       });//*/
   }
   /*/ on close window
@@ -304,7 +313,7 @@ export class TransportComponent implements OnInit {
   }
   onChangeTypeCamion() {
     const selectedCamionTypesNames = this.formGroup.value.camionTypes
-      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .map((v, i) => (v==true && i<19) ? this.camionTypes[i].name : null)
       .filter(i => i !== null);
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
@@ -312,12 +321,12 @@ export class TransportComponent implements OnInit {
   }
 
   onChangeOption() {
-    const selectedCamionTypesNames = this.formGroup.value.camionTypes
-      .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
+    const selectedOptionTypesNames = this.formGroup.value.optionTypes
+      .map((v, i) => (v==true && i<16) ? this.optionTypes[i].name : null)
       .filter(i => i !== null);
-    console.log(selectedCamionTypesNames);
-    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
-    this.transport.optionDemande = selectedCamionTypesNames.toString();
+    console.log(selectedOptionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedOptionTypesNames.toString());
+    this.transport.optionDemande = selectedOptionTypesNames.toString();
   }
 
   changeUnite(){
@@ -609,7 +618,7 @@ async prixCalcul(){
   }
   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
+  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 }
 
@@ -621,7 +630,8 @@ prixCalculWithHorsTax(){
   }//*/
   this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
+  this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
   this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
