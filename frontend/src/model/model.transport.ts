@@ -3,8 +3,14 @@ export class Transport{
     dateDepart=new Date();
     
     nomEntreprise="";
-    nomClient="";
-    telClient="";
+    // begin special for contact origin and destination
+    nomClient="";//nom contact origin
+    telClient="";//tel1 contact origin
+    telClient2em="";//tel2 contact origin
+    contactDest="";//nom contact destination
+    tel1Dest="";//tel1 contact destination
+    tel2Dest="";//tel2 contact destination
+    // end special for contact origin and destination
     timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
         (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     timeResrvation="";
@@ -12,7 +18,6 @@ export class Transport{
     nomDispatch="";
     dateReserve=new Date();
     driverNote="";
-    telClient2em="";
     numPO=""; //Numero PO - Pucharge Number
     nomContact="";
     telContact="";

@@ -33,15 +33,21 @@ public class Transport implements Serializable{
     //private Date dateArrive;
     
     private String nomEntreprise=""; // bientot nom de Shipper
-    private String nomClient="";
-    private String telClient="";
+    // begin special for contact origin and destination
+    private String nomClient="";//nom contact origin
+    private String telClient="";//tel1 contact origin
+    private String telClient2em="";//tel2 contact origin
+    private String contactDest="";//nom contact destination
+    private String tel1Dest="";//tel1 contact destination
+    private String tel2Dest="";//tel2 contact destination
+    // end special for contact origin and destination
     private String timeCall;
     private String timeResrvation;
     // add more
     @Temporal(TemporalType.DATE)
     private Date dateReserve;
     private String driverNote="";
-    private String telClient2em="";
+    
     private String numPO=""; // Pucharge Number
     private String nomContact="";
     private String telContact="";

@@ -19,6 +19,8 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
 import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
+import { LoadDetail } from 'src/model/model.loadDetail';
+import { LoadDetailsService } from 'src/services/loadDetails.Service';
 
 @Component({
   selector: 'app-transport',
@@ -30,6 +32,9 @@ export class TransportComponent implements OnInit {
   imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
   isImageLoading: boolean;
+
+  loadDetail:LoadDetail=new LoadDetail();
+  loadDetails:Array<LoadDetail>=new Array<LoadDetail>();
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -198,6 +203,7 @@ export class TransportComponent implements OnInit {
     private datePipe: DatePipe,
     public camionsService:CamionsService,
     private imageService: ImageService,
+    public loadDetailsService:LoadDetailsService,
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
@@ -214,21 +220,40 @@ export class TransportComponent implements OnInit {
         selectAll: selectAllControl01
       });//*/
   }
-  /*/ on close window
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunloadHandler(event){
-    //alert("I'm leaving the app");
-    //localStorage.clear();
-    localStorage.removeItem('tonken');
-    localStorage.removeItem('nom');
-    localStorage.removeItem('tel');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userId');
-    this.role="";
-    this.router.navigateByUrl("");
-  }//*/
-  
+  deleteLoadDetail(load:LoadDetail){
+    this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
+    //this.prixChange();
+  }
+  addLoadDetail(){
+    let load:LoadDetail=new LoadDetail();
+    load=this.loadDetail
+    this.loadDetails.push(load)
+    this.dimensionResume()
+    /*
+    if(load.longueur!=null){
+      if(this.transport.longueur!=null)
+        this.transport.longueur=this.transport.longueur + (load.longueur*load.quantity)
+      else  
+        this.transport.longueur=load.longueur*load.quantity
+    }
+    if(load.poids!=null){
+      if(this.transport.poids!=null)
+        this.transport.poids=this.transport.poids + (load.poids*load.quantity)
+      else  
+        this.transport.poids=load.poids*load.quantity
+    }//*/
+    this.loadDetail=new LoadDetail();
+  }
+  dimensionResume(){
+    this.transport.longueur=0;
+    this.transport.poids=0;
+    this.loadDetails.forEach(async load=>{
+      this.transport.longueur=this.transport.longueur+ (load.longueur*load.quantity)
+      this.transport.poids=this.transport.poids+ (load.poids*load.quantity)
+      //this.transport.hauteur=this.transport.hauteur+load.hauteur
+      //this.transport.largeur=this.transport.largeur+load.largeur
+    })
+  }
   // on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
@@ -236,6 +261,7 @@ export class TransportComponent implements OnInit {
   }
   
   async ngOnInit() {    
+    this.loadDetails.length=0;
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
@@ -330,6 +356,7 @@ export class TransportComponent implements OnInit {
   }
 
   changeUnite(){
+    /*
     if (this.mode==1){
       this.mode=2; // pouce en cm/0.39370, kg en 2.2046 lb, km en 0.621371 mile 
       this.transport.poids=Math.round(this.transport.poids / 2.2046);
@@ -347,6 +374,30 @@ export class TransportComponent implements OnInit {
       this.transport.hauteur=Math.round(this.transport.hauteur * 0.39370);
       this.transport.distance = Math.round(this.transport.distance * 0.621371);
       this.transport.prixKm = Math.round(this.transport.prixKm * 0.621371);
+    }//*/
+    if (this.mode==1){
+      this.mode=2; // pouce en cm/0.39370, kg en 2.2046 lb, km en 0.621371 mile 
+      this.transport.distance = Math.round(this.transport.distance / 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm / 0.621371);
+      this.loadDetails.forEach(load=>{
+        load.poids=Math.round(load.poids / 2.2046);
+        load.longueur=Math.round(load.longueur / 0.39370);
+        load.largeur=Math.round(load.largeur / 0.39370);
+        load.hauteur=Math.round(load.hauteur / 0.39370);        
+      })
+      this.dimensionResume();
+    }
+    else{
+      this.mode=1; // cm en pouce
+      this.transport.distance = Math.round(this.transport.distance * 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm * 0.621371);
+      this.loadDetails.forEach(load=>{
+        load.poids=Math.round(load.poids * 2.2046);
+        load.longueur=Math.round(load.longueur * 0.39370);
+        load.largeur=Math.round(load.largeur * 0.39370);
+        load.hauteur=Math.round(load.hauteur * 0.39370);
+      })
+      this.dimensionResume();
     }
   }
   
@@ -843,6 +894,17 @@ async showMap() {
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       if(this.transport.id!=null)
         alert("C'est enregistre.")
+      
+      this.loadDetails.forEach(async load=>{
+        load.idTransport=data.id;
+        await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          load.id = d.id;
+          //to empty the list loadDetails after save them
+          //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+        }, err=>{
+          console.log(err);
+        })
+      })
       this.transport=data;
     }, 
       err=>{console.log(err)
