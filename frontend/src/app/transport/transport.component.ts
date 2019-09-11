@@ -882,33 +882,52 @@ async showMap() {
     }
   }
 
-  onSave(){
+  async onSave(){
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
     if(this.mode==2){
-      this.changeUnite();
-    }
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      if(this.transport.id!=null)
-        alert("C'est enregistre.")
-      
-      this.loadDetails.forEach(async load=>{
-        load.idTransport=data.id;
-        await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-          load.id = d.id;
-          //to empty the list loadDetails after save them
-          //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
-        }, err=>{
-          console.log(err);
+      this.changeUnite();  // we must change to mode=1
+      await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
         })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
       })
-      this.transport=data;
-    }, 
-      err=>{console.log(err)
-    })
+      this.changeUnite();  // we must rechange to mode=2
+    }
+    else{ // mode=1 already, just save
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+    }
   }
   onPrint(heure){    
     console.log(heure)

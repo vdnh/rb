@@ -50,6 +50,8 @@ export class AppComponent implements OnInit{
       localStorage.clear();
     if(localStorage.getItem('usernameLogin')) 
       this.usernameLogin = localStorage.getItem('usernameLogin')
+    if(localStorage.getItem("entrepriseNom"))
+      this.entrepriseNom=localStorage.getItem("entrepriseNom")
     //*
     if(location.href.includes("/remorquage-client/"))
     {
