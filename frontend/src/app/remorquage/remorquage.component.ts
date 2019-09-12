@@ -373,7 +373,7 @@ onRefresh(){
       //*
       if(rq.fini) this.listRqsFini.push(rq)
       else if (rq.sent) this.listRqsSent.push(rq)
-      else this.listRqs.push(rq)//*/
+      else if (rq.valid) this.listRqs.push(rq)//*/
     })
   }, err=>{
     console.log(err)
@@ -858,7 +858,7 @@ async showMap() {
           //*
           if(rq.fini) this.listRqsFini.push(rq)
           else if (rq.sent) this.listRqsSent.push(rq)
-          else this.listRqs.push(rq)//*/
+          else if (rq.valid) this.listRqs.push(rq)//*/
         })
       }, err=>{
         console.log(err)

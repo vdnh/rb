@@ -33,6 +33,7 @@ export class Remorquage{
     nomSignature="";
     porterAuCompte:number=0.00; 
     collecterArgent:number=0.00; 
+    valid=false; // valid=true after save bon
     //
     distance:number=0.00;
     origin:string="";

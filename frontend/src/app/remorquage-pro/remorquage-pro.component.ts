@@ -349,7 +349,7 @@ onRefresh(){
       //*
       if(rq.fini) this.listRqsFini.push(rq)
       else if (rq.sent) this.listRqsSent.push(rq)
-      else this.listRqs.push(rq)//*/
+      else if (rq.valid) this.listRqs.push(rq)//*/
     })
   }, err=>{
     console.log(err)
@@ -830,7 +830,7 @@ async showMap() {
           //*
           if(rq.fini) this.listRqsFini.push(rq)
           else if (rq.sent) this.listRqsSent.push(rq)
-          else this.listRqs.push(rq)//*/
+          else if (rq.valid) this.listRqs.push(rq)//*/
         })
       }, err=>{
         console.log(err)
@@ -858,7 +858,7 @@ async showMap() {
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
         alert("Cette appel a ete envoye a SOS Prestige.")
-        this.remorquage.sent=true;
+        //this.remorquage.sent=true;
         this.remorquage = new Remorquage() // declare one new case
         //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{

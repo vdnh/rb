@@ -19,6 +19,8 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {DatePipe} from '@angular/common';
 import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
+import { LoadDetail } from 'src/model/model.loadDetail';
+import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
@@ -32,10 +34,15 @@ export class TransportProComponent implements OnInit {
   imageToShow: any;
   isImageLoading: boolean;
 
+  loadDetail:LoadDetail=new LoadDetail();
+  loadDetails:Array<LoadDetail>=new Array<LoadDetail>();
+
   //* pour checkBox list
   formGroup: FormGroup;
+  //formGroup01: FormGroup;
   serviceTypes = ["Leger", "Moyen", "Lourd"];
   camionTypes = myGlobals.camionTypes;
+  optionTypes = myGlobals.optionTypes;
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
   prixKm1=2.65;
@@ -199,31 +206,58 @@ export class TransportProComponent implements OnInit {
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
     private imageService: ImageService,
+    public loadDetailsService:LoadDetailsService,
     ) { 
       this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
+      //const selectAllControl01 = new FormControl(false);
       const formControls = this.camionTypes.map(control => new FormControl(false));
+      const formControls01 = this.optionTypes.map(control => new FormControl(false));
       this.formGroup = this.formBuilder.group({
-        camionTypes: new FormArray(formControls),
+        optionTypes: new FormArray(formControls01),
+        camionTypes: new FormArray(formControls),        
         selectAll: selectAllControl
+      });/*/
+      this.formGroup01 = this.formBuilder.group({
+        optionTypes: new FormArray(formControls01),
+        selectAll: selectAllControl01
       });//*/
   }
-  /*/ on close window
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunloadHandler(event){
-    //alert("I'm leaving the app");
-    //localStorage.clear();
-    localStorage.removeItem('tonken');
-    localStorage.removeItem('nom');
-    localStorage.removeItem('tel');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userId');
-    this.role="";
-    this.router.navigateByUrl("");
-  }//*/
-  
+  deleteLoadDetail(load:LoadDetail){
+    this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
+    //this.prixChange();
+  }
+  addLoadDetail(){
+    let load:LoadDetail=new LoadDetail();
+    load=this.loadDetail
+    this.loadDetails.push(load)
+    this.dimensionResume()
+    /*
+    if(load.longueur!=null){
+      if(this.transport.longueur!=null)
+        this.transport.longueur=this.transport.longueur + (load.longueur*load.quantity)
+      else  
+        this.transport.longueur=load.longueur*load.quantity
+    }
+    if(load.poids!=null){
+      if(this.transport.poids!=null)
+        this.transport.poids=this.transport.poids + (load.poids*load.quantity)
+      else  
+        this.transport.poids=load.poids*load.quantity
+    }//*/
+    this.loadDetail=new LoadDetail();
+  }
+  dimensionResume(){
+    this.transport.longueur=0;
+    this.transport.poids=0;
+    this.loadDetails.forEach(async load=>{
+      this.transport.longueur=this.transport.longueur+ (load.longueur*load.quantity)
+      this.transport.poids=this.transport.poids+ (load.poids*load.quantity)
+      //this.transport.hauteur=this.transport.hauteur+load.hauteur
+      //this.transport.largeur=this.transport.largeur+load.largeur
+    })
+  }
   // on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
@@ -231,8 +265,11 @@ export class TransportProComponent implements OnInit {
   }
   
   async ngOnInit() {    
-    //
     this.varsGlobal.pro='yes'  // to control we are in professionnal
+    this.loadDetails.length=0;
+    
+    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    
     await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
       this.transport.nomEntreprise=this.shipper.nom
@@ -245,15 +282,6 @@ export class TransportProComponent implements OnInit {
     }, err=>{
       console.log(err);
     })
-    //
-    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-    
-    /*
-    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
-    }, err=>{
-      console.log(err);
-    })//*/
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
@@ -274,10 +302,8 @@ export class TransportProComponent implements OnInit {
     this.prixBase(this.transport.totalpoints)
   }
 
-  gotoDetailTransport(t:Transport){
-    window.open("/detail-transport-pro/"+t.id, "_blank");
-    //window.open("/detail-transport-pro/"+t.id, "mywindow", "menubar=1");
-    //this.router.navigate([], {skipLocationChange: true}).then(result=>{window.open("/detail-transport-pro/"+t.id, "_blank"); });
+  async gotoDetailTransport(t:Transport){
+    window.open("/detail-transport-pro/"+t.id, "_blank")
   }
 
   gotoTop(){
@@ -308,7 +334,7 @@ export class TransportProComponent implements OnInit {
   }
   onChangeTypeCamion() {
     const selectedCamionTypesNames = this.formGroup.value.camionTypes
-      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .map((v, i) => (v==true && i<19) ? this.camionTypes[i].name : null)
       .filter(i => i !== null);
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
@@ -316,15 +342,16 @@ export class TransportProComponent implements OnInit {
   }
 
   onChangeOption() {
-    const selectedCamionTypesNames = this.formGroup.value.camionTypes
-      .map((v, i) => (v==true && i>=16) ? this.camionTypes[i].name : null)
+    const selectedOptionTypesNames = this.formGroup.value.optionTypes
+      .map((v, i) => (v==true && i<16) ? this.optionTypes[i].name : null)
       .filter(i => i !== null);
-    console.log(selectedCamionTypesNames);
-    console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
-    this.transport.optionDemande = selectedCamionTypesNames.toString();
+    console.log(selectedOptionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedOptionTypesNames.toString());
+    this.transport.optionDemande = selectedOptionTypesNames.toString();
   }
 
   changeUnite(){
+    /*
     if (this.mode==1){
       this.mode=2; // pouce en cm/0.39370, kg en 2.2046 lb, km en 0.621371 mile 
       this.transport.poids=Math.round(this.transport.poids / 2.2046);
@@ -342,6 +369,30 @@ export class TransportProComponent implements OnInit {
       this.transport.hauteur=Math.round(this.transport.hauteur * 0.39370);
       this.transport.distance = Math.round(this.transport.distance * 0.621371);
       this.transport.prixKm = Math.round(this.transport.prixKm * 0.621371);
+    }//*/
+    if (this.mode==1){
+      this.mode=2; // pouce en cm/0.39370, kg en 2.2046 lb, km en 0.621371 mile 
+      this.transport.distance = Math.round(this.transport.distance / 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm / 0.621371);
+      this.loadDetails.forEach(load=>{
+        load.poids=Math.round(load.poids / 2.2046);
+        load.longueur=Math.round(load.longueur / 0.39370);
+        load.largeur=Math.round(load.largeur / 0.39370);
+        load.hauteur=Math.round(load.hauteur / 0.39370);        
+      })
+      this.dimensionResume();
+    }
+    else{
+      this.mode=1; // cm en pouce
+      this.transport.distance = Math.round(this.transport.distance * 0.621371);
+      this.transport.prixKm = Math.round(this.transport.prixKm * 0.621371);
+      this.loadDetails.forEach(load=>{
+        load.poids=Math.round(load.poids * 2.2046);
+        load.longueur=Math.round(load.longueur * 0.39370);
+        load.largeur=Math.round(load.largeur * 0.39370);
+        load.hauteur=Math.round(load.hauteur * 0.39370);
+      })
+      this.dimensionResume();
     }
   }
   
@@ -583,11 +634,11 @@ onRefresh(){
     data.forEach(tr=>{
       if(tr.fini) this.listTrsFini.push(tr)
       else if (tr.sent) this.listTrsSent.push(tr)
-      else this.listTrs.push(tr)//*/
+      else if (tr.valid) this.listTrs.push(tr)//*/
     })
   }, err=>{
     console.log(err)
-  })//*/
+  })
 }
 
 printBonDeTransport(cmpId){
@@ -613,7 +664,7 @@ async prixCalcul(){
   }
   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
+  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 }
 
@@ -625,7 +676,8 @@ prixCalculWithHorsTax(){
   }//*/
   this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
+  this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
   this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
@@ -785,7 +837,7 @@ async showMap() {
       if(this.transport.id>0){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           // commence d'envoyer email
-          if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+          if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
             this.em.emailDest=this.transport.emailIntervenant
             this.em.titre="Annuler case numero : " + this.transport.id.toString()
             this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
@@ -825,20 +877,52 @@ async showMap() {
     }
   }
 
-  onSave(){
+  async onSave(){
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
     if(this.mode==2){
-      this.changeUnite();
+      this.changeUnite();  // we must change to mode=1
+      await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+      this.changeUnite();  // we must rechange to mode=2
     }
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-    }, 
-      err=>{console.log(err)
-    })
+    else{ // mode=1 already, just save
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+    }
   }
   onPrint(heure){    
     console.log(heure)
@@ -935,99 +1019,10 @@ async showMap() {
   }
 
   calculePrixbase(){
-    /*/
-    let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
-    if(this.remorquage.typeService.includes('Leger')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne1
-      if(this.remorquage.accident) accident=this.shipper.accident1
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut1
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte1
-      if(this.remorquage.survoltage) boost=this.shipper.boost1
-      if(this.remorquage.essence) essence=this.shipper.essence1
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu1
-      
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
-    }
-    else if(this.remorquage.typeService.includes('Moyen')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne2
-      if(this.remorquage.accident) accident=this.shipper.accident2
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte2
-      if(this.remorquage.survoltage) boost=this.shipper.boost2
-      if(this.remorquage.essence) essence=this.shipper.essence2
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu2
-
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
-    }
-    else if(this.remorquage.typeService.includes('Lourd')){ 
-      if(this.remorquage.panne) panne=this.shipper.panne3
-      if(this.remorquage.accident) accident=this.shipper.accident3
-      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut3
-      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte3
-      if(this.remorquage.survoltage) boost=this.shipper.boost3
-      if(this.remorquage.essence) essence=this.shipper.essence3
-      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu3
-
-      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
-      if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
-      else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
-    }
-    //*/
   }
 
   /*/
   typeServiceChange(type){
-    this.remorquage.typeService=type
-    if(!this.remorquage.accident && !this.remorquage.panne){
-      this.remorquage.prixKm=0;
-      this.remorquage.inclus=0;
-    }
-    if(this.remorquage.typeService.includes('Leger')){
-      //this.remorquage.prixBase=this.prixBase1;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm1;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus1;
-        this.remorquage.prixKm=this.shipper.prixKm1;
-      }
-    }
-    else if(this.remorquage.typeService.includes('Moyen')){
-      //this.remorquage.prixBase=this.prixBase2;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm2;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus2;
-        this.remorquage.prixKm=this.shipper.prixKm2;
-      }
-    }
-    else if(this.remorquage.typeService.includes('Lourd')){
-      //this.remorquage.prixBase=this.prixBase3;
-      this.calculePrixbase()
-      if(this.remorquage.accident){
-        this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm3;
-      }
-      else if(this.remorquage.panne){
-        this.remorquage.inclus=this.shipper.inclus3;
-        this.remorquage.prixKm=this.shipper.prixKm3;
-      }
-    }
-    else{
-      this.remorquage.prixBase=-1.00;
-      this.remorquage.inclus=-1.00;
-      this.remorquage.prixKm=-1.00;
-    }
-    this.prixCalcul()
   }
   //*/
 
@@ -1053,7 +1048,7 @@ async showMap() {
         data.forEach(tr=>{
           if(tr.fini) this.listTrsFini.push(tr)
           else if (tr.sent) this.listTrsSent.push(tr)
-          else this.listTrs.push(tr)//*/
+          else if (tr.valid) this.listTrs.push(tr)//*/
         })
       }, err=>{
         console.log(err)
@@ -1082,7 +1077,6 @@ async showMap() {
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
         alert("Cette appel a ete envoye a SOS Prestige.")
-        this.transport.sent=true;
         this.transport = new Transport() // declare one new case
         //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{

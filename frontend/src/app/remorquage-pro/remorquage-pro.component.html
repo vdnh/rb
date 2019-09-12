@@ -411,8 +411,8 @@
   <hr style="border: 2px solid lightgray"/>
   <div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
-    <button (click)="gotoTop()" class="btn btn-link"  *ngIf="remorquage.id==null">Vou devez NumeroterAppel </button>
-    <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini || remorquage.id==null">Enregistrer</button>
+    <button (click)="gotoTop()" class="btn btn-link"  *ngIf="remorquage.id==null">Vous devez NumeroterAppel </button>
+    <button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini || remorquage.id==null">Envoyer a SOSPrestige</button>
     <br>
   </div>
   <br>

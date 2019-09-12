@@ -271,11 +271,11 @@ export class DetailTransportComponent implements OnInit {
       //this.transport.largeur=this.transport.largeur+load.largeur
     })
   }
-  // on focus windows
+  /*/ on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
     this.onRefresh()
-  }
+  }//*/
   
   async ngOnInit() {    
     this.varsGlobal.session='yes'  // to control we are in session
@@ -884,7 +884,7 @@ async showMap() {
         if(this.transport.id>0){
           this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
             // commence d'envoyer email
-            if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+            if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
               this.em.emailDest=this.transport.emailIntervenant
               this.em.titre="Annuler case numero : " + this.transport.id.toString()
               this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    

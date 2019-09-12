@@ -370,7 +370,7 @@
         <div>
           <!--div class="col-sm-12 col-md-12 col-lg-12"-->
             <!--div class="form-group"-->
-              <label class="control-label">Type Camion Besoin : </label>
+              <label class="control-label">Type d'Equipement : </label>
               <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
             <!--/div-->
           <!--/div-->
@@ -652,7 +652,7 @@
       <tr>
         <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'yyyy-MMM-dd'}} - {{transport.timeResrvation}}</th>
         <td style="text-align: center; text-anchor: start; width: 20%"># Camion <br> <span>&nbsp;{{transport.camionAttribue}}</span></td>
-        <td style="text-align: center; text-anchor: start; width: 20%">Type Camion Besoin<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
+        <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
         <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td>
       </tr>
       <tr style="border: 0px">

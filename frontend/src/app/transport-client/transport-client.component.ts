@@ -279,11 +279,11 @@ export class TransportClientComponent implements OnInit {
     //this.router.navigateByUrl("");
   }//*/
   
-  // on focus windows
+  /*/ on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
     this.onRefresh()
-  }
+  }//*/
   
   async ngOnInit() {    
     this.varsGlobal.session='yes'  // to control we are in session
@@ -920,7 +920,7 @@ async showMap() {
   CloseWithWindowOpenTrick()
   {
     let stringsd:string[]=location.href.split('/transport-client/')
-    window.open(stringsd[0]+"/transport", '_self');
+    window.open(stringsd[0], '_self');
     window.close();
   }
   

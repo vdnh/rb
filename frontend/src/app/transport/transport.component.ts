@@ -639,7 +639,7 @@ onRefresh(){
     data.forEach(tr=>{
       if(tr.fini) this.listTrsFini.push(tr)
       else if (tr.sent) this.listTrsSent.push(tr)
-      else this.listTrs.push(tr)//*/
+      else if (tr.valid) this.listTrs.push(tr)//*/
     })
   }, err=>{
     console.log(err)
@@ -842,7 +842,7 @@ async showMap() {
       if(this.transport.id>0){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           // commence d'envoyer email
-          if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+          if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
             this.em.emailDest=this.transport.emailIntervenant
             this.em.titre="Annuler case numero : " + this.transport.id.toString()
             this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
@@ -1053,7 +1053,7 @@ async showMap() {
         data.forEach(tr=>{
           if(tr.fini) this.listTrsFini.push(tr)
           else if (tr.sent) this.listTrsSent.push(tr)
-          else this.listTrs.push(tr)//*/
+          else if (tr.valid) this.listTrs.push(tr)//*/
         })
       }, err=>{
         console.log(err)
