@@ -272,18 +272,18 @@ export class DetailTransportProComponent implements OnInit {
     })
   }
 
-  // on close window
+  /*/ on close window
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event){
     localStorage.clear();
     //this.router.navigateByUrl("");
   }//*/
   
-  // on focus windows
+  /*/ on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
     this.onRefresh()
-  }
+  }//*/
   
   async ngOnInit() {    
     this.varsGlobal.session='yes'  // to control we are in session
@@ -926,7 +926,8 @@ async showMap() {
   
   
   onFermer(){
-    this.CloseWithWindowOpenTrick();
+    window.close();
+    //this.CloseWithWindowOpenTrick();
   }
 
   onDelete(tr:Transport){

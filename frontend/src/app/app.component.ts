@@ -24,6 +24,10 @@ export class AppComponent implements OnInit{
 
   // to control if we are in the session
   session='no';
+  
+  // pour verifier usernamelogin  et role
+  roleUsernameLogin='';
+  eligible=true;
 
   //nombreMessages: number=this.varsGlobal.nombreMessages;
 
@@ -45,11 +49,17 @@ export class AppComponent implements OnInit{
       })
   }
 
-  ngOnInit() {
+  ngOnInit() {    
+    if(localStorage.getItem('role')) 
+      this.role = localStorage.getItem('role')
     if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
       localStorage.clear();
-    if(localStorage.getItem('usernameLogin')) 
-      this.usernameLogin = localStorage.getItem('usernameLogin')
+    if(localStorage.getItem('usernameLogin')) {
+      this.usernameLogin = localStorage.getItem('usernameLogin');
+      this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
+      //console.log('this.roleUsernameLogin : '+ this.roleUsernameLogin)
+      this.eligible=this.roleUsernameLogin.includes(localStorage.getItem('eligible'))
+    }
     if(localStorage.getItem("entrepriseNom"))
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
     //*
@@ -72,9 +82,11 @@ export class AppComponent implements OnInit{
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe((res:Role)=>{
+          this.authService.getUserInfo().subscribe(async (res:Role)=>{
             this.role = res.roleName;
-            localStorage.setItem('role', this.role);          
+            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+            localStorage.setItem('eligible',this.roleUsernameLogin)
+            localStorage.setItem('role', this.role);
             if(res.id!=null) {
               localStorage.setItem('userId', res.id.toString());
               //console.log('res.id : '+res.id)
@@ -113,8 +125,10 @@ export class AppComponent implements OnInit{
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe((res:Role)=>{
+          this.authService.getUserInfo().subscribe(async (res:Role)=>{
             this.role = res.roleName;
+            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+            localStorage.setItem('eligible',this.roleUsernameLogin)
             localStorage.setItem('role', this.role);          
             if(res.id!=null) {
               localStorage.setItem('userId', res.id.toString());
@@ -150,8 +164,10 @@ export class AppComponent implements OnInit{
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe((res:Role)=>{
+          this.authService.getUserInfo().subscribe(async (res:Role)=>{
             this.role = res.roleName;
+            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+            localStorage.setItem('eligible',this.roleUsernameLogin)
             localStorage.setItem('role', this.role);          
             if(res.id!=null) {
               localStorage.setItem('userId', res.id.toString());
@@ -192,8 +208,10 @@ export class AppComponent implements OnInit{
           let jwtToken=resp.headers.get('Authorization');
           this.authService.saveTonken(jwtToken);
           //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe((res:Role)=>{
+          this.authService.getUserInfo().subscribe(async (res:Role)=>{
             this.role = res.roleName;
+            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+            localStorage.setItem('eligible',this.roleUsernameLogin)
             localStorage.setItem('role', this.role);          
             if(res.id!=null) {
               localStorage.setItem('userId', res.id.toString());
@@ -313,9 +331,13 @@ export class AppComponent implements OnInit{
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);        
         //*
-        this.authService.getUserInfo().subscribe((res:Role)=>{
+        this.authService.getUserInfo().subscribe(async (res:Role)=>{
           this.role = res.roleName;
-          localStorage.setItem('role', this.role);          
+          localStorage.setItem('role', this.role);         
+          this.usernameLogin=dataForm.username;  // to get usename
+          localStorage.setItem('usernameLogin', this.usernameLogin)
+          this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+          localStorage.setItem('eligible',this.roleUsernameLogin) 
           if(res.id!=null) {
             localStorage.setItem('userId', res.id.toString());
             localStorage.setItem('entrepriseNom', res.entrepriseNom);
@@ -357,9 +379,12 @@ export class AppComponent implements OnInit{
         //console.log('Role is : '+this.role);
         //if(this.roles.
         //this.router.navigateByUrl('/propos');
+        /*
         this.usernameLogin=dataForm.username;  // to get usename
         localStorage.setItem('usernameLogin', this.usernameLogin)
-        console.log('this.usernameLogin : '+ this.usernameLogin)
+        this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
+        localStorage.setItem('eligible',this.roleUsernameLogin)
+        //*/
     },err=>{
       this.mode=1; // appear the message bad password
       console.log(err);  
@@ -389,7 +414,7 @@ export class AppComponent implements OnInit{
     this.varsGlobal.nombreMessages=0;
     this.varsGlobal.session='no'; 
     this.varsGlobal.pro='no';
-
+    this.roleUsernameLogin='';
     this.router.navigateByUrl("");
     //location.reload();
     //window.close();
