@@ -45,10 +45,10 @@
       </tr>
     </table>
 </div>
-<div *ngIf="(modeHistoire==-1 && remorquage.id==null)">
+<div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false))">
   <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3>
 </div>
-<div *ngIf="(modeHistoire==-1 && remorquage.id!=null)">
+<div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true)">
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">

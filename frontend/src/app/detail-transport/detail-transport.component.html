@@ -60,11 +60,11 @@
     </div>
   </div>
 </div>
-<div *ngIf="(modeHistoire==-1 && transport.id==null)">
+<div *ngIf="(modeHistoire==-1 && (transport.id==null || transport.valid==false))">
     <h3>Ce bon {{id}} a ete annule ou n'existe pas !!</h3>
     <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
   </div>
-  <div *ngIf="(modeHistoire==-1 && transport.id!=null)">
+  <div *ngIf="(modeHistoire==-1 && transport.id!=null && transport.valid==true)">
     <!--div><button class="btn btn-primary" (click)="changeUnite()">Changer votre unite </button></div-->
     <!--div class="col-sm-12 col-lg-12 col-md-12">
       <div class="row">

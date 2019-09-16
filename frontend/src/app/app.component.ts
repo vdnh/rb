@@ -6,6 +6,9 @@ import { MessagesService } from 'src/services/messages.service';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import {VarsGlobal} from 'src/services/VarsGlobal'
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { UserLogsService } from 'src/services/userLogs.service';
+import { UserLogs } from 'src/model/model.userLogs';
+import { GeolocationService } from 'src/services/geolocation.service';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +40,8 @@ export class AppComponent implements OnInit{
   idTransport: string;
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
-    private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router) 
+    private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
+    private geolocation : GeolocationService, public userLogsService: UserLogsService) 
     {
       this.form = fb.group({
         username:'chauffeur',
@@ -59,6 +63,9 @@ export class AppComponent implements OnInit{
       this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
       //console.log('this.roleUsernameLogin : '+ this.roleUsernameLogin)
       this.eligible=this.roleUsernameLogin.includes(localStorage.getItem('eligible'))
+      if(!this.eligible){
+        localStorage.clear()
+      }
     }
     if(localStorage.getItem("entrepriseNom"))
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
@@ -370,6 +377,21 @@ export class AppComponent implements OnInit{
               console.log(err)
             }
           )
+          this.varsGlobal.userLogs.entreprise=res.entrepriseNom;
+          this.varsGlobal.userLogs.entrepriseId=localStorage.getItem('userId'); //res.id.toString();
+          this.varsGlobal.userLogs.usernameLogin=this.usernameLogin;
+          this.varsGlobal.userLogs.role=res.roleName;
+          this.varsGlobal.userLogs.loginTime=new Date();
+          this.varsGlobal.userLogs.token=jwtToken;
+          await this.geolocation.getCurrentPosition().subscribe((data:Position)=>{
+            this.varsGlobal.userLogs.longtitude=data.coords.longitude;
+            this.varsGlobal.userLogs.latitude=data.coords.latitude;
+          },err=>{console.log(err)})
+          this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+            this.varsGlobal.userLogs=data;
+          }, err=>{
+            console.log(err)
+          })
         //}
         }, err=>{          
           console.log(err);
@@ -400,7 +422,21 @@ export class AppComponent implements OnInit{
     //console.log('One more time, Role is : '+this.role)
   }
 
-  logout(){
+  async logout(){
+    if(this.varsGlobal.userLogs.loginTime!=null){
+      this.varsGlobal.userLogs.logoutTime=new Date();
+      this.varsGlobal.userLogs.loginTime=new Date(this.varsGlobal.userLogs.loginTime);
+      console.log("this.varsGlobal.userLogs.logoutTime.getTime() : "+this.varsGlobal.userLogs.logoutTime.getTime());
+      console.log("this.varsGlobal.userLogs.loginTime.getTime() : "+this.varsGlobal.userLogs.loginTime.getTime());
+      this.varsGlobal.userLogs.duration = 
+        await (this.varsGlobal.userLogs.logoutTime.getTime() - this.varsGlobal.userLogs.loginTime.getTime())/1000/60  // to find minutes
+      await this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+        this.varsGlobal.userLogs=new UserLogs();
+      }, err=>{
+        console.log(err)
+      })
+    }
+    //this.varsGlobal.userLogs=new UserLogs();
     localStorage.clear();
     this.role="";
     

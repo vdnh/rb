@@ -66,6 +66,7 @@ import { TransportClientComponent } from './transport-client/transport-client.co
 import { TransportProComponent } from './transport-pro/transport-pro.component';
 import { DetailTransportProComponent } from './detail-transport-pro/detail-transport-pro.component';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { UserLogsService } from 'src/services/userLogs.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -165,7 +166,7 @@ const appRoutes:Routes=[
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
-    RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService],
+    RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
