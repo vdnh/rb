@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { UserLogsService } from 'src/services/userLogs.service';
 import { UserLogs } from 'src/model/model.userLogs';
 import { GeolocationService } from 'src/services/geolocation.service';
+import { GeocodingService } from 'src/services/geocoding.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit{
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
-    private geolocation : GeolocationService, public userLogsService: UserLogsService) 
+    private geolocation : GeolocationService, public geocoding : GeocodingService, public userLogsService: UserLogsService) 
     {
       this.form = fb.group({
         username:'chauffeur',
@@ -331,14 +332,14 @@ export class AppComponent implements OnInit{
     this.varsGlobal.refreshData();
   }
 
-  onLogin(dataForm){
-    this.authService.login(dataForm)
-    .subscribe(resp=> {
+  async onLogin(dataForm){
+    await this.authService.login(dataForm)
+    .subscribe(async resp=> {
         let jwtToken=resp.headers.get('Authorization');
         this.authService.saveTonken(jwtToken);
         //console.log(jwtToken);        
         //*
-        this.authService.getUserInfo().subscribe(async (res:Role)=>{
+        await this.authService.getUserInfo().subscribe(async (res:Role)=>{
           this.role = res.roleName;
           localStorage.setItem('role', this.role);         
           this.usernameLogin=dataForm.username;  // to get usename
@@ -383,9 +384,33 @@ export class AppComponent implements OnInit{
           this.varsGlobal.userLogs.role=res.roleName;
           this.varsGlobal.userLogs.loginTime=new Date();
           this.varsGlobal.userLogs.token=jwtToken;
-          await this.geolocation.getCurrentPosition().subscribe((data:Position)=>{
-            this.varsGlobal.userLogs.longtitude=data.coords.longitude;
-            this.varsGlobal.userLogs.latitude=data.coords.latitude;
+          /*this.geocoding.geocode(new google.maps.LatLng(
+                                  data.originLat,
+                                  data.originLong                            
+                                )).forEach(
+            (results: google.maps.GeocoderResult[]) => {
+              console.log('results[0].formatted_address : '+results[0].formatted_address)
+            })//*/
+          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+            //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
+            //this.varsGlobal.userLogs.latitude=data.coords.latitude;
+            await this.geocoding.geocode(new google.maps.LatLng(              
+              this.varsGlobal.userLogs.latitude=data.coords.latitude,
+              this.varsGlobal.userLogs.longtitude=data.coords.longitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.varsGlobal.userLogs.place=results[0].formatted_address;
+                console.log('results[0].formatted_address : '+results[0].formatted_address)
+                console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+                console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+                console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+                //console.log('results[0].geometry : '+results[0].geometry.location)
+                //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+                //console.log('results[0].place_id : '+results[0].place_id)
+                console.log('results[0].types : '+results[0].types)
+              }
+            )
           },err=>{console.log(err)})
           this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
             this.varsGlobal.userLogs=data;
