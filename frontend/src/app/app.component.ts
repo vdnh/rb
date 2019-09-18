@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Role } from 'src/model/model.role';
@@ -10,6 +10,15 @@ import { UserLogsService } from 'src/services/userLogs.service';
 import { UserLogs } from 'src/model/model.userLogs';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { HttpClient } from '@angular/common/http';
+
+declare global {
+  interface Window {
+    rTCPeerConnection: RTCPeerConnection;
+    mozRTCPeerConnection: RTCPeerConnection;
+    webkitRTCPeerConnection: RTCPeerConnection;
+  }
+}
 
 @Component({
   selector: 'app-root',
@@ -17,6 +26,7 @@ import { GeocodingService } from 'src/services/geocoding.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+  private ipRegex = new RegExp(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/);
   title = 'CTS';
   usernameLogin='';
   entrepriseNom='';
@@ -42,7 +52,8 @@ export class AppComponent implements OnInit{
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
-    private geolocation : GeolocationService, public geocoding : GeocodingService, public userLogsService: UserLogsService) 
+    private geolocation : GeolocationService, public geocoding : GeocodingService, 
+    public userLogsService: UserLogsService, private http: HttpClient, private zone: NgZone) 
     {
       this.form = fb.group({
         username:'chauffeur',
@@ -54,7 +65,44 @@ export class AppComponent implements OnInit{
       })
   }
 
+  private determineLocalIp() {
+    window.rTCPeerConnection  = this.getRTCPeerConnection();
+
+    const pc = new RTCPeerConnection({ iceServers: [] });
+    pc.createDataChannel('');
+    pc.createOffer().then(pc.setLocalDescription.bind(pc));
+
+    pc.onicecandidate = (ice) => {
+      this.zone.run( () => {
+        if (!ice || !ice.candidate || !ice.candidate.candidate) {
+          return;
+        }
+        if (!ice.candidate.candidate.includes('local')){
+          //console.log('ice.candidate.candidate : '+ice.candidate.candidate)
+          //console.log('ice.candidate.ip : '+ice.candidate.ip)
+          //console.log('ice.candidate.toJSON().candidate : '+ice.candidate.toJSON().candidate)
+          //console.log('ice.candidate.component : '+ice.candidate.component.toString())
+          this.varsGlobal.userLogs.ipLocal = this.ipRegex.exec(ice.candidate.candidate)[1]
+          console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
+        }
+        else {
+          this.varsGlobal.userLogs.ipLocal = ice.candidate.candidate
+          console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
+        }
+        pc.onicecandidate = () => {};
+        pc.close();
+      });
+    };
+  }
+
+  getRTCPeerConnection() {
+    return window.rTCPeerConnection ||
+      window.mozRTCPeerConnection ||
+      window.webkitRTCPeerConnection;
+  }
+
   ngOnInit() {    
+    //await this.determineLocalIp();
     if(localStorage.getItem('role')) 
       this.role = localStorage.getItem('role')
     if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
@@ -332,106 +380,106 @@ export class AppComponent implements OnInit{
     this.varsGlobal.refreshData();
   }
 
-  async onLogin(dataForm){
-    await this.authService.login(dataForm)
-    .subscribe(async resp=> {
-        let jwtToken=resp.headers.get('Authorization');
-        this.authService.saveTonken(jwtToken);
-        //console.log(jwtToken);        
-        //*
-        await this.authService.getUserInfo().subscribe(async (res:Role)=>{
-          this.role = res.roleName;
-          localStorage.setItem('role', this.role);         
-          this.usernameLogin=dataForm.username;  // to get usename
-          localStorage.setItem('usernameLogin', this.usernameLogin)
-          this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
-          localStorage.setItem('eligible',this.roleUsernameLogin) 
-          if(res.id!=null) {
-            localStorage.setItem('userId', res.id.toString());
-            localStorage.setItem('entrepriseNom', res.entrepriseNom);
-            this.userId=localStorage.getItem('userId')
-            this.entrepriseNom=localStorage.getItem('entrepriseNom')
-          }
-          if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
-          if(res.roleName.includes('TRANSPORTER')) {         
-            //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
-            this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
-            //localStorage.setItem('userId', res.id.toString());
-          }  
-          if(res.roleName.includes('SHIPPER')) {         
-            //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
-            this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
-            //localStorage.setItem('userId', res.id.toString());
-          }
-          if(res.roleName.includes('DISPATCH')) {         
-            //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
-            if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
-            else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
-            //localStorage.setItem('userId', res.id.toString());
-          }
-          //http://localhost:4200/remorquage
-          this.mode=0;
-          this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
-            (data:Array<Message>)=>{
-              this.varsGlobal.nombreMessages=data.length
-            }, err=>{
-              console.log(err)
-            }
-          )
-          this.varsGlobal.userLogs.entreprise=res.entrepriseNom;
-          this.varsGlobal.userLogs.entrepriseId=localStorage.getItem('userId'); //res.id.toString();
-          this.varsGlobal.userLogs.usernameLogin=this.usernameLogin;
-          this.varsGlobal.userLogs.role=res.roleName;
-          this.varsGlobal.userLogs.loginTime=new Date();
-          this.varsGlobal.userLogs.token=jwtToken;
-          /*this.geocoding.geocode(new google.maps.LatLng(
-                                  data.originLat,
-                                  data.originLong                            
-                                )).forEach(
-            (results: google.maps.GeocoderResult[]) => {
-              console.log('results[0].formatted_address : '+results[0].formatted_address)
-            })//*/
-          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
-            //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
-            //this.varsGlobal.userLogs.latitude=data.coords.latitude;
-            await this.geocoding.geocode(new google.maps.LatLng(              
-              this.varsGlobal.userLogs.latitude=data.coords.latitude,
-              this.varsGlobal.userLogs.longtitude=data.coords.longitude
-            ))
-            .forEach(
-              (results: google.maps.GeocoderResult[]) => {
-                this.varsGlobal.userLogs.place=results[0].formatted_address;
-                console.log('results[0].formatted_address : '+results[0].formatted_address)
-                console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-                console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-                console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-                //console.log('results[0].geometry : '+results[0].geometry.location)
-                //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-                //console.log('results[0].place_id : '+results[0].place_id)
-                console.log('results[0].types : '+results[0].types)
-              }
-            )
-          },err=>{console.log(err)})
-          this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
-            this.varsGlobal.userLogs=data;
-          }, err=>{
-            console.log(err)
-          })
-        //}
-        }, err=>{          
-          console.log(err);
-        });//*/
-        //this.authService.getUserInfo();
-        //this.role=this.authService.role;
-        //console.log('Role is : '+this.role);
-        //if(this.roles.
-        //this.router.navigateByUrl('/propos');
-        /*
+  onLogin(dataForm){
+    this.authService.login(dataForm).subscribe(resp=> {
+      let jwtToken=resp.headers.get('Authorization');
+      this.authService.saveTonken(jwtToken);
+      //console.log(jwtToken);        
+      //*
+      this.authService.getUserInfo().subscribe(async (res:Role)=>{
+        this.role = res.roleName;
+        localStorage.setItem('role', this.role);         
         this.usernameLogin=dataForm.username;  // to get usename
         localStorage.setItem('usernameLogin', this.usernameLogin)
-        this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
-        localStorage.setItem('eligible',this.roleUsernameLogin)
-        //*/
+        this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+        localStorage.setItem('eligible',this.roleUsernameLogin) 
+        if(res.id!=null) {
+          localStorage.setItem('userId', res.id.toString());
+          localStorage.setItem('entrepriseNom', res.entrepriseNom);
+          this.userId=localStorage.getItem('userId')
+          this.entrepriseNom=localStorage.getItem('entrepriseNom')
+        }
+        if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
+        // begin to write info to userLogs
+        this.determineLocalIp();
+        this.varsGlobal.userLogs.entreprise=res.entrepriseNom;
+        this.varsGlobal.userLogs.entrepriseId=localStorage.getItem('userId'); //res.id.toString();
+        this.varsGlobal.userLogs.usernameLogin=this.usernameLogin;
+        this.varsGlobal.userLogs.role=res.roleName;
+        this.varsGlobal.userLogs.loginTime=new Date();
+        this.varsGlobal.userLogs.token=jwtToken;
+        await this.http.get('https://api.ipify.org?format=json').subscribe(data => {
+          this.varsGlobal.userLogs.ipPublic=data['ip'];
+        });
+        await this.geolocation.getCurrentPosition().subscribe((data:Position)=>{
+          //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
+          //this.varsGlobal.userLogs.latitude=data.coords.latitude;
+          this.geocoding.geocode(new google.maps.LatLng(              
+            this.varsGlobal.userLogs.latitude=data.coords.latitude,
+            this.varsGlobal.userLogs.longtitude=data.coords.longitude
+          ))
+          .forEach(
+            (results: google.maps.GeocoderResult[]) => {
+              this.varsGlobal.userLogs.place=results[0].formatted_address;
+              //console.log('results[0].formatted_address : '+results[0].formatted_address)
+              //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+              //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+              //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+              //console.log('results[0].geometry : '+results[0].geometry.location)
+              //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+              //console.log('results[0].place_id : '+results[0].place_id)
+              //console.log('results[0].types : '+results[0].types)
+            }
+          )
+        },err=>{console.log(err)})
+        await this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+          this.varsGlobal.userLogs=data;
+        }, err=>{
+          console.log(err)
+        })
+        // end of writting infos to userLogs
+
+        if(res.roleName.includes('TRANSPORTER')) {         
+          //this.router.navigateByUrl('/detail-transporter/'+ res.id, {skipLocationChange: true});
+          this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
+          //localStorage.setItem('userId', res.id.toString());
+        }  
+        if(res.roleName.includes('SHIPPER')) {         
+          //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
+          this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
+          //localStorage.setItem('userId', res.id.toString());
+        }
+        if(res.roleName.includes('DISPATCH')) {         
+          //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
+          if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
+          else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+          //localStorage.setItem('userId', res.id.toString());
+        }
+        //http://localhost:4200/remorquage
+        this.mode=0;
+        this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
+          (data:Array<Message>)=>{
+            this.varsGlobal.nombreMessages=data.length
+          }, err=>{
+            console.log(err)
+          }
+        )
+
+      //}
+      }, err=>{          
+        console.log(err);
+      });//*/
+      //this.authService.getUserInfo();
+      //this.role=this.authService.role;
+      //console.log('Role is : '+this.role);
+      //if(this.roles.
+      //this.router.navigateByUrl('/propos');
+      /*
+      this.usernameLogin=dataForm.username;  // to get usename
+      localStorage.setItem('usernameLogin', this.usernameLogin)
+      this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
+      localStorage.setItem('eligible',this.roleUsernameLogin)
+      //*/
     },err=>{
       this.mode=1; // appear the message bad password
       console.log(err);  
@@ -453,6 +501,7 @@ export class AppComponent implements OnInit{
       this.varsGlobal.userLogs.loginTime=new Date(this.varsGlobal.userLogs.loginTime);
       console.log("this.varsGlobal.userLogs.logoutTime.getTime() : "+this.varsGlobal.userLogs.logoutTime.getTime());
       console.log("this.varsGlobal.userLogs.loginTime.getTime() : "+this.varsGlobal.userLogs.loginTime.getTime());
+      console.log("this.varsGlobal.userLogs.ipLocal : "+this.varsGlobal.userLogs.ipLocal)
       this.varsGlobal.userLogs.duration = 
         await (this.varsGlobal.userLogs.logoutTime.getTime() - this.varsGlobal.userLogs.loginTime.getTime())/1000/60  // to find minutes
       await this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
