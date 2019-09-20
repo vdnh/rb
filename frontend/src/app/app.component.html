@@ -74,6 +74,12 @@
               <button (click)="logout()" class="btn btn-link">Logout</button>
               <br>
             </div>
+            <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
+              <button routerLink="/propos" class="btn btn-link">Propos</button>
+              <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>     
+              <button (click)="logout()" class="btn btn-link">Logout</button>
+              <br>
+            </div>
             <div class="panel panel-primary" *ngIf="role=='MANAGER'">     
               <button routerLink="/propos" class="btn btn-link">Propos</button>
               <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
@@ -103,6 +109,7 @@
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
               <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transportation</button> 
               <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transportation</button>
+              <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Appel-Express</button> 
               <div class="col-md-4 col-sm-4 col-lg-4">
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
               </div>

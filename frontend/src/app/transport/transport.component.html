@@ -515,7 +515,10 @@
             <div class="form-group">
               <label for="">Chauffeur</label>
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
-                    name="nomIntervenant" class="form-control">
+                name="nomIntervenant" class="form-control" (change)="chauffeurChange()" list="defaultChauffeurs">
+              <datalist id="defaultChauffeurs">
+                <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">

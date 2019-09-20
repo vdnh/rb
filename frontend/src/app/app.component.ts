@@ -308,6 +308,9 @@ export class AppComponent implements OnInit{
         this.router.navigate(['/detail-transporter/'+ this.userId], {skipLocationChange: true});
         //localStorage.setItem('userId', res.id.toString());
       }  
+      if(this.role.includes('TECHNICIEN')) {         
+        this.router.navigate(['/detail-transporter/'+ this.userId], {skipLocationChange: true});
+      }
       if(this.role.includes('SHIPPER')) {         
         //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
         this.router.navigate(['/detail-shipper/'+ this.userId], {skipLocationChange: true});
@@ -444,6 +447,9 @@ export class AppComponent implements OnInit{
           this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
           //localStorage.setItem('userId', res.id.toString());
         }  
+        if(res.roleName.includes('TECHNICIEN')) {                  
+          this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
+        }
         if(res.roleName.includes('SHIPPER')) {         
           //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
           this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
@@ -546,11 +552,15 @@ export class AppComponent implements OnInit{
   onTransporter(){
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
-    if(role.includes('TRANSPORTER')) {         
+    if(role.includes('TRANSPORTER') || role.includes('TECHNICIEN')) {         
       //this.router.navigateByUrl('/detail-transporter/'+ userId);
       this.router.navigate(['/detail-transporter/'+ userId], {skipLocationChange: true});
       //this.router.navigateByUrl('/business-messages/');
     }
+    /*
+    if(role.includes('TECHNICIEN')) {         
+      this.router.navigate(['/detail-transporter/'+ userId], {skipLocationChange: true});
+    }//*/
     else
       this.router.navigateByUrl('/transporters/');
   }

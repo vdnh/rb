@@ -21,6 +21,8 @@ import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
 import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { Chauffeur } from 'src/model/model.chauffeur';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
 
 @Component({
   selector: 'app-transport',
@@ -190,7 +192,9 @@ export class TransportComponent implements OnInit {
   listTrsSent: Transport[]; // appels sent
   listTrsFini: Transport[]; // appels finished
   contacts: Contact[];
-  
+  chauffeurs: Chauffeur[];
+  chauffeur: Chauffeur;
+
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
@@ -204,6 +208,7 @@ export class TransportComponent implements OnInit {
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
+    public chauffeursService:ChauffeursService,
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
@@ -272,6 +277,11 @@ export class TransportComponent implements OnInit {
         if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
       })
+      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
     }, err=>{
       console.log();
     })
@@ -299,6 +309,19 @@ export class TransportComponent implements OnInit {
     this.prixCalcul()
   }
   
+  chauffeurChange(){
+    let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.transport.nomIntervenant=ch.nom
+        this.transport.telIntervenant=ch.tel
+        this.transport.emailIntervenant=ch.email
+      }
+    })
+  }
+
   calculTotalpoints(){ // calculate the base price in the same time
     this.transport.totalpoints = this.longeurPointage(this.transport.longueur, this.mode) 
       + this.largeurPointage(this.transport.largeur, this.mode) 

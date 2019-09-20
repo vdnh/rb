@@ -20,11 +20,11 @@ import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 
 @Component({
-  selector: 'app-remorquage',
-  templateUrl: './remorquage.component.html',
-  styleUrls: ['./remorquage.component.css']
+  selector: 'app-appel-express',
+  templateUrl: './appel-express.component.html',
+  styleUrls: ['./appel-express.component.css']
 })
-export class RemorquageComponent implements OnInit {
+export class AppelExpressComponent implements OnInit {
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -156,11 +156,11 @@ export class RemorquageComponent implements OnInit {
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
+    public chauffeursService:ChauffeursService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
     public camionsService:CamionsService,
-    public chauffeursService:ChauffeursService,
     ) { 
   }
   /*/ on close window
@@ -224,19 +224,6 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
     //this.prixCalcul()
-  }
-  
-  chauffeurChange(){
-    let strings:Array<string>=this.remorquage.nomIntervenant.split("Id.");
-    let chId:number =  Number(strings[1])
-    this.chauffeurs.forEach(ch=>{
-      if(ch.id==chId) 
-      {
-        this.remorquage.nomIntervenant=ch.nom
-        this.remorquage.telIntervenant=ch.tel
-        this.remorquage.emailIntervenant=ch.email
-      }
-    })
   }
   
   async gotoDetailRemorquage(r:Remorquage){
@@ -894,35 +881,110 @@ async showMap() {
     }
   }
   
-  onEnvoyer(){
-    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
-      let stringsd:string[]=location.href.split('/remorquage')
-      this.em.emailDest=this.remorquage.emailIntervenant
-      this.em.titre="Case numero : " + this.remorquage.id.toString()
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+stringsd[0]+"/remorquage-client/"
-      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
-      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-        //console.log('this.em.titre : ' + this.em.titre)
-        //console.log('this.em.emailDest : '+ this.em.emailDest)
-        //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
-        this.remorquage.sent=true;
-        this.onSave();
-      }, err=>{
-        console.log()
-      })//*/
+  async onEnvoyer(){
+    this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+
+    if(this.remorquage.telIntervenant!=null && this.remorquage.telIntervenant.length>=10){
+      let listeOperateurs : Array<string> = 
+      [
+        //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@txt.bell.ca", 
+        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@txt.bellmobility.ca",
+        // this.remorquage.telIntervenant.replace("-","").replace("-","")+"@fido.ca", //same roger
+        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@text.mtsmobility.com",
+        //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@wirefree.informe.ca", // same bell
+        // this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pmcl.net",
+        //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pagegate.pagenet.ca",
+        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pcs.rogers.com",
+        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@msg.telus.com",
+        //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@vmobile.ca"
+      ];
+      /*/
+      "@txt.bell.ca", 
+      "@txt.bellmobility.ca",
+      "@fido.ca",
+      "@text.mtsmobility.com",
+      "@wirefree.informe.ca",
+      "@pmcl.net",
+      "@pagegate.pagenet.ca",
+      "@pcs.rogers.com",
+      "@msg.telus.com",
+      "@vmobile.ca"
+      //*/
+      
+      this.em.titre="Case Express : " + this.remorquage.timeCall 
+      this.em.content='<div><p> '+document.getElementById('tosms').innerHTML + " </p></div>"    
+      await listeOperateurs.forEach(telmail=>{
+        //console.log('telmail : ' + telmail)
+        this.em.emailDest=telmail
+        //*
+        this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+          //this.remorquage.sent=true;
+        }, err=>{
+          console.log(err)
+        })//*/
+      })
+      alert("Le sms a ete envoye au chauffeur.")  
+      /*/
       window.scroll({ 
         top: 0, 
         left: 0, 
         behavior: 'smooth' 
-      });  // go to top  
+      });  // go to top */ 
     }
-    else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
+    
+    if((this.remorquage.telIntervenant==null||this.remorquage.telIntervenant.length<10)
+      && (this.remorquage.emailIntervenant==null||this.remorquage.emailIntervenant.length<10)) 
+      alert("Checkez le courriel ou le telephone de chauffer, SVP!!!")
+    
+    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      this.em.emailDest=this.remorquage.emailIntervenant
+      this.em.titre="Case Express : " + this.remorquage.timeCall 
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
+      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        alert("Le courriel a ete envoye au chauffeur.")
+        //this.remorquage.sent=true;
+      }, err=>{
+        console.log()
+      })
+      /*/
+      window.scroll({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'smooth' 
+      });  // go to top  */
+    }
   }
+  //*
+  chauffeurChange(){
+    let strings:Array<string>=this.remorquage.nomIntervenant.split("Id.");
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.remorquage.nomIntervenant=ch.nom
+        this.remorquage.telIntervenant=ch.tel
+        this.remorquage.emailIntervenant=ch.email
+      }
+    })
+    /*
+    this.remorquage.nomIntervenant=ch.nom
+    this.remorquage.telIntervenant=ch.tel
+    this.remorquage.emailIntervenant=ch.email
 
+    let temp = this.remorquage.nomIntervenant
+    let strings:Array<string>=this.remorquage.nomIntervenant.split("/");
+    this.appUser.idUser=strings[1];
+    this.appUser.entrepriseNom = temp.split(this.appUser.idUser)[1]
+    if(strings[0]=='Trans') this.listPros2em = this.listShippers
+    else if(strings[0]=='Ship') this.listPros2em = this.listTrans//*/
+  }//*/
+  infoChauffeur(ch:Chauffeur):string{
+    this.remorquage.nomIntervenant=ch.nom
+    this.remorquage.telIntervenant=ch.tel
+    this.remorquage.emailIntervenant=ch.email
+    return ch.nom
+  }
   logout(){
     localStorage.clear();
     //this.router.navigateByUrl("");

@@ -67,6 +67,8 @@ import { TransportProComponent } from './transport-pro/transport-pro.component';
 import { DetailTransportProComponent } from './detail-transport-pro/detail-transport-pro.component';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { UserLogsService } from 'src/services/userLogs.service';
+import { AppelExpressComponent } from './appel-express/appel-express.component';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -111,6 +113,7 @@ const appRoutes:Routes=[
   {path: 'detail-transport-express/:id', component:  DetailTransportComponent},
   {path: 'transport-pro', component:  TransportProComponent},
   {path: 'detail-transport-pro/:id', component:  DetailTransportProComponent},
+  {path: 'appel-express', component:  AppelExpressComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -152,6 +155,7 @@ const appRoutes:Routes=[
     DetailTransportComponent,
     TransportProComponent,
     DetailTransportProComponent,
+    AppelExpressComponent,
     //MapComponent,
   ],
   imports: [
@@ -162,7 +166,7 @@ const appRoutes:Routes=[
       libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
     }),
   ],
-  providers: [DatePipe, AuthenticationService, ContactsService, TransportersService, 
+  providers: [DatePipe, AuthenticationService, ContactsService, ChauffeursService, TransportersService, 
     ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 

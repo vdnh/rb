@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import { Alert } from 'selenium-webdriver';
 import { Contact } from 'src/model/model.contact';
+import { Chauffeur } from 'src/model/model.chauffeur';
 import { Adresse } from 'src/model/model.adresse';
 import { ContactsService } from '../../services/contacts.service';
 import { AdressesService } from '../../services/adresses.service';
@@ -20,6 +19,7 @@ import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -40,7 +40,7 @@ export class DetailTransporterComponent implements OnInit {
   carteText:string="Voir la carte";
   iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 //*
-  quitButton:string='';
+  quitButton:string=''; //role
   quebec511:number=1;
   textQuebec511:string="Voir conditions de routes."
   avltrack:number=1;
@@ -52,6 +52,7 @@ export class DetailTransporterComponent implements OnInit {
   coorInfos:number=0;
   coorAddAdresse:number=0;
   coorAddContact:number=0;
+  coorAddChauffeur:number=0;
   modeCoordonnes:number=0;
   modeCamions:number=0;
   modeTableau:number=0;
@@ -59,8 +60,10 @@ export class DetailTransporterComponent implements OnInit {
   id:number;
   mode:number=1;
   contacts:Array<Contact>;
+  chauffeurs:Array<Chauffeur>;
   adresses:Array<Adresse>;
   addcontact:Contact=new Contact(); // to add more contact
+  addchauffeur:Chauffeur=new Chauffeur(); // to add more chauffeur
   addadresse:Adresse=new Adresse(); // to add more adresse
   servicesOffre:ServicesOffre=new ServicesOffre();
   camions:Array<Camion>;
@@ -74,7 +77,7 @@ export class DetailTransporterComponent implements OnInit {
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    private sanitizer:DomSanitizer){    
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer){    
     this.id=activatedRoute.snapshot.params['id'];
     this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
@@ -115,6 +118,11 @@ export class DetailTransporterComponent implements OnInit {
     });
     this.contactsService.contactsDeTransporter(this.id).subscribe((data:Array<Contact>)=>{
       this.contacts=data;
+    }, err=>{
+      console.log(err);
+    });
+    this.chauffeursService.chauffeursDeTransporter(this.id).subscribe((data:Array<Chauffeur>)=>{
+      this.chauffeurs=data;
     }, err=>{
       console.log(err);
     });
@@ -168,6 +176,12 @@ export class DetailTransporterComponent implements OnInit {
         console.log(err)
       })
     });    
+    this.chauffeurs.forEach(obj => {
+      this.chauffeursService.saveChauffeurs(obj).subscribe(data=>{
+      }, err=>{
+        console.log(err)
+      })
+    });    
     this.adresses.forEach(obj => {
       this.adressesService.saveAdresses(obj).subscribe(data=>{
       }, err=>{
@@ -199,6 +213,21 @@ export class DetailTransporterComponent implements OnInit {
     })
   }
 
+  addChauffeur(){
+    this.addchauffeur.idTransporter=this.id;
+    this.chauffeursService.saveChauffeurs(this.addchauffeur).subscribe(data=>{
+      alert("Chauffeur added.");
+      //this.refresh()
+      this.chauffeursService.chauffeursDeTransporter(this.id).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log(err)
+    })
+  }
+
   deleteContact(id:number){
     this.contactsService.deleteContact(id)
     .subscribe(data=>{
@@ -213,7 +242,21 @@ export class DetailTransporterComponent implements OnInit {
       console.log(err);
     });
   }
-
+  
+  deleteChauffeur(id:number){
+    this.chauffeursService.deleteChauffeur(id)
+    .subscribe(data=>{
+      alert("Chauffeur : "+this.addchauffeur.nom+" a ete supprime.");
+      //this.refresh();
+      this.chauffeursService.chauffeursDeTransporter(this.id).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log(err);
+    });
+  }
   addAdresse(){
     this.addadresse.id_transporter=this.id;
     this.adressesService.saveAdresses(this.addadresse).subscribe(data=>{
@@ -414,16 +457,25 @@ export class DetailTransporterComponent implements OnInit {
     this.coorInfos=1;
     this.coorAddAdresse=0;
     this.coorAddContact=0;
+    this.coorAddChauffeur=0;
   }
   onCoorAddAdresse(){
     this.coorInfos=0;
     this.coorAddAdresse=1;
     this.coorAddContact=0;
+    this.coorAddChauffeur=0;
   }
   onCoorAddContact(){
     this.coorInfos=0;
     this.coorAddAdresse=0;
     this.coorAddContact=1;
+    this.coorAddChauffeur=0;
+  }
+  onCoorAddChauffeur(){
+    this.coorInfos=0;
+    this.coorAddAdresse=0;
+    this.coorAddContact=0;
+    this.coorAddChauffeur=1;
   }
   onCamList(){
     this.camList=1;

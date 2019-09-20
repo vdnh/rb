@@ -26,7 +26,7 @@
     </div>
     <div *ngIf="mode==1">
     <h3>
-        <button class="btn btn-link" (click)="onCoordonnees()">Coordonnees</button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>Coordonnees</button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onCamions()">Liste de Camions</button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onTableau()">Tableau d'Entretiens</button>
     </h3>
@@ -41,6 +41,7 @@
                 <button class="btn btn-link" (click)="onCoorInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-link" (click)="onCoorAddAdresse()">Add Adresse</button>&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-link" (click)="onCoorAddContact()">Add Contact</button>             
+                <button class="btn btn-link" (click)="onCoorAddChauffeur()">Add Chauffeur</button>             
             </tr>
             <div *ngIf="coorInfos==1">Coordonnee Infos 
             <tr>
@@ -92,7 +93,18 @@
                 <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention"></td>
                 <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt"></td>
             </tr>
-            </div>
+
+            <tr><td colspan="2"><strong>Chauffeurs</strong></td></tr>
+            <tr>
+                <th>Nom</th><th>Telephone</th><th>Email</th>
+            </tr>
+            <tr *ngFor="let chauffeur of chauffeurs">
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /></td>                
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.email" /></td>
+                <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Delete</button></td>
+            </tr>    
+        </div>
             <div *ngIf="coorAddAdresse==1">Add Adresse
             <tr>
                 <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
@@ -108,11 +120,11 @@
             </tr>  
             </div>                                  
             <div *ngIf="coorAddContact==1">Add Contact
-            <tr>
+              <tr>
                 <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
-            </tr>
+              </tr>
             <!--tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr-->     
-            <tr>
+              <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
@@ -121,7 +133,18 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
                 <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
                 <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
-            </tr>   
+              </tr>   
+            </div>
+            <div *ngIf="coorAddChauffeur==1">Add Chauffeur
+                <tr>
+                    <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()">Add</button></td>
+                </tr>   
             </div>
         </table>
         
