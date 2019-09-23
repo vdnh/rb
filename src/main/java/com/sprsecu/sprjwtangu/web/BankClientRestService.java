@@ -98,7 +98,27 @@ import org.springframework.web.bind.annotation.RestController;
         transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ventes18$$$9");
         //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
         //*/
-	if(EmailValidator.getInstance().isValid(em.getEmailDest())){
+        // check list if valid or not
+        //System.out.println("em.getEmailDest() : " + em.getEmailDest());
+        boolean eListValid = true;
+        if(em.getEmailDest().contains(",")){            
+            String[] eList=em.getEmailDest().split(",");
+            for (int i = 0; i <eList.length; i++) {
+                //System.out.println("Send to:" + eList[i]);
+                if(!EmailValidator.getInstance().isValid(eList[i]))
+                    eListValid=false;
+            }
+            if(eListValid){
+                try {
+                    generateAndSendEmail(contain, em.getEmailDest(), titre, transport);
+                } catch (AddressException ex) {
+                    Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(BankClientRestService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else if(EmailValidator.getInstance().isValid(em.getEmailDest())){
             //System.out.println("client.getEmail : "+ client.getEmail());
             try {
                 generateAndSendEmail(contain, em.getEmailDest(), titre, transport);
@@ -169,7 +189,22 @@ import org.springframework.web.bind.annotation.RestController;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         //*/
 	generateMailMessage = new MimeMessage(getMailSession);
-        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        
+        // to make list of emails if there are multiple address (23-09-2019)
+        //System.out.println("email : " + email);
+        if(email.contains(",")){
+            String[] eList=email.split(",");
+            InternetAddress[] sendTo = new InternetAddress[eList.length];
+            for (int i = 0; i <eList.length; i++) {
+                //System.out.println("Send to:" + eList[i]);
+                sendTo[i] = new InternetAddress(eList[i]);
+            }
+            generateMailMessage.addRecipients(Message.RecipientType.TO, sendTo);    
+        }
+        // add else to this pharse to treat is case IF
+        else generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        // end of making list of emails if there are multiple address (23-09-2019)
+        
         generateMailMessage.setSubject(titre+",");
         //generateMailMessage.setSender(new InternetAddress("5147283785@vmobile.ca")); // teste to add sender , but don't work 
 

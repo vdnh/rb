@@ -899,6 +899,13 @@ async showMap() {
         this.remorquage.telIntervenant.replace("-","").replace("-","")+"@msg.telus.com",
         //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@vmobile.ca"
       ];
+      let eList:string='';
+      listeOperateurs.forEach(telmail=>{
+        if(eList=='')
+          eList=eList+telmail;
+        else
+          eList=eList+','+telmail;
+      })
       /*/
       "@txt.bell.ca", 
       "@txt.bellmobility.ca",
@@ -914,17 +921,36 @@ async showMap() {
       
       this.em.titre="Case Express : " + this.remorquage.timeCall 
       this.em.content='<div><p> '+document.getElementById('tosms').innerHTML + " </p></div>"    
+      
+      this.em.emailDest=eList  // send this list in string form to java
+      //console.log("eList before sent: "+ eList)
+      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        alert("Le sms a ete envoye au chauffeur.")  
+        //console.log("eList after sent: "+ eList)
+        //email to chauffeur after sms
+        if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+          this.em.emailDest=this.remorquage.emailIntervenant
+          this.em.titre="Case Express : " + this.remorquage.timeCall 
+          this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
+          this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+            alert("Le courriel a ete envoye au chauffeur, aussi.")
+            //this.remorquage.sent=true;
+          }, err=>{
+            console.log()
+          })
+        }
+        //*/
+      }, err=>{
+        console.log(err)
+      })
+      /*
       await listeOperateurs.forEach(telmail=>{
-        //console.log('telmail : ' + telmail)
         this.em.emailDest=telmail
-        //*
         this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-          //this.remorquage.sent=true;
         }, err=>{
           console.log(err)
-        })//*/
-      })
-      alert("Le sms a ete envoye au chauffeur.")  
+        })
+      })//*/
       /*/
       window.scroll({ 
         top: 0, 
@@ -933,11 +959,12 @@ async showMap() {
       });  // go to top */ 
     }
     
-    if((this.remorquage.telIntervenant==null||this.remorquage.telIntervenant.length<10)
+    else if((this.remorquage.telIntervenant==null||this.remorquage.telIntervenant.length<10)
       && (this.remorquage.emailIntervenant==null||this.remorquage.emailIntervenant.length<10)) 
       alert("Checkez le courriel ou le telephone de chauffer, SVP!!!")
     
-    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      // email to chauffeur if can not send sms
+      else if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="Case Express : " + this.remorquage.timeCall 
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
