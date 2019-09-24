@@ -115,6 +115,12 @@ export class AppComponent implements OnInit{
       if(!this.eligible){
         localStorage.clear()
       }
+      else{
+        let userLogsId = Number (localStorage.getItem('userLogsId'))
+        this.userLogsService.getDetailUserLogs(userLogsId).subscribe((data:UserLogs)=>{
+          this.varsGlobal.userLogs=data;
+        }, err=>{console.log(err)})
+      }
     }
     if(localStorage.getItem("entrepriseNom"))
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
@@ -383,8 +389,8 @@ export class AppComponent implements OnInit{
     this.varsGlobal.refreshData();
   }
 
-  onLogin(dataForm){
-    this.authService.login(dataForm).subscribe(resp=> {
+  async onLogin(dataForm){
+    await this.authService.login(dataForm).subscribe(resp=> {
       let jwtToken=resp.headers.get('Authorization');
       this.authService.saveTonken(jwtToken);
       //console.log(jwtToken);        
@@ -404,42 +410,44 @@ export class AppComponent implements OnInit{
         }
         if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
         // begin to write info to userLogs
-        this.determineLocalIp();
+        await this.determineLocalIp();
         this.varsGlobal.userLogs.entreprise=res.entrepriseNom;
         this.varsGlobal.userLogs.entrepriseId=localStorage.getItem('userId'); //res.id.toString();
         this.varsGlobal.userLogs.usernameLogin=this.usernameLogin;
         this.varsGlobal.userLogs.role=res.roleName;
         this.varsGlobal.userLogs.loginTime=new Date();
         this.varsGlobal.userLogs.token=jwtToken;
-        await this.http.get('https://api.ipify.org?format=json').subscribe(data => {
+        await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
           this.varsGlobal.userLogs.ipPublic=data['ip'];
+          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+            //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
+            //this.varsGlobal.userLogs.latitude=data.coords.latitude;
+            await this.geocoding.geocode(new google.maps.LatLng(              
+              this.varsGlobal.userLogs.latitude=data.coords.latitude,
+              this.varsGlobal.userLogs.longtitude=data.coords.longitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.varsGlobal.userLogs.place=results[0].formatted_address;
+                //console.log('results[0].formatted_address : '+results[0].formatted_address)
+                //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+                //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+                //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+                //console.log('results[0].geometry : '+results[0].geometry.location)
+                //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+                //console.log('results[0].place_id : '+results[0].place_id)
+                //console.log('results[0].types : '+results[0].types)
+              }
+            )            
+            this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+              this.varsGlobal.userLogs=data;
+              localStorage.setItem('userLogsId',data.id.toString())
+            }, err=>{
+              console.log(err)
+            })
+          },err=>{console.log(err)})
         });
-        await this.geolocation.getCurrentPosition().subscribe((data:Position)=>{
-          //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
-          //this.varsGlobal.userLogs.latitude=data.coords.latitude;
-          this.geocoding.geocode(new google.maps.LatLng(              
-            this.varsGlobal.userLogs.latitude=data.coords.latitude,
-            this.varsGlobal.userLogs.longtitude=data.coords.longitude
-          ))
-          .forEach(
-            (results: google.maps.GeocoderResult[]) => {
-              this.varsGlobal.userLogs.place=results[0].formatted_address;
-              //console.log('results[0].formatted_address : '+results[0].formatted_address)
-              //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-              //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-              //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-              //console.log('results[0].geometry : '+results[0].geometry.location)
-              //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-              //console.log('results[0].place_id : '+results[0].place_id)
-              //console.log('results[0].types : '+results[0].types)
-            }
-          )
-        },err=>{console.log(err)})
-        await this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
-          this.varsGlobal.userLogs=data;
-        }, err=>{
-          console.log(err)
-        })
+        
         // end of writting infos to userLogs
 
         if(res.roleName.includes('TRANSPORTER')) {         
