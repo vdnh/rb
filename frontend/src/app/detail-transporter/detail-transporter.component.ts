@@ -20,6 +20,7 @@ import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { reduce } from 'rxjs/operators';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -372,9 +373,24 @@ export class DetailTransporterComponent implements OnInit {
               let marker = new google.maps.Marker({
                 position: location1,
                 map: this.map,
-                icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                icon: {
+                  //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  scale:4,
+                  rotation:camion.direction,
+                  fillOpacity: 1,
+                  fillColor: "#FFFFFF",
+                  strokeWeight: 2,
+                  strokeColor: "red",
+                },
                 title: camion.unite
               });
+              /*marker.setIcon({
+                  url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                  scale:0.1,
+                  rotation:camion.direction,
+                  fillColor:'red',
+                })//*/
               this.markers.push(marker)
             }  
           })
@@ -413,9 +429,24 @@ export class DetailTransporterComponent implements OnInit {
           let marker = new google.maps.Marker({
             position: location1,
             map: this.map,
-            icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+            icon: {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+              scale:4,
+              rotation:camion.direction,
+              fillOpacity: 1,
+              fillColor: "#FFFFFF",
+              strokeWeight: 2,
+              strokeColor: "red",
+            },
             title: camion.unite
           });
+          /*marker.setIcon({
+            url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+            scale:0.1,
+            rotation:camion.direction,
+            fillColor:'red',
+          })//*/
           this.markers.push(marker);
         }  
       })

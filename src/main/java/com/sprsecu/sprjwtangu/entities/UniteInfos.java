@@ -15,4 +15,5 @@ public class UniteInfos {
     private String odometer;
     private String latitude;
     private String longitude;    
+    private String direction;
 }

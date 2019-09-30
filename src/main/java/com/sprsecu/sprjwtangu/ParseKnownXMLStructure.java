@@ -114,6 +114,7 @@ public class ParseKnownXMLStructure {
                 ui.setOdometer(eElement.getElementsByTagName("odometer").item(0).getTextContent());
                 ui.setLatitude(eElement.getElementsByTagName("latitude").item(0).getTextContent());
                 ui.setLongitude(eElement.getElementsByTagName("longitude").item(0).getTextContent());
+                ui.setDirection(eElement.getElementsByTagName("direction").item(0).getTextContent());
                 //System.out.println("ui data : "+ ui.toString());
                 listUniteInfos.add(ui);
             }

@@ -31,6 +31,7 @@ export class Camion{
     
     latitude:number; //=45.568806;
     longtitude:number; //=-73.918333;    
+    direction:number; // 0.00 - 359.99 -- north-east-south-west;    
     status:boolean=false;   // en mission ou non
     localDepart:string="";
     destination:string="";

@@ -416,6 +416,8 @@ export class AppComponent implements OnInit{
         this.varsGlobal.userLogs.usernameLogin=this.usernameLogin;
         this.varsGlobal.userLogs.role=res.roleName;
         this.varsGlobal.userLogs.loginTime=new Date();
+        //console.log('await new Date(await new Date().toLocaleString()) :'+await new Date(await new Date().toLocaleString()))
+        //console.log('this.varsGlobal.userLogs.loginTime : '+this.varsGlobal.userLogs.loginTime)
         this.varsGlobal.userLogs.token=jwtToken;
         await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
           this.varsGlobal.userLogs.ipPublic=data['ip'];

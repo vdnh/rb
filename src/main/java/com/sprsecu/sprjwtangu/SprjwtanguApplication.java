@@ -216,6 +216,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     camion.setOdometre(new Float(unite.getOdometer()).longValue());
                                     camion.setLongtitude(new Double(unite.getLongitude()));
                                     camion.setLatitude(new Double(unite.getLatitude()));
+                                    camion.setDirection(new Double(unite.getDirection()));
                                     camionRepository.save(camion);
                                     //System.out.println("save camion unite monitor : "+camion.getUniteMonitor()+" unite : "+camion.getUnite()+" : "+unite.getOdometer());
                                 }
