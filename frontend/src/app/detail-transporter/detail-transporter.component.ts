@@ -75,6 +75,8 @@ export class DetailTransporterComponent implements OnInit {
   arrayArrayEnts:AutreEntretienList[] = []; //Array<AutreEntretien>[]=[];
   //entsAutre:AutreEntretienList=new AutreEntretienList();
 
+  infoWindow : any;
+
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
@@ -385,6 +387,16 @@ export class DetailTransporterComponent implements OnInit {
                 },
                 title: camion.unite
               });
+              this.infoWindow = new google.maps.InfoWindow;
+              marker.addListener('click', (event)=>{
+                var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+                if(camion.stopDuration>0)
+                  contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + camion.stopDuration +' minutes.';
+                // Replace the info window's content and position.
+                this.infoWindow.setContent(contentString);
+                this.infoWindow.setPosition(event.latLng);
+                this.infoWindow.open(this.map);//*/
+              })
               /*marker.setIcon({
                   url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
                   scale:0.1,
@@ -441,6 +453,16 @@ export class DetailTransporterComponent implements OnInit {
             },
             title: camion.unite
           });
+          this.infoWindow = new google.maps.InfoWindow;
+          marker.addListener('click', (event)=>{
+            var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+            if(camion.stopDuration>0)
+              contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + camion.stopDuration +' minutes.';
+            // Replace the info window's content and position.
+            this.infoWindow.setContent(contentString);
+            this.infoWindow.setPosition(event.latLng);
+            this.infoWindow.open(this.map);//*/
+          })
           /*marker.setIcon({
             url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
             scale:0.1,

@@ -58,6 +58,8 @@ public class Camion implements Serializable{
     private Double longtitude;
     private Double latitude;
     private Double direction; // 0.00 - 359.99 -- north-east-south-west;    
+    private Double speed;
+    private Integer stopDuration=0; // in minute
     private boolean status; //en mission ou non
     private String localDepart;
     private String destination;    
