@@ -6,7 +6,7 @@
   <div class="row" *ngIf="mode!=2">
     <div class="col-sm-12 col-lg-12 col-md-12">
       <div class="row"> 
-        <div  class="col-md-8 col-sm-8 col-lg-8">
+        <div  class="col-md-12 col-sm-12 col-lg-12">
           <div *ngIf="modeSignUp==0">
             <div *ngIf="usernameLogin.length>1">
               <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
@@ -33,12 +33,14 @@
                 <div class="panel-body">
                   <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                     <div class="form-group">
-                        <label class="control-label">Username : </label>
-                        <input type="text" name="username" ngModel="" class="form-control" required/>
+                        <!--label class="control-label">Username : </label-->
+                        <input type="text" name="username" ngModel="" class="form-control" 
+                        placeholder="username" style="width: 25ch" required/>
                     </div>
                     <div class="form-group">
-                      <label class="control-label">Password : </label>
-                      <input type="password" name="password" ngModel="" class="form-control" required/>
+                      <!--label class="control-label">Password : </label-->
+                      <input type="password" name="password" ngModel="" class="form-control" 
+                      placeholder="password" style="width: 25ch" required/>
                     </div>
                     <div class="form-group">
                       <button type="submit" class="btn btn-link">Login</button>
@@ -46,6 +48,9 @@
                     </div>
                   </form>
                 </div>
+                <!--div *ngIf="role==''">
+                  <button (click)="demandeExpress()">{{textExpressSign}}</button>
+                </div-->
               </div>
             </div>
             <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
@@ -109,14 +114,20 @@
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
               <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transportation</button> 
               <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transportation</button>
-              <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Appel-Express</button> 
+              <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Appel-Express</button>
+              <button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button> 
               <div class="col-md-4 col-sm-4 col-lg-4">
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
               </div>
             </div>
+            <hr style="border: 2px solid lightgray"/>
+          </div>
+          
+          <div *ngIf="role==''">
+            <button (click)="demandeExpress()">{{textExpressSign}}</button>
           </div>
         </div>
-        <div class="col-md-4 col-sm-4 col-lg-4">
+        <!--div class="col-md-4 col-sm-4 col-lg-4">
           <div class="panel panel-primary" *ngIf="role==''">
             <button (click)="signing()">{{textSign}}</button>
           </div>
@@ -126,7 +137,12 @@
             <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
             <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
           </div>
-        </div>
+        </div-->
+        <!--div class="col-md-4 col-sm-4 col-lg-4">
+          <div class="panel panel-primary" *ngIf="role==''">
+            <button (click)="demandeExpress()">{{textExpressSign}}</button>
+          </div>
+        </div-->
         <!--div class="col-md-4 col-sm-4 col-lg-4" *ngIf="role==''">
           <iframe width="500" height="250" class="e2e-iframe-trusted-src" src="https://www.sosprestige.com/">
           </iframe>

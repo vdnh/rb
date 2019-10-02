@@ -69,6 +69,7 @@ import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { UserLogsService } from 'src/services/userLogs.service';
 import { AppelExpressComponent } from './appel-express/appel-express.component';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { AppelExpressVisitorComponent } from './appel-express-visitor/appel-express-visitor.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -114,6 +115,7 @@ const appRoutes:Routes=[
   {path: 'transport-pro', component:  TransportProComponent},
   {path: 'detail-transport-pro/:id', component:  DetailTransportProComponent},
   {path: 'appel-express', component:  AppelExpressComponent},
+  {path: 'appel-express-visitor', component:  AppelExpressVisitorComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -156,6 +158,7 @@ const appRoutes:Routes=[
     TransportProComponent,
     DetailTransportProComponent,
     AppelExpressComponent,
+    AppelExpressVisitorComponent,
     //MapComponent,
   ],
   imports: [

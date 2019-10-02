@@ -32,7 +32,7 @@ export class AppComponent implements OnInit{
   entrepriseNom='';
   mode:number=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
   role:string="";
-  modeSignUp=0;
+  modeSignUp=0; // 0: sign in; 1: sign up; 2: demande express
   textSign="Nouveau Transporter ou Shipper"
   userId=""; // use to identify dispatch of shipper or dispatch general (by defaul "" general)
 
@@ -49,6 +49,7 @@ export class AppComponent implements OnInit{
   formExpress:FormGroup;  // use for dispatch express
   idRemorquage: any;
   idTransport: string;
+  textExpressSign="Demande Express";
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
@@ -375,7 +376,18 @@ export class AppComponent implements OnInit{
       this.router.navigateByUrl("");
     }
   }
-  
+  demandeExpress(){
+    if(this.modeSignUp==0){
+      this.modeSignUp=2;
+      this.textExpressSign="Retour Sign in"
+      this.router.navigate(['/appel-express-visitor/'], {skipLocationChange: true});
+    }
+    else{
+      this.modeSignUp=0;
+      this.textExpressSign="Demande Express";      
+      this.router.navigateByUrl("");
+    }
+  }
   refreshData(){
     //this.router.navigateByUrl("");
     //this.ngOnInit();
