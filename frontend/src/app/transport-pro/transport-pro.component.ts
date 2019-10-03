@@ -268,7 +268,7 @@ export class TransportProComponent implements OnInit {
     this.varsGlobal.pro='yes'  // to control we are in professionnal
     this.loadDetails.length=0;
     
-    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     
     await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
@@ -665,7 +665,7 @@ async prixCalcul(){
   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 }
 
 prixCalculWithHorsTax(){
@@ -678,7 +678,7 @@ prixCalculWithHorsTax(){
   this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
 async showMap() {

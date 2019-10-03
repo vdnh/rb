@@ -362,7 +362,9 @@
         </div>
         <div class="col-sm-12 col-md-2 col-lg-2">
           <label class="control-label">35 + 26 = </label>
-          <input type="number" [(ngModel)]="answer">
+          <input type="number" [(ngModel)]="answer" 
+          [disabled]="!(remorquage.telContact.length>0 || remorquage.emailContact.length>0) || 
+          !remorquage.driverNote.length>0 || !remorquage.nomContact.length>0">
         </div>
       </div>
       <!--div class="row">

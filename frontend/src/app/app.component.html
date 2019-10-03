@@ -19,7 +19,7 @@
               <div> <h3>  <strong> CTS - Complete Transport Solution </strong> </h3>
                     <!--h5> <strong>Plus Loads et Plus Equipements</strong></h5-->
                     <h5> <strong>Simplifier des operations de Transport.</strong></h5>
-                    <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens</strong></h6>
+                    <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
               </div>
               <br>
               <div class="col-md-5 col-md-offset-1">
@@ -29,11 +29,10 @@
               </div>
               <div class="col-md-5 col-md-offset-1">
                 <!--div class="panel-heading">Veuillez vous identifier.</div-->
-                <br>
-                <div class="panel-body">
+                <div class="panel-body"> <h4>
                   <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                     <div class="form-group">
-                        <!--label class="control-label">Username : </label-->
+                        <label class="control-label">Members' Login</label>
                         <input type="text" name="username" ngModel="" class="form-control" 
                         placeholder="username" style="width: 25ch" required/>
                     </div>
@@ -46,7 +45,7 @@
                       <button type="submit" class="btn btn-link">Login</button>
                       <button type="reset" class="btn btn-link">Reset</button>
                     </div>
-                  </form>
+                  </form> </h4>
                 </div>
                 <!--div *ngIf="role==''">
                   <button (click)="demandeExpress()">{{textExpressSign}}</button>
@@ -124,7 +123,8 @@
           </div>
           
           <div *ngIf="role==''">
-            <button (click)="demandeExpress()">{{textExpressSign}}</button>
+            <!--button (click)="demandeExpress()">{{textExpressSign}}</button-->
+            <app-appel-express-visitor>Loading ...</app-appel-express-visitor>
           </div>
         </div>
         <!--div class="col-md-4 col-sm-4 col-lg-4">

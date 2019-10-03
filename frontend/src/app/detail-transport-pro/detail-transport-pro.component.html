@@ -540,49 +540,29 @@
         </div>
       </div>
 
-      <hr style="border: 2px solid lightgray"/>
+      <!--hr style="border: 2px solid lightgray"/>
 
       <div class="row" style="margin-top: 10px">
         <div class="col-md-3">
           <div class="form-group">
-            <!--label class="control-label">Total Points</label>
-            <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
-            <!--label class="control-label">PrixBase</label>
-            <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                  class="form-control" (change)="prixCalcul()" /-->
+            
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-group">
-            <!--label class="control-label">PrixBase</label>
-            <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                  class="form-control" (change)="prixCalcul()" /-->
-            <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
-            <label *ngIf="mode==2" class="control-label">Prix/Km</label>
-            <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                  (change)="prixCalcul()"/--> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
+            
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-group">
-            <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
-            <label *ngIf="mode==2" class="control-label">Prix/Km</label>
-            <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                  (change)="prixCalcul()"/-->
-            <!--label class="control-label">Inclus</label>
-            <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
-                  (change)="prixCalcul()"/--><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
+            
             <label class="control-label">Porter au Compte</label>
             <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
             (change)="prixCalculWithHorsTax()" disabled/>
           </div>
         </div>
         <div class="col-md-2">
-            <!--label class="control-label">Inclus</label>
-            <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
-                  (change)="prixCalcul()"/-->
-          <!--label class="control-label">Total Points</label>
-          <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
+
           <label class="control-label">Collecter d'argent</label>
           <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control" disabled/>
         </div>
@@ -591,7 +571,6 @@
           <table  >
             <tr>
               <td style="text-align: right">HorsTax:</td>
-              <!--td style="text-align: right">{{transport.horstax | number : '1.2'}}</td-->
               <input style="text-align: right" type="number" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.horstax" 
               name="horstax" class="form-control" disabled/>
             </tr>
@@ -609,7 +588,7 @@
             </tr>
           </table>
         </div>
-      </div>
+      </div-->
     </div>
   </div>
 </div>

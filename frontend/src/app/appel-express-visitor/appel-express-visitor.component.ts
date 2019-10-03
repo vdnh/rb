@@ -28,7 +28,10 @@ import { AuthenticationService } from 'src/services/authentication.service';
 export class AppelExpressVisitorComponent implements OnInit {
 
   //* pour checkBox list
-  formGroup: FormGroup;
+  formGroup: FormGroup = new FormGroup({
+    telContact: new FormControl(),
+    emailContact: new FormControl(),
+  });
   serviceTypes = ["Leger", "Moyen", "Lourd"];
   // prix remorquage (bas - km - inclus)
   prixBase1=85.00;
@@ -193,7 +196,7 @@ export class AppelExpressVisitorComponent implements OnInit {
   // on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
-    this.onRefresh()
+    //this.onRefresh()
   }
   
   ngOnInit() {    
@@ -518,7 +521,7 @@ async showMap() {
 
   reformTelEvent(tel:any){
     //console.log("tel before: " + tel.target.value)
-    if(tel.target.value.indexOf('-')<0)
+    if(tel.target.value.length>0 && tel.target.value.indexOf('-')<0)
       {
         let sub1 = tel.target.value.substr(0,3)
         let sub2 = tel.target.value.substr(3,3)
@@ -644,7 +647,7 @@ async showMap() {
     this.remorquage.nomContact=event.nom
     this.remorquage.telContact=event.tel
     //console.log('this.remorquage.telContact : '+ this.remorquage.telContact)
-    if(this.remorquage.telContact.indexOf('-')<0)
+    if(this.remorquage.telContact.length>0 && this.remorquage.telContact.indexOf('-')<0)
       {
         let sub1 = this.remorquage.telContact.substr(0,3)
         let sub2 = this.remorquage.telContact.substr(3,3)

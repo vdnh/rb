@@ -180,7 +180,7 @@ export class DetailRemorquageComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
-      this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+      //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
       this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
@@ -363,7 +363,7 @@ prixCalcul(){
   this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
-  this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+  //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {

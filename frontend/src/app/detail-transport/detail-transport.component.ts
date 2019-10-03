@@ -300,7 +300,7 @@ export class DetailTransportComponent implements OnInit {
       }, err=>{
         console.log(err)
       })
-      this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+      //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
       this.titleService.setTitle('Case : '+this.transport.id + (this.transport.fini? " - fini" : this.transport.sent? " - encours" : ' - en attente'))
       if(!this.transport.fini && this.transport.originLat!=0 && this.transport.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
@@ -698,7 +698,7 @@ async prixCalcul(){
   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 }
 
 prixCalculWithHorsTax(){
@@ -711,7 +711,7 @@ prixCalculWithHorsTax(){
   this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
 async showMap() {

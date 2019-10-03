@@ -340,8 +340,12 @@ export class AppComponent implements OnInit{
           else if(location.href.includes("/transport")){
             this.router.navigate(['/transport/'], {skipLocationChange: true})            
           }
+          /*/
           else if(this.userId.length>0) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
           else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+          //*/
+          else if(this.userId.length>0) this.router.navigate(['/'], {skipLocationChange: true});
+          else this.router.navigate(['/'], {skipLocationChange: true});
         }
         //localStorage.setItem('userId', res.id.toString());
       }//*/
@@ -479,8 +483,12 @@ export class AppComponent implements OnInit{
         }
         if(res.roleName.includes('DISPATCH')) {         
           //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
+          if(res.id!=null) this.router.navigate(['/'], {skipLocationChange: true});
+          else this.router.navigate(['/'], {skipLocationChange: true});
+          /*/
           if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
           else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+          //*/
           //localStorage.setItem('userId', res.id.toString());
         }
         //http://localhost:4200/remorquage

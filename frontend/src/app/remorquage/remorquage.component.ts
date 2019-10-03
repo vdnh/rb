@@ -186,7 +186,7 @@ export class RemorquageComponent implements OnInit {
   
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+    //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -427,7 +427,7 @@ async prixCalcul(){
   this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=await Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
-  this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
+  //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {

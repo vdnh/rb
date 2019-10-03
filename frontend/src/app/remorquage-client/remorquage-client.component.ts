@@ -370,7 +370,7 @@ prixCalcul(){
   this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
-  this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+  //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {

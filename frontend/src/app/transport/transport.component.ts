@@ -268,7 +268,7 @@ export class TransportComponent implements OnInit {
   async ngOnInit() {    
     this.loadDetails.length=0;
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -693,7 +693,7 @@ async prixCalcul(){
   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 }
 
 prixCalculWithHorsTax(){
@@ -706,7 +706,7 @@ prixCalculWithHorsTax(){
   this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
   this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
 }
 
 async showMap() {
