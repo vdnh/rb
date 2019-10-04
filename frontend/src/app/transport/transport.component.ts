@@ -31,7 +31,7 @@ import { ChauffeursService } from 'src/services/chauffeurs.service';
 })
 export class TransportComponent implements OnInit {
 
-  imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
+  //imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
   isImageLoading: boolean;
 
@@ -166,7 +166,7 @@ export class TransportComponent implements OnInit {
  
    getImageFromService() {
        this.isImageLoading = true;
-       this.imageService.getImage(this.imgUrl).subscribe(data => {
+       this.imageService.getImage(this.transport.imgUrl).subscribe(data => {
          this.createImageFromBlob(data);
          this.isImageLoading = false;
        }, error => {
@@ -175,12 +175,16 @@ export class TransportComponent implements OnInit {
        });
    }
    onFileUpLoad(event){
-    //this.imgUrl=event.target.files[0]
+    //this.transport.imgUrl=event.target.files[0]
+    //this.transport.imgUrl='';
     let selectedFile : File=event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = ()=>{this.imgUrl=reader.result.toString();}
-    reader.readAsDataURL(selectedFile)
-    console.log('imgUrl : '+this.imgUrl)
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.transport.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.transport.imgUrl='';
+    //console.log('transport.imgUrl : '+this.transport.imgUrl)
     //this.getImageFromService();
    }
   //end funcions for photo
@@ -671,10 +675,10 @@ onRefresh(){
 
 printBonDeTransport(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
-  console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
+  //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);
-   console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
+   //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
   //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
   const WindowPrt = window.open();
   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');

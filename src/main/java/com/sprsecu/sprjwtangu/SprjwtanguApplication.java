@@ -178,7 +178,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
         Thread envoiMsgThread = new Thread(() -> {
             while (true) {
                 try {
-                    System.out.println("Entretiens check");
+                    //System.out.println("Entretiens check");
                     //* activer pour vrai checker
                     this.transporters=transporterRepository.findAll();                    
                     this.transporters.forEach(transporter->{
@@ -203,11 +203,11 @@ public class SprjwtanguApplication implements CommandLineRunner{
             //camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
             while (true) {
                 try {
-                    System.out.println("Mettre a jour odometre des unites de SOS Prestige");
+                    //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("http://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
                     if(!listUnite.isEmpty()) {
-                        System.out.println("listUnite : " + listUnite.toString());
-                        System.out.println("Sure! listUnite isn't empty!!");
+                        //System.out.println("listUnite : " + listUnite.toString());
+                        //System.out.println("Sure! listUnite isn't empty!!");
                         List<Camion> camions = new ArrayList<>();
                         camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
                         camions.forEach(camion ->{
@@ -217,21 +217,21 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     camion.setLongtitude(new Double(unite.getLongitude()));
                                     camion.setLatitude(new Double(unite.getLatitude()));
                                     camion.setDirection(new Double(unite.getDirection()));
-                                    System.out.println("unite speed : "+ unite.getSpeed());
+                                    //System.out.println("unite speed : "+ unite.getSpeed());
                                     if(new Double(unite.getSpeed())==0.00){
-                                        System.out.println("unite.getSpeed())==0.00");
+                                        //System.out.println("unite.getSpeed())==0.00");
                                         if(camion.getSpeed()>0.00){
-                                            System.out.println("camion.getSpeed()>0.00");
+                                            //System.out.println("camion.getSpeed()>0.00");
                                             camion.setSpeed(0.00);
                                             camion.setStopDuration(0);
                                         }
                                         else{
-                                            System.out.println("already - camion.getSpeed()==0.00");
+                                            //System.out.println("already - camion.getSpeed()==0.00");
                                             camion.setStopDuration(camion.getStopDuration()+2);
                                         }
                                     }
                                     else {
-                                        System.out.println("unite.getSpeed())>0.00");
+                                        //System.out.println("unite.getSpeed())>0.00");
                                         camion.setSpeed(new Double(unite.getSpeed()));
                                         camion.setStopDuration(0);
                                     }
@@ -284,7 +284,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
 	transport.close();//*/
     }
     public String transporterEntretien(Transporter transporter){
-        System.out.println("Transporter : " + transporter.getNom());
+        //System.out.println("Transporter : " + transporter.getNom());
         List<Camion> camions = new ArrayList<>();
         camions = camionRepository.camionsDeTransporter(transporter.getId());
         //System.out.println("Numero Unite : "+this.camions.size()+"<br>");
@@ -361,7 +361,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                 if(!sb.toString().isEmpty()){
                     //System.out.println("sb is : " + sb.toString());
                     try {
-                        System.out.println(""+textFix+sb.toString());
+                        //System.out.println(""+textFix+sb.toString());
                         generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic(), "Camion Unite "+camion.getUnite());
                     } catch (Exception ex) {
                         //return;
@@ -392,7 +392,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
     }
     
     public String codeTextEnt1(Camion camion){
-        System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
+        //System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
         if(camion.getOdo1Fait()!=camion.getOdo2Fait())
           return "";//codeTextEnt2(camion);
 //        if(camion.getEnt1()==0 || camion.getEnt1()==null || camion.getOdometre()==null)      
@@ -406,7 +406,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
         return "";
     }
     public String codeTextEnt2(Camion camion){
-        System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
+        //System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
         if(camion.getOdo1Fait()!=camion.getOdo2Fait())
           return "";//codeTextEnt3(camion);
 //        if(camion.getEnt2()==0 || camion.getEnt2()==null || camion.getOdometre()==null)      
@@ -420,7 +420,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
         return "";
     }
   public String codeTextEnt3(Camion camion){
-    System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
+    //System.out.println("Unite : "+ camion.getUnite()+" "+ camion.getOdo1Fait()+" "+camion.getOdo2Fait()+" "+camion.getOdo3Fait()+" "+camion.getOdometre());
 //    if(camion.getEnt3()==0 || camion.getEnt3()==null || camion.getOdometre()==null)
 //      return "";
     if((camion.getOdometre()-camion.getOdo3Fait())<(camion.getEnt3()-5000))

@@ -489,7 +489,22 @@ async showMap() {
   //*/
 }
   
-  // For input
+onFileUpLoad(event){
+  //this.transport.imgUrl=event.target.files[0]
+  //this.transport.imgUrl='';
+  let selectedFile : File=event.target.files[0];
+  if(selectedFile){
+    const reader = new FileReader();
+    reader.onload = ()=>{this.remorquage.imgUrl=reader.result.toString();}
+    reader.readAsDataURL(selectedFile)
+  }
+  else this.remorquage.imgUrl='';
+  //console.log('transport.imgUrl : '+this.transport.imgUrl)
+  //this.getImageFromService();
+ }
+
+
+// For input
   filterInputEnt(event) {
     console.log('event.target.value : ' + event.target.value)
     //this.filteredEntreprises = []

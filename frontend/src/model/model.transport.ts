@@ -53,6 +53,7 @@ export class Transport{
     porterAuCompte:number=0.00; 
     collecterArgent:number=0.00; 
     valid=false; // valid=true after save bon
+    imgUrl="";
     //
     distance:number=0.00;
     origin:string="";

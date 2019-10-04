@@ -218,6 +218,20 @@ export class DetailRemorquageComponent implements OnInit {
     //this.refreshMap()
   }
 
+  onFileUpLoad(event){
+    //this.transport.imgUrl=event.target.files[0]
+    //this.transport.imgUrl='';
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.remorquage.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.remorquage.imgUrl='';
+    //console.log('transport.imgUrl : '+this.transport.imgUrl)
+    //this.getImageFromService();
+   } 
+  
 //*
 async originChange(){
   //*

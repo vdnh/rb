@@ -153,7 +153,7 @@ export class TransportProComponent implements OnInit {
   //end for signature pad
 
   // funtions for photo
-  createImageFromBlob(image: Blob) {
+  /*createImageFromBlob(image: Blob) {
     let reader = new FileReader();
     reader.addEventListener("load", () => {
        this.imageToShow = reader.result;
@@ -173,14 +173,18 @@ export class TransportProComponent implements OnInit {
          this.isImageLoading = false;
          console.log(error);
        });
-   }
+   }//*/
    onFileUpLoad(event){
-    //this.imgUrl=event.target.files[0]
+    //this.transport.imgUrl=event.target.files[0]
+    //this.transport.imgUrl='';
     let selectedFile : File=event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = ()=>{this.imgUrl=reader.result.toString();}
-    reader.readAsDataURL(selectedFile)
-    console.log('imgUrl : '+this.imgUrl)
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.transport.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.transport.imgUrl='';
+    //console.log('transport.imgUrl : '+this.transport.imgUrl)
     //this.getImageFromService();
    }
   //end funcions for photo

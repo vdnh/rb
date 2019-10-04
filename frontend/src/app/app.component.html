@@ -109,6 +109,7 @@
               
               <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
+              <button routerLink="/" class="btn btn-link">Accueil</button> 
               <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
               <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transportation</button> 

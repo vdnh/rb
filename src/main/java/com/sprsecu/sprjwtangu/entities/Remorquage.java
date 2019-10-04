@@ -64,6 +64,7 @@ public class Remorquage implements Serializable{
     private Float porterAuCompte=0.00f; 
     private Float collecterArgent=0.00f; 
     private Boolean valid=false; // valid=true after save bon
+    private String imgUrl="";
     
     //
     private Float distance;

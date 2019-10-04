@@ -116,7 +116,7 @@ public class ParseKnownXMLStructure {
                 ui.setLongitude(eElement.getElementsByTagName("longitude").item(0).getTextContent());
                 ui.setDirection(eElement.getElementsByTagName("direction").item(0).getTextContent());
                 ui.setSpeed(eElement.getElementsByTagName("speed").item(0).getTextContent());
-                System.out.println("ui speed - xml: "+ ui.getSpeed());
+                //System.out.println("ui speed - xml: "+ ui.getSpeed());
                 listUniteInfos.add(ui);
             }
         }	//*/

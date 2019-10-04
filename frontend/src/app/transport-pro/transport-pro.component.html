@@ -480,6 +480,17 @@
                   style="margin-top: 0px"></textarea>
           </div>
         </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 col-lg-3">
+            <!--Joindre un Photo-->
+            <input type="file" title="Joindre un Photo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+            <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
+          </div>
+          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-9 col-lg-9" style="border: 2px dotted gray">
+            <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+          </div>
+        </div>
         <!--div class="row">
           <div class="col-sm-12 col-md-5 col-lg-3">
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="transport.nomSignature" name="nomSignature"

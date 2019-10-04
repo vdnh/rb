@@ -206,6 +206,21 @@ clearHandler(){
     //this.prixCalcul()
   }
   
+  onFileUpLoad(event){
+    //this.transport.imgUrl=event.target.files[0]
+    //this.transport.imgUrl='';
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.remorquage.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.remorquage.imgUrl='';
+    //console.log('transport.imgUrl : '+this.transport.imgUrl)
+    //this.getImageFromService();
+   }
+  
+
   async gotoDetailRemorquage(r:Remorquage){
     window.open("/detail-remorquage-pro/"+r.id, "_blank")
   }
