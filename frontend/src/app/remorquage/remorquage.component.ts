@@ -39,6 +39,7 @@ export class RemorquageComponent implements OnInit {
   prixBase3=105.00;
   prixKm3=3.80;
   inclus3=7.00;
+  modeGestionAppel=2;
   /*ent1:Entreprise={id:1, nom:'Honda Laval'}
   ent2:Entreprise={id:2, nom:'Albi Eustache'}
   ent3:Entreprise={id:3, nom:'Incendie Rosemere'}
@@ -138,6 +139,15 @@ export class RemorquageComponent implements OnInit {
   }
   //end for signature pad
 
+  appelsEncours(){
+    this.modeGestionAppel=2
+  }
+  appelsAttentes(){
+    this.modeGestionAppel=1
+  }
+  appelsFinis(){
+    this.modeGestionAppel=3
+  }
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();

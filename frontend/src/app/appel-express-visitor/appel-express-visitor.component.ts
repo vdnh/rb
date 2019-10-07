@@ -205,6 +205,11 @@ export class AppelExpressVisitorComponent implements OnInit {
       this.answer=61 // 35 + 25 = 61
       this.titreAjout= '  -  '+localStorage.getItem('entrepriseNom')
     }
+    this.remorquage.prixBase=85;
+    this.remorquage.prixKm=0;
+    this.remorquage.inclus=0;
+    this.remorquage.typeService=this.serviceTypes[0];
+    this.typeServiceChange(this.serviceTypes[0]);
   }
   
   async gotoDetailRemorquage(r:Remorquage){
@@ -224,7 +229,20 @@ export class AppelExpressVisitorComponent implements OnInit {
     }//*/
     window.open("/detail-remorquage/"+r.id, "_blank")
   }
-
+checkValid(){
+  if(
+      (this.remorquage.telClient.length>0 || this.remorquage.telClient2em.length>0) 
+      && this.remorquage.nomClient.length>0 && this.remorquage.originAdresse.length>0
+      && this.remorquage.originVille.length>0 && this.remorquage.originProvince.length>0
+      && this.remorquage.destAdresse.length>0 && this.remorquage.destVille.length>0 
+      && this.remorquage.destProvince.length>0 && this.remorquage.marque.length>0
+    )
+  {
+    return true;  // form is filled well
+  }
+  else 
+    return false; // form is not filled well
+}
 //*
 async originChange(){
   //*
@@ -395,7 +413,7 @@ async prixCalcul(){
   this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
   this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=await Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
-  this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
+  //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
 
 async showMap() {
@@ -888,28 +906,7 @@ async showMap() {
       
       this.em.emailDest=eList  // send this list in string form to java
       if(localStorage.getItem('tonken')!=null){
-        this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-          alert("Le sms a ete envoye a SOS Prestige.")  
-            this.em.emailDest= "ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
-            //this.em.titre="Demande Express : " + this.remorquage.timeCall 
-            this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
-            this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Le courriel a ete envoye a SOS Prestige, aussi.")
-              //this.answer=null;
-              this.remorquage=new Remorquage();
-              localStorage.clear();  //  erase localstorage after sent sms and email
-            }, err=>{
-              console.log()
-            })
-        }, err=>{
-          console.log(err)
-        })        
-      }
-      else{
-        const user=this.form.value;
-        this.authService.loginDefaultDriver(user).subscribe(resp=> {
-          let jwtToken=resp.headers.get('Authorization');
-          this.authService.saveTonken(jwtToken);
+        this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
           this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
             alert("Le sms a ete envoye a SOS Prestige.")  
               this.em.emailDest= "ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
@@ -917,7 +914,7 @@ async showMap() {
               this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
               this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
                 alert("Le courriel a ete envoye a SOS Prestige, aussi.")
-                this.answer=null;
+                //this.answer=null;
                 this.remorquage=new Remorquage();
                 localStorage.clear();  //  erase localstorage after sent sms and email
               }, err=>{
@@ -925,7 +922,38 @@ async showMap() {
               })
           }, err=>{
             console.log(err)
+          })          
+        }, 
+          err=>{console.log(err)
+        })
+                
+      }
+      else{
+        const user=this.form.value;
+        this.authService.loginDefaultDriver(user).subscribe(resp=> {
+          let jwtToken=resp.headers.get('Authorization');
+          this.authService.saveTonken(jwtToken);
+          this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
+            this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+              alert("Le sms a ete envoye a SOS Prestige.")  
+                this.em.emailDest= "ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
+                //this.em.titre="Demande Express : " + this.remorquage.timeCall 
+                this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
+                this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+                  alert("Le courriel a ete envoye a SOS Prestige, aussi.")
+                  this.answer=null;
+                  this.remorquage=new Remorquage();
+                  localStorage.clear();  //  erase localstorage after sent sms and email
+                }, err=>{
+                  console.log()
+                })
+            }, err=>{
+              console.log(err)
+            })
+          }, err=>{
+              console.log(err)
           })
+          
         }, err=>{          
           console.log(err);
         });
