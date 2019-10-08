@@ -265,12 +265,12 @@
           -->
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="typeServiceChange(remorquage.typeService)"></label>
+              <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="ifPanne(); typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="typeServiceChange(remorquage.typeService)"></label>
+              <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="ifAccident(); typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">

@@ -671,7 +671,77 @@ async showMap() {
     else this.shipper=new Shipper()
     this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
+  ifAccident(){
+    if(this.remorquage.accident)
+      this.remorquage.panne=false
+    console.log('fonctionne ifAccident : '+this.remorquage.accident+ 'then panne : '+this.remorquage.panne)
+  }
+  ifPanne(){
+    if(this.remorquage.panne)
+      this.remorquage.accident=false
+    console.log('fonctionne ifPanne : '+this.remorquage.panne + 'then accident : '+this.remorquage.accident)
+  }
+  calculePrixbase(){
+    let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
+    if(this.remorquage.typeService.includes('Leger')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne1;
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident1
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut1
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte1
+      if(this.remorquage.survoltage) boost=this.shipper.boost1
+      if(this.remorquage.essence) essence=this.shipper.essence1
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu1
+      
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
+    }
+    else if(this.remorquage.typeService.includes('Moyen')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne2
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident2
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte2
+      if(this.remorquage.survoltage) boost=this.shipper.boost2
+      if(this.remorquage.essence) essence=this.shipper.essence2
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu2
 
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
+    }
+    else if(this.remorquage.typeService.includes('Lourd')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne3
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident3
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut3
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte3
+      if(this.remorquage.survoltage) boost=this.shipper.boost3
+      if(this.remorquage.essence) essence=this.shipper.essence3
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu3
+
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
+    }
+  }
+  /*
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
     if(this.remorquage.typeService.includes('Leger')){ 
@@ -713,7 +783,7 @@ async showMap() {
       if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
       else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
     }
-  }
+  }//*/
   typeServiceChange(type){
     this.remorquage.typeService=type
     /*if(this.remorquage.accident){

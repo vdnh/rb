@@ -19,6 +19,11 @@ import { CamionsService } from 'src/services/camions.service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { AuthenticationService } from 'src/services/authentication.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
+import { UserLogsService } from 'src/services/userLogs.service';
+import { UserLogs } from 'src/model/model.userLogs';
+import { HttpClient } from '@angular/common/http';
+import { GeolocationService } from 'src/services/geolocation.service';
 
 @Component({
   selector: 'app-appel-express-visitor',
@@ -171,6 +176,10 @@ export class AppelExpressVisitorComponent implements OnInit {
     public camionsService:CamionsService,
     private fb:FormBuilder,
     private authService:AuthenticationService,
+    public varsGlobal:VarsGlobal, 
+    public userLogsService: UserLogsService,
+    private http: HttpClient,
+    private geolocation : GeolocationService,
     )
   { 
     this.form = fb.group({
@@ -733,7 +742,75 @@ async showMap() {
     else this.shipper=new Shipper()
     this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
+  ifAccident(){
+    if(this.remorquage.accident)
+      this.remorquage.panne=false
+  }
+  ifPanne(){
+    if(this.remorquage.panne)
+      this.remorquage.accident=false
+  }
+  calculePrixbase(){
+    let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
+    if(this.remorquage.typeService.includes('Leger')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne1;
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident1
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut1
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte1
+      if(this.remorquage.survoltage) boost=this.shipper.boost1
+      if(this.remorquage.essence) essence=this.shipper.essence1
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu1
+      
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
+    }
+    else if(this.remorquage.typeService.includes('Moyen')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne2
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident2
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut2
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte2
+      if(this.remorquage.survoltage) boost=this.shipper.boost2
+      if(this.remorquage.essence) essence=this.shipper.essence2
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu2
 
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
+    }
+    else if(this.remorquage.typeService.includes('Lourd')){ 
+      if(this.remorquage.panne) {
+        panne=this.shipper.panne3
+        //this.remorquage.accident=false;
+      }
+      if(this.remorquage.accident) {
+        accident=this.shipper.accident3
+        //this.remorquage.panne=false;
+      }
+      if(this.remorquage.pullOut) pullOut=this.shipper.pullOut3
+      if(this.remorquage.debaragePorte) debarragePorte=this.shipper.debarragePorte3
+      if(this.remorquage.survoltage) boost=this.shipper.boost3
+      if(this.remorquage.essence) essence=this.shipper.essence3
+      if(this.remorquage.changementPneu) changementPneu=this.shipper.changementPneu3
+
+      this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
+      /*if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
+      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
+    }
+  }
+  /*
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
     if(this.remorquage.typeService.includes('Leger')){ 
@@ -775,7 +852,7 @@ async showMap() {
       if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
       else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
     }
-  }
+  }//*/
   typeServiceChange(type){
     this.remorquage.typeService=type
     /*if(this.remorquage.accident){
@@ -916,7 +993,7 @@ async showMap() {
                 alert("Le courriel a ete envoye a SOS Prestige, aussi.")
                 //this.answer=null;
                 this.remorquage=new Remorquage();
-                localStorage.clear();  //  erase localstorage after sent sms and email
+                //localStorage.clear();  //  erase localstorage after sent sms and email
               }, err=>{
                 console.log()
               })
@@ -941,9 +1018,35 @@ async showMap() {
                 this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
                 this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
                   alert("Le courriel a ete envoye a SOS Prestige, aussi.")
-                  this.answer=null;
-                  this.remorquage=new Remorquage();
-                  localStorage.clear();  //  erase localstorage after sent sms and email
+
+                  
+                this.varsGlobal.userLogs.entreprise='Remorquage Express';
+                this.varsGlobal.userLogs.usernameLogin=this.remorquage.telClient2em  // this is email
+                this.varsGlobal.userLogs.role=this.remorquage.telClient
+                this.varsGlobal.userLogs.loginTime=new Date();
+                this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
+                  this.varsGlobal.userLogs.ipPublic=data['ip'];
+                  await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+                    await this.geocoding.geocode(new google.maps.LatLng(              
+                      this.varsGlobal.userLogs.latitude=data.coords.latitude,
+                      this.varsGlobal.userLogs.longtitude=data.coords.longitude
+                    ))
+                    .forEach(
+                      (results: google.maps.GeocoderResult[]) => {
+                        this.varsGlobal.userLogs.place=results[0].formatted_address;
+                      }
+                    )            
+                    this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+                      this.answer=null;
+                      this.remorquage=new Remorquage();
+                      localStorage.clear();  //  erase localstorage after sent sms and email
+                      this.varsGlobal.userLogs = new UserLogs();
+                    }, err=>{
+                      console.log(err)
+                    })
+                  },err=>{console.log(err)})
+                });
+                  //localStorage.clear();  //  erase localstorage after sent sms and email
                 }, err=>{
                   console.log()
                 })

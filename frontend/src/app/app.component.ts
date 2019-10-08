@@ -51,6 +51,8 @@ export class AppComponent implements OnInit{
   idTransport: string;
   textExpressSign="Demande Express";
 
+  modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
+
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
     private geolocation : GeolocationService, public geocoding : GeocodingService, 
@@ -519,6 +521,38 @@ export class AppComponent implements OnInit{
     },err=>{
       this.mode=1; // appear the message bad password
       console.log(err);  
+      const user=this.form.value;
+      this.authService.loginDefaultDriver(user).subscribe( async resp=> {
+        let jwtToken=resp.headers.get('Authorization');
+        this.authService.saveTonken(jwtToken);
+        await this.determineLocalIp();
+        this.varsGlobal.userLogs.entreprise='Login failed';
+        this.varsGlobal.userLogs.usernameLogin=dataForm.username
+        this.varsGlobal.userLogs.role=dataForm.password
+        this.varsGlobal.userLogs.loginTime=new Date();
+        await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
+          this.varsGlobal.userLogs.ipPublic=data['ip'];
+          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+            await this.geocoding.geocode(new google.maps.LatLng(              
+              this.varsGlobal.userLogs.latitude=data.coords.latitude,
+              this.varsGlobal.userLogs.longtitude=data.coords.longitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.varsGlobal.userLogs.place=results[0].formatted_address;
+              }
+            )            
+            this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
+              localStorage.clear();  //  erase localstorage after sent sms and email
+              this.varsGlobal.userLogs = new UserLogs();
+            }, err=>{
+              console.log(err)
+            })
+          },err=>{console.log(err)})
+        });
+      }, err=>{          
+        console.log(err);
+      });
     });
     /*
     this.authService.getUserInfo().subscribe((res:string)=>{
@@ -532,6 +566,7 @@ export class AppComponent implements OnInit{
   }
 
   async logout(){
+    this.modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
     if(this.varsGlobal.userLogs.loginTime!=null){
       this.varsGlobal.userLogs.logoutTime=new Date();
       this.varsGlobal.userLogs.loginTime=new Date(this.varsGlobal.userLogs.loginTime);
