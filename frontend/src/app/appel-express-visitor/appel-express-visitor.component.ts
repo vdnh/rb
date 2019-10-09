@@ -962,13 +962,13 @@ async showMap() {
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
 
     //if(this.remorquage.telIntervenant!=null && this.remorquage.telIntervenant.length>=10){
-      this.remorquage.telIntervenant="514-728-3785";  //
+      let telSosPrestige="514-728-3785";  // cellphone de SOSPrestige
       let listeOperateurs : Array<string> = 
       [
-        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@txt.bellmobility.ca",
-        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@text.mtsmobility.com",
-        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pcs.rogers.com",
-        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@msg.telus.com",
+        telSosPrestige.replace("-","").replace("-","")+"@txt.bellmobility.ca",
+        telSosPrestige.replace("-","").replace("-","")+"@text.mtsmobility.com",
+        telSosPrestige.replace("-","").replace("-","")+"@pcs.rogers.com",
+        telSosPrestige.replace("-","").replace("-","")+"@msg.telus.com",
       ];
       let eList:string='';
       listeOperateurs.forEach(telmail=>{

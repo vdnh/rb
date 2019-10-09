@@ -26,4 +26,5 @@ public class UserRole {
     private Long idSecond;
     private String roleName;
     private String entrepriseNom; // name of principal entreprise    
+    private String fullName=""; // fullname of user
 }

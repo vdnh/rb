@@ -293,8 +293,9 @@ export class AppComponent implements OnInit{
         console.log(err);  
       });//*/
     }
-    else if( !location.href.includes("cts.sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
+    else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
     {
+      location.href='https://cts.sosprestige.com';
       this.mode=2 // show the message for bad url
       console.log('Notre site : cts.sosprestige.com')
     }
@@ -415,7 +416,7 @@ export class AppComponent implements OnInit{
       //*
       this.authService.getUserInfo().subscribe(async (res:Role)=>{
         this.role = res.roleName;
-        localStorage.setItem('role', this.role);         
+        localStorage.setItem('role', this.role);
         this.usernameLogin=dataForm.username;  // to get usename
         localStorage.setItem('usernameLogin', this.usernameLogin)
         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
@@ -427,6 +428,7 @@ export class AppComponent implements OnInit{
           this.entrepriseNom=localStorage.getItem('entrepriseNom')
         }
         if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
+        if(res.fullName!=null) localStorage.setItem('fullName', res.fullName);
         // begin to write info to userLogs
         await this.determineLocalIp();
         this.varsGlobal.userLogs.entreprise=res.entrepriseNom;

@@ -180,6 +180,8 @@ export class DetailRemorquageComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
+      if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
+        this.remorquage.nomDispatch=localStorage.getItem('fullName')
       //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
       this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){

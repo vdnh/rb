@@ -273,6 +273,8 @@ export class TransportComponent implements OnInit {
     this.loadDetails.length=0;
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    if(localStorage.getItem('fullName')!=null) 
+      this.transport.nomDispatch=localStorage.getItem('fullName')
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor

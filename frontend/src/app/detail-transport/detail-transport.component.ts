@@ -285,6 +285,7 @@ export class DetailTransportComponent implements OnInit {
     this.varsGlobal.session='yes'  // to control we are in session
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    //console.log('this.transport.nomDispatch.length: '+ this.transport.nomDispatch.length)
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -299,6 +300,8 @@ export class DetailTransportComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
+      if(localStorage.getItem('fullName')!=null && !(this.transport.nomDispatch.length>0)) 
+      this.transport.nomDispatch=localStorage.getItem('fullName')
       this.loadDetailsService.loadDetailsDeTransport(this.id).subscribe((lds:Array<LoadDetail>)=>{
         this.loadDetails=lds;
       }, err=>{

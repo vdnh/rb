@@ -3,4 +3,5 @@ export class Role{
     idSecond:number=0;
     roleName:string="";    
     entrepriseNom=""; // name of principal entreprise
+    fullName=""; // fullname of user
 }

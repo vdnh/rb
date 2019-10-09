@@ -185,7 +185,7 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Provenant</label>
+              <label for="">Nom de Compagnie</label>
               <input type="text" [(ngModel)]="remorquage.nomEntreprise"
                    name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
                    (focusout)="typeServiceChange(remorquage.typeService)" list="defaultShippers">
@@ -225,7 +225,7 @@
         <div class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Contact</label>
+              <label for="">Contact / Commande par</label>
               <input type="text"  [(ngModel)]="remorquage.nomContact"
                    name="nomContact" class="form-control" list="defaultContacts">
               <datalist id="defaultContacts">

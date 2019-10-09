@@ -45,14 +45,14 @@ public class UserRestService {
          else if (roles.toString().contains("CHAUFFEUR"))
                 return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, "CHAUFFEUR");         
          else return new UserRole(null, null, "");//*/
-         return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, user.getRoleSimple(), user.getEntrepriseNom());         
+         return new UserRole(user.getIdUser(), (user.getIdSecond()!=null)? user.getIdSecond() : null, user.getRoleSimple(), user.getEntrepriseNom(), user.getFullName());         
     }    
     
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public Boolean save(@RequestBody AppUser appUser){
         //accountService.saveUser(appUser);
         try{
-            accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, appUser.getIdUser(), appUser.getIdSecond(), appUser.getRoleSimple(), appUser.getEntrepriseNom()));  // id:null automatique, username, password, iduser:null, idsecond:null
+            accountService.saveUser(new AppUser(null, appUser.getUsername(), appUser.getPassword(), null, appUser.getIdUser(), appUser.getIdSecond(), appUser.getRoleSimple(), appUser.getEntrepriseNom(), appUser.getFullName()));  // id:null automatique, username, password, iduser:null, idsecond:null
             return true;
         }catch (Exception e){
             System.err.println("Error occurred:" + e);
