@@ -3,7 +3,7 @@
 <div *ngIf="modeHistoire==1">
   <div class="row">
     <div class="col-md-4 col-sm-4 col-lg-4">
-      <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
+      <button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button>    
     </div>
     <div class="col-md-4 col-sm-4 col-lg-4">
       <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
@@ -67,7 +67,7 @@
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
           <button (click)="onSave()" class="btn btn-link"  [disabled]="remorquage.id!=null">NumeroterAppel</button>
-          <button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelleAppel</button> 
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelAppel</button> 
           <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">TerminerAppel</button-->         
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerAppel</button>
           <button (click)="onHistoire()" class="btn btn-link">HistoriqueAppels</button>

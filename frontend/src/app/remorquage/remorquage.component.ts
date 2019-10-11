@@ -200,7 +200,12 @@ export class RemorquageComponent implements OnInit {
     this.onRefresh()
   }
   onBack(){
-    this.back=this.back-1;
+    if((this.back==1&&this.compteClient)||(this.particulier&&this.back==2)){
+      this.back=0
+      this.particulier=false;
+      this.compteClient=false;
+    }
+    else this.back=this.back-1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
     //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
@@ -239,7 +244,7 @@ export class RemorquageComponent implements OnInit {
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
-    if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
+    //if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -288,6 +293,19 @@ export class RemorquageComponent implements OnInit {
         this.remorquage.nomIntervenant=ch.nom
         this.remorquage.telIntervenant=ch.tel
         this.remorquage.emailIntervenant=ch.email
+      }
+    })
+  }
+
+  contactChange(){
+    let strings:Array<string>=this.remorquage.nomContact.split("Id.");
+    let conId:number =  Number(strings[1])
+    this.contacts.forEach(con=>{
+      if(con.id==conId) 
+      {
+        this.remorquage.nomContact=con.prenom
+        this.remorquage.telContact=con.tel.toString()
+        this.remorquage.emailContact=con.email
       }
     })
   }
@@ -701,6 +719,7 @@ onFileUpLoad(event){
     this.router.navigateByUrl("/new-shipper");
   }
   onSave(){
+    if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
     if(this.remorquage.id==null){
       this.remorquage.dateDepart=new Date()
       this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
@@ -713,9 +732,29 @@ onFileUpLoad(event){
     })
   }
   onSavePlusAlert(){
-    this.onSave();
+    this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{ 
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2
+      this.particulier=false;
+      this.compteClient=false;
+      this.remorquage=new Remorquage();
+    }, err=>{console.log(err)})
     alert("C'est enregistre.")
+
   }
+
+  onReset(){
+    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2
+      this.particulier=false;
+      this.compteClient=false;
+      this.remorquage=new Remorquage();
+    }
+  }
+
   onPrint(heure){    
     console.log(heure)
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
@@ -951,9 +990,6 @@ onFileUpLoad(event){
     this.prixCalcul()
   }
 
-  onReset(){
-    this.remorquage=new Remorquage();
-  }
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
@@ -1003,7 +1039,7 @@ onFileUpLoad(event){
         //console.log('this.em.content : ' + this.em.content)
         alert("Le courriel a ete envoye au chauffeur.")
         this.remorquage.sent=true;
-        this.onSave();
+        this.onSavePlusAlert();
       }, err=>{
         console.log()
       })//*/
