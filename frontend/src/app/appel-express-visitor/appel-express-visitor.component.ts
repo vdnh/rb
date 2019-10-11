@@ -166,6 +166,8 @@ export class AppelExpressVisitorComponent implements OnInit {
   answer:number;
   form:FormGroup;  // use for chauffeur
 
+  towing=false; // false : dont need towing, true: need towing
+
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
@@ -240,14 +242,27 @@ export class AppelExpressVisitorComponent implements OnInit {
   }
 checkValid(){
   if(
-      (this.remorquage.telClient.length>0 || this.remorquage.telClient2em.length>0) 
-      && this.remorquage.nomClient.length>0 && this.remorquage.originAdresse.length>0
-      && this.remorquage.originVille.length>0 && this.remorquage.originProvince.length>0
-      && this.remorquage.destAdresse.length>0 && this.remorquage.destVille.length>0 
-      && this.remorquage.destProvince.length>0 && this.remorquage.marque.length>0
-    )
-  {
+    this.towing 
+    && (this.remorquage.telClient.length>0 || this.remorquage.telClient2em.length>0) 
+    && this.remorquage.nomClient.length>0 && this.remorquage.originAdresse.length>0
+    && this.remorquage.originVille.length>0 && this.remorquage.originProvince.length>0
+    && this.remorquage.destAdresse.length>0 && this.remorquage.destVille.length>0 
+    && this.remorquage.destProvince.length>0 && this.remorquage.marque.length>0
+    && (this.remorquage.panne||this.remorquage.accident||this.remorquage.pullOut||this.remorquage.debaragePorte
+      ||this.remorquage.survoltage||this.remorquage.essence||this.remorquage.changementPneu)
+  ){
     return true;  // form is filled well
+  }
+  else if(
+    !this.towing 
+    && (this.remorquage.telClient.length>0 || this.remorquage.telClient2em.length>0) 
+    && this.remorquage.nomClient.length>0 && this.remorquage.originAdresse.length>0
+    && this.remorquage.originVille.length>0 && this.remorquage.originProvince.length>0
+    && this.remorquage.marque.length>0
+    && (this.remorquage.pullOut||this.remorquage.debaragePorte
+      ||this.remorquage.survoltage||this.remorquage.essence||this.remorquage.changementPneu)
+  ){
+    return true;
   }
   else 
     return false; // form is not filled well
@@ -749,6 +764,16 @@ async showMap() {
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
+  }
+  ifTowing(){
+    if(this.towing){
+      this.remorquage.panne=false;
+      this.remorquage.accident=false;
+      /*
+      this.remorquage.destAdresse=''
+      this.remorquage.destination=''
+      this.remorquage.destVille=''//*/
+    }
   }
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;

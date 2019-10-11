@@ -159,6 +159,12 @@ export class RemorquageComponent implements OnInit {
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
   
+  back=0;
+  pagePresent=this.back+1;
+  forward=this.back+2;
+  particulier=false;
+  compteClient=false;
+
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
@@ -193,7 +199,43 @@ export class RemorquageComponent implements OnInit {
   onfocus(event:any):void {
     this.onRefresh()
   }
-  
+  onBack(){
+    this.back=this.back-1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  onForward(){
+    this.back=this.back+1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  ifParticulier(){
+    if(this.particulier){
+      this.compteClient=false;
+      this.back=2;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2;
+      this.remorquage.idEntreprise=null;
+      this.remorquage.nomEntreprise="";
+      this.remorquage.nomContact="";
+      this.remorquage.telContact="";
+      this.remorquage.extTelContact="";
+      this.remorquage.emailContact="";
+      //console.log('Particulier - begin with back=1: '+ this.back +' '+this.pagePresent+' '+this.forward);
+    }
+  }
+  ifCompteClient(){
+    if(this.compteClient){
+      this.particulier=false;
+      this.back=1;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2;
+      //console.log('CompteClient - begin with back=0: '+ this.back +' '+this.pagePresent+' '+this.forward);
+    }
+  }
+
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte

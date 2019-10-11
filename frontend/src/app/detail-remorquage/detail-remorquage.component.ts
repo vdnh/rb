@@ -17,6 +17,8 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {VarsGlobal} from 'src/services/VarsGlobal'
 import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
+import { Chauffeur } from 'src/model/model.chauffeur';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -148,6 +150,8 @@ export class DetailRemorquageComponent implements OnInit {
   em:EmailMessage=new EmailMessage();
   id:number;
   camions:Array<Camion>;
+  chauffeurs: Chauffeur[];
+  chauffeur: Chauffeur;
   
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -158,6 +162,7 @@ export class DetailRemorquageComponent implements OnInit {
     private titleService: Title,
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
+    public chauffeursService:ChauffeursService,
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
@@ -174,6 +179,11 @@ export class DetailRemorquageComponent implements OnInit {
         if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
       })
+      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
     }, err=>{
       console.log();
     })
@@ -203,6 +213,19 @@ export class DetailRemorquageComponent implements OnInit {
     
   }
   
+  chauffeurChange(){
+    let strings:Array<string>=this.remorquage.nomIntervenant.split("Id.");
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.remorquage.nomIntervenant=ch.nom
+        this.remorquage.telIntervenant=ch.tel
+        this.remorquage.emailIntervenant=ch.email
+      }
+    })
+  }
+
   async gotoDetailRemorquage(r:Remorquage){
     this.remorquage=r;
     this.modeHistoire=-1;

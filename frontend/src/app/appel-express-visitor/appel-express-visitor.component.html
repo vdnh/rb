@@ -370,52 +370,13 @@
           <label class="control-label">Province</label>
         </div>
       </div-->
-      <div class="row">
-        <div class="col-sm-3">
-          <label class="control-label">Endroit de la panne </label>
-        </div>
-        <div class="col-sm-3">
-          <input type="text" [(ngModel)]="remorquage.originAdresse" name="origin"
-          (ngModelChange)="originChange()" class="form-control" placeholder="Numero & Rue"/>
-        </div>
-        <div class="col-sm-3">
-          <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
-          class="form-control" list="defaultVilles" (ngModelChange)="originChange()" placeholder="Ville">
-          <datalist id="defaultVilles">
-              <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
-          </datalist>
-        </div>
-        <div class="col-sm-3">
-          <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince" (ngModelChange)="originChange()">
-            <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-          </select>
-        </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-3">
-          <label class="control-label">Endroit de livraison </label>
-        </div>
-        <div class="col-sm-3">
-          <input type="text" [(ngModel)]="remorquage.destAdresse" name="origin" 
-          (change)="destinationChange()" class="form-control" placeholder="Numero & Rue"/>
-        </div>
-        <div class="col-sm-3">
-          <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
-          (change)="destinationChange()" class="form-control" list="defaultVillesD" placeholder="Ville">
-          <datalist id="defaultVillesD">
-              <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
-          </datalist>
-        </div>
-        <div class="col-sm-3">
-          <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince" (change)="destinationChange()">
-            <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-          </select>
-        </div>
-      </div>
       
-      <br>
-      <div class="row">                  
+      <div class="row">   
+        <div class="col-sm-12 col-md-2 col-lg-2">
+          <div class="form-group">
+            <label>Voulez Remorquer ?  <input type="checkbox" [(ngModel)]="towing" (change)="ifTowing(); typeServiceChange(remorquage.typeService)"></label>
+          </div>
+        </div>               
         <div class="col-sm-12 col-md-2 col-lg-2">
           <div class="form-group">
             <label >Marque de voiture</label>
@@ -453,14 +414,19 @@
         </div>
       </div>
       <div class="row">
+        <!--div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+          <div class="form-group">
+            <label>Remorquer <input type="checkbox" [(ngModel)]="towing" (change)="ifTowing(); typeServiceChange(remorquage.typeService)"></label>
+          </div>
+        </div-->
         <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="form-group">
-            <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="ifPanne(); typeServiceChange(remorquage.typeService)"></label>
+            <label>Panne <input [disabled]="!towing" type="checkbox" [(ngModel)]="remorquage.panne" (change)="ifPanne(); typeServiceChange(remorquage.typeService)"></label>
           </div>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="form-group">
-            <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="ifAccident(); typeServiceChange(remorquage.typeService)"></label>
+            <label>Accident <input [disabled]="!towing" type="checkbox" [(ngModel)]="remorquage.accident" (change)="ifAccident(); typeServiceChange(remorquage.typeService)"></label>
           </div>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
@@ -468,14 +434,15 @@
             <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut" (change)="typeServiceChange(remorquage.typeService)"></label>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="form-group">
-            <label>DebaragePorte <input type="checkbox"
-                          [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
-          </div>
-        </div>
+
       </div>
       <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <div class="form-group">
+              <label>DebaragePorte <input type="checkbox"
+                            [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
+            </div>
+          </div>
         <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="form-group">
             <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage" (change)="typeServiceChange(remorquage.typeService)"></label>
@@ -493,7 +460,51 @@
           </div>
         </div>
       </div>
-      <hr  *ngIf="titreAjout.length==0" style="border: 2px solid lightgray"/>
+      <br>
+      <div class="row">
+        <div class="col-sm-3">
+          <label class="control-label">Endroit de la panne </label>
+        </div>
+        <div class="col-sm-3">
+          <input type="text" [(ngModel)]="remorquage.originAdresse" name="origin"
+          (ngModelChange)="originChange()" class="form-control" placeholder="Numero & Rue"/>
+        </div>
+        <div class="col-sm-3">
+          <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
+          class="form-control" list="defaultVilles" (ngModelChange)="originChange()" placeholder="Ville">
+          <datalist id="defaultVilles">
+              <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
+          </datalist>
+        </div>
+        <div class="col-sm-3">
+          <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince" (ngModelChange)="originChange()">
+            <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="row" *ngIf="towing">
+        <div class="col-sm-3">
+          <label class="control-label">Endroit de livraison </label>
+        </div>
+        <div class="col-sm-3">
+          <input type="text" [(ngModel)]="remorquage.destAdresse" name="origin" 
+          (change)="destinationChange()" class="form-control" placeholder="Numero & Rue"/>
+        </div>
+        <div class="col-sm-3">
+          <input type="text" [(ngModel)]="remorquage.destVille" name="destVille"
+          (change)="destinationChange()" class="form-control" list="defaultVillesD" placeholder="Ville">
+          <datalist id="defaultVillesD">
+              <option *ngFor="let v of villeListD" [ngValue]="v">{{v}}</option>
+          </datalist>
+        </div>
+        <div class="col-sm-3">
+          <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince" (change)="destinationChange()">
+            <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+          </select>
+        </div>
+      </div>
+      <hr style="border: 2px solid lightgray"/>
       <div class="row">
         <div class="col-sm-12 col-md-4 col-lg-4">
           <label class="control-label">Prix estime : {{remorquage.horstax | number : '1.2'}}$ (taxes en sus)</label>
@@ -614,7 +625,7 @@
 <div *ngIf="modeHistoire==-1">
   <!--button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button-->
   <!--button (click)="remorquage.valid=true; onSavePlusAlert()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button-->
-  <button [disabled]="!(answer==61)" (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-primary">
+  <button [disabled]="!(answer==61)||!checkValid()" (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-primary">
       <span>Demander a SOSPrestige</span>
   </button>
   <br>
@@ -643,8 +654,15 @@
       </tr>
       <tr> 
         <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span>Demande Remorquage : &nbsp;{{remorquage.marque}} &nbsp;&nbsp; {{remorquage.modele}} &nbsp;&nbsp; {{remorquage.couleur}} &nbsp;&nbsp; {{remorquage.serie}} . <br>&nbsp;</span>
-          <span>&nbsp;De:&nbsp;&nbsp; {{remorquage.origin}} &nbsp;&nbsp;. A:&nbsp;&nbsp; {{remorquage.destination}} .<br>&nbsp;</span>
+          <span *ngIf="towing">Demande Remorquage : &nbsp;{{remorquage.marque}} &nbsp;&nbsp; {{remorquage.modele}} &nbsp;&nbsp; {{remorquage.couleur}} &nbsp;&nbsp; {{remorquage.serie}} . <br>&nbsp;</span>
+          <span *ngIf="!towing">Demande Service. </span>  
+          <span *ngIf="remorquage.panne"> - Panne</span><span *ngIf="remorquage.accident"> - Accident</span>
+          <span *ngIf="remorquage.pullOut"> - PullOut</span><span *ngIf="remorquage.debaragePorte"> - DebaragePorte</span>
+          <span *ngIf="remorquage.survoltage"> - Survoltage</span><span *ngIf="remorquage.essence"> - Essence</span>
+          <span *ngIf="remorquage.changementPneu"> - ChangementPneu</span>
+          <span>&nbsp; - &nbsp; Vehicule: {{remorquage.marque}} &nbsp;&nbsp; {{remorquage.modele}} &nbsp;&nbsp; {{remorquage.couleur}} &nbsp;&nbsp; {{remorquage.serie}} . <br>&nbsp;</span>
+          <span *ngIf="towing">&nbsp;De:&nbsp;&nbsp; {{remorquage.origin}} &nbsp;&nbsp;. A:&nbsp;&nbsp; {{remorquage.destination}} .<br>&nbsp;</span>
+          <span *ngIf="!towing">&nbsp;Endroit:&nbsp;&nbsp; {{remorquage.origin}} .<br>&nbsp;</span>
         </td>
       </tr>
     </table>
@@ -659,13 +677,19 @@
           <span>&nbsp;{{remorquage.telClient}} <br>&nbsp; - email: </span>  
         </td>
         <td>
-          <span>&nbsp;{{remorquage.telClient2em}} <br>&nbsp; - Demande Remorquage: &nbsp;</span>  
+          <span *ngIf="towing">&nbsp;{{remorquage.telClient2em}} <br>&nbsp; - Demande Remorquage. &nbsp;</span>  
+          <span *ngIf="!towing">&nbsp;{{remorquage.telClient2em}} <br>&nbsp; - Demande Service. &nbsp;</span>  
+          <span *ngIf="remorquage.panne"> - Panne</span><span *ngIf="remorquage.accident"> - Accident</span>
+          <span *ngIf="remorquage.pullOut"> - PullOut</span><span *ngIf="remorquage.debaragePorte"> - DebaragePorte</span>
+          <span *ngIf="remorquage.survoltage"> - Survoltage</span><span *ngIf="remorquage.essence"> - Essence</span>
+          <span *ngIf="remorquage.changementPneu"> - ChangementPneu</span>
         </td>
       </tr>
       <tr> 
         <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span>&nbsp;{{remorquage.marque}} &nbsp;&nbsp; {{remorquage.modele}} &nbsp;&nbsp; {{remorquage.couleur}} &nbsp;&nbsp; {{remorquage.serie}} . <br>&nbsp;</span>
-          <span>&nbsp;De:&nbsp;&nbsp; {{remorquage.origin}} &nbsp;&nbsp;. A:&nbsp;&nbsp; {{remorquage.destination}} .<br>&nbsp;</span>
+          <span>&nbsp; - &nbsp; Vehicule: {{remorquage.marque}} &nbsp;&nbsp; {{remorquage.modele}} &nbsp;&nbsp; {{remorquage.couleur}} &nbsp;&nbsp; {{remorquage.serie}} . <br>&nbsp;</span>
+          <span *ngIf="towing">&nbsp;De:&nbsp;&nbsp; {{remorquage.origin}} &nbsp;&nbsp;. A:&nbsp;&nbsp; {{remorquage.destination}} .<br>&nbsp;</span>
+          <span *ngIf="!towing">&nbsp;Endroit:&nbsp;&nbsp; {{remorquage.origin}} .<br>&nbsp;</span>
         </td>
       </tr>
     </table>
