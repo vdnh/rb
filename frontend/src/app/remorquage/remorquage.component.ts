@@ -169,6 +169,18 @@ export class RemorquageComponent implements OnInit {
 
   camions:Array<Camion>;
 
+  vehiculeModeles = []; //myGlobals.d2cmediaacura;
+  marquesModeles = myGlobals.marquesModeles;
+  colors = myGlobals.colors
+  
+  marqueChange(){
+    this.vehiculeModeles=[];
+    this.marquesModeles.forEach(mm =>{
+      if(this.remorquage.marque.includes(mm.marque))
+        this.vehiculeModeles=mm.modeles
+    })
+  }
+
   constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,

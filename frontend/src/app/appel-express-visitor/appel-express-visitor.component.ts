@@ -97,6 +97,11 @@ export class AppelExpressVisitorComponent implements OnInit {
   
   remorquage:Remorquage=new Remorquage();
 
+  //vehiculeMarques = myGlobals.vehiculeMarques;
+  vehiculeModeles = []; //myGlobals.d2cmediaacura;
+  marquesModeles = myGlobals.marquesModeles;
+  colors = myGlobals.colors;
+
   zoom: number = 6;
   
   // initial center position for the map
@@ -223,6 +228,14 @@ export class AppelExpressVisitorComponent implements OnInit {
     this.typeServiceChange(this.serviceTypes[0]);
   }
   
+  marqueChange(){
+    this.vehiculeModeles=[];
+    this.marquesModeles.forEach(mm =>{
+      if(this.remorquage.marque.includes(mm.marque))
+        this.vehiculeModeles=mm.modeles
+    })
+  }
+
   async gotoDetailRemorquage(r:Remorquage){
     /*
     this.remorquage=r;

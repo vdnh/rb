@@ -224,15 +224,21 @@
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label >Marque</label>
-              <input type="text"  [(ngModel)]="remorquage.marque" name="marque"
-                   class="form-control" />
+              <input type="text" (change)="marqueChange()" [(ngModel)]="remorquage.marque" name="marque"
+                   class="form-control" list="marques"/>
+              <datalist id="marques">
+                <option *ngFor="let mm of marquesModeles" [ngValue]="mm">{{mm.marque}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <label >Modele</label>
-              <input type="text"  [(ngModel)]="remorquage.modele" name="modele"
-                   class="form-control" />
+              <input type="text" [(ngModel)]="remorquage.modele" name="modele"
+                   class="form-control" list="modeles"/>
+              <datalist id="modeles">
+                <option *ngFor="let m of vehiculeModeles" [ngValue]="m">{{m[0]}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
@@ -246,7 +252,10 @@
             <div class="form-group">
               <label >Couleur</label>
               <input type="text"  [(ngModel)]="remorquage.couleur" name="couleur"
-                   class="form-control" />
+                   class="form-control" list="colors"/>
+              <datalist id="colors">
+                <option *ngFor="let color of colors" [ngValue]="color">{{color}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
