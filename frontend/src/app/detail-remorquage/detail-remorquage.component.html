@@ -402,7 +402,9 @@
             <button *ngIf="remorquage.imgUrl.length>0" (click)="remorquage.imgUrl=''" class="btn btn-link">Supprimer photo</button>
           </div>
           <div *ngIf="remorquage.imgUrl.length>0" class="col-sm-12 col-md-9 col-lg-9" style="border: 2px dotted gray">
-            <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+            <a href="{{remorquage.imgUrl}}" target="_blank">
+              <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+            </a>
           </div>
         </div>
         <br>
