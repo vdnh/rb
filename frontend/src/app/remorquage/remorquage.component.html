@@ -1,7 +1,13 @@
-<h4 style="text-align: center; font: bold">Remorquage</h4>
+<h4 style="text-align: left; font: bold">
+  Remorquage  <span>&nbsp;&nbsp;&nbsp;</span>
+  <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
+  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
+</h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
-  <div class="row">
+  <!--div class="row">
     <div class="col-md-2 col-sm-2 col-lg-2">
       <button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button>    
     </div>
@@ -9,16 +15,19 @@
       <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
     </div>
   </div>
-  <hr style="border: 1px dotted black"/>
+  <hr style="border: 1px dotted black"/-->
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
-      <button (click)="appelsAttentes()" style="color: green; text-align: center">Appels en Attente</button> 
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      <button (click)="appelsAttentes()" style="color: green; text-align: center">Liste d'Attente</button> 
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
-      <button (click)="appelsEncours()" style="color: orange; text-align: center">Appels en Cours</button> 
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      <button (click)="appelsEncours()" style="color: orange; text-align: center">Liste en Cours</button> 
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
-      <button (click)="appelsFinis()" style="color: red; text-align: center">Appels Finis</button> 
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
+      <button (click)="appelsFinis()" style="color: red; text-align: center">Termines Avec Succes</button> 
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: blue; text-align: center">
+      <button (click)="appelsAnnules()" style="color: blue; text-align: center">Appels Annulees</button> 
     </div>
   </div>
   <br>
@@ -27,19 +36,22 @@
       <table class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>NomCompagnie</th>
-          <th>Contact</th><th>NomClient</th><th>TelClient</th>
+          <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
           <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
         </tr>
         <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqs" style="color: green; background-color: whitesmoke">
           <td>{{r.id}}</td>
-          <td>{{r.dateReserve}}</td>
+          <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomEntreprise}}</td>
-          <td>{{r.nomContact}}</td>
+          <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomClient}}</td>
           <td>{{r.telClient}}</td>
           <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
           <td>{{r.nomIntervenant}}</td>
           <td>{{r.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listRqs.length==0" style="color: green">
+          <td>Liste d'Attente est vide actuellement.</td>
         </tr>
       </table>
     </div>
@@ -49,19 +61,22 @@
       <table class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listRqsSent)'>DateReserve</th><th>NomCompagnie</th>
-          <th>Contact</th><th>NomClient</th><th>TelClient</th>
+          <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
           <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
         </tr>
         <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsSent" style="color:orange; background-color: whitesmoke">
           <td>{{r.id}}</td>
-          <td>{{r.dateReserve}}</td>
+          <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomEntreprise}}</td>
-          <td>{{r.nomContact}}</td>
+          <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomClient}}</td>
           <td>{{r.telClient}}</td>
           <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
           <td>{{r.nomIntervenant}}</td>
           <td>{{r.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listRqsSent.length==0" style="color:orange">
+          <td>Liste en Cours est vide actuellement.</td>
         </tr>
       </table>
     </div>
@@ -71,19 +86,47 @@
       <table class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>NomCompagnie</th>
-          <th>Contact</th><th>NomClient</th><th>TelClient</th>
+          <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
           <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
         </tr>
         <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsFini" style="color: red; background-color: whitesmoke">
           <td>{{r.id}}</td>
-          <td>{{r.dateReserve}}</td>
+          <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomEntreprise}}</td>
-          <td>{{r.nomContact}}</td>
+          <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
           <td>{{r.nomClient}}</td>
           <td>{{r.telClient}}</td>
           <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
           <td>{{r.nomIntervenant}}</td>
           <td>{{r.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listRqsFini.length==0" style="color: red">
+          <td>Liste termines est vide actuellement.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==4">
+      <table class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>NomCompagnie</th>
+          <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
+          <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsAnnule" style="color: blue; background-color: whitesmoke">
+          <td>{{r.id}}</td>
+          <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
+          <td>{{r.nomEntreprise}}</td>
+          <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
+          <td>{{r.nomClient}}</td>
+          <td>{{r.telClient}}</td>
+          <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
+          <td>{{r.nomIntervenant}}</td>
+          <td>{{r.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listRqsAnnule.length==0" style="color: blue">
+          <td>Il n'y a pas d'appel annule.</td>
         </tr>
       </table>
     </div>
@@ -134,18 +177,18 @@
         <div class="row">
           <!--button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button-->
           <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
-          <div class="col-md-2 col-sm-2 col-lg-2" *ngIf="remorquage.id==null">
+          <!--div class="col-md-2 col-sm-2 col-lg-2" *ngIf="remorquage.id==null">
             <button (click)="onSave()" class="btn btn-link">NouvelAppel</button>
-          </div>
-          <div class="col-md-2 col-sm-2 col-lg-2" *ngIf="(remorquage.id>0)">
+          </div-->
+          <!--div class="col-md-2 col-sm-2 col-lg-2" *ngIf="(remorquage.id>0)">
            <button (click)="onReset()" class="btn btn-link">AnnulerAppel</button>
-          </div>
+          </div-->
           <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null">EnvoyerAuChauffeur</button-->
           <!--button (click)="onFini()" class="btn btn-link" *ngIf="!(!(remorquage.id>0)||remorquage.fini)">TerminerAppel</button>         
           <button (click)="onCancel()" class="btn btn-link" *ngIf="!(!(remorquage.id>0)||remorquage.fini)">AnnulerAppel</button-->
-          <div class="col-md-2 col-sm-2 col-lg-2">
+          <!--div class="col-md-2 col-sm-2 col-lg-2">
             <button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button>
-          </div>
+          </div-->
           <!--button (click)="onGererEntreprise()" class="btn btn-link">Gerer Entreprise</button-->
           <!--button (click)="logout()" class="btn btn-link">Logout</button-->
           <!--br><br><br-->
@@ -154,8 +197,8 @@
                     <span style="margin-left:10px">Entreprise: {{remorquage.nomEntreprise ? remorquage.nomEntreprise||remorquage.nomEntreprise : 'none'}}</span>
                     <h3>Advanced</h3-->
         </div>
-        <hr style="border: 2px solid lightgray"/>
-        <div class="row" *ngIf="pagePresent==1&&remorquage.id!=null">
+        <!--hr style="border: 2px solid lightgray"/-->
+        <div class="row" *ngIf="pagePresent==1 || remorquage.id==null"> <!--&&remorquage.id!=null"-->
           <div class="col-md-2 col-sm-2 col-lg-2">
               <h5><label>
               Repartiteur <input type="text" style="font-size: 11pt; width: 20ch;" [(ngModel)]="remorquage.nomDispatch" name="nomDispatch" class="form-control">
@@ -169,18 +212,18 @@
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
             <h5>
-              {{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}
+              {{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}
               <!--input type="datetime-local" style="width: 11pc" [ngModel]="remorquage.dateDepart" name="dateDepart" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}" class="form-control" (ngModelChange)="dateChange($event)" disabled/-->
             </h5>
           </div>
-          <div class="col-md-3 col-sm-3 col-lg-3">
+          <div class="col-md-3 col-sm-3 col-lg-3" *ngIf="remorquage.id!=null">
             <h5>BonNumero - {{remorquage.id}} </h5>
           </div>
         <!--/div>
         <div class="row" *ngIf="pagePresent==1&&remorquage.id!=null">
           <div class="col-md-2 col-sm-2 col-lg-2"><h5>Appel de : </h5></div-->
         </div>
-        <hr style="border: 1px solid lightgray" *ngIf="pagePresent==1&&remorquage.id!=null"/>
+        <hr style="border: 1px solid lightgray" *ngIf="pagePresent==1"/>
 
       </div>
       <div class="panel-body">
@@ -286,9 +329,13 @@
           <div class="col-sm-6 col-md-2 col-lg-2"><!-- *ngIf="pagePresent==3 && particulier"-->
             <div class="form-group">
               <label for="">DateReserve</label>
+              <!--input type="date" [ngModel]="remorquage.dateReserve"
+                    name="dateReserve" class="form-control" (change)="dateChange($event)"
+                    min="{{today}}" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/-->
               <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-                    name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-                    class="form-control" (change)="dateChange($event)"/>
+              name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
+              class="form-control" (change)="dateChange($event)" 
+              required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
             </div>
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2"><!-- *ngIf="pagePresent==3 && particulier"-->
@@ -392,12 +439,12 @@
               <label>Panne <input type="checkbox" [(ngModel)]="remorquage.panne" (change)="ifPanne(); typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-6 col-md-1 col-lg-1">
+          <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
               <label>Accident <input type="checkbox" [(ngModel)]="remorquage.accident" (change)="ifAccident(); typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-6 col-md-1 col-lg-1">
+          <div class="col-xs-6 col-sm-6 col-md-1 col-lg-2">
             <div class="form-group">
               <label>PullOut <input type="checkbox" [(ngModel)]="remorquage.pullOut" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
@@ -415,7 +462,7 @@
               <label>Survoltage <input type="checkbox" [(ngModel)]="remorquage.survoltage" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-6 col-md-1 col-lg-1">
+          <div class="col-xs-6 col-sm-6 col-md-2 col-lg-1">
             <div class="form-group">
               <label>Essence <input type="checkbox" [(ngModel)]="remorquage.essence" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
@@ -680,7 +727,7 @@
   </div>
   <br>
   <hr style="border: 1px solid lightgray" *ngIf="particulier||compteClient"/>
-  <div class="col-sm-12 col-lg-12 col-md-12" *ngIf="particulier||compteClient">
+  <div class="col-sm-12 col-lg-12 col-md-12" *ngIf="(particulier||compteClient) && modeHistoire==-1">
     <div class="row">
       <div class="col-md-2 col-sm-2 col-lg-2">
         <button (click)="onBack()" [disabled]="back<=0">Avant</button>
@@ -707,14 +754,14 @@
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
     <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
       <tr>
-        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
         <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
         <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
         <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
         <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{remorquage.id}}</span></td>
       </tr>
       <tr>
-        <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{remorquage.dateReserve | date : 'yyyy-MMM-dd'}} - {{remorquage.timeResrvation}}</td>
+        <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
         <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
         <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
         <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>

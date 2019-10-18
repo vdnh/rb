@@ -205,7 +205,8 @@ marqueChange(){
       if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
         this.remorquage.nomDispatch=localStorage.getItem('fullName')
       //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
-      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      this.titleService.setTitle('Case : '+this.remorquage.id + 
+      (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.remorquage.originLat,
@@ -600,12 +601,24 @@ async showMap() {
     this.CloseWithWindowOpenTrick();
   }
 
+  onDevoirAttendre(){
+    var r = confirm("Etes vous sur de mettre ce cas sur la liste d'attente?")
+    if(r==true){
+      this.remorquage.sent=false;
+      this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
+        //this.onFermer();
+        window.close();
+      }, err=>{console.log(err)})
+    }
+  }
+
   onCancel(){
     var r = confirm("Etes vous sur d'annuller ce cas ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
-        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(async data=>{          
+        this.remorquage.driverNote="!!Cancelled!!";
+        this.remorquagesService.saveRemorquages(this.remorquage).subscribe(async data=>{          
           // commence d'envoyer email
           if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
             this.em.emailDest=this.remorquage.emailIntervenant

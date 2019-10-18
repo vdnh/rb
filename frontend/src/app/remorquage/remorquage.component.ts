@@ -148,6 +148,9 @@ export class RemorquageComponent implements OnInit {
   appelsFinis(){
     this.modeGestionAppel=3
   }
+  appelsAnnules(){
+    this.modeGestionAppel=4
+  }
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 
   today=new Date();
@@ -155,6 +158,7 @@ export class RemorquageComponent implements OnInit {
   listRqs: Remorquage[]; // appels waitting
   listRqsSent: Remorquage[]; // appels sent
   listRqsFini: Remorquage[]; // appels finished
+  listRqsAnnule: Remorquage[]; // appels annules
   contacts: Contact[];
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
@@ -226,6 +230,7 @@ export class RemorquageComponent implements OnInit {
     this.back=this.back+1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
+    this.prixCalcul();
     //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   ifParticulier(){
@@ -234,6 +239,7 @@ export class RemorquageComponent implements OnInit {
       this.back=2;
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
+      this.onSave();
       this.remorquage.idEntreprise=null;
       this.remorquage.nomEntreprise="";
       this.remorquage.nomContact="";
@@ -249,6 +255,7 @@ export class RemorquageComponent implements OnInit {
       this.back=1;
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
+      this.onSave();
       //console.log('CompteClient - begin with back=0: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
@@ -257,6 +264,7 @@ export class RemorquageComponent implements OnInit {
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     //if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
+    if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
     await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -465,6 +473,7 @@ onRefresh(){
     this.listRqs=[]  //data;
     this.listRqsSent=[]
     this.listRqsFini=[]
+    this.listRqsAnnule=[]
     //*
     data.sort((b, a)=>{
       if(a.id>b.id)
@@ -478,8 +487,10 @@ onRefresh(){
       //this.listRqs.push(rq)
       //*
       if(rq.fini) this.listRqsFini.push(rq)
+      else if (rq.driverNote.includes("!!Cancelled!!")) this.listRqsAnnule.push(rq)
       else if (rq.sent) this.listRqsSent.push(rq)
       else if (rq.valid) this.listRqs.push(rq)//*/
+      
     })
   }, err=>{
     console.log(err)
@@ -735,13 +746,19 @@ onFileUpLoad(event){
     if(this.remorquage.id==null){
       this.remorquage.dateDepart=new Date()
       this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
-      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+        (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+      this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
+        this.remorquage=data;
+      }, 
+        err=>{console.log(err)
+      })
     }
+    /*
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
       this.remorquage=data;
     }, 
       err=>{console.log(err)
-    })
+    })//*/
   }
   onSavePlusAlert(){
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{ 
@@ -763,7 +780,14 @@ onFileUpLoad(event){
       this.forward=this.back+2
       this.particulier=false;
       this.compteClient=false;
-      this.remorquage=new Remorquage();
+      if(this.remorquage.id!=null){
+        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+          this.remorquage=new Remorquage();
+        }, err=>{
+          console.log(err)
+        })
+      }
+      else this.remorquage=new Remorquage();      
     }
   }
 
@@ -1009,6 +1033,7 @@ onFileUpLoad(event){
         this.listRqs=[]  //data;
         this.listRqsSent=[]
         this.listRqsFini=[]
+        this.listRqsAnnule=[]
         //*
         data.sort((b, a)=>{
           if(a.id>b.id)
@@ -1021,7 +1046,8 @@ onFileUpLoad(event){
           //if(!rq.sent && !rq.fini) 
           //this.listRqs.push(rq)
           //*
-          if(rq.fini) this.listRqsFini.push(rq)
+          if (rq.fini) this.listRqsFini.push(rq)
+          else if (rq.driverNote.includes("!!Cancelled!!")) this.listRqsAnnule.push(rq)
           else if (rq.sent) this.listRqsSent.push(rq)
           else if (rq.valid) this.listRqs.push(rq)//*/
         })
