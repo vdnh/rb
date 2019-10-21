@@ -773,20 +773,22 @@ async showMap() {
   ifAccident(){
     if(this.remorquage.accident)
       this.remorquage.panne=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   ifTowing(){
-    if(this.towing){
+    //if(this.towing){
       this.remorquage.panne=false;
       this.remorquage.accident=false;
       /*
       this.remorquage.destAdresse=''
       this.remorquage.destination=''
       this.remorquage.destVille=''//*/
-    }
+    //}
   }
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
@@ -919,11 +921,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus1;
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1P;
       }
     }
     else if(this.remorquage.typeService.includes('Moyen')){
@@ -931,11 +933,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus2;
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2P;
       }
     }
     else if(this.remorquage.typeService.includes('Lourd')){
@@ -943,11 +945,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus3;
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3P;
       }
     }
     else{

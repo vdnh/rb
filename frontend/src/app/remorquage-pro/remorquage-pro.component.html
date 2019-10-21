@@ -1,4 +1,8 @@
-<h4 style="text-align: center; font: bold">Remorquage</h4>
+<h4 style="font: bold">
+  Remorquage  <span>&nbsp;&nbsp;&nbsp;</span>
+  <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>    
+  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Historique-Appels</button></span>
+</h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
   <div class="row">

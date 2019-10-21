@@ -894,10 +894,12 @@ onFileUpLoad(event){
   ifAccident(){
     if(this.remorquage.accident)
       this.remorquage.panne=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
@@ -987,11 +989,11 @@ onFileUpLoad(event){
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus1;
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1P;
       }
     }
     else if(this.remorquage.typeService.includes('Moyen')){
@@ -999,11 +1001,11 @@ onFileUpLoad(event){
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus2;
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2P;
       }
     }
     else if(this.remorquage.typeService.includes('Lourd')){
@@ -1011,11 +1013,11 @@ onFileUpLoad(event){
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus3;
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3P;
       }
     }
     else{
@@ -1066,7 +1068,8 @@ onFileUpLoad(event){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       let stringsd:string[]=location.href.split('/remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
-      this.em.titre="Case numero : " + this.remorquage.id.toString()
+      //this.em.titre="Case numero : " + this.remorquage.id.toString()
+      this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage

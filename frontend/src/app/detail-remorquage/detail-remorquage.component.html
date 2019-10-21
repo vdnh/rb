@@ -56,7 +56,10 @@
       <div class="col-sm-12 col-lg-12 col-md-12">
         <div class="row">
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAvecSucces</button>         
-          <button (click)="onDevoirAttendre()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">DevoirAttendre</button>
+          <button (click)="onDevoirAttendre()" class="btn btn-link" 
+            [disabled]="(remorquage.fini||(!remorquage.sent&&!remorquage.driverNote.includes('!!Cancelled!!')))"
+          >DevoirAttendre
+          </button>
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini||remorquage.driverNote.includes('!!Cancelled!!'))">Annuler</button>
           <button (click)="onFermer()" class="btn btn-link" >Fermer</button>          
           <br><br><br>

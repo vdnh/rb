@@ -604,7 +604,8 @@ async showMap() {
   onDevoirAttendre(){
     var r = confirm("Etes vous sur de mettre ce cas sur la liste d'attente?")
     if(r==true){
-      this.remorquage.sent=false;
+      this.remorquage.sent=false; // dans le cas En Cours en attendre
+      this.remorquage.driverNote=""; // dans le cas Annule en attendre
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
         //this.onFermer();
         window.close();
@@ -618,12 +619,21 @@ async showMap() {
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquage.driverNote="!!Cancelled!!";
+        this.remorquage.sent=false;
         this.remorquagesService.saveRemorquages(this.remorquage).subscribe(async data=>{          
           // commence d'envoyer email
           if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
             this.em.emailDest=this.remorquage.emailIntervenant
-            this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
-            this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
+            //this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
+            this.em.titre="Annuler case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            //this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
+            let styleCss = '<style> '
+            +' div.cts_rotate {width: 150px; height: 80px; background-color: yellow; -ms-transform: rotate(340deg); -webkit-transform: rotate(340deg); transform: rotate(340deg);} '
+            +' </style> '
+            // styleCss + 
+            this.em.content= ' <div  style="transform: rotate(340); background-color: yellow; width: 150px; height: 100px;">' 
+            +'<p> <h4> '+'Annuler case : ' + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur+' </h4> </p>'
+            +'</div>'    
             await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               alert("Un courriel annulation a ete aussi envoye au chauffeur.")
               this.CloseWithWindowOpenTrick();
@@ -784,10 +794,12 @@ async showMap() {
   ifAccident(){
     if(this.remorquage.accident)
       this.remorquage.panne=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
+    this.typeServiceChange(this.remorquage.typeService)
   }
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
@@ -920,11 +932,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus1;
-        this.remorquage.prixKm=this.shipper.prixKm1;
+        this.remorquage.prixKm=this.shipper.prixKm1P;
       }
     }
     else if(this.remorquage.typeService.includes('Moyenne')){
@@ -932,11 +944,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus2;
-        this.remorquage.prixKm=this.shipper.prixKm2;
+        this.remorquage.prixKm=this.shipper.prixKm2P;
       }
     }
     else if(this.remorquage.typeService.includes('Lourd')){
@@ -944,11 +956,11 @@ async showMap() {
       this.calculePrixbase()
       if(this.remorquage.accident){
         this.remorquage.inclus=0
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3A;
       }
       else if(this.remorquage.panne){
         this.remorquage.inclus=this.shipper.inclus3;
-        this.remorquage.prixKm=this.shipper.prixKm3;
+        this.remorquage.prixKm=this.shipper.prixKm3P;
       }
     }
     else{
@@ -995,7 +1007,8 @@ async showMap() {
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       let stringsd:string[]=location.href.split('/detail-remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
-      this.em.titre="Case numero : " + this.remorquage.id.toString()
+      //this.em.titre="Case numero : " + this.remorquage.id.toString()
+      this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
