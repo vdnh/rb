@@ -45,12 +45,18 @@ public class Shipper {
     // prix remorquage (bas - km - inclus)
     private Float prixBase1=0.00f;
     private Float prixKm1=0.00f;
+    private Float prixKm1P=0.00f; // prixKm1P for Panne
+    private Float prixKm1A=0.00f; // prixKm1A for Accident
     private Float inclus1=0.00f; 
     private Float prixBase2=0.00f;
     private Float prixKm2=0.00f;
+    private Float prixKm2P=0.00f; // prixKm2P for Panne
+    private Float prixKm2A=0.00f; // prixKm2A for Accident
     private Float inclus2=0.00f;
     private Float prixBase3=0.00f;
     private Float prixKm3=0.00f;
+    private Float prixKm3P=0.00f; // prixKm3P for Panne
+    private Float prixKm3A=0.00f; // prixKm3A for Accident
     private Float inclus3=0.00f;
     
     // prix remorquage par cas

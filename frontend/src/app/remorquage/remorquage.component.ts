@@ -246,6 +246,7 @@ export class RemorquageComponent implements OnInit {
       this.remorquage.telContact="";
       this.remorquage.extTelContact="";
       this.remorquage.emailContact="";
+      this.setPrixParticulier();
       //console.log('Particulier - begin with back=1: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
@@ -256,10 +257,50 @@ export class RemorquageComponent implements OnInit {
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
       this.onSave();
+      this.setPrixParticulier()
       //console.log('CompteClient - begin with back=0: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
 
+  setPrixParticulier(){ // prix dans ficher model.shipper.ts sont des prix pareticuliers
+    let templShipper = new Shipper()
+    this.shipper.inclus1=templShipper.inclus1
+    this.shipper.inclus2=templShipper.inclus2
+    this.shipper.inclus3=templShipper.inclus3
+    this.shipper.panne1=templShipper.panne2
+    this.shipper.panne2=templShipper.panne2
+    this.shipper.panne3=templShipper.panne3
+    this.shipper.prixBase1=templShipper.prixBase1
+    this.shipper.prixBase2=templShipper.prixBase2
+    this.shipper.prixBase3=templShipper.prixBase3
+    this.shipper.prixKm1=templShipper.prixKm1
+    this.shipper.prixKm1A=templShipper.prixKm1A
+    this.shipper.prixKm1P=templShipper.prixKm1P
+    this.shipper.prixKm2=templShipper.prixKm2
+    this.shipper.prixKm2A=templShipper.prixKm2A
+    this.shipper.prixKm2P=templShipper.prixKm2P
+    this.shipper.prixKm3=templShipper.prixKm3
+    this.shipper.prixKm3A=templShipper.prixKm3A
+    this.shipper.prixKm3P=templShipper.prixKm3P
+    this.shipper.pullOut1=templShipper.pullOut1
+    this.shipper.pullOut2=templShipper.pullOut2
+    this.shipper.pullOut3=templShipper.pullOut3
+    this.shipper.accident1=templShipper.accident3
+    this.shipper.accident2=templShipper.accident2
+    this.shipper.accident3=templShipper.accident3
+    this.shipper.boost1=templShipper.boost1
+    this.shipper.boost2=templShipper.boost2
+    this.shipper.boost3=templShipper.boost3
+    this.shipper.changementPneu1=templShipper.changementPneu1
+    this.shipper.changementPneu2=templShipper.changementPneu2
+    this.shipper.changementPneu3=templShipper.changementPneu3
+    this.shipper.debarragePorte1=templShipper.debarragePorte1
+    this.shipper.debarragePorte2=templShipper.debarragePorte2
+    this.shipper.debarragePorte3=templShipper.debarragePorte3
+    this.shipper.essence1=templShipper.essence1
+    this.shipper.essence2=templShipper.essence2
+    this.shipper.essence3=templShipper.essence3
+  }
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte

@@ -205,7 +205,8 @@ marqueChange(){
       if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
         this.remorquage.nomDispatch=localStorage.getItem('fullName')
       //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
-      this.titleService.setTitle('Case : '+this.remorquage.id + 
+      //this.titleService.setTitle('Case : '+this.remorquage.id + 
+      this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
       (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
@@ -322,7 +323,7 @@ async originChange(){
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
       await this.showMap()
-      this.typeServiceChange(this.remorquage.typeService)
+      //this.typeServiceChange(this.remorquage.typeService)
     }
   }
   //this.showMap();
@@ -377,7 +378,7 @@ async destinationChange(){
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
       await this.showMap()
-      this.typeServiceChange(this.remorquage.typeService)
+      //this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();
 }
@@ -559,7 +560,9 @@ async showMap() {
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
         //this.remorquage=new Remorquage();
-        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        //this.titleService.setTitle('Case : '+this.remorquage.id + 
+        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
         window.close();
         this.router.navigate(['/remorquage']);
       }, err=>{console.log(err)})
@@ -707,7 +710,7 @@ async showMap() {
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
     }, (results: any) => {    
       this.remorquage.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
-      //this.distanceKm = Math.round(this.distance*1.609344)
+      this.typeServiceChange(this.remorquage.typeService)
     });  
   }
 
@@ -1020,7 +1023,9 @@ async showMap() {
         alert("Le courriel a ete envoye au chauffeur.")
         this.remorquage.sent=true;
         this.onSave();
-        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        //this.titleService.setTitle('Case : '+this.remorquage.id + 
+        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/
