@@ -331,7 +331,7 @@ async originChange(){
     });//*/
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-      await this.showMap()
+      //await this.showMap()
       this.typeServiceChange(this.remorquage.typeService)
     }
   }
@@ -386,7 +386,7 @@ async destinationChange(){
     });//*/
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-      await this.showMap()
+      //await this.showMap()
       this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();
@@ -953,9 +953,9 @@ async showMap() {
       }
     }
     else{
-      this.remorquage.prixBase=-1.00;
-      this.remorquage.inclus=-1.00;
-      this.remorquage.prixKm=-1.00;
+      this.remorquage.prixBase=100.00;
+      this.remorquage.inclus=5;
+      this.remorquage.prixKm=2.75;
     }
     this.prixCalcul()
   }

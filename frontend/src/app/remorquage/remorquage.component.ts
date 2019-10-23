@@ -233,6 +233,26 @@ export class RemorquageComponent implements OnInit {
     this.prixCalcul();
     //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
+  
+  problemService(){
+    let probSer=" ";
+    if(this.remorquage.panne)
+      probSer=probSer+"Panne, "
+    if(this.remorquage.accident)
+      probSer=probSer+"Accident, "
+    if(this.remorquage.pullOut)
+      probSer=probSer+"PullOut, "
+    if(this.remorquage.debaragePorte)
+      probSer=probSer+"Debarage Porte, "
+    if(this.remorquage.survoltage)
+      probSer=probSer+"Survoltage, "
+    if(this.remorquage.essence)
+      probSer=probSer+"Essence, "
+    if(this.remorquage.changementPneu)
+      probSer=probSer+"Changement Pneu, "
+    return probSer;
+  }
+  
   ifParticulier(){
     if(this.particulier){
       this.compteClient=false;
