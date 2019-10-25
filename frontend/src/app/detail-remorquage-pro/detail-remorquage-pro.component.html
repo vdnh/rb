@@ -320,7 +320,7 @@
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <label class="control-label">Origin</label>
+          <label class="control-label">Endroit de la panne</label>
         </div>
         <div class="col-sm-3">
           <input disabled type="text" [(ngModel)]="remorquage.originAdresse" name="origin"
@@ -347,7 +347,7 @@
       <br>
       <div class="row">
         <div class="col-sm-3">
-          <label class="control-label">Destination</label>
+          <label class="control-label">Endroit de livraison</label>
         </div>
         <div class="col-sm-3">
           <input disabled type="text" [(ngModel)]="remorquage.destAdresse" name="origin"
@@ -381,17 +381,21 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-3"><label class="control-label">Signature</label></div>
+        <div class="col-sm-12 col-md-5 col-lg-3">
+          <!--label class="control-label">Signature</label-->
+          <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
+          class="form-control" [disabled]="remorquage.fini">
+        </div>
         <div class="col-sm-9" style="border: 2px dotted gray">
           <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
             (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)" *ngIf="!remorquage.signature.length>0">
           </signature-pad>
           <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-          <div>
+          <!--div>
             <button (click)="clearHandler()">Re-sign</button>
             <span>&nbsp;&nbsp;</span>
             <button (click)="okHandler()" *ngIf="!remorquage.signature.length>0">Ok</button>
-          </div>
+          </div-->
         </div>
       </div>
       <hr style="border: 2px solid lightgray"/>
@@ -586,10 +590,17 @@
         Note au Chauffeur: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
       </td>
     </tr>
-    <tr>
+    <!--tr>
       <td colspan="5"style="text-align: left; text-anchor: start ">
         Signature Client : <span>&nbsp;
           <img [src]="remorquage.signature" height="100" width="250" alt="Signature" *ngIf="remorquage.signature.length>0">
+        <br>&nbsp;</span>
+      </td>
+    </tr-->
+    <tr>
+      <td colspan="5"style="text-align: left; text-anchor: start ">
+        {{remorquage.nomSignature}}  <span>&nbsp;
+          <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
         <br>&nbsp;</span>
       </td>
     </tr>

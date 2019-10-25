@@ -110,6 +110,7 @@ export class RemorquageClientComponent implements OnInit {
   @ViewChild(SignaturePad) signaturePad: SignaturePad;
   private signaturePadOptions: Object = {
     'minWidth': 1,
+    'background-color': '#fff',
     //'canvasWidth': 250,
     //'canvasHeight': 100,
   };
@@ -124,10 +125,19 @@ export class RemorquageClientComponent implements OnInit {
   }
 
   okHandler(){
-    //console.log(this.signaturePad.toDataURL('image/png', 0.5));
-    this.remorquage.signature=this.signaturePad.toDataURL()
-    this.onSave();
-    //window.open(this.signaturePad.toDataURL(), ' blank')
+    console.log('this.signaturePad.toDataURL() : '+this.signaturePad.toDataURL())
+    if(this.remorquage.nomSignature.length==0){
+      alert("On a besoins votre nom, merci.")
+    }
+    /*else if(this.signaturePad.toDataURL().length==0){
+      alert("On a besoins votre signature, merci.")
+    }//*/
+    else{
+      //console.log(this.signaturePad.toDataURL('image/png', 0.5));
+      this.remorquage.signature=this.signaturePad.toDataURL()
+      this.onSave();
+      //window.open(this.signaturePad.toDataURL(), ' blank')
+    }
   }
 
   clearHandler(){
@@ -206,6 +216,25 @@ beforeunloadHandler(event){
       localStorage.clear();
     })
     
+  }
+  
+  problemService(){
+    let probSer=" ";
+    if(this.remorquage.panne)
+      probSer=probSer+"Panne, "
+    if(this.remorquage.accident)
+      probSer=probSer+"Accident, "
+    if(this.remorquage.pullOut)
+      probSer=probSer+"PullOut, "
+    if(this.remorquage.debaragePorte)
+      probSer=probSer+"Debarage Porte, "
+    if(this.remorquage.survoltage)
+      probSer=probSer+"Survoltage, "
+    if(this.remorquage.essence)
+      probSer=probSer+"Essence, "
+    if(this.remorquage.changementPneu)
+      probSer=probSer+"Changement Pneu, "
+    return probSer;
   }
   
   async gotoDetailRemorquage(r:Remorquage){
@@ -348,14 +377,14 @@ async destinationChange(){
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
-  console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
+  //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);
-   console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
+  //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
   //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
   const WindowPrt = window.open();
   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
-  WindowPrt.document.write(printContent.innerHTML);
+  WindowPrt.document.write(printContent.innerHTML.replace('Re-signer', ''));
   WindowPrt.document.close();
   WindowPrt.focus();
   WindowPrt.print();

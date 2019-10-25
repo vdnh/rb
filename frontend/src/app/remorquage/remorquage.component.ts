@@ -287,7 +287,7 @@ export class RemorquageComponent implements OnInit {
     this.shipper.inclus1=templShipper.inclus1
     this.shipper.inclus2=templShipper.inclus2
     this.shipper.inclus3=templShipper.inclus3
-    this.shipper.panne1=templShipper.panne2
+    this.shipper.panne1=templShipper.panne1
     this.shipper.panne2=templShipper.panne2
     this.shipper.panne3=templShipper.panne3
     this.shipper.prixBase1=templShipper.prixBase1
@@ -305,7 +305,7 @@ export class RemorquageComponent implements OnInit {
     this.shipper.pullOut1=templShipper.pullOut1
     this.shipper.pullOut2=templShipper.pullOut2
     this.shipper.pullOut3=templShipper.pullOut3
-    this.shipper.accident1=templShipper.accident3
+    this.shipper.accident1=templShipper.accident1
     this.shipper.accident2=templShipper.accident2
     this.shipper.accident3=templShipper.accident3
     this.shipper.boost1=templShipper.boost1
@@ -460,7 +460,7 @@ async originChange(){
     });//*/
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-      await this.showMap()
+      //await this.showMap()
       this.typeServiceChange(this.remorquage.typeService)
     }
   }
@@ -515,7 +515,7 @@ async destinationChange(){
     });//*/
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
-      await this.showMap()
+      //await this.showMap()
       this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();

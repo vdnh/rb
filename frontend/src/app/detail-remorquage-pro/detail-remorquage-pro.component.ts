@@ -179,7 +179,9 @@ clearHandler(){
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
-      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+      (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.remorquage.originLat,
