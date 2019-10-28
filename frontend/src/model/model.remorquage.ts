@@ -55,7 +55,7 @@ export class Remorquage{
     prixBase:number=0.00;
     prixKm:number=0.00;
     inclus:number=0.00;
-    typeService="";
+    typeService="Leger";
     // services
     panne=false;
     accident=false;

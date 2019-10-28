@@ -254,7 +254,8 @@ export class RemorquageProComponent implements OnInit {
     this.back=this.back+1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
-    this.prixCalcul();
+    //this.prixCalcul();
+    this.typeServiceChange(this.remorquage.typeService);
     //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   onNouvelAppel(){
@@ -346,7 +347,7 @@ export class RemorquageProComponent implements OnInit {
       this.shipper=data;
       //this.remorquage.nomEntreprise=this.shipper.nom
       //this.remorquage.idEntreprise=this.id
-      //this.onNouvelAppel();
+      this.onNouvelAppel();
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
       }, err=>{
@@ -360,9 +361,10 @@ export class RemorquageProComponent implements OnInit {
     var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
     //if(this.remorquage.timeCall.length)
     this.remorquage.timeCall=heure+':'+minute
-    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
+    //console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
     this.typeServiceChange(this.serviceTypes[0]);
+    //this.onNouvelAppel();
     //this.prixCalcul()
   }
   
@@ -1109,9 +1111,12 @@ onFileUpLoad(event){
       })
     }
     else {
+      /*
       this.remorquage.dateDepart = new Date()
       this.remorquage.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
         (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+      //*/
+      this.onNouvelAppel();
     }
   }
   

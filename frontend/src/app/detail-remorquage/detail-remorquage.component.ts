@@ -217,6 +217,20 @@ marqueChange(){
           this.remorquage.destLat,
           this.remorquage.destLong                                          
         )
+        // If appel come from a prof - get its price and its contacts
+        if(this.remorquage.idEntreprise>0){
+          this.shipperservice.getDetailShipper(this.remorquage.idEntreprise).subscribe((data:Shipper)=>{
+            this.shipper=data;
+            this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+              this.contacts=data;
+            }, err=>{
+              console.log(err);
+            });
+          }, err=>{
+            console.log(err);
+          })
+        }
+        
         this.showMap()
       }
     }, err=>{
