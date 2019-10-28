@@ -245,7 +245,7 @@
           <div class="col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Contact / Commande par</label>
-              <input type="text" (change)="contactChange()"  [(ngModel)]="remorquage.nomContact"
+              <input type="text" (change)="contactChange()" [(ngModel)]="remorquage.nomContact"
                     name="nomContact" class="form-control" list="defaultContacts">
               <datalist id="defaultContacts">
                 <option *ngFor="let e of contacts" [ngValue]="e">{{e.prenom+'  .Id.'+e.id}}</option>

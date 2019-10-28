@@ -229,6 +229,47 @@ export class TransportComponent implements OnInit {
         selectAll: selectAllControl01
       });//*/
   }
+
+  //*/ Control of surfer
+  back=0;
+  pagePresent=this.back+1;
+  forward=this.back+2;
+  onBack(){
+    this.back=this.back-1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  onForward(){
+    this.back=this.back+1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  //*/  End of control of surfer
+  onNew(){
+    this.back=0;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    this.onSave();
+  }
+  onReset(){
+    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2
+      if(this.transport.id!=null){
+        this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
+          this.transport=new Transport();
+        }, err=>{
+          console.log(err)
+        })
+      }
+      else this.transport=new Transport();      
+    }
+  }
+
+
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
     //this.prixChange();
@@ -270,6 +311,7 @@ export class TransportComponent implements OnInit {
   }
   
   async ngOnInit() {    
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     this.loadDetails.length=0;
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
@@ -313,6 +355,7 @@ export class TransportComponent implements OnInit {
     //this.typeServiceChange(this.serviceTypes[0]);
     this.calculTotalpoints() 
     this.prixCalcul()
+    this.onSave();
   }
   
   chauffeurChange(){
@@ -911,12 +954,26 @@ async showMap() {
     }
   }
 
+  contactChange(){
+    let strings:Array<string>=this.transport.nomContact.split("Id.");
+    let conId:number =  Number(strings[1])
+    this.contacts.forEach(con=>{
+      if(con.id==conId) 
+      {
+        this.transport.nomContact=con.prenom
+        this.transport.telContact=con.tel.toString()
+        this.transport.emailContact=con.email
+      }
+    })
+  }
+
   async onSave(){
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     if(this.mode==2){
       this.changeUnite();  // we must change to mode=1
       await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
@@ -1060,9 +1117,6 @@ async showMap() {
   }
   //*/
 
-  onReset(){
-    this.transport=new Transport();
-  }
 
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
@@ -1089,9 +1143,12 @@ async showMap() {
       })
     }
     else {
-      this.transport.dateDepart = new Date()
-      this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
-        (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+      if(this.transport.id==null){
+        this.transport.dateDepart = new Date()
+        this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+          (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+        this.onSave();
+      }
     }
   }
   

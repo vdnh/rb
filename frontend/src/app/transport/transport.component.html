@@ -1,7 +1,14 @@
-<h4 style="text-align: center; font: bold">Transportation</h4>
+<h4 style="text-align: left; font: bold">
+  Transportation<span>&nbsp;&nbsp;&nbsp;</span>
+  <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
+  <span *ngIf="modeHistoire==-1&&!transport.id>0"><button (click)="onNew()" class="btn btn-link">NouvelAppel</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
+  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
+</h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
-  <div class="row">
+  <!--div class="row">
     <div class="col-md-4 col-sm-4 col-lg-4">
       <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
     </div>
@@ -9,16 +16,19 @@
       <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
     </div>
   </div>
-  <hr style="border: 1px dotted black"/>
+  <hr style="border: 1px dotted black"/-->
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
-      Appels en Attente
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      Liste d'Attente
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
-      Appels en Cours
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      Liste en Cours
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
-      Appels Finis
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
+      Termines Avec Succes
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color:blue; text-align: center">
+      Appels Annules
     </div>
   </div>
   <div class="row">
@@ -75,18 +85,13 @@
     </div-->              
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
-        <div class="row">
-          <button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
-          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button> 
-      
-          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
-          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>
+        <!--div class="row">
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">AnnulerAppel</button> 
           <button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button>
-          
-          <br><br><br>
+          <br>
         </div>
-        <hr style="border: 2px solid lightgray"/>
-        <div class="row">
+        <hr style="border: 2px solid lightgray"/-->
+        <div class="row" *ngIf="pagePresent==1&&transport.id>0">
           <div class="col-md-4 col-sm-4 col-lg-4">
 
               <h4><label>
@@ -102,10 +107,10 @@
             <h4>BonNumero : {{transport.id}} </h4>
           </div>
         </div>
-        <hr style="border: 1px solid lightgray"/>
+        <!--hr *ngIf="pagePresent==1" style="border: 1px solid lightgray"/-->
       </div>
       <div class="panel-body">
-        <div class="row">
+        <div *ngIf="pagePresent==2" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Client</label>
@@ -141,14 +146,14 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div *ngIf="pagePresent==2" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Contact</label>
-              <input type="text"  [(ngModel)]="transport.nomContact"
+              <label for="">Contact / Commande par</label>
+              <input type="text" (change)="contactChange()" [(ngModel)]="transport.nomContact"
                    name="nomContact" class="form-control" list="defaultContacts">
               <datalist id="defaultContacts">
-                <option *ngFor="let e of contacts" [ngValue]="e">{{e.nom}}</option>
+                <option *ngFor="let e of contacts" [ngValue]="e">{{e.prenom+'  .Id.'+e.id}}</option>
               </datalist>
             </div>
           </div>
@@ -176,10 +181,10 @@
         </div>
         
 
-        <hr style="border: 2px solid lightgray"/>
+        <!--hr *ngIf="pagePresent==2" style="border: 2px solid lightgray"/-->
 
-        <div><label style="text-decoration-line: underline">Contact & Address Origin</label></div>
-        <div class="row">
+        <div *ngIf="pagePresent==3"><label style="text-decoration-line: underline">Contact & Address Origin</label></div>
+        <div *ngIf="pagePresent==3" class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <!--label for="">Contact d'Origin</label-->
@@ -224,8 +229,8 @@
           </div>
         </div>
 
-        <div><label style="text-decoration-line: underline">Contact & Address Destination</label></div>
-        <div class="row">
+        <div *ngIf="pagePresent==4"><label style="text-decoration-line: underline">Contact & Address Destination</label></div>
+        <div *ngIf="pagePresent==4" class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <!--label for="">Contact d'Origin</label-->
@@ -270,8 +275,8 @@
           </div>
         </div>
 
-        <div><button class="btn btn-primary" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></div>
-        <div class="row">
+        <div *ngIf="pagePresent==5"><button class="btn btn-primary" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></div>
+        <div *ngIf="pagePresent==5" class="row">
           <table class="table table-striped table-sm table-responsive">
             <tr *ngIf="mode==1">
               <th>Quantites</th><th>Description</th><th>Longueur(pouce)</th><th>Largeur(pouce)</th><th>Hauteur(pouce)</th><th>Poids(lb)</th>                        
@@ -310,7 +315,7 @@
             </tr>           
           </table>
         </div>
-        <div class="row">
+        <div *ngIf="pagePresent==5" class="row">
           <!--div class="col-sm-12 col-md-2 col-lg-2"><label>Resume Dimension: </label></div-->
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
@@ -368,7 +373,7 @@
             </div>
           </div>
         </div-->
-        <div>
+        <div *ngIf="pagePresent==6">
           <!--div class="col-sm-12 col-md-12 col-lg-12"-->
             <!--div class="form-group"-->
               <label class="control-label">Type d'Equipement : </label>
@@ -377,7 +382,7 @@
           <!--/div-->
           <!--div class="col-sm-9 col-md-9 col-lg-9"><input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/></div-->
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
+        <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
             <!--div class="col-sm-12 col-md-12 col-lg-12"-->
               <form [formGroup]="formGroup" >
                 <table border="1px">
@@ -394,11 +399,11 @@
             <!--/div-->
         </div>
 
-        <div>
+        <div *ngIf="pagePresent==6">
           <label class="control-label">Options : </label>
           <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control"/>
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
+        <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
           <form [formGroup]="formGroup" >
             <table border="1px">
               <ng-container formArrayName="optionTypes" *ngFor="let optionType of formGroup.controls.optionTypes['controls']; let i = index" >      
@@ -472,8 +477,8 @@
             </select>
           </div>
         </div-->
-        <br>
-        <div class="row">
+        
+        <div class="row" *ngIf="pagePresent==7">
           <div class="col-sm-2 col-md-2 col-lg-2"><label class="control-label">Note Additionnelle</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">
             <textarea name="comments" class="form-control" cols="80" rows="1"
@@ -498,8 +503,7 @@
             </div>
           </div>
         </div-->
-        <br>
-        <div class="row">
+        <div *ngIf="pagePresent==8" class="row">
           <div class="col-sm-12 col-md-3 col-lg-3">
             <!--Joindre un Photo-->
             <input type="file" title="Joindre un Photo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
@@ -509,9 +513,9 @@
             <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
           </div>
         </div>
-        <hr style="border: 2px solid lightgray"/>
+        <!--hr *ngIf="pagePresent==8" style="border: 2px solid lightgray"/-->
         
-        <div class="row">
+        <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Camion</label>
@@ -551,7 +555,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-2 col-md-2 col-lg-2"><label class="control-label">Note au Chauffeur</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">
             <textarea name="comments" class="form-control" cols="80" rows="1"
@@ -560,29 +564,19 @@
           </div>
         </div>
 
-        <hr style="border: 2px solid lightgray"/>
+        <!--hr *ngIf="pagePresent==9" style="border: 2px solid lightgray"/-->
 
-        <div class="row" style="margin-top: 10px">
-          <div class="col-md-3">
+        <div *ngIf="pagePresent==10" class="row" style="margin-top: 10px">
+          <!--div class="col-md-3">
             <div class="form-group">
-              <!--label class="control-label">Total Points</label>
-              <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
-              <!--label class="control-label">PrixBase</label>
-              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                   class="form-control" (change)="prixCalcul()" /-->
+            
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <!--label class="control-label">PrixBase</label>
-              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                    class="form-control" (change)="prixCalcul()" /-->
-              <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
-              <label *ngIf="mode==2" class="control-label">Prix/Km</label>
-              <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                   (change)="prixCalcul()"/--> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
+              
             </div>
-          </div>
+          </div-->
           <div class="col-md-2">
             <div class="form-group">
               <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
@@ -606,7 +600,7 @@
             <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-4">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
             <table  >
               <tr>
@@ -629,19 +623,39 @@
             </table>
           </div>
         </div>
+        <div *ngIf="pagePresent==10">
+          <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
+          <button (click)="transport.valid=true; onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
+          <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
+              <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
+          </button>
+          <br>
+        </div>
       </div>
     </div>
   </div>
   <hr style="border: 2px solid lightgray"/>
-  <div *ngIf="modeHistoire==-1">
+  <!--div *ngIf="modeHistoire==-1">
     <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
     <button (click)="transport.valid=true; onSave()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
     <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
         <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
     </button>
     <br>
-  </div>
+  </div-->
   <br>
+  
+  <div class="col-sm-12 col-lg-12 col-md-12" *ngIf="modeHistoire==-1&&transport.id>0">
+    <div class="row">
+      <div class="col-md-2 col-sm-2 col-lg-2">
+        <button (click)="onBack()" [disabled]="back<=0">Avant</button>
+      </div>      
+      <div class="col-md-2 col-sm-2 col-lg-2">
+        <button (click)="onForward()" [disabled]="forward>=11">Suivant</button>
+      </div>
+    </div>
+  </div>
+
   <div class="row" [hidden]="modeHistoire==1 || transport.fini || transport.id==null">
     <div style="float: left; width:70%" class="row">
       <div class="col-md-12">
