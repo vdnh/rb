@@ -30,7 +30,7 @@ export class RemorquageComponent implements OnInit {
   formGroup: FormGroup;
   serviceTypes = ["Leger", "Moyen", "Lourd"];
   // prix remorquage (bas - km - inclus)
-  prixBase1=85.00;
+  /*prixBase1=85.00;
   prixKm1=2.65;
   inclus1=5.00; 
   prixBase2=95.00;
@@ -38,7 +38,7 @@ export class RemorquageComponent implements OnInit {
   inclus2=5.00;
   prixBase3=105.00;
   prixKm3=3.80;
-  inclus3=7.00;
+  inclus3=7.00;//*/
   modeGestionAppel=2;
   /*ent1:Entreprise={id:1, nom:'Honda Laval'}
   ent2:Entreprise={id:2, nom:'Albi Eustache'}
@@ -50,8 +50,8 @@ export class RemorquageComponent implements OnInit {
 
   shipper=new Shipper();
   listShipper=[];
-  filteredShippers=[]; //=this.listShipper;
-  firstFilteredShipper='' //new Shipper();
+  //filteredShippers=[]; //=this.listShipper;
+  //firstFilteredShipper='' //new Shipper();
 
   provinceList=myGlobals.provinceList ;
   
@@ -230,7 +230,8 @@ export class RemorquageComponent implements OnInit {
     this.back=this.back+1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
-    this.prixCalcul();
+    //this.prixCalcul();
+    this.typeServiceChange(this.remorquage.typeService);
     //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   
@@ -266,61 +267,33 @@ export class RemorquageComponent implements OnInit {
       this.remorquage.telContact="";
       this.remorquage.extTelContact="";
       this.remorquage.emailContact="";
-      this.setPrixParticulier();
+      this.shipper=new Shipper();
       //console.log('Particulier - begin with back=1: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
   ifCompteClient(){
     if(this.compteClient){
-      this.particulier=false;
-      this.back=1;
-      this.pagePresent=this.back+1;
-      this.forward=this.back+2;
-      this.onSave();
-      this.setPrixParticulier()
+      this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+        this.listShipper=data;
+        this.particulier=false;
+        this.back=1;
+        this.pagePresent=this.back+1;
+        this.forward=this.back+2;
+        this.onSave();
+        this.shipper=new Shipper();
+      }, err=>{
+        console.log(err);
+      })
+      
+      //this.setPrixParticulier()
       //console.log('CompteClient - begin with back=0: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
 
   setPrixParticulier(){ // prix dans ficher model.shipper.ts sont des prix pareticuliers
-    let templShipper = new Shipper()
-    this.shipper.inclus1=templShipper.inclus1
-    this.shipper.inclus2=templShipper.inclus2
-    this.shipper.inclus3=templShipper.inclus3
-    this.shipper.panne1=templShipper.panne1
-    this.shipper.panne2=templShipper.panne2
-    this.shipper.panne3=templShipper.panne3
-    this.shipper.prixBase1=templShipper.prixBase1
-    this.shipper.prixBase2=templShipper.prixBase2
-    this.shipper.prixBase3=templShipper.prixBase3
-    this.shipper.prixKm1=templShipper.prixKm1
-    this.shipper.prixKm1A=templShipper.prixKm1A
-    this.shipper.prixKm1P=templShipper.prixKm1P
-    this.shipper.prixKm2=templShipper.prixKm2
-    this.shipper.prixKm2A=templShipper.prixKm2A
-    this.shipper.prixKm2P=templShipper.prixKm2P
-    this.shipper.prixKm3=templShipper.prixKm3
-    this.shipper.prixKm3A=templShipper.prixKm3A
-    this.shipper.prixKm3P=templShipper.prixKm3P
-    this.shipper.pullOut1=templShipper.pullOut1
-    this.shipper.pullOut2=templShipper.pullOut2
-    this.shipper.pullOut3=templShipper.pullOut3
-    this.shipper.accident1=templShipper.accident1
-    this.shipper.accident2=templShipper.accident2
-    this.shipper.accident3=templShipper.accident3
-    this.shipper.boost1=templShipper.boost1
-    this.shipper.boost2=templShipper.boost2
-    this.shipper.boost3=templShipper.boost3
-    this.shipper.changementPneu1=templShipper.changementPneu1
-    this.shipper.changementPneu2=templShipper.changementPneu2
-    this.shipper.changementPneu3=templShipper.changementPneu3
-    this.shipper.debarragePorte1=templShipper.debarragePorte1
-    this.shipper.debarragePorte2=templShipper.debarragePorte2
-    this.shipper.debarragePorte3=templShipper.debarragePorte3
-    this.shipper.essence1=templShipper.essence1
-    this.shipper.essence2=templShipper.essence2
-    this.shipper.essence3=templShipper.essence3
+    this.shipper=new Shipper();
   }
+
   async ngOnInit() {    
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
@@ -343,17 +316,12 @@ export class RemorquageComponent implements OnInit {
       console.log();
     })
     // end of taking list camion SOSPrestige
+    /*
     await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
+      this.listShipper=data;
     }, err=>{
       console.log(err);
-    })
+    })//*/
     var heure= this.remorquage.dateDepart.getHours().toString().length==2?this.remorquage.dateDepart.getHours().toString():'0'+this.remorquage.dateDepart.getHours().toString()
       //+':'+
     var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
@@ -659,45 +627,45 @@ onFileUpLoad(event){
  }
 
 
-// For input
-  filterInputEnt(event) {
-    console.log('event.target.value : ' + event.target.value)
-    //this.filteredEntreprises = []
-    this.filteredShippers = []
-    //this.firstFilteredShipper = '' //new Shipper();
-    for(let i = 0; i < this.listShipper.length; i++) {
-        let ent:Shipper = this.listShipper[i];
-        if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
-          if(i==0) 
-            this.firstFilteredShipper=ent.nom;
-          console.log('firstFilteredShipper :'+ this.firstFilteredShipper)
-          this.filteredShippers.push(ent);
-          console.log(ent.nom)
-        }
-    }
-    let ent = this.listShipper.find(res=>
-      res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
-      res.nom.length==this.remorquage.nomEntreprise.length
-      )
-    if(ent!=null){
-      this.remorquage.nomEntreprise=ent.nom
-      this.prixBase1=ent.prixBase1;
-      this.inclus1=ent.inclus1;
-      this.prixKm1=ent.prixKm1;
-      this.prixBase2=ent.prixBase2;
-      this.inclus2=ent.inclus2;
-      this.prixKm2=ent.prixKm2;
-      this.prixBase3=ent.prixBase3;
-      this.inclus3=ent.inclus3;
-      this.prixKm3=ent.prixKm3;
-      this.typeServiceChange(this.remorquage.typeService);
-      this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
-        this.contacts=data;
-      }, err=>{
-        console.log(err);
-      });
-    }
-  }
+// // For input
+//   filterInputEnt(event) {
+//     console.log('event.target.value : ' + event.target.value)
+//     //this.filteredEntreprises = []
+//     this.filteredShippers = []
+//     //this.firstFilteredShipper = '' //new Shipper();
+//     for(let i = 0; i < this.listShipper.length; i++) {
+//         let ent:Shipper = this.listShipper[i];
+//         if(ent.nom.toLowerCase().indexOf(event.target.value.toLowerCase()) == 0) {
+//           if(i==0) 
+//             this.firstFilteredShipper=ent.nom;
+//           console.log('firstFilteredShipper :'+ this.firstFilteredShipper)
+//           this.filteredShippers.push(ent);
+//           console.log(ent.nom)
+//         }
+//     }
+//     let ent = this.listShipper.find(res=>
+//       res.nom.toLowerCase().indexOf(this.remorquage.nomEntreprise.toLowerCase())==0 && 
+//       res.nom.length==this.remorquage.nomEntreprise.length
+//       )
+//     if(ent!=null){
+//       this.remorquage.nomEntreprise=ent.nom
+//       this.prixBase1=ent.prixBase1;
+//       this.inclus1=ent.inclus1;
+//       this.prixKm1=ent.prixKm1;
+//       this.prixBase2=ent.prixBase2;
+//       this.inclus2=ent.inclus2;
+//       this.prixKm2=ent.prixKm2;
+//       this.prixBase3=ent.prixBase3;
+//       this.inclus3=ent.inclus3;
+//       this.prixKm3=ent.prixKm3;
+//       this.typeServiceChange(this.remorquage.typeService);
+//       this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+//         this.contacts=data;
+//       }, err=>{
+//         console.log(err);
+//       });
+//     }
+//   }
   //(keyup)="autoCharacter($event)"  in html
   autoCharacter(event:any){
     if (event.target.value.length === 3) {
@@ -896,60 +864,69 @@ onFileUpLoad(event){
       //console.log('this.remorquage.telContact after : '+ this.remorquage.telContact)
     this.remorquage.extTelContact=event.extTel
   }
-  nomEntrepriseChange(ent){
-    this.shipper=ent
-    this.remorquage.nomEntreprise=ent.nom
-    this.prixBase1=ent.prixBase1;
-    this.inclus1=ent.inclus1;
-    this.prixKm1=ent.prixKm1;
-    this.prixBase2=ent.prixBase2;
-    this.inclus2=ent.inclus2;
-    this.prixKm2=ent.prixKm2;
-    this.prixBase3=ent.prixBase3;
-    this.inclus3=ent.inclus3;
-    this.prixKm3=ent.prixKm3;
-    this.typeServiceChange(this.remorquage.typeService);
-    this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
-      this.contacts=data;
-      console.log('this.contacts : ' + this.contacts)
-    }, err=>{
-      console.log(err);
-    });
-  }
-  nomEntrepriseInputChange(){
-    console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
+  // nomEntrepriseChange(ent){
+  //   this.shipper=ent
+  //   this.remorquage.nomEntreprise=ent.nom
+  //   this.prixBase1=ent.prixBase1;
+  //   this.inclus1=ent.inclus1;
+  //   this.prixKm1=ent.prixKm1;
+  //   this.prixBase2=ent.prixBase2;
+  //   this.inclus2=ent.inclus2;
+  //   this.prixKm2=ent.prixKm2;
+  //   this.prixBase3=ent.prixBase3;
+  //   this.inclus3=ent.inclus3;
+  //   this.prixKm3=ent.prixKm3;
+  //   this.typeServiceChange(this.remorquage.typeService);
+  //   this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+  //     this.contacts=data;
+  //     console.log('this.contacts : ' + this.contacts)
+  //   }, err=>{
+  //     console.log(err);
+  //   });
+  // }
+  async nomEntrepriseInputChange(){
+    //console.log("this.remorquage.nomEntreprise : "+this.remorquage.nomEntreprise) 
     /**
       let ent = this.listEntreprise.find(res=>
       res.nom.includes(this.remorquage.nomEntreprise) && 
       res.nom.length==this.remorquage.nomEntreprise.length
       )
      */
-    let ent = this.listShipper.find(res=>
+    this.shipper = this.listShipper.find(res=>
       res.nom.includes(this.remorquage.nomEntreprise) && 
       res.nom.length==this.remorquage.nomEntreprise.length
       )
-    if(ent!=null){
+    if(this.shipper!=undefined){
+      /*
       this.shipper=ent
-      this.remorquage.idEntreprise=ent.id
-      this.remorquage.nomEntreprise=ent.nom
-      this.prixBase1=ent.prixBase1;
-      this.inclus1=ent.inclus1;
-      this.prixKm1=ent.prixKm1;
-      this.prixBase2=ent.prixBase2;
-      this.inclus2=ent.inclus2;
-      this.prixKm2=ent.prixKm2;
-      this.prixBase3=ent.prixBase3;
-      this.inclus3=ent.inclus3;
-      this.prixKm3=ent.prixKm3;
-      this.typeServiceChange(this.remorquage.typeService);
-      this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
+      console.log('Trouve shipper prix for : '+this.shipper.nom)
+      this.remorquage.idEntreprise=this.shipper.id
+      this.remorquage.nomEntreprise=this.shipper.nom
+      //*/
+      //await this.typeServiceChange(this.remorquage.typeService);      
+      await this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
+        //this.shipper=ent
+        console.log('Trouve shipper prix for : '+this.shipper.nom)
+        this.remorquage.idEntreprise=this.shipper.id
+        this.remorquage.nomEntreprise=this.shipper.nom
+        //this.remorquage.prixBase=0.00;
+        //this.remorquage.prixKm=0.00;
+        // console.log('this.remorquage.prixBase before changed : '+this.remorquage.prixBase)
+        // console.log('this.remorquage.prixKm before changed : '+this.remorquage.prixKm)
+        this.typeServiceChange(this.remorquage.typeService);
+        // console.log('this.remorquage.prixBase after changed : '+this.remorquage.prixBase)
+        // console.log('this.remorquage.prixKm after changed : '+this.remorquage.prixKm)
       }, err=>{
         console.log(err);
       });
     }
-    else this.shipper=new Shipper()
-    this.firstFilteredShipper=this.remorquage.nomEntreprise
+    else {
+      this.shipper=new Shipper();
+      this.contacts=[];
+      // console.log('Attention !!! - nomEntrepriseInputChange ne trouve pas Shipper.')
+    }
+    //this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
 
   ifAccident(){
@@ -963,6 +940,7 @@ onFileUpLoad(event){
     this.typeServiceChange(this.remorquage.typeService)
   }
   calculePrixbase(){
+    // console.log('this.remorquage.prixBase in calculatePrixBase() before calculate : '+this.remorquage.prixBase)
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;
     if(this.remorquage.typeService.includes('Leger')){ 
       if(this.remorquage.panne) {
@@ -981,7 +959,9 @@ onFileUpLoad(event){
       
       this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
       /*if (this.remorquage.prixBase>this.shipper.accident1) this.remorquage.prixBase=this.shipper.accident1
-      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
+      else//*/ 
+      if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne1
+      // console.log('this.remorquage.prixBase in calculatePrixBase() - Leger : '+this.remorquage.prixBase)
     }
     else if(this.remorquage.typeService.includes('Moyen')){ 
       if(this.remorquage.panne) {
@@ -1000,7 +980,9 @@ onFileUpLoad(event){
 
       this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
       /*if (this.remorquage.prixBase>this.shipper.accident2) this.remorquage.prixBase=this.shipper.accident2
-      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
+      else//*/ 
+      if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne2
+      // console.log('this.remorquage.prixBase in calculatePrixBase() - Moyen : '+this.remorquage.prixBase)
     }
     else if(this.remorquage.typeService.includes('Lourd')){ 
       if(this.remorquage.panne) {
@@ -1019,8 +1001,11 @@ onFileUpLoad(event){
 
       this.remorquage.prixBase=panne+accident+pullOut+debarragePorte+boost+essence+changementPneu;
       /*if (this.remorquage.prixBase>this.shipper.accident3) this.remorquage.prixBase=this.shipper.accident3
-      else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
+      else//*/ 
+      if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
+      // console.log('this.remorquage.prixBase in calculatePrixBase() - Lourd : '+this.remorquage.prixBase)
     }
+    // console.log('this.remorquage.prixBase in calculatePrixBase() after calculate : '+this.remorquage.prixBase)
   }
   typeServiceChange(type){
     this.remorquage.typeService=type
@@ -1086,7 +1071,11 @@ onFileUpLoad(event){
       this.remorquage.inclus=-1.00;
       this.remorquage.prixKm=-1.00;
     }
+    console.log('this.remorquage.prixBase in typyserviceChange() before prixCalcul() : '+this.remorquage.prixBase)
+    console.log('this.remorquage.prixKm in typyserviceChange() before prixCalcul() : '+this.remorquage.prixKm)
     this.prixCalcul()
+    console.log('this.remorquage.prixBase in typyserviceChange() after prixCalcul() : '+this.remorquage.prixBase)
+    console.log('this.remorquage.prixKm in typyserviceChange() after prixCalcul() : '+this.remorquage.prixKm)
   }
 
   onHistoire(){

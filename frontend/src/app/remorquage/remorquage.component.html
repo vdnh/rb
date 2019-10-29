@@ -559,8 +559,8 @@
         <!--br-->
         <div class="row" *ngIf="pagePresent==7">
           <div class="col-sm-12 col-md-2 col-lg-2">
-            <label style="text-decoration-line: underline" for="">Joindre un image</label>
-            <input type="file" title="Joindre un Photo" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+            <label style="text-decoration-line: underline" for="">Joindre une image</label>
+            <input type="file" title="Joindre une image" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
             <button *ngIf="remorquage.imgUrl.length>0" (click)="remorquage.imgUrl=''" class="btn btn-link">Supprimer photo</button>
           </div>
           <div *ngIf="remorquage.imgUrl.length>0" class="col-sm-12 col-md-10 col-lg-10" style="border: 2px dotted gray">
