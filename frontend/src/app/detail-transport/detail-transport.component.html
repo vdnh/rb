@@ -190,7 +190,7 @@
             <div class="form-group">
               <!--label for="">Tel 1er</label-->
               <input type="tel" [(ngModel)]="transport.telClient" name="telClient"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 1er"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telephone"
                    (focusout)="transport.telClient=reformTelEvent($event)" required>
             </div>
           </div>
@@ -198,7 +198,7 @@
             <div class="form-group">
               <!--label for="">Tel 2em</label-->
               <input type="tel" [(ngModel)]="transport.telClient2em" name="telClient2em"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 2em"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel2em/Courriel"
                    (focusout)="transport.telClient2em=reformTelEvent($event)">
             </div>
           </div>
@@ -236,7 +236,7 @@
             <div class="form-group">
               <!--label for="">Tel 1er</label-->
               <input type="tel" [(ngModel)]="transport.tel1Dest" name="tel1Dest"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 1er"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telephone"
                    (focusout)="transport.tel1Dest=reformTelEvent($event)" required>
             </div>
           </div>
@@ -244,7 +244,7 @@
             <div class="form-group">
               <!--label for="">Tel 2em</label-->
               <input type="tel" [(ngModel)]="transport.tel2Dest" name="tel2Dest"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 2em"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel2em/Courriel"
                    (focusout)="transport.tel2Dest=reformTelEvent($event)">
             </div>
           </div>
@@ -525,8 +525,13 @@
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Chauffeur</label>
-              <input type="text"  [(ngModel)]="transport.nomIntervenant"
-                    name="nomIntervenant" class="form-control">
+              <!-- <input type="text"  [(ngModel)]="transport.nomIntervenant"
+                    name="nomIntervenant" class="form-control"> -->
+              <input type="text" (change)="chauffeurChange()" [(ngModel)]="transport.nomIntervenant"
+                name="nomIntervenant" class="form-control" list="defaultChauffeurs">
+              <datalist id="defaultChauffeurs">
+                <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">

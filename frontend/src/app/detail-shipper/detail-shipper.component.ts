@@ -84,18 +84,19 @@ export class DetailShipperComponent implements OnInit {
 
   addContact(){
     this.addcontact.id_shipper=this.id;
-    this.contactsService.saveContacts(this.addcontact).subscribe(data=>{
-      //alert("Contact added.");
-      this.refresh()
+    this.contactsService.saveContacts(this.addcontact).subscribe((data:Contact)=>{
+      alert("Adresse added.");
+      this.contacts.push(data)
     }, err=>{
       console.log(err)
     })
   }
 
   deleteContact(id:number){
-    this.contactsService.deleteContact(id).subscribe(data=>{
+    this.contactsService.deleteContact(id).subscribe((data:Contact)=>{
       alert("Contact : "+this.addcontact.nom+" a ete supprime.");
-      this.refresh();
+      this.contacts.splice(this.contacts.indexOf(data),1)
+      //this.demandes.splice(this.demandes.indexOf(demande), 1)
     }, err=>{
       console.log(err);
     });
@@ -103,25 +104,24 @@ export class DetailShipperComponent implements OnInit {
 
   addAdresse(){
     this.addadresse.id_shipper=this.id;
-    this.adressesService.saveAdresses(this.addadresse).subscribe(data=>{
+    this.adressesService.saveAdresses(this.addadresse).subscribe((data:Adresse)=>{
       alert("Adresse added.");
-      this.refresh()
+      this.adresses.push(data)
     }, err=>{
       console.log(err)
     })
   }
 
   deleteAdresse(id:number){
-    this.adressesService.deleteAdresse(id)
-    .subscribe(data=>{
+    this.adressesService.deleteAdresse(id).subscribe((data:Adresse)=>{
       alert("Adresse : "+this.addadresse.num+" a ete supprime.");
-      this.refresh();
+      this.adresses.splice(this.adresses.indexOf(data),1)
     }, err=>{
       console.log(err);
     });
   }  
 
   refresh(): void {
-    window.location.reload();
-}
+    //window.location.reload();
+  }
 }

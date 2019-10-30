@@ -129,6 +129,7 @@ export class TransportComponent implements OnInit {
   disableWebInfo=false;
   disableAuthority=false;
   disableTransCreditUS=false;
+  modeGestionAppel: number = 2;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -152,6 +153,19 @@ export class TransportComponent implements OnInit {
   }
   //end for signature pad
 
+  appelsEncours(){
+    this.modeGestionAppel=2
+  }
+  appelsAttentes(){
+    this.modeGestionAppel=1
+  }
+  appelsFinis(){
+    this.modeGestionAppel=3
+  }
+  appelsAnnules(){
+    this.modeGestionAppel=4
+  }
+  
   // funtions for photo
   createImageFromBlob(image: Blob) {
     let reader = new FileReader();
@@ -195,6 +209,7 @@ export class TransportComponent implements OnInit {
   listTrs: Transport[]; // appels waitting
   listTrsSent: Transport[]; // appels sent
   listTrsFini: Transport[]; // appels finished
+  listTrsAnnule: Transport[]; // appels annules
   contacts: Contact[];
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
@@ -700,6 +715,7 @@ onRefresh(){
     this.listTrs=[]  //data;
     this.listTrsSent=[]
     this.listTrsFini=[]
+    this.listTrsAnnule=[]
     //*
     data.sort((b, a)=>{
       if(a.id>b.id)
@@ -710,6 +726,7 @@ onRefresh(){
     })//*/
     data.forEach(tr=>{
       if(tr.fini) this.listTrsFini.push(tr)
+      else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
       else if (tr.sent) this.listTrsSent.push(tr)
       else if (tr.valid) this.listTrs.push(tr)//*/
     })
@@ -1125,6 +1142,7 @@ async showMap() {
         this.listTrs=[]  //data;
         this.listTrsSent=[]
         this.listTrsFini=[]
+        this.listTrsAnnule=[]
         //*
         data.sort((b, a)=>{
           if(a.id>b.id)
@@ -1135,6 +1153,7 @@ async showMap() {
         })//*/
         data.forEach(tr=>{
           if(tr.fini) this.listTrsFini.push(tr)
+          else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
           else if (tr.sent) this.listTrsSent.push(tr)
           else if (tr.valid) this.listTrs.push(tr)//*/
         })

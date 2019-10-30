@@ -101,6 +101,9 @@ export class DetailTransporterComponent implements OnInit {
       if(localStorage.getItem('role').includes('SHIPPER')){  // in the cas Shipper want to view detail contact
         this.mode=3;
       }
+      else if(localStorage.getItem('role').includes('DISPATCH')){  // in the cas Dispatch SOSPrestige want to modify drivers
+        this.mode=4;
+      }
       else{ // in the cas Transporter want to view detail himsefl
         this.mode=1;
         this.modeTableau=1;
@@ -203,14 +206,10 @@ export class DetailTransporterComponent implements OnInit {
 
   addContact(){
     this.addcontact.id_transporter=this.id;
-    this.contactsService.saveContacts(this.addcontact).subscribe(data=>{
+    this.contactsService.saveContacts(this.addcontact).subscribe((data:Contact)=>{
       alert("Contact added.");
       //this.refresh()
-      this.contactsService.contactsDeTransporter(this.id).subscribe((data:Array<Contact>)=>{
-        this.contacts=data;
-      }, err=>{
-        console.log(err);
-      });
+      this.contacts.push(data)
     }, err=>{
       console.log(err)
     })
@@ -218,73 +217,49 @@ export class DetailTransporterComponent implements OnInit {
 
   addChauffeur(){
     this.addchauffeur.idTransporter=this.id;
-    this.chauffeursService.saveChauffeurs(this.addchauffeur).subscribe(data=>{
+    this.chauffeursService.saveChauffeurs(this.addchauffeur).subscribe((data:Chauffeur)=>{
       alert("Chauffeur added.");
       //this.refresh()
-      this.chauffeursService.chauffeursDeTransporter(this.id).subscribe((data:Array<Chauffeur>)=>{
-        this.chauffeurs=data;
-      }, err=>{
-        console.log(err);
-      });
+      this.chauffeurs.push(data)
     }, err=>{
       console.log(err)
     })
   }
 
   deleteContact(id:number){
-    this.contactsService.deleteContact(id)
-    .subscribe(data=>{
+    this.contactsService.deleteContact(id).subscribe((data:Contact)=>{
       alert("Contact : "+this.addcontact.nom+" a ete supprime.");
-      //this.refresh();
-      this.contactsService.contactsDeTransporter(this.id).subscribe((data:Array<Contact>)=>{
-        this.contacts=data;
-      }, err=>{
-        console.log(err);
-      });
+      this.contacts.splice(this.contacts.indexOf(data), 1)
     }, err=>{
       console.log(err);
     });
   }
   
   deleteChauffeur(id:number){
-    this.chauffeursService.deleteChauffeur(id)
-    .subscribe(data=>{
+    this.chauffeursService.deleteChauffeur(id).subscribe((data:Chauffeur)=>{
       alert("Chauffeur : "+this.addchauffeur.nom+" a ete supprime.");
-      //this.refresh();
-      this.chauffeursService.chauffeursDeTransporter(this.id).subscribe((data:Array<Chauffeur>)=>{
-        this.chauffeurs=data;
-      }, err=>{
-        console.log(err);
-      });
+      this.chauffeurs.splice(this.chauffeurs.indexOf(data), 1)
     }, err=>{
       console.log(err);
     });
   }
+
   addAdresse(){
     this.addadresse.id_transporter=this.id;
-    this.adressesService.saveAdresses(this.addadresse).subscribe(data=>{
+    this.adressesService.saveAdresses(this.addadresse).subscribe((data:Adresse)=>{
       alert("Adresse added.");
       //this.refresh()
-      this.adressesService.adressesDeTransporter(this.id).subscribe((data:Array<Adresse>)=>{
-        this.adresses=data;
-      }, err=>{
-        console.log();
-      });
+      this.adresses.push(data);
     }, err=>{
       console.log(err)
     })
   }
 
   deleteAdresse(id:number){
-    this.adressesService.deleteAdresse(id)
-    .subscribe(data=>{
+    this.adressesService.deleteAdresse(id).subscribe((data:Adresse)=>{
       alert("Adresse : "+this.addadresse.num+" a ete supprime.");
       //this.refresh();
-      this.adressesService.adressesDeTransporter(this.id).subscribe((data:Array<Adresse>)=>{
-        this.adresses=data;
-      }, err=>{
-        console.log();
-      });
+      this.adresses.splice(this.adresses.indexOf(data), 1)
     }, err=>{
       console.log(err);
     });

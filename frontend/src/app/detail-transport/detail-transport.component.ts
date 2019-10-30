@@ -23,6 +23,8 @@ import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { Chauffeur } from 'src/model/model.chauffeur';
 
 @Component({
   selector: 'app-detail-transport',
@@ -130,6 +132,7 @@ export class DetailTransportComponent implements OnInit {
   disableAuthority=false;
   disableTransCreditUS=false;
   id: any;
+  chauffeurs: Chauffeur[];
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -224,6 +227,7 @@ export class DetailTransportComponent implements OnInit {
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
+    public chauffeursService:ChauffeursService,
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
       //* construct for checkbox list
@@ -300,6 +304,11 @@ export class DetailTransportComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
+      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
       if(localStorage.getItem('fullName')!=null && !(this.transport.nomDispatch.length>0)) 
       this.transport.nomDispatch=localStorage.getItem('fullName')
       this.loadDetailsService.loadDetailsDeTransport(this.id).subscribe((lds:Array<LoadDetail>)=>{
@@ -334,7 +343,19 @@ export class DetailTransportComponent implements OnInit {
       + this.poidsPointage(this.transport.poids, this.mode);
     this.prixBase(this.transport.totalpoints)
   }
-
+  
+  chauffeurChange(){
+    let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.transport.nomIntervenant=ch.nom
+        this.transport.telIntervenant=ch.tel
+        this.transport.emailIntervenant=ch.email
+      }
+    })
+  }
   async gotoDetailTransport(t:Transport){
     window.open("/detail-transport/"+t.id, "_blank")
   }

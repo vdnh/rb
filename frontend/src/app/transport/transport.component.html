@@ -17,7 +17,7 @@
     </div>
   </div>
   <hr style="border: 1px dotted black"/-->
-  <div class="row">
+  <!--div class="row">
     <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
       Liste d'Attente
     </div>
@@ -30,21 +30,98 @@
     <div class="col-md-3 col-sm-3 col-lg-3" style="color:blue; text-align: center">
       Appels Annules
     </div>
-  </div>
+  </div-->
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-lg-4">
-      <table class="table">
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      <button (click)="appelsAttentes()" style="color: green; text-align: center">Liste d'Attente</button> 
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      <button (click)="appelsEncours()" style="color: orange; text-align: center">Liste en Cours</button> 
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
+      <button (click)="appelsFinis()" style="color: red; text-align: center">Termines Avec Succes</button> 
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: blue; text-align: center">
+      <button (click)="appelsAnnules()" style="color: blue; text-align: center">Appels Annulees</button> 
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-lg-12">
+      <table *ngIf="modeGestionAppel==1" class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Client</th>
+          <th>Numero</th><th (click)='onSortDate(listTrs)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+      </table>
+      <table *ngIf="modeGestionAppel==2" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsSent" style="color: orange; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+      </table>
+      <table *ngIf="modeGestionAppel==3" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsFini" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+      </table>
+      <table *ngIf="modeGestionAppel==4" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsAnnule)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsAnnule" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
         </tr>
       </table>
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4">
+    <!-- <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Client</th>
@@ -67,7 +144,7 @@
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
         </tr>
       </table>
-    </div>
+    </div> -->
   </div>
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->

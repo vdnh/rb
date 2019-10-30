@@ -127,7 +127,7 @@
        
           <table> 
               <td><button class="btn btn-primary" (click)="saveShipper()">Ok - Modifier Shipper</button></td>
-              <td *ngIf='!quitButton.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td> 
+              <!--td *ngIf='!quitButton.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
               <td></td>
               <td></td>
               <td></td>
@@ -162,7 +162,7 @@
                   <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.extTel}}</td><td>{{contact.fax}}</td>
               </tr>                
           </table>
-              <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/shippers">Ok</button></div>
+              <div> <button class="btn btn-primary" (click)="mode=1">Ok</button></div> <!--routerLink="/shippers"-->
           <!--/div-->
         </div>   
   </div>
