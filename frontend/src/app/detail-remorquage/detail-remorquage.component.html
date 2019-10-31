@@ -1,4 +1,15 @@
-<h4 style="text-align: center; font: bold">Remorquage</h4>
+<h4 style="text-align: left; font: bold">Remorquage<span>&nbsp;&nbsp;&nbsp;</span>
+  <span><button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAvecSucces</button></span>
+  <span>
+    <button (click)="onDevoirAttendre()" class="btn btn-link" 
+      [disabled]="(remorquage.fini||(!remorquage.sent&&!remorquage.driverNote.includes('!!Cancelled!!')))"
+      >DevoirAttendre
+    </button>
+  </span>
+  <span><button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini||remorquage.driverNote.includes('!!Cancelled!!'))">Annuler</button></span>
+  <span><button (click)="onFermer()" class="btn btn-link" >Fermer</button></span>          
+</h4>
+<hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
     <button (click)="onHistoire()" class="btn btn-link">Retour</button>    
     <table class="table">
@@ -54,7 +65,7 @@
 <!--div *ngIf="modeHistoire==-1"-->
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
-        <div class="row">
+        <!-- <div class="row">
           <button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAvecSucces</button>         
           <button (click)="onDevoirAttendre()" class="btn btn-link" 
             [disabled]="(remorquage.fini||(!remorquage.sent&&!remorquage.driverNote.includes('!!Cancelled!!')))"
@@ -63,12 +74,8 @@
           <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini||remorquage.driverNote.includes('!!Cancelled!!'))">Annuler</button>
           <button (click)="onFermer()" class="btn btn-link" >Fermer</button>          
           <br><br><br>
-          <!--h4 class="first">Basic</h4>
-                    <p-autoComplete [(ngModel)]="remorquage.nomEntreprise" [suggestions]="filteredEntreprisesSingle" (completeMethod)="filterEnts($event)" field="name" [size]="30" [minLength]="1" placeholder="Entreprises" [dropdown]="true"></p-autoComplete>
-                    <span style="margin-left:10px">Entreprise: {{remorquage.nomEntreprise ? remorquage.nomEntreprise||remorquage.nomEntreprise : 'none'}}</span>
-                    <h3>Advanced</h3-->
         </div>
-        <hr style="border: 2px solid lightgray"/>
+        <hr style="border: 2px solid lightgray"/> -->
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
             <!--table>

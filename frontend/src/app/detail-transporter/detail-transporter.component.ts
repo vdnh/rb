@@ -243,6 +243,15 @@ export class DetailTransporterComponent implements OnInit {
       console.log(err);
     });
   }
+  
+  modifyChauffeur(ch:Chauffeur){
+    this.chauffeursService.saveChauffeurs(ch).subscribe((data:Chauffeur)=>{
+      alert("Chauffeur : "+this.addchauffeur.nom+" a ete modifie.");
+      //this.chauffeurs.splice(this.chauffeurs.indexOf(data), 1)
+    }, err=>{
+      console.log(err);
+    });
+  }
 
   addAdresse(){
     this.addadresse.id_transporter=this.id;

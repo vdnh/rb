@@ -355,7 +355,7 @@
     <div class="panel panel-primary" *ngIf="mode==4">
         <div class="panel-body">
             <table>
-                <tr><th>Add Chauffeur</th></tr> 
+                <tr><th><h4>Ajouter du Chauffeur</h4></th></tr> 
                 <tr>
                     <th>Nom</th><th>CellPhone</th><th>Courriel</th>
                 </tr>
@@ -363,14 +363,15 @@
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.email" /></td>
-                    <td><button class="btn btn-link" (click)="addChauffeur()">Add</button></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()">Ajouter</button></td>
                 </tr>   
                 <br>
                 <tr *ngFor="let chauffeur of chauffeurs">
                     <td><input class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /></td>                
                     <td><input class="form-control" type="text" [(ngModel)]="chauffeur.email" /></td>
-                    <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Delete</button></td>
+                    <td><button class="btn btn-link" (click)="modifyChauffeur(chauffeur)">Modifier</button></td>
+                    <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Supprimer</button></td>
                 </tr>
             </table>
         </div>

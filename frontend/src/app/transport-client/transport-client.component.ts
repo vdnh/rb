@@ -319,7 +319,7 @@ export class TransportClientComponent implements OnInit {
           this.transport.destLat,
           this.transport.destLong                                          
         )
-        this.showMap()
+        //this.showMap()
       }
     }, err=>{
       console.log(err);

@@ -317,7 +317,9 @@ export class DetailTransportComponent implements OnInit {
         console.log(err)
       })
       //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-      this.titleService.setTitle('Case : '+this.transport.id + (this.transport.fini? " - fini" : this.transport.sent? " - encours" : ' - en attente'))
+      //this.titleService.setTitle('Case : '+this.transport.id + (this.transport.fini? " - fini" : this.transport.sent? " - encours" : ' - en attente'))
+      this.titleService.setTitle('Case : '+ this.transport.nomEntreprise+' de '+ this.transport.origin +
+      (this.transport.fini? " - fini" : this.transport.sent? " - encours" : this.transport.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
       if(!this.transport.fini && this.transport.originLat!=0 && this.transport.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.transport.originLat,
@@ -898,44 +900,95 @@ async showMap() {
           window.close()
         })
   }
+  
+  onDevoirAttendre(){
+    var r = confirm("Etes vous sur de mettre ce cas sur la liste d'attente?")
+    if(r==true){
+      this.transport.sent=false; // dans le cas En Cours en attendre
+      this.transport.driverNote=""; // dans le cas Annule en attendre
+      this.transportsService.saveTransports(this.transport).subscribe(data=>{
+        //this.onFermer();
+        window.close();
+      }, err=>{console.log(err)})
+    }
+  }
 
   onCancel(){
-    // First, we try once more to get detail of this appel whether it was deleted
-    // if good, we make save - update
-    this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
-      var r = confirm("Etes vous sur d'annuller ce cas ?")
-      if(r==true){
-        console.log("Le cas est annulle.")
-        this.loadDetails.forEach(load=>{
-          this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log()})
-        })
-        if(this.transport.id>0){
-          this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
-            // commence d'envoyer email
-            if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
-              this.em.emailDest=this.transport.emailIntervenant
-              this.em.titre="Annuler case numero : " + this.transport.id.toString()
-              this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
-              this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-                alert("Un courriel annulation a ete aussi envoye au chauffeur.")
-              }, err=>{
-                console.log()
-              })
-            }
-            //*/
-            window.close()
-            this.router.navigate(['/transport']);
-          }, err=>{console.log(err)})
-        }
+    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(r==true){
+      console.log("Le cas est annulle.")
+      if(this.transport.id>0){
+        this.transport.driverNote="!!Cancelled!!";
+        this.transport.sent=false;
+        this.transportsService.saveTransports(this.transport).subscribe(async data=>{          
+          // commence d'envoyer email
+          if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+            this.em.emailDest=this.transport.emailIntervenant
+            //this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
+            this.em.titre="Annuler case : " + this.transport.nomEntreprise+' de '+ this.transport.origin +' a ' + this.transport.destination
+            //this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
+            let styleCss = '<style> '
+            +' div.cts_rotate {width: 150px; height: 80px; background-color: yellow; -ms-transform: rotate(340deg); -webkit-transform: rotate(340deg); transform: rotate(340deg);} '
+            +' </style> '
+            // styleCss + 
+            this.em.content= ' <div  style="transform: rotate(340); background-color: yellow; width: 150px; height: 100px;">' 
+            +'<p> <h4> '+'Annuler case : ' + this.transport.nomEntreprise+' de '+ this.transport.origin +' a ' + this.transport.destination+' </h4> </p>'
+            +'</div>'    
+            await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              this.CloseWithWindowOpenTrick();
+            }, err=>{
+              console.log()
+            })
+            //this.CloseWithWindowOpenTrick();
+          }
+          //*/
+          else 
+            this.CloseWithWindowOpenTrick();
+        }, err=>{console.log(err)})
       }
-      else {
-        console.log('Le cas est continue.')
-      }
-    }, err=>{
-          alert('Cette appel '+this.id+' a ete annule');
-          window.close()
-        })      
+    }
+    else {
+      console.log('Le cas est continue.')
+    }
   }
+  // onCancel(){
+  //   // First, we try once more to get detail of this appel whether it was deleted
+  //   // if good, we make save - update
+  //   this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
+  //     var r = confirm("Etes vous sur d'annuller ce cas ?")
+  //     if(r==true){
+  //       console.log("Le cas est annulle.")
+  //       this.loadDetails.forEach(load=>{
+  //         this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log()})
+  //       })
+  //       if(this.transport.id>0){
+  //         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
+  //           // commence d'envoyer email
+  //           if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+  //             this.em.emailDest=this.transport.emailIntervenant
+  //             this.em.titre="Annuler case numero : " + this.transport.id.toString()
+  //             this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
+  //             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+  //               alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+  //             }, err=>{
+  //               console.log()
+  //             })
+  //           }
+  //           //*/
+  //           window.close()
+  //           this.router.navigate(['/transport']);
+  //         }, err=>{console.log(err)})
+  //       }
+  //     }
+  //     else {
+  //       console.log('Le cas est continue.')
+  //     }
+  //   }, err=>{
+  //         alert('Cette appel '+this.id+' a ete annule');
+  //         window.close()
+  //       })      
+  // }
 
   CloseWithWindowOpenTrick()
   {

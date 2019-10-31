@@ -1,4 +1,14 @@
-<h4 style="text-align: center; font: bold">Transportation</h4>
+<h4 style="text-align: left; font: bold">Transport<span>&nbsp;&nbsp;&nbsp;</span>
+  <span><button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||!transport.sent||transport.fini)">TerminerAvecSucces</button></span>
+  <span>
+    <button (click)="onDevoirAttendre()" class="btn btn-link" 
+        [disabled]="(transport.fini||(!transport.sent&&!transport.driverNote.includes('!!Cancelled!!')))"
+      >DevoirAttendre
+    </button>
+  </span>
+  <span><button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini||transport.driverNote.includes('!!Cancelled!!'))">Annuler</button></span>
+  <span><button (click)="onFermer()" class="btn btn-link" >Fermer</button></span>
+</h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
   <div class="row">
@@ -78,13 +88,17 @@
     </div-->              
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
-        <div class="row">
-          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
-          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button>
+        <!-- <div class="row">
+          <button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAvecSucces</button>         
+          <button (click)="onDevoirAttendre()" class="btn btn-link" 
+            [disabled]="(transport.fini||(!transport.sent&&!transport.driverNote.includes('!!Cancelled!!')))"
+          >DevoirAttendre
+          </button>
+          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">Annuler</button>
           <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
           <br><br><br>
         </div>
-        <hr style="border: 2px solid lightgray"/>
+        <hr style="border: 2px solid lightgray"/> -->
         <div class="row">
           <div class="col-md-4 col-sm-4 col-lg-4">
 

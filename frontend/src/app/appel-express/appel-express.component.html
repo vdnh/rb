@@ -1,8 +1,9 @@
 <h4 style="text-align: center; font: bold">
-  Mission / Message Express <span>&nbsp;&nbsp;</span>
+  Mission / Message Express 
+  <!-- <span>&nbsp;&nbsp;</span>
   <button class="btn btn-link" routerLink="/detail-transporter/8">
-    Ajouter/Modifier Chauffeurs
-  </button>
+    <h5>Ajouter/Modifier des Chauffeurs</h5>
+  </button> -->
 </h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
@@ -378,6 +379,11 @@
             <datalist id="defaultChauffeurs">
               <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
             </datalist>
+            <label for="">
+              <button class="btn btn-link" routerLink="/detail-transporter/8">
+                Ajouter/Modifier
+              </button>
+            </label>
           </div>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3">

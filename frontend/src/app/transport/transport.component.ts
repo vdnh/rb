@@ -152,7 +152,7 @@ export class TransportComponent implements OnInit {
     this.transport.signature="";
   }
   //end for signature pad
-
+  
   appelsEncours(){
     this.modeGestionAppel=2
   }
@@ -217,7 +217,26 @@ export class TransportComponent implements OnInit {
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
-
+  
+  template=''
+  templates : Array<Transport>
+  // when you change the template
+  templateChange(){
+    this.transport=new Transport()
+    let strings:Array<string>=this.template.split(".Id.");
+    let tempId:number =  Number(strings[1])
+    this.templates.forEach(tp=>{
+      if(tp.id==tempId) 
+      {
+        tp.id = this.transport.id;
+        this.transport = tp;
+        this.template=strings[0].trimRight()
+        //this.transport.telIntervenant=ch.tel
+        //this.transport.emailIntervenant=ch.email
+      }
+    })
+  }
+  
   constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
@@ -253,13 +272,16 @@ export class TransportComponent implements OnInit {
     this.back=this.back-1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
-    console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+    //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   onForward(){
+    if(this.back==0){
+      this.onSave();
+    }
     this.back=this.back+1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
-    console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+    //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   //*/  End of control of surfer
   onNew(){
@@ -370,7 +392,7 @@ export class TransportComponent implements OnInit {
     //this.typeServiceChange(this.serviceTypes[0]);
     this.calculTotalpoints() 
     this.prixCalcul()
-    this.onSave();
+    // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
   }
   
   chauffeurChange(){
@@ -984,7 +1006,7 @@ async showMap() {
     })
   }
 
-  async onSave(){
+  async onSaveWithMessage(){  // will save with message confirmation
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
@@ -1016,6 +1038,55 @@ async showMap() {
       this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
         if(this.transport.id!=null)
           alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+    }
+  }
+
+  async onSave(){  // without message alert
+    if(this.transport.id==null){
+      this.transport.dateDepart=new Date()
+      this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+    }
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    if(this.mode==2){
+      this.changeUnite();  // we must change to mode=1
+      await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          //alert("C'est enregistre.")
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=data.id;
+          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+      this.changeUnite();  // we must rechange to mode=2
+    }
+    else{ // mode=1 already, just save
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        if(this.transport.id!=null)
+          //alert("C'est enregistre.")
         this.loadDetails.forEach(async load=>{
           load.idTransport=data.id;
           await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1139,6 +1210,7 @@ async showMap() {
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
       this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+        this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
         this.listTrsFini=[]
@@ -1162,12 +1234,16 @@ async showMap() {
       })
     }
     else {
+      this.back=0;
+      this.pagePresent=this.back+1
+      this.forward=this.back+2
+      /*
       if(this.transport.id==null){
         this.transport.dateDepart = new Date()
         this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
           (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
         this.onSave();
-      }
+      }//*/
     }
   }
   
