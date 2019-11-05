@@ -218,24 +218,11 @@ export class TransportComponent implements OnInit {
 
   camions:Array<Camion>;
   
-  template=''
-  templates : Array<Transport>
-  // when you change the template
-  templateChange(){
-    this.transport=new Transport()
-    let strings:Array<string>=this.template.split(".Id.");
-    let tempId:number =  Number(strings[1])
-    this.templates.forEach(tp=>{
-      if(tp.id==tempId) 
-      {
-        tp.id = this.transport.id;
-        this.transport = tp;
-        this.template=strings[0].trimRight()
-        //this.transport.telIntervenant=ch.tel
-        //this.transport.emailIntervenant=ch.email
-      }
-    })
-  }
+  templateName:string=''; // name of the transport model
+  templates: Transport[]=[];  // liste transport models
+  aStrings=[]
+  tempId:number = null;
+  idTransportTemp  : number = null; // to hold the number ID of transport
   
   constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -263,6 +250,44 @@ export class TransportComponent implements OnInit {
         selectAll: selectAllControl01
       });//*/
   }
+
+  // when you change the template name (modele)
+  templateChange(){
+    /// must revue and keep id and something must to do
+    //if(this.transport.id>0) 
+    this.idTransportTemp = this.transport.id; // we must keep this.transport.id as it as
+    //let transportTemp=new Transport();
+    
+    //if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.aStrings= this.templateName.split(".Id.");
+    this.tempId =  Number(this.aStrings[1]) // get id from the string 
+    this.templateName=this.aStrings[0]
+    this.templateName=this.templateName.trim()
+    //console.log('this.aStrings[0] : ' + this.aStrings[0])
+    //console.log('this.templateName :' + this.templateName)
+    this.templates.forEach(tempTr=>{
+      if(tempTr.id==this.tempId) 
+      {
+        //let tp = temp;
+        //tp.id = this.transport.id;
+        let transportTemp = tempTr;
+        this.transport=transportTemp;
+        //if(this.idTransportTemp>0) 
+        //this.transport.telIntervenant=ch.tel
+        //this.transport.emailIntervenant=ch.email
+      }
+    })
+    this.transport.id=this.idTransportTemp;
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.transport.dateDepart=new Date()
+    this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+    // refresh the templates
+    this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      this.templates = data; // just for test
+    },err=>{console.log(err)})
+  }
+  
 
   //*/ Control of surfer
   back=0;
@@ -298,6 +323,7 @@ export class TransportComponent implements OnInit {
       if(this.transport.id!=null){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
+          this.templateName='';
         }, err=>{
           console.log(err)
         })
@@ -379,6 +405,12 @@ export class TransportComponent implements OnInit {
       this.filteredShippers.forEach((sh:Shipper)=>{
         console.log('Shipper filtered nom : '+ sh.nom)
       })//*/
+      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+        this.templates = data; // just for test
+        this.templates.forEach((t:Transport)=>{
+          console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
+        })
+      },err=>{console.log(err)})
     }, err=>{
       console.log(err);
     })
@@ -734,6 +766,11 @@ onSortDate(data:Array<Transport>){
 }
 onRefresh(){
   this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+    // refresh the templates
+    this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      this.templates = data; // just for test
+    },err=>{console.log(err)})
+    
     this.listTrs=[]  //data;
     this.listTrsSent=[]
     this.listTrsFini=[]
@@ -1210,7 +1247,7 @@ async showMap() {
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
       this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
-        this.templates = data; // just for test
+        //this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
         this.listTrsFini=[]

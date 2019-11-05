@@ -655,6 +655,10 @@
     <button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
         <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
     </button>
+    <div style="float: right" class="row">
+      <button class="col-md-1" style="float: right" (click)="setModel()" class="btn btn-link">Definir Modele</button>
+      <input class="col-md-2" style="float: right" type="text" [(ngModel)]="transport.modelName" name="modelName" class="form-control" placeholder="nom de modele"/>
+    </div>
     <br>
   </div>
   <br>

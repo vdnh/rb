@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class Transport implements Serializable{
+public class TransportModel implements Serializable{
     @Id @GeneratedValue
     private Long id;
     //@Temporal(TemporalType.DATE)

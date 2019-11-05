@@ -338,6 +338,45 @@ export class DetailTransportComponent implements OnInit {
     })
   }
   
+  setModel(){
+    if(this.transport.modelName.length==0){
+      alert("Donner un nom pour ce modele, SVP!")
+    }
+    else{
+      //* set null all of values no need
+      this.transport.valid=false;
+      this.transport.sent=false;
+      this.transport.fini=false;
+      this.transport.driverNote='';
+      this.transport.camionAttribue='';
+      this.transport.nomIntervenant='';
+      this.transport.telIntervenant='';
+      this.transport.emailIntervenant='';
+      this.transport.horstax=0;
+      this.transport.tps=0;
+      this.transport.tvq=0;
+      this.transport.total=0;
+      this.transport.numPO='';
+      this.transport.nomDispatch='';
+      this.transport.dateDepart=null;
+      this.transport.timeCall='';
+      this.transport.dateReserve=null;
+      this.transport.timeResrvation='';
+      this.transport.imgUrl='';
+      this.transport.nomSignature='';
+      this.transport.signature='';
+      this.transport.collecterArgent=0;
+      this.transport.porterAuCompte=0;
+      //*/
+      this.transportsService.saveTransportModels(this.transport).subscribe(data=>{
+        alert("Cette appel est mis comme un modele : " +  this.transport.modelName)
+        this.onFermer();
+      }, err=>{
+        console.log(err)
+      })
+    }
+  }
+
   calculTotalpoints(){ // calculate the base price in the same time
     this.transport.totalpoints = this.longeurPointage(this.transport.longueur, this.mode) 
       + this.largeurPointage(this.transport.largeur, this.mode) 

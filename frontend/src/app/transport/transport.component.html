@@ -188,13 +188,13 @@
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
             <label for=""><h5>Auto-remplir par un modele</h5></label>
-            <input type="text"  [(ngModel)]="template"
-                name="template" class="form-control" (change)="templateChange()" list="defaultTemplates">
+            <input type="text"  [(ngModel)]="templateName"
+                name="templateName" class="form-control" (change)="templateChange()" list="defaultTemplates">
               <datalist id="defaultTemplates">
-                <option>''</option>
+                <!--option>''</option>
                 <option>un</option>
-                <option>deux</option>
-                <option *ngFor="let temp of templates" [ngValue]="temp">{{temp.nomEntreprise +'  .Id.'+temp.id}}</option>
+                <option>deux</option-->
+                <option *ngFor="let t of templates" [ngValue]="t">{{t.modelName +' &nbsp;&nbsp; .Id.'+t.id}}</option>
               </datalist>
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
@@ -202,7 +202,7 @@
               {{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}
             </h5>
           </div>
-          <div class="col-md-3 col-sm-3 col-lg-3">
+          <div *ngIf="transport.id!=null" class="col-md-3 col-sm-3 col-lg-3">
             <h5>BonNumero : {{transport.id}} </h5>
           </div>
         </div>

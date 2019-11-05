@@ -30,6 +30,34 @@ export class TransportsService{
         }))
     }
 
+    //* fonctionnes for transport model
+    getAllTransportModels()
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/transportModels", 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+
+    getTransportModelsEntreprise(idEntreprise:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/transportModelsEntreprise/"+idEntreprise, 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+    saveTransportModels(t:Transport){
+        this.loadTonken();
+        return this.http.post(this.adServer+":8080/transportModels",t
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+    // end for transport model*/
+    
     getAllTransports()
     {    
         this.loadTonken();

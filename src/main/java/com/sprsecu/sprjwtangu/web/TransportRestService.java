@@ -1,7 +1,9 @@
 package com.sprsecu.sprjwtangu.web;
 
+import com.sprsecu.sprjwtangu.dao.TransportModelRepository;
 import com.sprsecu.sprjwtangu.dao.TransportRepository;
 import com.sprsecu.sprjwtangu.entities.Transport;
+import com.sprsecu.sprjwtangu.entities.TransportModel;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,24 @@ public class TransportRestService {
             
     @Autowired
     private TransportRepository transportRepository;
+    @Autowired
+    private TransportModelRepository transportModelRepository;
+    
+    //* functions for TransportModel
+    @RequestMapping(value = "/transportModels", method = RequestMethod.GET)
+    public List<TransportModel> getTransportModels(){
+        return transportModelRepository.findAll();
+    }
+    
+    @RequestMapping(value = "/transportModelsEntreprise/{idEntreprise}", method = RequestMethod.GET)
+    public List<TransportModel> getTransportModelsEntreprise(@PathVariable Long idEntreprise){
+        return transportModelRepository.findByIdEntreprise(idEntreprise);
+    }
+    @RequestMapping(value = "/transportModels", method = RequestMethod.POST)
+    public TransportModel save(@RequestBody TransportModel t){
+        return transportModelRepository.save(t);
+    }
+    // end of functions for TransportModel*/
     
     @RequestMapping(value = "/transports", method = RequestMethod.GET)
     public List<Transport> getTransports(){

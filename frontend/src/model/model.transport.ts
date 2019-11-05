@@ -94,4 +94,7 @@ export class Transport{
     tvq=0.00;
     total=0.00;
     //fin de prix total
+
+    // the name of the model usually used
+    modelName="";
 }
