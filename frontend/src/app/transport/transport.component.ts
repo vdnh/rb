@@ -223,6 +223,7 @@ export class TransportComponent implements OnInit {
   aStrings=[]
   tempId:number = null;
   idTransportTemp  : number = null; // to hold the number ID of transport
+  modifyModels=false; // to appear the list models transport
   
   constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -288,7 +289,28 @@ export class TransportComponent implements OnInit {
     },err=>{console.log(err)})
   }
   
+  modifyTemplate(t:Transport){
+    console.log('t.id -  before modifiy model : '+t.id)
+    this.transportsService.saveTransportModels(t).subscribe((data:Transport)=>{
+      console.log('data.id - after modified model : '+data.id)
+      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+        this.templates = data;
+      },err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
 
+  deleteTemplate(id:any){
+    this.transportsService.deleteTransportModel(id).subscribe((data:Transport)=>{
+      console.log('deleted template id - name : '+id+' - '+data.modelName+' - d.id: '+data.id)
+      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+        this.templates = data;
+      },err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
   //*/ Control of surfer
   back=0;
   pagePresent=this.back+1;
@@ -300,6 +322,7 @@ export class TransportComponent implements OnInit {
     //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   onForward(){
+    this.modifyModels=false;  // must be sure for close list templates
     if(this.back==0){
       this.onSave();
     }
@@ -324,17 +347,21 @@ export class TransportComponent implements OnInit {
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
           this.templateName='';
+          if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         }, err=>{
           console.log(err)
         })
       }
       else this.transport=new Transport();      
+      if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+      this.templateName='';
     }
   }
 
 
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
+    //this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
   }
   addLoadDetail(){
@@ -695,7 +722,7 @@ async originChange(){
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.showMap()
+      //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
   }
@@ -750,7 +777,7 @@ async destinationChange(){
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.showMap()
+      //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();
@@ -770,7 +797,7 @@ onRefresh(){
     this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
       this.templates = data; // just for test
     },err=>{console.log(err)})
-    
+
     this.listTrs=[]  //data;
     this.listTrsSent=[]
     this.listTrsFini=[]
@@ -1052,12 +1079,12 @@ async showMap() {
     if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     if(this.mode==2){
       this.changeUnite();  // we must change to mode=1
-      await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
         if(this.transport.id!=null)
           alert("C'est enregistre.")
-        this.loadDetails.forEach(async load=>{
+        await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
-          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
             load.id = d.id;
             //to empty the list loadDetails after save them
             //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
@@ -1065,27 +1092,42 @@ async showMap() {
             console.log(err);
           })
         })
-        this.transport=data;
+        //this.transport=data;
+        this.loadDetails=new Array<LoadDetail>();
+        this.templateName='';
+        this.back=0;
+        this.pagePresent=this.back+1;
+        this.forward=this.back+2
+        this.transport=new Transport();      
+        if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       }, 
         err=>{console.log(err)
       })
       this.changeUnite();  // we must rechange to mode=2
     }
     else{ // mode=1 already, just save
-      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
           alert("C'est enregistre.")
-        this.loadDetails.forEach(async load=>{
+        await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
-          await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-            load.id = d.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;            
+            
             //to empty the list loadDetails after save them
             //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
           }, err=>{
             console.log(err);
           })
         })
-        this.transport=data;
+        this.loadDetails=new Array<LoadDetail>();
+        this.templateName='';
+        this.back=0;
+        this.pagePresent=this.back+1;
+        this.forward=this.back+2
+        this.transport=new Transport();      
+        if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+        //this.transport=data;
       }, 
         err=>{console.log(err)
       })
@@ -1299,12 +1341,18 @@ async showMap() {
         //console.log('this.em.content : ' + this.em.content)
         alert("Le courriel a ete envoye au chauffeur.")
         this.transport.sent=true;
-        this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        this.onSaveWithMessage();
+        // this.back=0;
+        // this.pagePresent=this.back+1;
+        // this.forward=this.back+2
+        // this.transport=new Transport();      
+        // if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+        /*this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
           this.transport=data;
         }, 
           err=>{console.log(err)
         })
-        this.gotoTop();
+        this.gotoTop();//*/
       }, err=>{
         console.log()
       })//*/

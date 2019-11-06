@@ -56,6 +56,12 @@ export class TransportsService{
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
+    deleteTransportModel(id:number){
+        this.loadTonken();
+        return this.http.delete(this.adServer+":8080/transportModels/"+id
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
     // end for transport model*/
     
     getAllTransports()

@@ -191,11 +191,13 @@
             <input type="text"  [(ngModel)]="templateName"
                 name="templateName" class="form-control" (change)="templateChange()" list="defaultTemplates">
               <datalist id="defaultTemplates">
-                <!--option>''</option>
-                <option>un</option>
-                <option>deux</option-->
                 <option *ngFor="let t of templates" [ngValue]="t">{{t.modelName +' &nbsp;&nbsp; .Id.'+t.id}}</option>
               </datalist>
+              <label for="">
+                <button class="btn btn-link" (click)="modifyModels=true">
+                  Modifier des modeles
+                </button>
+              </label>
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
             <h5>
@@ -205,6 +207,28 @@
           <div *ngIf="transport.id!=null" class="col-md-3 col-sm-3 col-lg-3">
             <h5>BonNumero : {{transport.id}} </h5>
           </div>
+        </div>
+        <div class="row" *ngIf="modifyModels==true">
+            <div class="panel-body">
+                <table>
+                    <tr><th><h4>Liste de Transport-Modeles</h4></th></tr> 
+                    <tr>
+                        <th>Model</th><th>Compagnie</th>
+                    </tr>                    
+                    <tr *ngFor="let t of templates">
+                        <td><input class="form-control" type="text" [(ngModel)]="t.modelName" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="t.nomEntreprise" disabled/></td>                
+                        <td><button class="btn btn-link" (click)="modifyTemplate(t)">Modifier</button></td>
+                        <td><button class="btn btn-link" (click)="deleteTemplate(t.id)">Supprimer</button></td>
+                    </tr>
+                    <tr *ngIf="templates.length==0">
+                      <td>Il n'y a pas de model, actuellement.</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="text-align: center;"><button class="btn btn-link" (click)="modifyModels=false">Fermer la liste</button></td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <!--hr *ngIf="pagePresent==1" style="border: 1px solid lightgray"/-->
       </div>
@@ -759,7 +783,7 @@
     </div>
   </div>
 
-  <div class="row" [hidden]="modeHistoire==1 || transport.fini || transport.id==null">
+  <!--div class="row" [hidden]="modeHistoire==1 || transport.fini || transport.id==null">
     <div style="float: left; width:70%" class="row">
       <div class="col-md-12">
         <div class="text-center">
@@ -769,9 +793,9 @@
         </div>
       </div>
     </div>
-    <!--for test directionService-->
+    
     <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
-  </div>
+  </div-->
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>

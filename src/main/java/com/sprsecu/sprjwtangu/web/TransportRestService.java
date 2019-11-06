@@ -43,6 +43,12 @@ public class TransportRestService {
     public TransportModel save(@RequestBody TransportModel t){
         return transportModelRepository.save(t);
     }
+    
+    @RequestMapping(value = "/transportModels/{id}", method = RequestMethod.DELETE)
+    public boolean supprimerTransportModel(@PathVariable Long id){
+        transportModelRepository.deleteById(id);
+        return true;
+    }
     // end of functions for TransportModel*/
     
     @RequestMapping(value = "/transports", method = RequestMethod.GET)

@@ -247,6 +247,7 @@ export class DetailTransportComponent implements OnInit {
   }
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
+    this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
   }
   addLoadDetail(){
@@ -344,6 +345,7 @@ export class DetailTransportComponent implements OnInit {
     }
     else{
       //* set null all of values no need
+      console.log('this.transport.id - before save model : '+this.transport.id)
       this.transport.valid=false;
       this.transport.sent=false;
       this.transport.fini=false;
@@ -368,9 +370,12 @@ export class DetailTransportComponent implements OnInit {
       this.transport.collecterArgent=0;
       this.transport.porterAuCompte=0;
       //*/
-      this.transportsService.saveTransportModels(this.transport).subscribe(data=>{
+      this.transportsService.saveTransportModels(this.transport).subscribe((data:Transport)=>{
+        console.log('data.id - after saved model : '+data.id)
         alert("Cette appel est mis comme un modele : " +  this.transport.modelName)
-        this.onFermer();
+        //this.onFermer();
+        window.close();
+        close();
       }, err=>{
         console.log(err)
       })
