@@ -842,23 +842,29 @@ async prixCalcul(){
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
-  this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
 }
 
 prixCalculWithHorsTax(){
-  /*
-  this.transport.horstax=this.transport.prixBase
-  if((this.transport.distance-this.transport.inclus)>0){
-    this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
-  }//*/
-  this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
 }
 
 async showMap() {

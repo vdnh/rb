@@ -201,7 +201,7 @@
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
             <h5>
-              {{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}
+              {{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}
             </h5>
           </div>
           <div *ngIf="transport.id!=null" class="col-md-3 col-sm-3 col-lg-3">
@@ -631,13 +631,16 @@
           </div>
         </div-->
         <div *ngIf="pagePresent==8" class="row">
-          <div class="col-sm-12 col-md-3 col-lg-3">
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <label style="text-decoration-line: underline" for="">Joindre une image</label>
             <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
             <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
           </div>
-          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-9 col-lg-9" style="border: 2px dotted gray">
-            <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-12 col-lg-12" style="border: 2px dotted gray">
+            <!--img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" sizes="100vw"-->
+            <a href="{{transport.imgUrl}}" target="_blank">
+              <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+            </a>
           </div>
         </div>
         <!--hr *ngIf="pagePresent==8" style="border: 2px solid lightgray"/-->
@@ -726,6 +729,10 @@
             <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
             <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
+          </div>
+          <div class="col-md-1">
+            <label class="control-label">Taxable</label>
+            <input style="width: 3pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.taxable" name="taxable" class="form-control"/>
           </div>
           <div class="col-md-3">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>

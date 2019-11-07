@@ -97,4 +97,5 @@ export class Transport{
 
     // the name of the model usually used
     modelName="";
+    taxable=true;
 }

@@ -86,6 +86,7 @@ public class Transport implements Serializable{
     
     // the name of the model usually used
     private String modelName="";
+    private Boolean taxable=true;
     
     //
     private Float distance;

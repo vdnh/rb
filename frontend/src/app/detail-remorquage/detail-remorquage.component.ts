@@ -687,23 +687,19 @@ async showMap() {
     }
   }
 
-  onDelete(rq:Remorquage){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+  onDelete(){
+    var r = confirm("Etes vous sur de supprimer ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
-      if(rq.id>0){
-        this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
-          if(rq.fini)
-            this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
-          else if(rq.sent)
-            this.listRqsSent.splice(this.listRqsSent.indexOf(rq),1)
-          else this.listRqs.splice(this.listRqs.indexOf(rq),1)
-          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
+      console.log("Le cas est supprime.")
+      if(this.remorquage.id>0){
+        this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+          window.close();
+          close();
         }, err=>{console.log(err)})
       }
     }
     else {
-      console.log('Le cas est continue.')
+      console.log('Le cas ne peut pas supprimer.')
     }
   }
   onGererEntreprise(){

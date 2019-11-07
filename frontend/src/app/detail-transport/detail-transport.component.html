@@ -7,6 +7,7 @@
     </button>
   </span>
   <span><button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini||transport.driverNote.includes('!!Cancelled!!'))">Annuler</button></span>
+  <span *ngIf="transport.driverNote.includes('!!Cancelled!!')"><button (click)="onDelete()" class="btn btn-link" >Supprimer</button></span>
   <span><button (click)="onFermer()" class="btn btn-link" >Fermer</button></span>
 </h4>
 <hr style="border: 1px dotted black"/>
@@ -108,7 +109,7 @@
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
             <h4>
-              {{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}
+              {{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}
             </h4>
           </div>
           <div class="col-md-4 col-sm-4 col-lg-4">
@@ -496,13 +497,16 @@
         </div>
         <br>
         <div class="row">
-          <div class="col-sm-12 col-md-3 col-lg-3">
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <!--Joindre un Photo-->
             <input type="file" title="Joindre un Photo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
-            <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
+            <button *ngIf="transport.imgUrl.length>0 && !transport.sent && !transport.fini" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
           </div>
-          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-9 col-lg-9" style="border: 2px dotted gray">
-            <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-12 col-lg-12" style="border: 2px dotted gray">
+            <!--img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" height="600" width="600"-->
+            <a href="{{transport.imgUrl}}" target="_blank">
+              <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+            </a>
           </div>
         </div>
         <br>
@@ -579,26 +583,6 @@
         <hr style="border: 2px solid lightgray"/>
 
         <div class="row" style="margin-top: 10px">
-          <div class="col-md-3">
-            <div class="form-group">
-              <!--label class="control-label">Total Points</label>
-              <input type="number" [(ngModel)]="transport.totalpoints" name="totalpoints" class="form-control" disabled/-->
-              <!--label class="control-label">PrixBase</label>
-              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                   class="form-control" (change)="prixCalcul()" /-->
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <!--label class="control-label">PrixBase</label>
-              <input type="number" [(ngModel)]="transport.prixBase" name="prixBase"
-                    class="form-control" (change)="prixCalcul()" /-->
-              <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
-              <label *ngIf="mode==2" class="control-label">Prix/Km</label>
-              <input type="number" [(ngModel)]="transport.prixKm" name="prixKm" class="form-control"
-                   (change)="prixCalcul()"/--> <!--[disabled]="!(remorquage.accident || remorquage.panne)"-->
-            </div>
-          </div>
           <div class="col-md-2">
             <div class="form-group">
               <!--label *ngIf="mode==1" class="control-label">Prix/Mile</label>
@@ -609,8 +593,7 @@
               <input type="number" [(ngModel)]="transport.inclus" name="inclus" class="form-control"
                     (change)="prixCalcul()"/--><!-- [disabled]="!(remorquage.accident || remorquage.panne)"-->
               <label class="control-label">Porter au Compte</label>
-              <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
-              (change)="prixCalculWithHorsTax()"/>
+              <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"/>
             </div>
           </div>
           <div class="col-md-2">
@@ -622,7 +605,11 @@
             <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-1">
+            <label class="control-label">Taxable</label>
+            <input style="width: 3pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.taxable" name="taxable" class="form-control"/>
+          </div>
+          <div class="col-md-3">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
             <table  >
               <tr>

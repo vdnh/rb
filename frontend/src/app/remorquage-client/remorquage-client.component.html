@@ -101,4 +101,9 @@
       </tr>
     </table>
   </div>
+  <div *ngIf="remorquage.imgUrl.length>0">
+    <a href="{{remorquage.imgUrl}}" target="_blank">
+      <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
+    </a>
+  </div>
   

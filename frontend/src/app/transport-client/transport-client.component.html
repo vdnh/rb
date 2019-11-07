@@ -198,4 +198,9 @@
     </tr>
   </table>
 </div>
+<div *ngIf="transport.imgUrl.length>0">
+  <a href="{{transport.imgUrl}}" target="_blank">
+    <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
+  </a>
+</div>
   

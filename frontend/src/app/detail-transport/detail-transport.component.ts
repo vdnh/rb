@@ -369,6 +369,7 @@ export class DetailTransportComponent implements OnInit {
       this.transport.signature='';
       this.transport.collecterArgent=0;
       this.transport.porterAuCompte=0;
+      this.transport.comments="";
       //*/
       this.transportsService.saveTransportModels(this.transport).subscribe((data:Transport)=>{
         console.log('data.id - after saved model : '+data.id)
@@ -776,16 +777,16 @@ async prixCalcul(){
 }
 
 prixCalculWithHorsTax(){
-  /*
-  this.transport.horstax=this.transport.prixBase
-  if((this.transport.distance-this.transport.inclus)>0){
-    this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
-  }//*/
-  this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
 }
 
 async showMap() {
@@ -1046,23 +1047,21 @@ async showMap() {
     this.CloseWithWindowOpenTrick();
   }
 
-  onDelete(tr:Transport){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+  onDelete(){
+    var r = confirm("Etes vous sur de supprimer ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
-      if(tr.id>0){
-        this.transportsService.deleteTransport(tr.id).subscribe(data=>{
-          if(tr.fini)
-            this.listTrsFini.splice(this.listTrsFini.indexOf(tr),1)
-          else if(tr.sent)
-            this.listTrsSent.splice(this.listTrsSent.indexOf(tr),1)
-          else this.listTrs.splice(this.listTrs.indexOf(tr),1)
-          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
-        }, err=>{console.log(err)})
-      }
+      console.log("Le cas est supprime.")
+      this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
+        this.loadDetails.forEach(async load=>{
+          load.idTransport=this.transport.id;
+          await this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
+        })
+        window.close();
+        close();
+      }, err=>{console.log(err)})
     }
     else {
-      console.log('Le cas est continue.')
+      console.log('Le cas ne peut pas supprimer.')
     }
   }
 

@@ -7,6 +7,7 @@
     </button>
   </span>
   <span><button (click)="onCancel()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini||remorquage.driverNote.includes('!!Cancelled!!'))">Annuler</button></span>
+  <span *ngIf="remorquage.driverNote.includes('!!Cancelled!!')"><button (click)="onDelete()" class="btn btn-link" >Supprimer</button></span>
   <span><button (click)="onFermer()" class="btn btn-link" >Fermer</button></span>          
 </h4>
 <hr style="border: 1px dotted black"/>
