@@ -1,34 +1,74 @@
 <!--p></p-->
+<div class="header"> 
+  <h4>  <strong> CTS - Complete Transport Solution </strong> </h4>    
+</div>
 <div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
   <div *ngIf="mode==2">
     <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3> 
   </div>
-  <div class="row" *ngIf="mode!=2">
-    <div class="col-sm-12 col-lg-12 col-md-12">
-      <div class="row"> 
-        <div  class="col-md-12 col-sm-12 col-lg-12">
+  <!--div class="row" *ngIf="mode!=2">
+    <div class="col-sm-12 col-lg-12 col-md-12"-->
+      <div class="row" *ngIf="mode!=2"> 
+        <div  class="col-sm-12 col-md-12 col-lg-12">
           <div *ngIf="modeSignUp==0">
             <div *ngIf="usernameLogin.length>1">
               <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
                 <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
               </h6>
             </div>
-              
+
             <div class="panel panel-primary" *ngIf="role=='' || !eligible">
-              <!--button routerLink="/propos" class="btn btn-link">Propos</button-->
-              <div> <h3>  <strong> CTS - Complete Transport Solution </strong> </h3>
-                    <!--h5> <strong>Plus Loads et Plus Equipements</strong></h5-->
-                    <h5> <strong>Simplifier des operations de Transport.</strong></h5>
-                    <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+
+              <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <div class="alert alert-danger" *ngIf="mode==1">
+                      <strong>Identification erronee ...</strong>
+                  </div>
+                </div>
+              </div>  
+
+              <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3">
+                  <div class="panel-body"> <h4>
+                    <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
+                      <div class="form-group">
+                          <label class="control-label">Members' Login</label>
+                          <input type="text" name="username" ngModel="" class="form-control" 
+                          placeholder="username" style="width: 25ch" required/>
+                      </div>
+                      <div class="form-group">
+                        <input type="password" name="password" ngModel="" class="form-control" 
+                        placeholder="password" style="width: 25ch" required/>
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-link">Login</button>
+                        <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
+                      </div>
+                    </form> </h4>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3" style="text-align: center;">
+                  <h4 style="font-weight: bold;">Services 24/7</h4>
+                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Routier</h4></a></button>
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                  <button class="btn btn-link" (click)="modeExpress=2;"><h4>Transport</h4></button>
+                </div>
               </div>
-              <br>
+
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
+                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+                </div>
+              </div>
+                
+              <!-- <br>
               <div class="col-md-5 col-md-offset-1">
                 <div class="alert alert-danger" *ngIf="mode==1">
                     <strong>Identification erronee ...</strong>
                 </div>
               </div>
               <div class="col-md-5 col-md-offset-1">
-                <!--div class="panel-heading">Veuillez vous identifier.</div-->
                 <div class="panel-body"> <h4>
                   <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                     <div class="form-group">
@@ -37,20 +77,20 @@
                         placeholder="username" style="width: 25ch" required/>
                     </div>
                     <div class="form-group">
-                      <!--label class="control-label">Password : </label-->
                       <input type="password" name="password" ngModel="" class="form-control" 
                       placeholder="password" style="width: 25ch" required/>
                     </div>
                     <div class="form-group">
                       <button type="submit" class="btn btn-link">Login</button>
-                      <button type="reset" class="btn btn-link">Reset</button>
+                      <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
                     </div>
                   </form> </h4>
                 </div>
-                <!--div *ngIf="role==''">
-                  <button (click)="demandeExpress()">{{textExpressSign}}</button>
-                </div-->
               </div>
+              <div>
+                <h5> <strong>Simplifier des operations de Transport.</strong></h5>
+                <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+              </div> -->
             </div>
             <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
               <button routerLink="/propos" class="btn btn-link">Propos</button>
@@ -127,15 +167,14 @@
           </div>
           
           <div *ngIf="role==''">
-            <!--button (click)="demandeExpress()">{{textExpressSign}}</button-->
-            <div>
-              <h4 id="RMEX">Demande Express 
-                <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
+            <!-- <div>
+              <h3 id="RMEX" style="font-weight: bold;">Services 24/7
+                <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h3>Routier</h3></a></button>
                 <span>-</span>
-                <button class="btn btn-link" (click)="modeExpress=2;"><h4>Transport</h4></button>
-              </h4>
-            </div>
-            <app-appel-express-visitor *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+                <button class="btn btn-link" (click)="modeExpress=2;"><h3>Transport</h3></button>
+              </h3>
+            </div> -->
+            <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
             <h4 *ngIf="modeExpress==2">Transport Express - Coming soon ...</h4>
           </div>
         </div>
@@ -160,17 +199,33 @@
           </iframe>
         </div-->
       </div>
-    </div>
+    <!--/div>
     <br>
-  </div>
+  </div-->
   <router-outlet *ngIf="mode!=2"></router-outlet>
   <br><br>
-  <footer *ngIf="mode!=2">
-    <div class="row">
-      <div>
-        <span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span>
-      </div>
-    </div>
-  </footer>
+  <!--footer *ngIf="mode!=2"-->
+  
+  <!--/footer-->
   <!--/div-->
+</div>
+
+<div class="footer" *ngIf="mode!=2">
+  <!--div class="row">
+    <div-->
+  <span>
+    SOS Prestige,&nbsp;
+  </span>
+  <span>
+    <a href="tel:+1-450-974-9111">450-974-9111,</a>
+      &nbsp;
+    <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
+  </span>
+  <span>
+    520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
+  </span>
+  <!--h6 style="font: bold"><strong><a href="tel:+1-450-974-9111">450-974-9111</a></strong>&nbsp;&nbsp;-&nbsp;&nbsp;<strong><a href="mailto:sosprestige@gmail.com"> sosprestige@gmail.com</a></strong></h6-->
+  <!--span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span-->
+    <!--/div>
+  </div-->
 </div>

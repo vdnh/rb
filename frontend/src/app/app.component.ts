@@ -668,6 +668,9 @@ export class AppComponent implements OnInit{
       alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
   }
 
+  alertComingSoon(){
+    alert('Coming soon ...')
+  }
 }
 export interface User{
   username:string;

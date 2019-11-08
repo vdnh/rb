@@ -1,0 +1,22 @@
+.header{
+    position: inherit;
+    /* left: 0;
+    bottom: inherit;
+    width: 100%;
+    text-align: left; */
+    background-color: rgb(7, 14, 100);
+    color: white;
+    text-align: center;
+    top: 0;
+    width: 100%;
+}
+.footer{
+    position: inherit;
+    /* left: 0;
+    bottom: inherit;
+    width: 100%;
+    text-align: left; */
+    background-color: rgb(122, 6, 6);
+    color: white;
+    text-align: center;
+}
