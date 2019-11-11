@@ -688,7 +688,7 @@
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
     <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
       <tr>
-        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
         <td style="text-align: center; text-anchor: start ">Contact <br> <span>&nbsp;{{remorquage.nomClient}}</span></td>
         <td style="text-align: center; text-anchor: start ">Telephone <br> <span>&nbsp;{{remorquage.telClient}}</span></td>
         <td style="text-align: center; text-anchor: start ">Courriel <br> <span>&nbsp;{{remorquage.telClient2em}}</span></td>

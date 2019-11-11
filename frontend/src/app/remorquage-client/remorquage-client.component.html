@@ -15,14 +15,14 @@
 <div id="toprint"  *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
   <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
       <tr>
-        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</span></td>
+        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
         <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
         <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
         <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
         <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{remorquage.id}}</span></td>
       </tr>
       <tr>
-        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'yyyy-MMM-dd'}} - {{remorquage.timeResrvation}}</td>
+        <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
         <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
         <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
         <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;<!--{{remorquage.total}}--></span></td>

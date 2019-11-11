@@ -1084,7 +1084,7 @@ async showMap() {
               console.log(err);
             })
           })
-          this.transport=data;
+          //this.transport=data;
         }, 
           err=>{console.log(err)
         })
@@ -1104,7 +1104,7 @@ async showMap() {
               console.log(err);
             })
           })
-          this.transport=data;
+          //this.transport=data;
         }, 
           err=>{console.log(err)
         })
@@ -1269,8 +1269,10 @@ async showMap() {
           //console.log('this.em.content : ' + this.em.content)
           alert("Le courriel a ete envoye au chauffeur.")
           this.transport.sent=true;
-          this.onSave()
+          this.onSave();
           this.gotoTop();
+          window.close();
+          close();
         }, err=>{
           console.log()
         })//*/

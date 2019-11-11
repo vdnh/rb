@@ -1,6 +1,6 @@
 <!--p></p-->
 <div class="header"> 
-  <h4>  <strong> CTS - Complete Transport Solution </strong> </h4>    
+  <h3 style="font-weight: bold;">  <strong> CTS - Complete Transport Solution </strong> </h3>    
 </div>
 <div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
   <div *ngIf="mode==2">
@@ -8,7 +8,7 @@
   </div>
   <!--div class="row" *ngIf="mode!=2">
     <div class="col-sm-12 col-lg-12 col-md-12"-->
-      <div class="row" *ngIf="mode!=2"> 
+      <div class="row" *ngIf="mode!=2" style="background-color: hsl(180, 51%, 92%);"> 
         <div  class="col-sm-12 col-md-12 col-lg-12">
           <div *ngIf="modeSignUp==0">
             <div *ngIf="usernameLogin.length>1">
@@ -28,7 +28,7 @@
               </div>  
 
               <div class="row">
-                <div class="col-sm-12 col-md-4 col-lg-3">
+                <div class="col-sm-12 col-md-3 col-lg-3">
                   <div class="panel-body"> <h4>
                     <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                       <div class="form-group">
@@ -47,18 +47,48 @@
                     </form> </h4>
                   </div>
                 </div>
-                <div class="col-sm-12 col-md-4 col-lg-3" style="text-align: center;">
-                  <h4 style="font-weight: bold;">Services 24/7</h4>
-                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Routier</h4></a></button>
+                <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
+                  <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
+                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
                     <span>&nbsp;&nbsp;&nbsp;</span>
                   <button class="btn btn-link" (click)="modeExpress=2;"><h4>Transport</h4></button>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4">
+                  <marquee behavior="scroll" direction="up" scrollamount="3">
+                    <h5><strong>
+                      Plus Camions - Plus Loads - Plus Affaires <br><br>
+                      Simplification des Operations <br><br>
+                    </strong></h5>
+                    <h6><strong>
+                        Rapide, Facile et Sécurisé <br><br>
+                        Localiser les camions et les frets <br><br>
+                        Augmenter les affaires <br><br>
+                        Suivre en temps réel <br><br>
+                        Moteur de recherche de transporteur <br><br>
+                        Rendre votre entreprise de visible <br><br>
+                        Automatiser la gestion votre flotte
+                    </strong></h6>
+                  </marquee>
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                  <h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
-                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+                    <!-- [style.background]="'url(/assets/images/bkgrd01.png)'" -->
+                  <!--h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
+                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6-->
+                  <marquee behavior="scroll" direction="right" scrollamount="5">
+                    <h5><strong> <br>
+                      Plus Camions - Plus Loads - Plus Affaires &nbsp;- &nbsp;Simplification des Operations.&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <!-- &nbsp;Plus Camions - Plus Loads - Simplifier des Operations. -->
+                    </strong></h5>
+                  </marquee>
+                  <marquee behavior="slide" direction="right" scrollamount="5">
+                    <h6><strong><br>
+                      Un outil essentiel pour Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers.
+                      <br>
+                    </strong></h6>
+                  </marquee>
                 </div>
               </div>
                 
@@ -163,7 +193,7 @@
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
               </div>
             </div>
-            <hr style="border: 2px solid lightgray"/>
+            <!-- <hr style="border: 2px solid lightgray"/> -->
           </div>
           
           <div *ngIf="role==''">
@@ -203,11 +233,15 @@
     <br>
   </div-->
   <router-outlet *ngIf="mode!=2"></router-outlet>
-  <br><br>
+  <!--br><br-->
   <!--footer *ngIf="mode!=2"-->
   
   <!--/footer-->
   <!--/div-->
+</div>
+
+<div class="row" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
+  <br>
 </div>
 
 <div class="footer" *ngIf="mode!=2">

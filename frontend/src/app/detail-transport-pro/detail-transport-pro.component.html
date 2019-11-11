@@ -92,7 +92,7 @@
         </div>
         <div class="col-md-4 col-sm-4 col-lg-4">
           <h4>
-            {{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}
+            {{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}
           </h4>
         </div>
         <div class="col-md-4 col-sm-4 col-lg-4">
@@ -618,14 +618,14 @@
 <div id="toprint" hidden  *ngIf="modeHistoire==-1">
   <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
     <tr>
-      <td style="text-align: center; text-anchor: start; width: 22%">Heure d'Appel <br> <span>&nbsp;{{transport.dateDepart | date: 'yyyy-MMM-dd'}} - {{transport.timeCall}}</span></td>
+      <td style="text-align: center; text-anchor: start; width: 22%">Heure d'Appel <br> <span>&nbsp;{{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 20%">Repartiteur <br> <span>&nbsp;{{transport.nomDispatch}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 20%">Chauffeur <br> <span>&nbsp;{{transport.nomIntervenant}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 20%"># PO <br> <span>&nbsp;{{transport.numPO}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 18%"># Facture <br> <span>&nbsp;{{transport.id}}</span></td>
     </tr>
     <tr>
-      <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'yyyy-MMM-dd'}} - {{transport.timeResrvation}}</th>
+      <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</th>
       <td style="text-align: center; text-anchor: start; width: 20%"># Camion <br> <span>&nbsp;{{transport.camionAttribue}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
       <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span *ngIf="transport.fini">&nbsp;{{transport.total | number : '1.2'}}</span></td>

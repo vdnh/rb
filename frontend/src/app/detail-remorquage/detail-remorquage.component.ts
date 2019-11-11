@@ -712,7 +712,7 @@ async showMap() {
   
   onSave(){
     this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
-      this.remorquage=data;
+      //this.remorquage=data;
     }, 
       err=>{console.log(err)
     })
