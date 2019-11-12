@@ -1,7 +1,14 @@
-<h4 style="text-align: center; font: bold">Transport</h4>
+<h4 style="text-align: left; font: bold">
+  Transport<span>&nbsp;&nbsp;&nbsp;</span>
+  <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
+  <!--span *ngIf="modeHistoire==-1&&transport.id==null"><button (click)="onNew()" class="btn btn-link">NouvelAppel</button></span-->
+  <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
+  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
+</h4>
 <hr style="border: 1px dotted black"/>
 <div *ngIf="modeHistoire==1">
-  <div class="row">
+  <!--div class="row">
     <div class="col-md-4 col-sm-4 col-lg-4">
       <button (click)="onHistoire()" class="btn btn-link">NouvelleAppel</button>    
     </div>
@@ -9,32 +16,124 @@
       <button (click)="onRefresh()" class="btn btn-link">Refresh</button>    
     </div>
   </div>
-  <hr style="border: 1px dotted black"/>
+  <hr style="border: 1px dotted black"/-->
+  <!--div class="row">
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      Liste d'Attente
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      Liste en Cours
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
+      Termines Avec Succes
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color:blue; text-align: center">
+      Appels Annules
+    </div>
+  </div-->
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: green; text-align: center">
-      Appels en Attente
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      <button (click)="appelsAttentes()" style="color: green; text-align: center">Liste d'Attente</button> 
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: orange; text-align: center">
-      Appels en Cours
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      <button (click)="appelsEncours()" style="color: orange; text-align: center">Liste en Cours</button> 
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4" style="color: red; text-align: center">
-      Appels Finis
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
+      <button (click)="appelsFinis()" style="color: red; text-align: center">Termines Avec Succes</button> 
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: blue; text-align: center">
+      <button (click)="appelsAnnules()" style="color: blue; text-align: center">Appels Annulees</button> 
     </div>
   </div>
+  <br>
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-lg-4">
-      <table class="table">
+    <div class="col-md-12 col-sm-12 col-lg-12">
+      <table *ngIf="modeGestionAppel==1" class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Client</th>
+          <th>Numero</th><th (click)='onSortDate(listTrs)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listTrs.length==0" style="color: green">
+          <td>Liste d'Attente est vide actuellement.</td>
+        </tr>
+      </table>
+      <table *ngIf="modeGestionAppel==2" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsSent" style="color: orange; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listTrsSent.length==0" style="color:orange">
+          <td>Liste en Cours est vide actuellement.</td>
+        </tr>  
+      </table>
+      <table *ngIf="modeGestionAppel==3" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsFini)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsFini" style="color: red; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listTrsFini.length==0" style="color: red">
+          <td>Liste termines est vide actuellement.</td>
+        </tr>
+      </table>
+      <table *ngIf="modeGestionAppel==4" class="table">
+        <tr style="background-color: whitesmoke">
+          <th>Numero</th><th (click)='onSortDate(listTrsAnnule)'>DateReserve</th><th>Client</th>
+          <th>TelClient</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+        </tr>
+        <tr *ngFor="let t of listTrsAnnule" style="color: blue; background-color: whitesmoke">
+          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+        </tr>
+        <tr *ngIf="listTrsAnnule.length==0" style="color: blue">
+          <td>Il n'y a pas d'appel annule.</td>
         </tr>
       </table>
     </div>
-    <div class="col-md-4 col-sm-4 col-lg-4">
+    <!-- <div class="col-md-4 col-sm-4 col-lg-4">
       <table class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listTrsSent)'>DateReserve</th><th>Client</th>
@@ -57,7 +156,7 @@
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
         </tr>
       </table>
-    </div>
+    </div> -->
   </div>
 </div>
 <!--div class="container" *ngIf="modeHistoire==-1"-->
@@ -75,45 +174,76 @@
     </div-->              
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
-        <div class="row">
-          <button (click)="onSave()" class="btn btn-link"  [disabled]="transport.id!=null">NumeroterAppel</button>
-          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">NouvelleAppel</button> 
-      
-          <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">TerminerAppel</button>         
-          <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button-->
-          <button (click)="onHistoire()" class="btn btn-link">Historique-Appels</button>
-          
-          <br><br><br>
+        <!--div class="row">
+          <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">AnnulerAppel</button> 
+          <button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button>
+          <br>
         </div>
-        <hr style="border: 2px solid lightgray"/>
-        <div class="row">
-          <!--div class="col-md-4 col-sm-4 col-lg-4">
-              <h4><label>
-              Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
-              </label></h4> 
+        <hr style="border: 2px solid lightgray"/-->
+        <div class="row" *ngIf="pagePresent==1">
+          <!--div class="col-md-3 col-sm-3 col-lg-3">
+            <h5><label>
+            Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
+            </label></h5> 
           </div-->
-          <div class="col-md-4 col-sm-4 col-lg-4">
-            <h4>
-              {{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}
-            </h4>
+          <div class="col-md-3 col-sm-3 col-lg-3">
+            <label for=""><h5>Auto-remplir par un modele</h5></label>
+            <input type="text"  [(ngModel)]="templateName"
+                name="templateName" class="form-control" (change)="templateChange()" list="defaultTemplates">
+              <datalist id="defaultTemplates">
+                <option *ngFor="let t of templates" [ngValue]="t">{{t.modelName +' &nbsp;&nbsp; .Id.'+t.id}}</option>
+              </datalist>
+              <!-- <label for="">
+                <button class="btn btn-link" (click)="modifyModels=true">
+                  Modifier des modeles
+                </button>
+              </label> -->
           </div>
-          <div class="col-md-4 col-sm-4 col-lg-4">
-            <h4>BonNumero : {{transport.id}} </h4>
+          <div class="col-md-3 col-sm-3 col-lg-3">
+            <h5>
+              {{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}
+            </h5>
+          </div>
+          <div *ngIf="transport.id!=null" class="col-md-3 col-sm-3 col-lg-3">
+            <h5>BonNumero : {{transport.id}} </h5>
           </div>
         </div>
-        <hr style="border: 1px solid lightgray"/>
+        <div class="row" *ngIf="modifyModels==true">
+            <div class="panel-body">
+                <table>
+                    <tr><th><h4>Liste de Transport-Modeles</h4></th></tr> 
+                    <tr>
+                        <th>Model</th><th>Compagnie</th>
+                    </tr>                    
+                    <tr *ngFor="let t of templates">
+                        <td><input class="form-control" type="text" [(ngModel)]="t.modelName" /></td>
+                        <td><input class="form-control" type="text" [(ngModel)]="t.nomEntreprise" disabled/></td>                
+                        <td><button class="btn btn-link" (click)="modifyTemplate(t)">Modifier</button></td>
+                        <td><button class="btn btn-link" (click)="deleteTemplate(t.id)">Supprimer</button></td>
+                    </tr>
+                    <tr *ngIf="templates.length==0">
+                      <td>Il n'y a pas de model, actuellement.</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="text-align: center;"><button class="btn btn-link" (click)="modifyModels=false">Fermer la liste</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!--hr *ngIf="pagePresent==1" style="border: 1px solid lightgray"/-->
       </div>
       <div class="panel-body">
-        <div class="row">
+        <h5 style="text-align: left; font: bold; text-decoration-line: underline" *ngIf="pagePresent==2">Compagnie Infos <br></h5>
+        <div *ngIf="pagePresent==2" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Client</label>
+              <label for="">Nom</label>
               <input type="text" [(ngModel)]="transport.nomEntreprise"
-                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control"
-                   list="defaultShippers" disabled> <!--(focusout)="typeServiceChange(remorquage.typeService)" -->
-              <datalist id="defaultShippers">
+                   name="nomEntreprise" (change)="nomEntrepriseInputChange()" class="form-control" disabled>
+                   <!-- list="defaultShippers"> (focusout)="typeServiceChange(remorquage.typeService)" -->
+              <!-- <datalist id="defaultShippers">
                 <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-              </datalist>
+              </datalist> -->
               
             </div>
           </div>
@@ -140,14 +270,14 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div *ngIf="pagePresent==2" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label for="">Contact</label>
-              <input type="text"  [(ngModel)]="transport.nomContact"
+              <label for="">Contact / Commande par</label>
+              <input type="text" (change)="contactChange()" [(ngModel)]="transport.nomContact"
                    name="nomContact" class="form-control" list="defaultContacts">
               <datalist id="defaultContacts">
-                <option *ngFor="let e of contacts" [ngValue]="e">{{e.nom}}</option>
+                <option *ngFor="let e of contacts" [ngValue]="e">{{e.prenom+'  .Id.'+e.id}}</option>
               </datalist>
             </div>
           </div>
@@ -175,10 +305,10 @@
         </div>
         
 
-        <hr style="border: 2px solid lightgray"/>
+        <!--hr *ngIf="pagePresent==2" style="border: 2px solid lightgray"/-->
 
-        <div><label style="text-decoration-line: underline">Contact & Address Origin</label></div>
-        <div class="row">
+        <div *ngIf="pagePresent==3"><label style="text-decoration-line: underline">Contact & Address Origin</label></div>
+        <div *ngIf="pagePresent==3" class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <!--label for="">Contact d'Origin</label-->
@@ -190,16 +320,15 @@
             <div class="form-group">
               <!--label for="">Tel 1er</label-->
               <input type="tel" [(ngModel)]="transport.telClient" name="telClient"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 1er"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telephone"
                    (focusout)="transport.telClient=reformTelEvent($event)" required>
             </div>
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <!--label for="">Tel 2em</label-->
-              <input type="tel" [(ngModel)]="transport.telClient2em" name="telClient2em"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 2em"
-                   (focusout)="transport.telClient2em=reformTelEvent($event)">
+              <input [(ngModel)]="transport.telClient2em" name="telClient2em"
+                   class="form-control" placeholder="Tel2em/Courriel">
             </div>
           </div>
         <!--/div>
@@ -223,8 +352,8 @@
           </div>
         </div>
 
-        <div><label style="text-decoration-line: underline">Contact & Address Destination</label></div>
-        <div class="row">
+        <div *ngIf="pagePresent==4"><label style="text-decoration-line: underline">Contact & Address Destination</label></div>
+        <div *ngIf="pagePresent==4" class="row">
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
               <!--label for="">Contact d'Origin</label-->
@@ -236,7 +365,7 @@
             <div class="form-group">
               <!--label for="">Tel 1er</label-->
               <input type="tel" [(ngModel)]="transport.tel1Dest" name="tel1Dest"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 1er"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telephone"
                    (focusout)="transport.tel1Dest=reformTelEvent($event)" required>
             </div>
           </div>
@@ -244,8 +373,7 @@
             <div class="form-group">
               <!--label for="">Tel 2em</label-->
               <input type="tel" [(ngModel)]="transport.tel2Dest" name="tel2Dest"
-                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Tel 2em"
-                   (focusout)="transport.tel2Dest=reformTelEvent($event)">
+                   class="form-control" placeholder="Tel2em/Courriel">
             </div>
           </div>
         <!--/div>
@@ -268,9 +396,14 @@
             </select>
           </div>
         </div>
-
-        <div><button class="btn btn-primary" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></div>
-        <div class="row">
+        
+        <div *ngIf="pagePresent==5">
+          <h5 *ngIf="pagePresent==5">
+            <span style="text-align: left; font: bold; text-decoration-line: underline">Loads </span>  <span>&nbsp;&nbsp;&nbsp;</span>
+            <span><button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></span>
+          </h5>
+        </div>
+        <div *ngIf="pagePresent==5" class="row">
           <table class="table table-striped table-sm table-responsive">
             <tr *ngIf="mode==1">
               <th>Quantites</th><th>Description</th><th>Longueur(pouce)</th><th>Largeur(pouce)</th><th>Hauteur(pouce)</th><th>Poids(lb)</th>                        
@@ -309,7 +442,7 @@
             </tr>           
           </table>
         </div>
-        <div class="row">
+        <div *ngIf="pagePresent==5" class="row">
           <!--div class="col-sm-12 col-md-2 col-lg-2"><label>Resume Dimension: </label></div-->
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
@@ -367,16 +500,16 @@
             </div>
           </div>
         </div-->
-        <div>
+        <div *ngIf="pagePresent==6">
           <!--div class="col-sm-12 col-md-12 col-lg-12"-->
             <!--div class="form-group"-->
-              <label class="control-label">Type d'Equipement : </label>
+              <label style="text-decoration-line: underline;" class="control-label">Type d'Equipement : </label>
               <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
             <!--/div-->
           <!--/div-->
           <!--div class="col-sm-9 col-md-9 col-lg-9"><input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/></div-->
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
+        <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
             <!--div class="col-sm-12 col-md-12 col-lg-12"-->
               <form [formGroup]="formGroup" >
                 <table border="1px">
@@ -393,11 +526,11 @@
             <!--/div-->
         </div>
 
-        <div>
-          <label class="control-label">Options : </label>
+        <div *ngIf="pagePresent==6">
+          <label style="text-decoration-line: underline;" class="control-label">Options : </label>
           <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control"/>
         </div>
-        <div class="container" style="margin-left: 20px; margin-bottom: 10px">
+        <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
           <form [formGroup]="formGroup" >
             <table border="1px">
               <ng-container formArrayName="optionTypes" *ngFor="let optionType of formGroup.controls.optionTypes['controls']; let i = index" >      
@@ -471,24 +604,13 @@
             </select>
           </div>
         </div-->
-        <br>
-        <div class="row">
-          <div class="col-sm-2 col-md-2 col-lg-2"><label class="control-label">Note Additionnelle</label></div>
+        
+        <div class="row" *ngIf="pagePresent==7">
+          <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note Additionnelle</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">
-            <textarea name="comments" class="form-control" cols="80" rows="1"
+            <textarea name="comments" class="form-control" cols="80" rows="2"
                   [(ngModel)]="transport.comments"
                   style="margin-top: 0px"></textarea>
-          </div>
-        </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-12 col-md-3 col-lg-3">
-            <!--Joindre un Photo-->
-            <input type="file" title="Joindre un Photo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
-            <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
-          </div>
-          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-9 col-lg-9" style="border: 2px dotted gray">
-            <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
           </div>
         </div>
         <!--div class="row">
@@ -508,10 +630,22 @@
             </div>
           </div>
         </div-->
-        
-        <!--hr style="border: 2px solid lightgray"/>
-        
-        <div class="row">
+        <div *ngIf="pagePresent==8" class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <label style="text-decoration-line: underline" for="">Joindre une image</label>
+            <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+            <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
+          </div>
+          <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-12 col-lg-12" style="border: 2px dotted gray">
+            <!--img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" sizes="100vw"-->
+            <a href="{{transport.imgUrl}}" target="_blank">
+              <img [src]="transport.imgUrl" alt="piece joint" class="img-responsive" width="245" height="300">
+            </a>
+          </div>
+        </div>
+        <!--hr *ngIf="pagePresent==8" style="border: 2px solid lightgray"/-->
+        <!--h5 style="text-decoration-line: underline" *ngIf="pagePresent==9">Camion & Chauffeur</h5>
+        <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Camion</label>
@@ -526,7 +660,10 @@
             <div class="form-group">
               <label for="">Chauffeur</label>
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
-                    name="nomIntervenant" class="form-control">
+                name="nomIntervenant" class="form-control" (change)="chauffeurChange()" list="defaultChauffeurs">
+              <datalist id="defaultChauffeurs">
+                <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
+              </datalist>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
@@ -548,47 +685,38 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-sm-2 col-md-2 col-lg-2"><label class="control-label">Note au Chauffeur</label></div>
+        <div *ngIf="pagePresent==9" class="row">
+          <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note au Chauffeur</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">
-            <textarea name="comments" class="form-control" cols="80" rows="1"
+            <textarea name="comments" class="form-control" cols="80" rows="2"
                   [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
                   style="margin-top: 0px"></textarea>
           </div>
         </div-->
 
-        <!--hr style="border: 2px solid lightgray"/>
-
-        <div class="row" style="margin-top: 10px">
-          <div class="col-md-3">
-            <div class="form-group">
-              
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-             
-            </div>
-          </div>
+        <!--hr *ngIf="pagePresent==9" style="border: 2px solid lightgray"/-->
+        <!--h5 style="text-decoration-line: underline" *ngIf="pagePresent==10">Resumer</h5>
+        <div *ngIf="pagePresent==10" class="row" style="margin-top: 10px">
           <div class="col-md-2">
             <div class="form-group">
-              
               <label class="control-label">Porter au Compte</label>
               <input type="number" [(ngModel)]="transport.porterAuCompte" name="porterAuCompte" class="form-control"
               (change)="prixCalculWithHorsTax()"/>
             </div>
           </div>
           <div class="col-md-2">
-             
             <label class="control-label">Collecter d'argent</label>
-            <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control" disabled/>
+            <input type="number" [(ngModel)]="transport.collecterArgent" name="collecterArgent" class="form-control"/>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-1">
+            <label class="control-label">Taxable</label>
+            <input style="width: 3pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.taxable" name="taxable" class="form-control"/>
+          </div>
+          <div class="col-md-3">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
             <table  >
               <tr>
                 <td style="text-align: right">HorsTax:</td>
-                
                 <input style="text-align: right" type="number" (change)="prixCalculWithHorsTax()" [(ngModel)]="transport.horstax" name="horstax" class="form-control"/>
               </tr>
               <tr>
@@ -606,33 +734,33 @@
             </table>
           </div>
         </div-->
+        <div *ngIf="pagePresent==8">
+          <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
+          <!--button (click)="transport.valid=true; onSaveWithMessage()" class="btn btn-link" [disabled]="transport.fini">Enregistrer</button>
+          <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
+              <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
+          </button-->
+          <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.fini || transport.id==null">Envoyer a SOSPrestige</button>
+          <br>
+        </div>
       </div>
     </div>
   </div>
   <hr style="border: 2px solid lightgray"/>
-  <div *ngIf="modeHistoire==-1">
-    <button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button>
-    <button (click)="gotoTop()" class="btn btn-link"  *ngIf="transport.id==null">Vous devez NumeroterAppel</button>
-    <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.fini || transport.id==null">Envoyer a SOSPrestige</button>
-    <!--button (click)="onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
-        <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
-    </button-->
-    <br>
-  </div>
+
   <br>
-  <div class="row" [hidden]="modeHistoire==1 || transport.fini || transport.id==null">
-    <div style="float: left; width:70%" class="row">
-      <div class="col-md-12">
-        <div class="text-center">
-          <h3>
-            <div #gmap style="width:100%;height:500px"></div>
-          </h3>
-        </div>
+  
+  <div class="col-sm-12 col-lg-12 col-md-12" *ngIf="modeHistoire==-1">
+    <div class="row">
+      <div class="col-md-2 col-sm-2 col-lg-2">
+        <button (click)="onBack()" [disabled]="back<=0">Avant</button>
+      </div>      
+      <div class="col-md-2 col-sm-2 col-lg-2">
+        <button (click)="onForward()" [disabled]="forward>=9">Suivant</button>
       </div>
     </div>
-    <!--for test directionService-->
-    <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
   </div>
+
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>
@@ -646,9 +774,9 @@
         <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</th>
         <td style="text-align: center; text-anchor: start; width: 20%"># Camion <br> <span>&nbsp;{{transport.camionAttribue}}</span></td>
         <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
-        <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span *ngIf="transport.fini">&nbsp;{{transport.total | number : '1.2'}}</span></td>
+        <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span>&nbsp;</span></td> <!--{{transport.total | number : '1.2'}}-->
       </tr>
-      <tr style="border: 0px" *ngIf="transport.fini">
+      <tr style="border: 0px">
         <td colspan="3" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte}}</td>
         <th colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{transport.collecterArgent | number : '1.2'}}</th>
       </tr>
@@ -701,7 +829,6 @@
             </tr>
           </table>
         </td>
-        <!--td>Longueur(pouce)</td><td>Largeur(pouce)</td><td>Hauteur(pouce)</td-->
         <td style="width: 10%">Poids(lb)</td>                        
       </tr>
       <tr *ngIf="mode==2">
@@ -721,9 +848,6 @@
         </td>
         <td style="width: 10%">Poids(kg)</td>                        
       </tr>
-      <!--tr *ngIf="mode==2">
-        <td>Quantites</td><td>Description</td><td>Longueur(cm)</td><td>Largeur(cm)</td><td>Hauteur(cm)</td><td>Poids(kg)</td>                        
-      </tr-->
       <tr *ngFor="let load of loadDetails">
         <td style="text-align: center; width: 10%">{{load.quantity}}</td>
         <td style="width: 50%">{{load.description}}</td> 
@@ -736,13 +860,9 @@
             </tr>
           </table>
         </td>
-        <!--td>{{load.longueur}}</td>
-        <td>{{load.largeur}}</td>
-        <td>{{load.hauteur}}</td-->
         <td style="text-align: right; width: 10%">{{load.poids}}</td>
       </tr>
       <tr>
-        <!--td>{{" "}}</td-->
         <th colspan="2" style="text-align: right; width: 60%">{{"Total longueur et poids : "}}</th> 
         <td colspan="2" style="width: 30%">
           <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
@@ -755,27 +875,6 @@
         </td>
         <th style="text-align: right; width:10%">{{transport.poids}}</th>
       </tr> 
-    <!--/table-->
-      <!--tr>
-        <td *ngIf="transport.quantity!=null"> Quantite : {{transport.quantity}} </td>
-        <td *ngIf="transport.longueur!=null"> Longueur : {{transport.longueur}} <span *ngIf="mode==1">pouce </span><span *ngIf="mode==2">cm </span></td>
-        <td *ngIf="transport.largeur!=null"> Largeur : {{transport.largeur}} <span *ngIf="mode==1">pouce </span><span *ngIf="mode==2">cm </span></td>
-        <td *ngIf="transport.hauteur!=null"> Hauteur : {{transport.hauteur}} <span *ngIf="mode==1">pouce </span><span *ngIf="mode==2">cm </span></td>
-        <td *ngIf="transport.poids!=null"> Poids : {{transport.poids}} <span *ngIf="mode==1">lb </span><span *ngIf="mode==2">kg </span></td>
-      </tr-->
-      <!--tr>
-        <td colspan="5">Taille de Load: &nbsp; Longueur: {{this.transport.longueur}} - largeur: {{this.transport.largeur}} - 
-          hauteur: {{this.transport.hauteur}}- poids: {{this.transport.poids}} </td>
-      </tr>
-      <tr>
-        <td>Type de Camion </td>
-        <td>{{this.transport.typeCamion}}</td>
-      </tr>
-      <tr>
-        <td>Option </td>
-        <td>{{this.transport.optionDemande}}</td>
-      </tr-->
-    <!--table border='1' style="font-size: 11pt; margin-inline: 5px"-->  
       <tr> 
         <td colspan="5"style="text-align: left; text-anchor: start ">
             <span style="text-decoration-line: underline">Note Additionnelle :</span> <span>&nbsp;{{transport.comments}} <br>&nbsp;</span>

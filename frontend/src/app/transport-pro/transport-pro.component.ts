@@ -21,7 +21,10 @@ import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
 import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { Chauffeur } from 'src/model/model.chauffeur';
+import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+
 
 @Component({
   selector: 'app-transport-pro',
@@ -30,7 +33,7 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 })
 export class TransportProComponent implements OnInit {
 
-  imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
+  //imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
   isImageLoading: boolean;
 
@@ -128,6 +131,7 @@ export class TransportProComponent implements OnInit {
   disableWebInfo=false;
   disableAuthority=false;
   disableTransCreditUS=false;
+  modeGestionAppel: number = 2;
   id: number;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -151,9 +155,22 @@ export class TransportProComponent implements OnInit {
     this.transport.signature="";
   }
   //end for signature pad
-
+  
+  appelsEncours(){
+    this.modeGestionAppel=2
+  }
+  appelsAttentes(){
+    this.modeGestionAppel=1
+  }
+  appelsFinis(){
+    this.modeGestionAppel=3
+  }
+  appelsAnnules(){
+    this.modeGestionAppel=4
+  }
+  
   // funtions for photo
-  /*createImageFromBlob(image: Blob) {
+  createImageFromBlob(image: Blob) {
     let reader = new FileReader();
     reader.addEventListener("load", () => {
        this.imageToShow = reader.result;
@@ -166,14 +183,14 @@ export class TransportProComponent implements OnInit {
  
    getImageFromService() {
        this.isImageLoading = true;
-       this.imageService.getImage(this.imgUrl).subscribe(data => {
+       this.imageService.getImage(this.transport.imgUrl).subscribe(data => {
          this.createImageFromBlob(data);
          this.isImageLoading = false;
        }, error => {
          this.isImageLoading = false;
          console.log(error);
        });
-   }//*/
+   }
    onFileUpLoad(event){
     //this.transport.imgUrl=event.target.files[0]
     //this.transport.imgUrl='';
@@ -195,22 +212,33 @@ export class TransportProComponent implements OnInit {
   listTrs: Transport[]; // appels waitting
   listTrsSent: Transport[]; // appels sent
   listTrsFini: Transport[]; // appels finished
+  listTrsAnnule: Transport[]; // appels annules
   contacts: Contact[];
-  
+  chauffeurs: Chauffeur[];
+  chauffeur: Chauffeur;
+
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
-
+  
+  templateName:string=''; // name of the transport model
+  templates: Transport[]=[];  // liste transport models
+  aStrings=[]
+  tempId:number = null;
+  idTransportTemp  : number = null; // to hold the number ID of transport
+  modifyModels=false; // to appear the list models transport
+  
   constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
     private datePipe: DatePipe,
-    public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
+    public chauffeursService:ChauffeursService,
+    public varsGlobal:VarsGlobal,
     ) { 
       this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
@@ -228,8 +256,121 @@ export class TransportProComponent implements OnInit {
         selectAll: selectAllControl01
       });//*/
   }
+
+  // when you change the template name (modele)
+  templateChange(){
+    /// must revue and keep id and something must to do
+    //if(this.transport.id>0) 
+    this.idTransportTemp = this.transport.id; // we must keep this.transport.id as it as
+    //let transportTemp=new Transport();
+    
+    //if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.aStrings= this.templateName.split(".Id.");
+    this.tempId =  Number(this.aStrings[1]) // get id from the string 
+    this.templateName=this.aStrings[0]
+    this.templateName=this.templateName.trim()
+    //console.log('this.aStrings[0] : ' + this.aStrings[0])
+    //console.log('this.templateName :' + this.templateName)
+    this.templates.forEach(tempTr=>{
+      if(tempTr.id==this.tempId) 
+      {
+        //let tp = temp;
+        //tp.id = this.transport.id;
+        let transportTemp = tempTr;
+        this.transport=transportTemp;
+        //if(this.idTransportTemp>0) 
+        //this.transport.telIntervenant=ch.tel
+        //this.transport.emailIntervenant=ch.email
+      }
+    })
+    this.transport.id=this.idTransportTemp;
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.transport.dateDepart=new Date()
+    this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+    // refresh the templates
+    this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      this.templates = data; // just for test
+    },err=>{console.log(err)})
+  }
+  
+  modifyTemplate(t:Transport){
+    console.log('t.id -  before modifiy model : '+t.id)
+    this.transportsService.saveTransportModels(t).subscribe((data:Transport)=>{
+      console.log('data.id - after modified model : '+data.id)
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+        this.templates = data;
+      },err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
+
+  deleteTemplate(id:any){
+    this.transportsService.deleteTransportModel(id).subscribe((data:Transport)=>{
+      console.log('deleted template id - name : '+id+' - '+data.modelName+' - d.id: '+data.id)
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+        this.templates = data;
+      },err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
+  //*/ Control of surfer
+  back=0;
+  pagePresent=this.back+1;
+  forward=this.back+2;
+  onBack(){
+    this.back=this.back-1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  onForward(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.back==0){
+      this.onSave();
+    }
+    this.back=this.back+1;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    //console.log('onForward(): '+ this.back +' '+this.pagePresent+' '+this.forward)
+  }
+  //*/  End of control of surfer
+  onNew(){
+    this.back=0;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2;
+    this.onSave();
+  }
+  onReset(){
+    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2
+      if(this.transport.id!=null){
+        this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
+          this.transport=new Transport();
+          this.transport.nomEntreprise=this.shipper.nom
+          this.transport.idEntreprise=this.id
+          this.templateName='';
+          if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+        }, err=>{
+          console.log(err)
+        })
+      }
+      else this.transport=new Transport();      
+      if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+      this.templateName='';
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.id
+    }
+  }
+
+
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
+    //this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
   }
   addLoadDetail(){
@@ -269,6 +410,7 @@ export class TransportProComponent implements OnInit {
   }
   
   async ngOnInit() {    
+    //*
     this.varsGlobal.pro='yes'  // to control we are in professionnal
     this.loadDetails.length=0;
     
@@ -280,6 +422,12 @@ export class TransportProComponent implements OnInit {
       this.transport.idEntreprise=this.id
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
+        this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+          this.templates = data; // just for test
+          this.templates.forEach((t:Transport)=>{
+            console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
+          })
+        },err=>{console.log(err)})
       }, err=>{
         console.log(err);
       });
@@ -296,8 +444,22 @@ export class TransportProComponent implements OnInit {
     //this.typeServiceChange(this.serviceTypes[0]);
     this.calculTotalpoints() 
     this.prixCalcul()
+    //*/
   }
   
+  chauffeurChange(){
+    let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.transport.nomIntervenant=ch.nom
+        this.transport.telIntervenant=ch.tel
+        this.transport.emailIntervenant=ch.email
+      }
+    })
+  }
+
   calculTotalpoints(){ // calculate the base price in the same time
     this.transport.totalpoints = this.longeurPointage(this.transport.longueur, this.mode) 
       + this.largeurPointage(this.transport.largeur, this.mode) 
@@ -553,7 +715,7 @@ async originChange(){
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.showMap()
+      //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
   }
@@ -608,7 +770,7 @@ async destinationChange(){
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.showMap()
+      //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
   }//this.showMap();
@@ -624,9 +786,15 @@ onSortDate(data:Array<Transport>){
 }
 onRefresh(){
   this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+    // refresh the templates
+    this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      this.templates = data; // just for test
+    },err=>{console.log(err)})
+
     this.listTrs=[]  //data;
     this.listTrsSent=[]
     this.listTrsFini=[]
+    this.listTrsAnnule=[]
     //*
     data.sort((b, a)=>{
       if(a.id>b.id)
@@ -637,6 +805,7 @@ onRefresh(){
     })//*/
     data.forEach(tr=>{
       if(tr.fini) this.listTrsFini.push(tr)
+      else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
       else if (tr.sent) this.listTrsSent.push(tr)
       else if (tr.valid) this.listTrs.push(tr)//*/
     })
@@ -647,10 +816,10 @@ onRefresh(){
 
 printBonDeTransport(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
-  console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
+  //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);
-   console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
+   //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
   //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
   const WindowPrt = window.open();
   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
@@ -666,23 +835,29 @@ async prixCalcul(){
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
-  this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
 }
 
 prixCalculWithHorsTax(){
-  /*
-  this.transport.horstax=this.transport.prixBase
-  if((this.transport.distance-this.transport.inclus)>0){
-    this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
-  }//*/
-  this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //Math.round(this.transport.horstax*100)/100+this.transport.tvq+this.transport.tps
-  //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
 }
 
 async showMap() {
@@ -881,17 +1056,99 @@ async showMap() {
     }
   }
 
-  async onSave(){
+  contactChange(){
+    let strings:Array<string>=this.transport.nomContact.split("Id.");
+    let conId:number =  Number(strings[1])
+    this.contacts.forEach(con=>{
+      if(con.id==conId) 
+      {
+        this.transport.nomContact=con.prenom
+        this.transport.telContact=con.tel.toString()
+        this.transport.emailContact=con.email
+      }
+    })
+  }
+
+  async onSaveWithMessage(){  // will save with message confirmation
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     }
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    if(this.mode==2){
+      this.changeUnite();  // we must change to mode=1
+      await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        await this.loadDetails.forEach(load=>{
+          load.idTransport=data.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        //this.transport=data;
+        this.loadDetails=new Array<LoadDetail>();
+        this.templateName='';
+        this.back=0;
+        this.pagePresent=this.back+1;
+        this.forward=this.back+2
+        this.transport=new Transport(); 
+        this.transport.nomEntreprise=this.shipper.nom
+        this.transport.idEntreprise=this.id     
+        if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+      }, 
+        err=>{console.log(err)
+      })
+      this.changeUnite();  // we must rechange to mode=2
+    }
+    else{ // mode=1 already, just save
+      this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
+        if(this.transport.id!=null)
+          alert("C'est enregistre.")
+        await this.loadDetails.forEach(load=>{
+          load.idTransport=data.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;            
+            
+            //to empty the list loadDetails after save them
+            //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+          }, err=>{
+            console.log(err);
+          })
+        })
+        this.loadDetails=new Array<LoadDetail>();
+        this.templateName='';
+        this.back=0;
+        this.pagePresent=this.back+1;
+        this.forward=this.back+2
+        this.transport=new Transport();      
+        this.transport.nomEntreprise=this.shipper.nom
+        this.transport.idEntreprise=this.id
+        if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+        //this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+    }
+  }
+
+  async onSave(){  // without message alert
+    if(this.transport.id==null){
+      this.transport.dateDepart=new Date()
+      this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+      (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+    }
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     if(this.mode==2){
       this.changeUnite();  // we must change to mode=1
       await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+          //alert("C'est enregistre.")
         this.loadDetails.forEach(async load=>{
           load.idTransport=data.id;
           await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -911,7 +1168,7 @@ async showMap() {
     else{ // mode=1 already, just save
       this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+          //alert("C'est enregistre.")
         this.loadDetails.forEach(async load=>{
           load.idTransport=data.id;
           await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1030,17 +1287,16 @@ async showMap() {
   }
   //*/
 
-  onReset(){
-    this.transport=new Transport();
-  }
 
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
       this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+        //this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
         this.listTrsFini=[]
+        this.listTrsAnnule=[]
         //*
         data.sort((b, a)=>{
           if(a.id>b.id)
@@ -1051,6 +1307,7 @@ async showMap() {
         })//*/
         data.forEach(tr=>{
           if(tr.fini) this.listTrsFini.push(tr)
+          else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
           else if (tr.sent) this.listTrsSent.push(tr)
           else if (tr.valid) this.listTrs.push(tr)//*/
         })
@@ -1059,39 +1316,64 @@ async showMap() {
       })
     }
     else {
-      this.transport.dateDepart = new Date()
-      this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
-        (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+      this.back=0;
+      this.pagePresent=this.back+1
+      this.forward=this.back+2
+      /*
+      if(this.transport.id==null){
+        this.transport.dateDepart = new Date()
+        this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
+          (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
+        this.onSave();
+      }//*/
     }
   }
   
   onEnvoyer(){
     let stringsd:string[]=location.href.split('/transport-pro')
-    //window.open(stringsd[0], '_self');
-    this.onSave();
-    //if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
-      this.em.emailDest=myGlobals.emailPrincipal; //this.remorquage.emailIntervenant
-      this.em.titre= this.transport.nomEntreprise + " - Case numero : " + this.transport.id.toString()
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+stringsd[0]+"/detail-transport-express/"
-      + this.transport.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
-      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-        //console.log('this.em.titre : ' + this.em.titre)
-        //console.log('this.em.emailDest : '+ this.em.emailDest)
-        //console.log('this.em.content : ' + this.em.content)
-        alert("Cette appel a ete envoye a SOS Prestige.")
-        this.transport = new Transport() // declare one new case
-        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
-      }, err=>{
-        console.log()
-      })//*/
-      window.scroll({ 
-        top: 0, 
-        left: 0, 
-        behavior: 'smooth' 
-      });  // go to top
+    this.em.emailDest=myGlobals.emailPrincipal; 
+    this.em.titre= this.transport.nomEntreprise +" - Transport De- " + this.transport.origin+' A- ' + this.transport.destination
+    this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+    " <br> <a href='"+stringsd[0]+"/detail-transport-express/"
+    + this.transport.id   //1733  // replace by Number of Bon Transport
+    +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      alert("Cette appel a ete envoye a SOS Prestige.")
+      this.onSaveWithMessage();
+      this.transport = new Transport() // declare one new case
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2;
+    }, err=>{
+      console.log()
+    })
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });  // go to top  
   }
+
+  // onEnvoyer(){
+  //   let stringsd:string[]=location.href.split('/transport-client/')
+  //   if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+  //     this.em.emailDest=this.transport.emailIntervenant
+  //     this.em.titre="Case numero : " + this.transport.id.toString()
+  //     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+  //     " <br> <a href='"+ stringsd[0] +"/transport-client/"
+  //     + this.transport.id   //1733  // replace by Number of Bon Transport
+  //     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+  //     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+  //       alert("Le courriel a ete envoye au chauffeur.")
+  //       this.transport.sent=true;
+  //       this.onSaveWithMessage();
+  //     }, err=>{
+  //       console.log()
+  //     })//*/
+  //   }
+  //   else 
+  //     alert("Checkez le courriel de chauffer, SVP!!!")
+  // }
 
   logout(){
     localStorage.clear();
