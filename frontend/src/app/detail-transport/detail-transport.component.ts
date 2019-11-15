@@ -1037,8 +1037,8 @@ async showMap() {
 
   CloseWithWindowOpenTrick()
   {
-    let stringsd:string[]=location.href.split('/detail-transport-express/')
-    window.open(stringsd[0]+"/transport", '_self');
+    let stringsd:string[]=location.href.split('/detail-transport/')  //split('/detail-transport-express/')
+    if(stringsd.length>1) window.open(stringsd[0]+"/transport", '_self');
     window.close();
   }
   

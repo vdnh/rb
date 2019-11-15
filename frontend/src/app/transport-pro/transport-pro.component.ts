@@ -1332,9 +1332,10 @@ async showMap() {
   onEnvoyer(){
     let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest=myGlobals.emailPrincipal; 
-    this.em.titre= this.transport.nomEntreprise +" - Transport De- " + this.transport.origin+' A- ' + this.transport.destination
+    this.em.titre= this.transport.nomEntreprise +" - Transport De- " + this.transport.originVille+', '+this.transport.originProvince +
+    ' A- ' + this.transport.destVille+', '+this.transport.destProvince
     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-    " <br> <a href='"+stringsd[0]+"/detail-transport-express/"
+    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
     + this.transport.id   //1733  // replace by Number of Bon Transport
     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{

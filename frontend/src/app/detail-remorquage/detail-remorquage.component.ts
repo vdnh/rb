@@ -626,8 +626,8 @@ async showMap() {
 
   CloseWithWindowOpenTrick()
   {
-    let stringsd:string[]=location.href.split('/detail-remorquage-express/')
-    window.open(stringsd[0], '_self');
+    let stringsd:string[]=location.href.split('/detail-remorquage/')  //split('/detail-remorquage-express/')
+    window.open(stringsd[0]+"/remorquage", '_self');
     window.close();
   }
   //*/

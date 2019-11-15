@@ -46,7 +46,7 @@ export class AppComponent implements OnInit{
   //nombreMessages: number=this.varsGlobal.nombreMessages;
 
   form:FormGroup;  // use for chauffeur
-  formExpress:FormGroup;  // use for dispatch express
+  //formExpress:FormGroup;  // use for dispatch express
   idRemorquage: any;
   idTransport: string;
   textExpressSign="Demande Express";
@@ -62,10 +62,11 @@ export class AppComponent implements OnInit{
         username:'chauffeur',
         password:'chauffeur'
       })
+      /*
       this.formExpress = fb.group({
         username:'dispatch1',
         password:'dispatch1'
-      })
+      })//*/
   }
 
   private determineLocalIp() {
@@ -210,89 +211,84 @@ export class AppComponent implements OnInit{
         console.log(err);  
       });//*/
     }
-    else if(location.href.includes("/detail-remorquage-express/"))
-    {
-      //this.mode=2 // show the message for bad url
-      console.log('Nous sommes dans : /detail-remorquage-express/')
-      console.log('location.href : '+location.href)
-      const stringsd:string[]=location.href.split('/detail-remorquage-express/')
-      //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
-      this.idRemorquage=stringsd[1]
-      //this.idRemorquage=location.href.substring
-      console.log('this.idRemorquage : '+this.idRemorquage)
-      const user=this.formExpress.value;
-      //*
-      this.authService.loginDefaultDriver(user).subscribe(resp=> {
-          this.usernameLogin=user.username;  // to get usename
-          localStorage.setItem('usernameLogin', this.usernameLogin)
-          console.log('this.usernameLogin : '+ this.usernameLogin)
-          let jwtToken=resp.headers.get('Authorization');
-          this.authService.saveTonken(jwtToken);
-          //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe(async (res:Role)=>{
-            this.role = res.roleName;
-            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
-            localStorage.setItem('eligible',this.roleUsernameLogin)
-            localStorage.setItem('role', this.role);          
-            if(res.id!=null) {
-              localStorage.setItem('userId', res.id.toString());
-              //console.log('res.id : '+res.id)
-              this.userId=localStorage.getItem('userId')
-            }
-            this.router.navigate(['/detail-remorquage-express/'+this.idRemorquage]); //1753//location.href
-            /*/if(res.idSecond!=null) localStorage.setItem('idSecond', res.idSecond.toString());
-            if(res.roleName.includes('DISPATCH')) {         
-              if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
-              else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
-            }//*/
-          }, err=>{          
-            console.log(err);
-          });
-          this.router.navigateByUrl('/propos');
-      },err=>{
-        this.mode=1; // appear the message bad password
-        console.log(err);  
-      });//*/
-    }
-    else if(location.href.includes("/detail-transport-express/"))
-    {
-      //this.mode=2 // show the message for bad url
-      console.log('Nous sommes dans : /detail-transport-express/')
-      console.log('location.href : '+location.href)
-      const stringsd:string[]=location.href.split('/detail-transport-express/')
-      //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
-      this.idTransport=stringsd[1]
-      //this.idRemorquage=location.href.substring
-      console.log('this.idTransport : '+this.idTransport)
-      const user=this.formExpress.value;
-      //*
-      this.authService.loginDefaultDriver(user).subscribe(resp=> {
-          this.usernameLogin=user.username;  // to get usename
-          localStorage.setItem('usernameLogin', this.usernameLogin)
-          console.log('this.usernameLogin : '+ this.usernameLogin)
-          let jwtToken=resp.headers.get('Authorization');
-          this.authService.saveTonken(jwtToken);
-          //console.log(jwtToken);        
-          this.authService.getUserInfo().subscribe(async (res:Role)=>{
-            this.role = res.roleName;
-            this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
-            localStorage.setItem('eligible',this.roleUsernameLogin)
-            localStorage.setItem('role', this.role);          
-            if(res.id!=null) {
-              localStorage.setItem('userId', res.id.toString());
-              //console.log('res.id : '+res.id)
-              this.userId=localStorage.getItem('userId')
-            }
-            this.router.navigate(['/detail-transport-express/'+this.idTransport]); 
-          }, err=>{          
-            console.log(err);
-          });
-          this.router.navigateByUrl('/propos');
-      },err=>{
-        this.mode=1; // appear the message bad password
-        console.log(err);  
-      });//*/
-    }
+    // else if(location.href.includes("/detail-remorquage-express/"))
+    // {
+    //   //this.mode=2 // show the message for bad url
+    //   console.log('Nous sommes dans : /detail-remorquage-express/')
+    //   console.log('location.href : '+location.href)
+    //   const stringsd:string[]=location.href.split('/detail-remorquage-express/')
+    //   //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
+    //   this.idRemorquage=stringsd[1]
+    //   //this.idRemorquage=location.href.substring
+    //   console.log('this.idRemorquage : '+this.idRemorquage)
+    //   const user=this.formExpress.value;
+    //   //*
+    //   this.authService.loginDefaultDriver(user).subscribe(resp=> {
+    //       this.usernameLogin=user.username;  // to get usename
+    //       localStorage.setItem('usernameLogin', this.usernameLogin)
+    //       console.log('this.usernameLogin : '+ this.usernameLogin)
+    //       let jwtToken=resp.headers.get('Authorization');
+    //       this.authService.saveTonken(jwtToken);
+    //       //console.log(jwtToken);        
+    //       this.authService.getUserInfo().subscribe(async (res:Role)=>{
+    //         this.role = res.roleName;
+    //         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+    //         localStorage.setItem('eligible',this.roleUsernameLogin)
+    //         localStorage.setItem('role', this.role);          
+    //         if(res.id!=null) {
+    //           localStorage.setItem('userId', res.id.toString());
+    //           //console.log('res.id : '+res.id)
+    //           this.userId=localStorage.getItem('userId')
+    //         }
+    //         this.router.navigate(['/detail-remorquage-express/'+this.idRemorquage]); //1753//location.href
+    //       }, err=>{          
+    //         console.log(err);
+    //       });
+    //       this.router.navigateByUrl('/propos');
+    //   },err=>{
+    //     this.mode=1; // appear the message bad password
+    //     console.log(err);  
+    //   });//*/
+    // }
+    // else if(location.href.includes("/detail-transport-express/"))
+    // {
+    //   //this.mode=2 // show the message for bad url
+    //   console.log('Nous sommes dans : /detail-transport-express/')
+    //   console.log('location.href : '+location.href)
+    //   const stringsd:string[]=location.href.split('/detail-transport-express/')
+    //   //console.log('stringsd[0]: '+(this.idRemorquage=stringsd[0]))
+    //   this.idTransport=stringsd[1]
+    //   //this.idRemorquage=location.href.substring
+    //   console.log('this.idTransport : '+this.idTransport)
+    //   const user=this.formExpress.value;
+    //   //*
+    //   this.authService.loginDefaultDriver(user).subscribe(resp=> {
+    //       this.usernameLogin=user.username;  // to get usename
+    //       localStorage.setItem('usernameLogin', this.usernameLogin)
+    //       console.log('this.usernameLogin : '+ this.usernameLogin)
+    //       let jwtToken=resp.headers.get('Authorization');
+    //       this.authService.saveTonken(jwtToken);
+    //       //console.log(jwtToken);        
+    //       this.authService.getUserInfo().subscribe(async (res:Role)=>{
+    //         this.role = res.roleName;
+    //         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
+    //         localStorage.setItem('eligible',this.roleUsernameLogin)
+    //         localStorage.setItem('role', this.role);          
+    //         if(res.id!=null) {
+    //           localStorage.setItem('userId', res.id.toString());
+    //           //console.log('res.id : '+res.id)
+    //           this.userId=localStorage.getItem('userId')
+    //         }
+    //         this.router.navigate(['/detail-transport-express/'+this.idTransport]); 
+    //       }, err=>{          
+    //         console.log(err);
+    //       });
+    //       this.router.navigateByUrl('/propos');
+    //   },err=>{
+    //     this.mode=1; // appear the message bad password
+    //     console.log(err);  
+    //   });//*/
+    // }
     else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
     {
       location.href='https://cts.sosprestige.com';
@@ -464,6 +460,20 @@ export class AppComponent implements OnInit{
             this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{
               this.varsGlobal.userLogs=data;
               localStorage.setItem('userLogsId',data.id.toString())
+              if(res.id==undefined && res.roleName.includes('DISPATCH') && (location.href.includes('/detail-remorquage/')||location.href.includes('/detail-transport/')))
+              {
+                sessionStorage.setItem('temporary', 'yes') // to control we are in session
+                this.varsGlobal.session='yes'  // to control we are in session  
+                location.reload();
+                //let stringsd:string=location.href  //split('/detail-remorquage-express/')
+                //console.log('stringsd[0] : '+stringsd[0])
+                //console.log('stringsd[0] : '+stringsd[1])
+                //let siteAddress=stringsd[1].split('/')[0]
+                //console.log('siteAddress : '+siteAddress)
+                //this.router.navigate(['/']);
+                //this.router.navigateByUrl(stringsd);
+
+              }
             }, err=>{
               console.log(err)
             })
@@ -487,11 +497,26 @@ export class AppComponent implements OnInit{
         }
         if(res.roleName.includes('DISPATCH')) {         
           //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
-          if(res.id!=null) this.router.navigate(['/'], {skipLocationChange: true});
-          else this.router.navigate(['/'], {skipLocationChange: true}); //  /calculer-express
-          /*/
-          if(res.id!=null) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
-          else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
+          //if(res.id!=null) this.router.navigate(['/'], {skipLocationChange: true});
+          //else this.router.navigate(['/'], {skipLocationChange: true}); //  /calculer-express
+          //
+          if(res.id==undefined && (location.href.includes('/detail-remorquage/')||location.href.includes('/detail-transport/')))
+          {
+            sessionStorage.setItem('temporary', 'yes') // to control we are in session
+            this.varsGlobal.session='yes'  // to control we are in session  
+            // the rest we do them after saveUserLogs
+          }  
+          else{
+            //let stringsd:string[]=location.href.split('://')  //split('/detail-remorquage-express/')
+            //console.log('stringsd[0] : '+stringsd[0])
+            //console.log('stringsd[0] : '+stringsd[1])
+            //let siteAddress=stringsd[1].split('/')[0]
+            //console.log('siteAddress : '+siteAddress)
+            sessionStorage.setItem('temporary', 'no') // to control we aren't in session
+            this.varsGlobal.session='no'  // to control we are in session  
+            this.router.navigate(['/']);
+            //window.open(stringsd[0]+'://'+siteAddress, '_self');
+          }
           //*/
           //localStorage.setItem('userId', res.id.toString());
         }

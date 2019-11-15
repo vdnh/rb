@@ -1129,7 +1129,7 @@ onFileUpLoad(event){
     //this.em.titre= this.remorquage.nomEntreprise + " - Case numero : " + this.remorquage.id.toString()
     this.em.titre= this.remorquage.nomEntreprise +" - Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-    " <br> <a href='"+stringsd[0]+"/detail-remorquage-express/"
+    " <br> <a href='"+stringsd[0]+"/detail-remorquage/" //"/detail-remorquage-express/"
     + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
