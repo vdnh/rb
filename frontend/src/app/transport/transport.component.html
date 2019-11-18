@@ -646,7 +646,7 @@
         <!--hr *ngIf="pagePresent==8" style="border: 2px solid lightgray"/-->
         <h5 style="text-decoration-line: underline" *ngIf="pagePresent==9">Camion & Chauffeur</h5>
         <div *ngIf="pagePresent==9" class="row">
-          <div class="col-sm-6 col-md-3 col-lg-3">
+          <div class="col-sm-3 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Camion</label>
               <input type="text" [(ngModel)]="transport.camionAttribue" 
@@ -656,7 +656,27 @@
               </datalist>
             </div>
           </div>          
-          <div class="col-sm-6 col-md-3 col-lg-3">
+          <div class="col-sm-3 col-md-1 col-lg-1">
+            <div class="form-group">
+              <label for="">Trailer1</label>
+              <input type="text" [(ngModel)]="transport.trailer1" 
+                name="trailer1" list="defaultTrailers" class="form-control" required>
+              <datalist id="defaultTrailers">
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite}}</option>
+              </datalist>
+            </div>
+          </div>          
+          <div class="col-sm-3 col-md-1 col-lg-1">
+            <div class="form-group">
+              <label for="">Trailer2</label>
+              <input type="text" [(ngModel)]="transport.trailer2" 
+                name="trailer2" list="defaultTrailers" class="form-control" required>
+              <datalist id="defaultTrailers">
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite}}</option>
+              </datalist>
+            </div>
+          </div>          
+          <div class="col-sm-3 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Chauffeur</label>
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
@@ -684,7 +704,57 @@
             </div>
           </div>
         </div>
+        <div *ngIf="pagePresent==9" class="row">
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <strong>Volume Origin - Volume Disponible Actuel</strong>
+          </div>
+        </div>
+        <div *ngIf="pagePresent==9" class="row">
+          <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">&nbsp;&nbsp;</label>
+            <h4>&nbsp;&nbsp;</h4>
+            <!-- <input class="form-control" disabled> -->
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Longueur</label>
+            <input class="form-control"  type="number" size="5" disabled>
+            <input class="form-control"  type="number" size="5">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Largeur</label>
+            <input class="form-control" type="number" size="5" disabled>
+            <input class="form-control"  type="number" size="5">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Hauteur</label>
+            <input class="form-control" type="number" size="5" disabled>
+            <input class="form-control"  type="number" size="5">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Poids</label>
+            <input class="form-control" type="number" size="5" disabled>
+            <input class="form-control"  type="number" size="5">
+          </div>
+        </div>
+        <!-- <div class="row">
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <label class="control-label">Longueur</label>
+          
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <label class="control-label">Largeur</label>
+          
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <label class="control-label">Hauteur</label>
+          
+          </div>
+          <div>
+            <label class="control-label">Poids</label>
 
+          </div>
+        </div> -->
+  
         <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note au Chauffeur</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">

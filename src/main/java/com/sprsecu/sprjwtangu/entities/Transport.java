@@ -76,7 +76,7 @@ public class Transport implements Serializable{
     private Long idEntreprise;  // bientot id de Shipper
     private Boolean sent=false; // sent or didn't send to driver
     private String nomDispatch="";
-    private String camionAttribue="";
+    private String camionAttribue="";  // name of camion
     private String signature="";
     private String nomSignature="";
     private Float porterAuCompte=0.00f; 
@@ -87,7 +87,12 @@ public class Transport implements Serializable{
     // the name of the model usually used
     private String modelName="";
     private Boolean taxable=true;
-    
+    private Long idVoyage;  // to identify the voyage he belong
+    private Long idCamion;
+    private Long idTrailer1;
+    private String trailer1="";  // name of trailer1
+    private Long idTrailer2;
+    private String trailer2="";  // name of trailer2
     //
     private Float distance;
     private String origin;
@@ -129,6 +134,13 @@ public class Transport implements Serializable{
     private Float tvq=0.00f;
     private Float total=0.00f;
     //fin de prix total
+    
+    // Volume available actual
+    private Float longueurDispo;
+    private Float largeurDispo;
+    private Float hauteurDispo;
+    private Float poidsDispo;
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

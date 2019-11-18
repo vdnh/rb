@@ -375,7 +375,7 @@ export class DetailTransporterComponent implements OnInit {
               marker.addListener('click', (event)=>{
                 var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
                 if(camion.stopDuration>0)
-                  contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + camion.stopDuration +' minutes.';
+                  contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + this.showStopDuration(camion.stopDuration)//camion.stopDuration +' minutes.';
                 // Replace the info window's content and position.
                 this.infoWindow.setContent(contentString);
                 this.infoWindow.setPosition(event.latLng);
@@ -441,7 +441,7 @@ export class DetailTransporterComponent implements OnInit {
           marker.addListener('click', (event)=>{
             var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
             if(camion.stopDuration>0)
-              contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + camion.stopDuration +' minutes.';
+              contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + this.showStopDuration(camion.stopDuration)//camion.stopDuration +' minutes.';
             // Replace the info window's content and position.
             this.infoWindow.setContent(contentString);
             this.infoWindow.setPosition(event.latLng);
@@ -460,7 +460,23 @@ export class DetailTransporterComponent implements OnInit {
       console.log();
     })
   }
+  // to show the stop duration in day-hours-minute
+  showStopDuration(stopDuration:number){
+    let duration='';
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' jour(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' heure(s) '
+    let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '
+    
+    if((stopDuration/1440)>=1)
+      duration = duration+days;
+    if(((stopDuration%1440)/24)>=1)
+      duration=duration+hours
+    duration=duration+minutes
+    
+    //duration = days+' jour(s) '+hours+' heure(s) '+minutes+' minute(s) '
 
+    return duration;
+  }
   onQuebec511(){
     this.quebec511=-this.quebec511;
     if (this.quebec511==-1)

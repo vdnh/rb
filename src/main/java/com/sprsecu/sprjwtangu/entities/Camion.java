@@ -95,6 +95,12 @@ public class Camion implements Serializable{
     //private Long idEntretienControl;  // faut creer 1 ligne dans la table EntretienControl chaque fois creer 1 ligne Camion
     private Long idTransporter;
     
+    // Available volume (pouce/inch - libre)
+    private Float longueur;
+    private Float largeur;
+    private Float hauteur;
+    private Float poids;
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

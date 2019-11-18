@@ -81,6 +81,7 @@ export class CamionComponent implements OnInit {
   //
   garanties:Array<Garantie>=[];
   addGarantie:Garantie=new Garantie();
+  infoWindow: google.maps.InfoWindow;
   
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
   public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router, 
@@ -100,9 +101,31 @@ export class CamionComponent implements OnInit {
       this.marker = new google.maps.Marker({
         position: location1,
         map: this.map,
-        icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
-        title: data.unite
+        //icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+        title: data.unite,
+        icon: {
+          //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          scale:4,
+          rotation:this.camion.direction,
+          fillOpacity: 1,
+          fillColor: "#FFFFFF",
+          strokeWeight: 2,
+          strokeColor: "red",
+        },
+        
       });
+      this.infoWindow = new google.maps.InfoWindow;
+      //*  
+      this.marker.addListener('click', (event)=>{
+        var contentString:string=' Vitesse : ' + this.camion.speed;
+        if(this.camion.stopDuration>0)
+          contentString='Arrete depuis : ' + this.showStopDuration(this.camion.stopDuration)
+        // Replace the info window's content and position.
+        this.infoWindow.setContent(contentString);
+        this.infoWindow.setPosition(event.latLng);
+        this.infoWindow.open(this.map);///
+      })//*/
     }, err=>{
       console.log();
     })//*/
@@ -777,6 +800,24 @@ export class CamionComponent implements OnInit {
       console.log(err);
     });//*/
   }
+
+  showStopDuration(stopDuration:number){
+    let duration='';
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' jour(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' heure(s) '
+    let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '
+    
+    if((stopDuration/1440)>=1)
+      duration = duration+days;
+    if(((stopDuration%1440)/24)>=1)
+      duration=duration+hours
+    duration=duration+minutes
+    
+    //duration = days+' jour(s) '+hours+' heure(s) '+minutes+' minute(s) '
+
+    return duration;
+  }
+
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
@@ -803,9 +844,34 @@ export class CamionComponent implements OnInit {
             this.marker = new google.maps.Marker({
               position: location1,
               map: this.map,
-              icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
-              title: data.unite
+              //icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+              title: data.unite,
+              icon: {
+                //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale:4,
+                rotation:this.camion.direction,
+                fillOpacity: 1,
+                fillColor: "#FFFFFF",
+                strokeWeight: 2,
+                strokeColor: "red",
+              },
+              
             });
+            this.infoWindow = new google.maps.InfoWindow;
+            //*  
+            this.marker.addListener('click', (event)=>{
+              var contentString:string=' Vitesse : ' + this.camion.speed;
+              if(this.camion.stopDuration>0)
+                contentString='Arrete depuis : ' + this.showStopDuration(this.camion.stopDuration)
+              // Replace the info window's content and position.
+              this.infoWindow.setContent(contentString);
+              this.infoWindow.setPosition(event.latLng);
+              this.infoWindow.open(this.map);///
+            })//*/
+            /*
+            this.infoWindow.setPosition(new google.maps.LatLng( this.camion.latitude, this.camion.latitude));
+            this.infoWindow.open(this.map);//*/
             //console.log('this.camion.uniteMonotor  + this.camion.monitor : '+this.camion.uniteMonitor +' + '+ this.camion.monitor);
             const source = interval(60000);
             this.subscription=source.subscribe(val=>{this.getLocalisation()})  

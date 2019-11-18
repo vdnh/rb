@@ -87,6 +87,12 @@ public class TransportModel implements Serializable{
     // the name of the model usually used
     private String modelName="";
     private Boolean taxable=true;
+    private Long idVoyage;  // to identify the voyage he belong
+    private Long idCamion;
+    private Long idTrailer1;
+    private String trailer1="";  // name of trailer1
+    private Long idTrailer2;
+    private String trailer2="";  // name of trailer2
     
     //
     private Float distance;
@@ -129,6 +135,14 @@ public class TransportModel implements Serializable{
     private Float tvq=0.00f;
     private Float total=0.00f;
     //fin de prix total
+    
+    // Volume available actual
+    private Float longueurDispo;
+    private Float largeurDispo;
+    private Float hauteurDispo;
+    private Float poidsDispo;
+    
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

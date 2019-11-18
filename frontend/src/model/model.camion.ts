@@ -60,4 +60,10 @@ export class Camion{
     idFichePhysiqueEntretienCont:number;  // faut creer une ligne dans la table FichePhysiqueEntretienCont parce que one to one
     idTransporter:number=0;
 
+    // Available volume (pouce/inch - libre)
+    longueur:number;
+    largeur:number;
+    hauteur:number;
+    poids:number;
+
 }

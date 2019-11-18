@@ -217,6 +217,7 @@ export class TransportComponent implements OnInit {
   em:EmailMessage=new EmailMessage();
 
   camions:Array<Camion>;
+  remorques:Array<Camion>;  // list of trailers
   
   templateName:string=''; // name of the transport model
   templates: Transport[]=[];  // liste transport models
@@ -411,9 +412,12 @@ export class TransportComponent implements OnInit {
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
+      this.remorques=[];
       data.forEach(camion=>{
         if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
+        else
+          this.remorques.push(camion)  // Camions without GPS are trailers
       })
       this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;

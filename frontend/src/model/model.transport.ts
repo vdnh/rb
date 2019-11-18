@@ -98,4 +98,16 @@ export class Transport{
     // the name of the model usually used
     modelName="";
     taxable=true;
+    idVoyage:number;  // to identify the voyage he belong
+    idCamion:number;
+    idTrailer1:number;
+    trailer1="";  // name of trailer1
+    idTrailer2:number;
+    trailer2="";  // name of trailer2
+
+    // Volume available actual
+    longueurDispo:number;
+    largeurDispo:number;
+    hauteurDispo:number;
+    poidsDispo:number;
 }
