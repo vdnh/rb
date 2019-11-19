@@ -23,6 +23,7 @@ import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { Voyage } from 'src/model/model.voyage';
 
 @Component({
   selector: 'app-transport',
@@ -218,6 +219,10 @@ export class TransportComponent implements OnInit {
 
   camions:Array<Camion>;
   remorques:Array<Camion>;  // list of trailers
+  camion:Camion;
+  trailer1:Camion;
+  trailer2:Camion;
+  voyage:Voyage;
   
   templateName:string=''; // name of the transport model
   templates: Transport[]=[];  // liste transport models
@@ -458,17 +463,113 @@ export class TransportComponent implements OnInit {
     // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
   }
   
-  chauffeurChange(){
+  async chauffeurChange(){
     let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
-    let chId:number =  Number(strings[1])
-    this.chauffeurs.forEach(ch=>{
-      if(ch.id==chId) 
-      {
-        this.transport.nomIntervenant=ch.nom
-        this.transport.telIntervenant=ch.tel
-        this.transport.emailIntervenant=ch.email
+    if(strings.length>1){
+      let chId:number =  Number(strings[1])
+      await this.chauffeurs.forEach(ch=>{
+        if(ch.id==chId) 
+        {
+          this.chauffeur=ch
+          this.transport.nomIntervenant=this.chauffeur.nom
+          this.transport.telIntervenant=this.chauffeur.tel
+          this.transport.emailIntervenant=this.chauffeur.email
+        }
+      })
+      if(chId!=this.chauffeur.id)
+        {
+          this.chauffeur=null;
+          this.transport.nomIntervenant=''
+          this.transport.telIntervenant=''
+          this.transport.emailIntervenant=''
+        }
+    }  
+    else this.chauffeur=null;
+  }
+
+  async camionChange(){
+    let strings:Array<string>=this.transport.camionAttribue.split("Id.");
+    console.log('strings.lenght : '+strings.length);
+    console.log('strings[0] : '+strings[0]);
+    console.log('strings[1] : '+strings[1]);
+    if(strings.length>1){
+      let cId:number =  Number(strings[1])
+      await this.camions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          this.camion=c;
+          this.transport.camionAttribue=this.camion.unite
+        }
+      })
+      if(cId!=this.camion.id)
+        this.camion=null;
+    }
+    else this.camion=null;
+  }
+
+  async trailer1Change(){
+    let strings:Array<string>=this.transport.trailer1.split("Id.");
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      await this.remorques.forEach(r=>{
+        if(r.id==tId) 
+        {
+          this.trailer1=r;
+          this.transport.trailer1=this.trailer1.unite
+        }
+      })
+      if(this.trailer1==undefined || tId!=this.trailer1.id)
+        {
+          this.trailer1=null;
+          this.trailer2=null;
+          this.transport.trailer2=''
+        }
+    }
+    else {
+      this.trailer1=null;
+      this.trailer2=null;
+      this.transport.trailer2=''
+    }
+  }
+
+  async trailer2Change(){
+    let strings:Array<string>=this.transport.trailer2.split("Id.");
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      if(tId==this.trailer1.id){
+       alert('Il ne faut pas le meme de trailer1 !!')     
+       this.transport.trailer2=''
       }
-    })
+      else{
+        await this.remorques.forEach(r=>{
+          if(r.id==tId) 
+          {
+            this.trailer2=r;
+            this.transport.trailer2=this.trailer2.unite
+          }
+        })
+      }
+      
+      if(this.trailer2==undefined || tId!=this.trailer2.id)
+        this.trailer2=null;
+    }
+    else this.trailer2=null;
+  }
+
+  volumeLongueur(){
+    let tot : number = 0;
+    if(this.camion && this.camion.longueur!=undefined) tot = tot+this.camion.longueur
+    if(this.trailer1 && this.trailer1.longueur!=undefined) tot = tot+this.trailer1.longueur
+    if(this.trailer2 && this.trailer2.longueur!=undefined) tot = tot+this.trailer2.longueur
+    return tot
+  }
+  
+  volumePoids(){
+    let tot : number = 0;
+    if(this.camion && this.camion.poids!=undefined) tot = tot+this.camion.poids
+    if(this.trailer1 && this.trailer1.poids!=undefined) tot = tot+this.trailer1.poids
+    if(this.trailer2 && this.trailer2.poids!=undefined) tot = tot+this.trailer2.poids
+    return tot
   }
 
   calculTotalpoints(){ // calculate the base price in the same time
@@ -1069,15 +1170,17 @@ async showMap() {
 
   contactChange(){
     let strings:Array<string>=this.transport.nomContact.split("Id.");
-    let conId:number =  Number(strings[1])
-    this.contacts.forEach(con=>{
-      if(con.id==conId) 
-      {
-        this.transport.nomContact=con.prenom
-        this.transport.telContact=con.tel.toString()
-        this.transport.emailContact=con.email
-      }
-    })
+    if(strings.length>1){
+      let conId:number =  Number(strings[1])
+      this.contacts.forEach(con=>{
+        if(con.id==conId) 
+        {
+          this.transport.nomContact=con.prenom
+          this.transport.telContact=con.tel.toString()
+          this.transport.emailContact=con.email
+        }
+      })
+    }
   }
 
   async onSaveWithMessage(){  // will save with message confirmation

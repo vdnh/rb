@@ -400,7 +400,7 @@
         <div *ngIf="pagePresent==5">
           <h5 *ngIf="pagePresent==5">
             <span style="text-align: left; font: bold; text-decoration-line: underline">Loads </span>  <span>&nbsp;&nbsp;&nbsp;</span>
-            <span><button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></span>
+            <!-- <span><button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></span> -->
           </h5>
         </div>
         <div *ngIf="pagePresent==5" class="row">
@@ -650,9 +650,9 @@
             <div class="form-group">
               <label for="">Camion</label>
               <input type="text" [(ngModel)]="transport.camionAttribue" 
-                name="camionAttribue" list="defaultCamions" class="form-control" required>
+                name="camionAttribue" list="defaultCamions" class="form-control" (change)="camionChange()" required>
               <datalist id="defaultCamions">
-                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite+'  .Id.'+c.id}}</option>
               </datalist>
             </div>
           </div>          
@@ -660,9 +660,9 @@
             <div class="form-group">
               <label for="">Trailer1</label>
               <input type="text" [(ngModel)]="transport.trailer1" 
-                name="trailer1" list="defaultTrailers" class="form-control" required>
+                name="trailer1" list="defaultTrailers" class="form-control" (change)="trailer1Change()">
               <datalist id="defaultTrailers">
-                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite}}</option>
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
               </datalist>
             </div>
           </div>          
@@ -670,9 +670,9 @@
             <div class="form-group">
               <label for="">Trailer2</label>
               <input type="text" [(ngModel)]="transport.trailer2" 
-                name="trailer2" list="defaultTrailers" class="form-control" required>
+                name="trailer2" list="defaultTrailers" class="form-control" (change)="trailer2Change()" [disabled]="transport.trailer1.length<1">
               <datalist id="defaultTrailers">
-                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite}}</option>
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
               </datalist>
             </div>
           </div>          
@@ -706,19 +706,27 @@
         </div>
         <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-12 col-md-6 col-lg-6">
-            <strong>Volume Origin - Volume Disponible Actuel</strong>
+            <h5><strong>Volume (en pouces et lbs)</strong></h5>
           </div>
         </div>
         <div *ngIf="pagePresent==9" class="row">
           <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">&nbsp;&nbsp;</label>
-            <h4>&nbsp;&nbsp;</h4>
-            <!-- <input class="form-control" disabled> -->
+            <strong class="form-control" style="border: none;">Default</strong>
+            <span class="form-control" style="border: none;">Utilise</span>
+            <h6 class="form-control" style="border: none;">Disponible</h6>
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">Longueur</label>
-            <input class="form-control"  type="number" size="5" disabled>
-            <input class="form-control"  type="number" size="5">
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Poids</label>
+            <input class="form-control" type="number" size="5" [value]="volumePoids()" disabled>
+            <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">Largeur</label>
@@ -727,11 +735,6 @@
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">Hauteur</label>
-            <input class="form-control" type="number" size="5" disabled>
-            <input class="form-control"  type="number" size="5">
-          </div>
-          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Poids</label>
             <input class="form-control" type="number" size="5" disabled>
             <input class="form-control"  type="number" size="5">
           </div>
