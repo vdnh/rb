@@ -93,6 +93,21 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.hauteur" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.poids" /></td>
             </tr>
+            <tr>
+              <th>
+                Photo
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </th>
+              <!-- <td>
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </td> -->
+              <td colspan="3" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+                <a href="{{camion.imgUrl}}" target="_blank">
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+                </a>
+              </td>
+            </tr>
+
             <tr><th colspan="8">Localisation : </th></tr>
             <tr>
               <th>Latitude</th><th>Longtitude</th><th>En mission</th><th>Depart</th><th>Destination</th>

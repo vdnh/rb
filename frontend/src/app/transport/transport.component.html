@@ -1,9 +1,9 @@
 <h4 style="text-align: left; font: bold">
   Transport<span>&nbsp;&nbsp;&nbsp;</span>
-  <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
+  <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerLoad</button></span>
   <!--span *ngIf="modeHistoire==-1&&transport.id==null"><button (click)="onNew()" class="btn btn-link">NouvelAppel</button></span-->
-  <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
-  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
+  <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelLoad</button></span>
+  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Loads</button></span>
   <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
 </h4>
 <hr style="border: 1px dotted black"/>
@@ -646,7 +646,7 @@
         <!--hr *ngIf="pagePresent==8" style="border: 2px solid lightgray"/-->
         <h5 style="text-decoration-line: underline" *ngIf="pagePresent==9">Camion & Chauffeur</h5>
         <div *ngIf="pagePresent==9" class="row">
-          <div class="col-sm-3 col-md-2 col-lg-2">
+          <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
               <label for="">Camion</label>
               <input type="text" [(ngModel)]="transport.camionAttribue" 
@@ -655,8 +655,13 @@
                   <option *ngFor="let c of camions" [ngValue]="c">{{c.unite+'  .Id.'+c.id}}</option>
               </datalist>
             </div>
+            <div *ngIf="camion!=null && camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{camion.imgUrl}}" target="_blank">
+                <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
           </div>          
-          <div class="col-sm-3 col-md-1 col-lg-1">
+          <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
               <label for="">Trailer1</label>
               <input type="text" [(ngModel)]="transport.trailer1" 
@@ -665,8 +670,13 @@
                   <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
               </datalist>
             </div>
+            <div *ngIf="trailer1!=null && trailer1.imgUrl!=null && trailer1.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{trailer1.imgUrl}}" target="_blank">
+                <img [src]="trailer1.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
           </div>          
-          <div class="col-sm-3 col-md-1 col-lg-1">
+          <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
               <label for="">Trailer2</label>
               <input type="text" [(ngModel)]="transport.trailer2" 
@@ -675,8 +685,13 @@
                   <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
               </datalist>
             </div>
+            <div *ngIf="trailer2!=null && trailer2.imgUrl!=null && trailer2.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{trailer2.imgUrl}}" target="_blank">
+                <img [src]="trailer2.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
           </div>          
-          <div class="col-sm-3 col-md-2 col-lg-2">
+          <!-- <div class="col-sm-3 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Chauffeur</label>
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
@@ -702,33 +717,34 @@
                 <datalist id="defaultEmails">
                 </datalist>
             </div>
-          </div>
+          </div> -->
         </div>
-        <div *ngIf="pagePresent==9" class="row">
+        <!-- <div *ngIf="pagePresent==9" class="row">
           <div class="col-sm-12 col-md-6 col-lg-6">
-            <h5><strong>Volume (en pouces et lbs)</strong></h5>
+            <h5 style="text-decoration-line: underline"><strong>Volume (en pouces et lbs)</strong></h5>
           </div>
-        </div>
+        </div> -->
         <div *ngIf="pagePresent==9" class="row">
           <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">&nbsp;&nbsp;</label>
+            <label for=""><h6 style="text-decoration-line: underline"><strong>Volume</strong></h6></label>
+            <!-- <label for="">&nbsp;&nbsp;</label> -->
             <strong class="form-control" style="border: none;">Default</strong>
             <span class="form-control" style="border: none;">Utilise</span>
             <h6 class="form-control" style="border: none;">Disponible</h6>
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Longueur</label>
+            <label for="">Longueur(pouces)</label>
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
             <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Poids</label>
+            <label for="">Poids(lbs)</label>
             <input class="form-control" type="number" size="5" [value]="volumePoids()" disabled>
             <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
             <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
           </div>
-          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+          <!-- <div class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">Largeur</label>
             <input class="form-control" type="number" size="5" disabled>
             <input class="form-control"  type="number" size="5">
@@ -737,6 +753,33 @@
             <label for="">Hauteur</label>
             <input class="form-control" type="number" size="5" disabled>
             <input class="form-control"  type="number" size="5">
+          </div> -->
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Chauffeur</label>
+              <input type="text"  [(ngModel)]="transport.nomIntervenant"
+                name="nomIntervenant" class="form-control" (change)="chauffeurChange()" list="defaultChauffeurs">
+              <datalist id="defaultChauffeurs">
+                <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="transport.telIntervenant" name="telIntervenant"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="transport.telIntervenant=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Courriel</label>
+              <input type="email" [(ngModel)]="transport.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
+              required>
+                <datalist id="defaultEmails">
+                </datalist>
+            </div>
           </div>
         </div>
         <!-- <div class="row">

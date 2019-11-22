@@ -66,4 +66,7 @@ export class Camion{
     hauteur:number;
     poids:number;
 
+    // camions' photo
+    imgUrl="";
+
 }

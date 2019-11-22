@@ -101,6 +101,9 @@ public class Camion implements Serializable{
     private Float hauteur;
     private Float poids;
     
+    // Camions' Photo 
+    private String imgUrl="";
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

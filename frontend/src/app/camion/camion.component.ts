@@ -294,7 +294,17 @@ export class CamionComponent implements OnInit {
       console.log(err)
     })
   }
-
+  
+  onFileUpLoad(event){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.camion.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.camion.imgUrl='';
+  }
+  
   async onListReparation(){
     //alert("La fonction s'en vient.")
     //* find list Bon De Travail

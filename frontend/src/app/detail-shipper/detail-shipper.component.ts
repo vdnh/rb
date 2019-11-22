@@ -17,7 +17,7 @@ import { AdressesService } from '../../services/adresses.service';
   styleUrls: ['./detail-shipper.component.css']
 })
 export class DetailShipperComponent implements OnInit {
-  quitButton:string="";
+  role:string="";
   shipper:Shipper=new Shipper();
   id:number; // this is the id of shipper
   mode:number=1;
@@ -32,7 +32,7 @@ export class DetailShipperComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.quitButton=localStorage.getItem('role');
+    this.role=localStorage.getItem('role');
     this.shippersService.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
       if(localStorage.getItem('role').includes('TRANSPORTER')){  // in the cas Transporter want to view detail contact
