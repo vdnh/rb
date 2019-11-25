@@ -530,7 +530,99 @@
         <hr style="border: 2px solid lightgray"/>
         
         <div class="row">
-          <div class="col-sm-3 col-md-2 col-lg-2">
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Camion</label>
+              <input type="text" [(ngModel)]="transport.camionAttribue" 
+                name="camionAttribue" list="defaultCamions" class="form-control" (change)="camionChange()" required>
+              <datalist id="defaultCamions">
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite+'  .Id.'+c.id}}</option>
+              </datalist>
+            </div>
+            <div *ngIf="camion!=null && camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{camion.imgUrl}}" target="_blank">
+                <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
+          </div>          
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Trailer1</label>
+              <input type="text" [(ngModel)]="transport.trailer1" 
+                name="trailer1" list="defaultTrailers" class="form-control" (change)="trailer1Change()">
+              <datalist id="defaultTrailers">
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
+              </datalist>
+            </div>
+            <div *ngIf="trailer1!=null && trailer1.imgUrl!=null && trailer1.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{trailer1.imgUrl}}" target="_blank">
+                <img [src]="trailer1.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
+          </div>          
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="form-group">
+              <label for="">Trailer2</label>
+              <input type="text" [(ngModel)]="transport.trailer2" 
+                name="trailer2" list="defaultTrailers" class="form-control" (change)="trailer2Change()" [disabled]="transport.trailer1.length<1">
+              <datalist id="defaultTrailers">
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
+              </datalist>
+            </div>
+            <div *ngIf="trailer2!=null && trailer2.imgUrl!=null && trailer2.imgUrl.length>0" style="border: 2px dotted gray">
+              <a href="{{trailer2.imgUrl}}" target="_blank">
+                <img [src]="trailer2.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+              </a>
+            </div>
+          </div>          
+        </div>
+        <div class="row">
+          <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>Volume</strong></h6></label>
+            <strong class="form-control" style="border: none;">Default</strong>
+            <span class="form-control" style="border: none;">Utilise</span>
+            <h6 class="form-control" style="border: none;">Disponible</h6>
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Longueur(pouces)</label>
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Poids(lbs)</label>
+            <input class="form-control" type="number" size="5" [value]="volumePoids()" disabled>
+            <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Chauffeur</label>
+              <input type="text"  [(ngModel)]="transport.nomIntervenant"
+                name="nomIntervenant" class="form-control" (change)="chauffeurChange()" list="defaultChauffeurs">
+              <datalist id="defaultChauffeurs">
+                <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Telephone</label>
+              <input type="tel" [(ngModel)]="transport.telIntervenant" name="telIntervenant"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="transport.telIntervenant=reformTelEvent($event)" required>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label for="">Courriel</label>
+              <input type="email" [(ngModel)]="transport.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
+              required>
+                <datalist id="defaultEmails">
+                </datalist>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Camion</label>
               <input type="text" [(ngModel)]="transport.camionAttribue" 
@@ -563,8 +655,6 @@
           <div class="col-sm-3 col-md-2 col-lg-2">
             <div class="form-group">
               <label for="">Chauffeur</label>
-              <!-- <input type="text"  [(ngModel)]="transport.nomIntervenant"
-                    name="nomIntervenant" class="form-control"> -->
               <input type="text" (change)="chauffeurChange()" [(ngModel)]="transport.nomIntervenant"
                 name="nomIntervenant" class="form-control" list="defaultChauffeurs">
               <datalist id="defaultChauffeurs">
@@ -588,7 +678,7 @@
                 <datalist id="defaultEmails">
                 </datalist>
             </div>
-          </div>
+          </div> -->
         </div>
         
         <div class="row">

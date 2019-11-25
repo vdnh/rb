@@ -26,7 +26,7 @@ export class DetailShipperComponent implements OnInit {
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
-    public adressesService:AdressesService){    
+    public adressesService:AdressesService, public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
     //this.id=Number(localStorage.getItem('userId'))
   }
@@ -64,7 +64,8 @@ export class DetailShipperComponent implements OnInit {
   saveShipper(){
     this.shippersService.saveShippers(this.shipper).subscribe(data=>{
       //alert("Mise a jour.");
-      this.mode=2;
+    if(this.role.includes('DISPATCH')) this.router.navigate(['']);
+    this.mode=2;
     }, err=>{
       console.log(err);
     });

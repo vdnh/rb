@@ -122,7 +122,14 @@
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
-              </tr>                
+              </tr>       
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                <td colspan="2"><strong>Username - Password</strong></td>
+              </tr>
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName" disabled></td>
+                <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password" disabled></td>
+              </tr>         
       </table>            
       
       <table> 

@@ -47,4 +47,7 @@ export class Shipper{
     changementPneu1=75;
     changementPneu2=250;
     changementPneu3=250;
+
+    loginName:string;
+    password:string;    
 }

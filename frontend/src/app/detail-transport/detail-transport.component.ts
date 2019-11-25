@@ -215,6 +215,9 @@ export class DetailTransportComponent implements OnInit {
 
   camions:Array<Camion>;
   remorques:Array<Camion>;  // list of trailers
+  camion:Camion;
+  trailer1:Camion;
+  trailer2:Camion;
 
   constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -292,25 +295,54 @@ export class DetailTransportComponent implements OnInit {
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     //console.log('this.transport.nomDispatch.length: '+ this.transport.nomDispatch.length)
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      this.remorques=[];
-      data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-        else
-          this.remorques.push(camion)  // Camions without GPS are trailers
-      })
-    }, err=>{
-      console.log();
-    })
+    // await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    //   //this.camions = data
+    //   // this will take camions with gps monitor
+    //   this.camions=[];
+    //   this.remorques=[];
+    //   data.forEach(camion=>{
+    //     if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+    //       this.camions.push(camion)
+    //     else
+    //       this.remorques.push(camion)  // Camions without GPS are trailers
+    //   })
+    // }, err=>{
+    //   console.log();
+    // })
     // end of taking list camion SOSPrestige
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
       this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
+        this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+          //this.camions = data
+          // this will take camions with gps monitor
+          this.camions=[];
+          this.remorques=[];
+          data.forEach(camion=>{
+            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+              this.camions.push(camion)
+            else
+              this.remorques.push(camion)  // Camions without GPS are trailers
+          })
+          console.log('this.transport.idCamion : '+this.transport.idCamion)
+          console.log('this.transport.idTrailer1 : '+this.transport.idTrailer1)
+          console.log('this.transport.idTrailer2 : '+this.transport.idTrailer2)
+          this.camions.forEach((node)=>{ 
+            if(node.id==this.transport.idCamion)
+              this.camion= node;
+          })
+          this.remorques.forEach((node)=>{ 
+            if(node.id==this.transport.idTrailer1)
+              this.trailer1= node;
+          })
+          this.remorques.filter((node:Camion)=>{ 
+            if(node.id=this.transport.idTrailer2)
+              this.trailer1= node;
+          })
+        }, err=>{
+          console.log();
+        })
       }, err=>{
         console.log(err);
       });
@@ -407,6 +439,94 @@ export class DetailTransportComponent implements OnInit {
       }
     })
   }
+
+  async camionChange(){
+    let strings:Array<string>=this.transport.camionAttribue.split("Id.");
+    console.log('strings.lenght : '+strings.length);
+    console.log('strings[0] : '+strings[0]);
+    console.log('strings[1] : '+strings[1]);
+    if(strings.length>1){
+      let cId:number =  Number(strings[1])
+      await this.camions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          this.camion=c;
+          this.transport.camionAttribue=this.camion.unite
+        }
+      })
+      if(cId!=this.camion.id)
+        this.camion=null;
+    }
+    else this.camion=null;
+  }
+
+  async trailer1Change(){
+    let strings:Array<string>=this.transport.trailer1.split("Id.");
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      await this.remorques.forEach(r=>{
+        if(r.id==tId) 
+        {
+          this.trailer1=r;
+          this.transport.trailer1=this.trailer1.unite
+        }
+      })
+      if(this.trailer1==undefined || tId!=this.trailer1.id)
+        {
+          this.trailer1=null;
+          this.trailer2=null;
+          this.transport.trailer2=''
+        }
+    }
+    else {
+      this.trailer1=null;
+      this.trailer2=null;
+      this.transport.trailer2=''
+    }
+  }
+
+  async trailer2Change(){
+    let strings:Array<string>=this.transport.trailer2.split("Id.");
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      if(tId==this.trailer1.id){
+       alert('Il ne faut pas le meme de trailer1 !!')     
+       this.transport.trailer2=''
+      }
+      else{
+        await this.remorques.forEach(r=>{
+          if(r.id==tId) 
+          {
+            this.trailer2=r;
+            this.transport.trailer2=this.trailer2.unite
+          }
+        })
+      }
+      
+      if(this.trailer2==undefined || tId!=this.trailer2.id)
+        this.trailer2=null;
+    }
+    else this.trailer2=null;
+  }
+
+  volumeLongueur(){
+    let tot : number = 0;
+    if(this.camion && this.camion.longueur!=undefined) tot = tot+this.camion.longueur
+    if(this.trailer1 && this.trailer1.longueur!=undefined) tot = tot+this.trailer1.longueur
+    if(this.trailer2 && this.trailer2.longueur!=undefined) tot = tot+this.trailer2.longueur
+    return tot
+  }
+
+  volumePoids(){
+    let tot : number = 0;
+    if(this.camion && this.camion.poids!=undefined) tot = tot+this.camion.poids
+    if(this.trailer1 && this.trailer1.poids!=undefined) tot = tot+this.trailer1.poids
+    if(this.trailer2 && this.trailer2.poids!=undefined) tot = tot+this.trailer2.poids
+    return tot
+  }
+
+
+
   async gotoDetailTransport(t:Transport){
     window.open("/detail-transport/"+t.id, "_blank")
   }

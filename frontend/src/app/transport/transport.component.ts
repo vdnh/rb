@@ -346,6 +346,9 @@ export class TransportComponent implements OnInit {
   }
   onReset(){
     if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+      this.camion=null;
+      this.trailer2=null;
+      this.trailer2=null;
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
@@ -499,6 +502,7 @@ export class TransportComponent implements OnInit {
         {
           this.camion=c;
           this.transport.camionAttribue=this.camion.unite
+          this.transport.idCamion=this.camion.id
         }
       })
       if(cId!=this.camion.id)
@@ -516,6 +520,7 @@ export class TransportComponent implements OnInit {
         {
           this.trailer1=r;
           this.transport.trailer1=this.trailer1.unite
+          this.transport.idTrailer1=this.trailer1.id
         }
       })
       if(this.trailer1==undefined || tId!=this.trailer1.id)
@@ -546,6 +551,7 @@ export class TransportComponent implements OnInit {
           {
             this.trailer2=r;
             this.transport.trailer2=this.trailer2.unite
+            this.transport.idTrailer2=this.trailer2.id
           }
         })
       }
@@ -563,7 +569,7 @@ export class TransportComponent implements OnInit {
     if(this.trailer2 && this.trailer2.longueur!=undefined) tot = tot+this.trailer2.longueur
     return tot
   }
-  
+
   volumePoids(){
     let tot : number = 0;
     if(this.camion && this.camion.poids!=undefined) tot = tot+this.camion.poids
@@ -1212,6 +1218,9 @@ async showMap() {
         this.pagePresent=this.back+1;
         this.forward=this.back+2
         this.transport=new Transport();      
+        this.camion=null
+        this.trailer1=null
+        this.trailer2=null
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       }, 
         err=>{console.log(err)
@@ -1238,7 +1247,10 @@ async showMap() {
         this.back=0;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
-        this.transport=new Transport();      
+        this.transport=new Transport();   
+        this.camion=null
+        this.trailer1=null
+        this.trailer2=null   
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         //this.transport=data;
       }, 
