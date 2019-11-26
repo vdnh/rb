@@ -819,7 +819,24 @@ onFileUpLoad(event){
       else this.remorquage=new Remorquage();      
     }
   }
-
+  onConsulterClient(){
+    // In consult the client we must clear the case actual
+    this.back=0;
+    this.pagePresent=this.back+1;
+    this.forward=this.back+2
+    this.particulier=false;
+    this.compteClient=false;
+    if(this.remorquage.id!=null){
+      this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
+        this.remorquage=new Remorquage();
+      }, err=>{
+        console.log(err)
+      })
+    }
+    else this.remorquage=new Remorquage();      
+    this.router.navigateByUrl('/detail-shipper/'+this.shipper.id);
+    //routerLink="/detail-shipper/{{shipper.id}}" }
+  }
   onPrint(heure){    
     console.log(heure)
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)

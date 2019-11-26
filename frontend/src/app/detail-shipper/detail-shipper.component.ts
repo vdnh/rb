@@ -61,6 +61,19 @@ export class DetailShipperComponent implements OnInit {
       console.log();
     });
   }
+
+  printPriceList(cmpId){
+    let envoy = document.getElementById('toprint').innerHTML;
+    const printContent = document.getElementById(cmpId);
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
+  }
+
   saveShipper(){
     this.shippersService.saveShippers(this.shipper).subscribe(data=>{
       //alert("Mise a jour.");

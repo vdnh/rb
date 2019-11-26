@@ -8,6 +8,7 @@ import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
 import { Router } from '@angular/router';
+import * as myGlobals from 'src/services/globals';
 
 @Component({
   selector: 'app-new-shipper',
@@ -23,6 +24,9 @@ export class NewShipperComponent implements OnInit {
   role:string="";
   //listAppUsers : Array<AppUser> = [];
   listLoginName:Array<string>=[];
+  
+  provinceList=myGlobals.provinceList ;
+  villeList= myGlobals.QuebecVilles; //villeList;
 
   constructor(public shippersService:ShippersService, public contactsService:ContactsService, 
     public adressesService:AdressesService, public authenticationService:AuthenticationService, public router:Router) { }
@@ -56,7 +60,17 @@ export class NewShipperComponent implements OnInit {
       console.log(err);
     });
   }
-
+  printPriceList(cmpId){
+    let envoy = document.getElementById('toprint').innerHTML;
+    const printContent = document.getElementById(cmpId);
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
+  }
   signUpShipper(){
     let exist=false; // this loginName doesn't exist yet
     this.listLoginName.forEach(loginName=>{

@@ -2,68 +2,74 @@
 <div class="panel panel-primary" *ngIf="mode==1">
   <div class="panel-heading"><h2>{{shipper.nom | uppercase}}</h2></div>
     <div class="panel-body">
-      <table class="table table-striped">
-              <tr>
-                <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
-              </tr>
-              <tr>
-                <td><input class="form-control" type="text" [(ngModel)]="shipper.nom" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
-                <td><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="shipper.tel" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="shipper.fax" /></td>
-                <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
-              </tr>
-              <tr><td colspan="2"><strong>Adresses</strong></td></tr>
-              <tr>
-                  <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
-              </tr>
-              <tr *ngFor="let adresse of adresses">
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
-                  <td><button class="btn btn-primary" (click)="deleteAdress(contact.id)">Delete</button></td>
-              </tr>            
-              <tr><td colspan="2"><strong>Ajouter d'adresse</strong></td></tr>     
-              <tr>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                            
-                  <td><button class="btn btn-primary" (click)="addAdresse()">Add</button></td>
-              </tr>                                    
+      <!-- <table class="table table-striped"> -->
+        <table border="1">
+          <tr>
+              <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">En Affaire Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="shipper.nom" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
+              <td width="14%"><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="shipper.tel" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="shipper.fax" /></td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
+            </tr>
+            <br>
+            <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+            <tr>
+              <th width="14%">Numero</th><th width="28%">Rue</th><th width="14%">Code Postal</th><th width="16%">Ville</th><th width="14%">Province</th>
+              <!-- <th>Pays</th> -->
+            </tr>
+            <tr *ngFor="let adresse of adresses">
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
+              <!-- <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td> -->
+              <td><button class="btn btn-link" (click)="deleteAdresse(adresse.id)">Delete</button></td>
+            </tr>            
+            <!-- <tr><td colspan="2"><strong>Ajouter d'adresse</strong></td></tr>      -->
+            <tr>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
+                <td width="28%"><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
+                <td width="16%"><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
+                <!-- <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                             -->
+                <td><button class="btn btn-link" (click)="addAdresse()">Add</button></td>
+            </tr>               
+      </table>
+      <br>
+      <table border="1">
               <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
               <tr>
-                <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Ext</th><th>Fax</th><!--th>Photo</th-->
+                <th width="14%">Nom</th><th width="14%">Prenom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
               </tr>
               <tr *ngFor="let contact of contacts">
-                <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
+                <td width="8%"><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
                 <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
-                <td><button class="btn btn-primary" (click)="deleteContact(contact.id)">Delete</button></td>
+                <td width="7%"><button class="btn btn-link" (click)="deleteContact(contact.id)">Delete</button></td>
               </tr>   
-              <tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr>     
+              <!-- <tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr>      -->
               <tr>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.extTel" /></td>
-                  <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
+                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.extTel" /></td>
+                  <td width="8%"><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
                   <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
-                  <td><button class="btn btn-primary" (click)="addContact()">Add</button></td>
+                  <td width="7%"><button class="btn btn-link" (click)="addContact()">Add</button></td>
               </tr>   
               <!--tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
               <tr>
@@ -81,7 +87,7 @@
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
               </tr-->
             </table>
-                    
+            <br>                    
             <table border="1">  
               <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
               <tr *ngIf='!role.includes("SHIPPER")'>
@@ -103,16 +109,16 @@
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td> -->
                 <th width="9%">Leger</th>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
-                <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
               </tr>
               <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyenne</strong></td></tr>      -->
               <tr *ngIf='!role.includes("SHIPPER")'>
@@ -168,11 +174,14 @@
               <tr *ngIf='!role.includes("SHIPPER")'>
                 <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName" disabled></td>
                 <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password" disabled></td>
+                <td>
+                  <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
+                </td>
               </tr>         
       </table>            
       
       <table> 
-          <td><button class="btn btn-primary" (click)="saveShipper()">Ok - Modifier Shipper</button></td>
+          <td><button class="btn btn-primary" (click)="saveShipper()">Enregistrer</button></td>
           <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
           <td></td>
           <td></td>
@@ -241,5 +250,74 @@
         <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/business-messages">Retour</button></div>
     <!--/div-->
   </div>   
+</div>
+
+<div *ngIf='role.includes("DISPATCH")' id="toprint" hidden>
+  <table border="1">
+    <tr>
+      <td colspan="11">{{shipper.nom + ', '+shipper.email + ', '+shipper.tel}}</td>
+      <!-- <td>{{shipper.raison_sociale}}</td>
+      <td>{{shipper.email}}</td>
+      <td>{{shipper.tel}}</td> -->
+    </tr>
+    <tr>
+      <td colspan="11">{{adresses[0].num + ' ' + adresses[0].rue + ', ' + adresses[0].ville  + ', ' + adresses[0].province }}</td>
+      <!-- <td>{{adresse.rue}}</td>
+      <td>{{adresse.code_postal}}</td>
+      <td>{{adresse.ville}}</td>
+      <td>{{adresse.province}}</td>
+      <td>{{adresse.pays}}</td> -->
+    </tr>
+    <tr></tr>
+    <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
+    <tr>
+      <th width="9%">Type</th>
+      <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+      <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+      <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
+    </tr>
+    <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+    <tr>
+      <th width="9%">Leger</th>
+      <td width="9%" style="text-align: right;">{{shipper.inclus1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm1P}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.panne1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm1A}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.accident1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.pullOut1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.debarragePorte1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.boost1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.essence1}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.changementPneu1}}</td>
+    </tr>
+    <!-- <tr><td colspan="3"><strong>Type Moyenne</strong></td></tr>      -->
+    <tr>
+      <th width="9%">Moyenne</th>
+      <td width="9%" style="text-align: right;">{{shipper.inclus2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm2P}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.panne2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm2A}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.accident2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.pullOut2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.debarragePorte2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.boost2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.essence2}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.changementPneu2}}</td>
+    </tr>   
+    <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
+    <tr>
+      <th width="9%">Lourd</th>
+      <td width="9%" style="text-align: right;">{{shipper.inclus3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm3P}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.panne3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.prixKm3A}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.accident3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.pullOut3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.debarragePorte3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.boost3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.essence3}}</td>
+      <td width="9%" style="text-align: right;">{{shipper.changementPneu3}}</td>
+    </tr>       
+  </table>  
 </div>
 <!--/div-->
