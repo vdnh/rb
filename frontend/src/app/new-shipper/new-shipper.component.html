@@ -57,49 +57,57 @@
                         <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3" /></td>
                         <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
                       </tr>                          -->
-
+                    </table>
+                    
+                    <table border="1">
                       <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
                       <tr>
-                        <th>Inclus</th><th>$/KmPan</th><th>Panne</th><th>$/KmAcc</th><th>Accident</th><th>PullOut</th><th>DebarragePorte</th><th>Boost</th><th>Essence</th><th>ChangmentPneus</th>
+                        <th width="9%">Type</th>
+                        <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+                        <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+                        <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
                       </tr>
-                      <tr><td colspan="3"><strong>Type Leger</strong></td></tr>     
+                      <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
                       <tr>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
+                        <th width="9%">Leger</th>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
+                        <td width="10%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
                       </tr>
-                      <tr><td colspan="3"><strong>Type Moyenne</strong></td></tr>     
+                      <!-- <tr><td colspan="3"><strong>Type Moyenne</strong></td></tr>      -->
                       <tr>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2A" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.accident2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td>
+                        <th width="9%">Moyenne</th>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2A" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td>
                       </tr>   
-                      <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>        
+                      <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
                       <tr>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3P" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.panne3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3A" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.accident3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
-                        <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
+                        <th width="9%">Lourd</th>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3P" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3A" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
+                        <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
                       </tr>       
                       <tr>
                         <td colspan="2"><strong>Username - Password</strong></td>
