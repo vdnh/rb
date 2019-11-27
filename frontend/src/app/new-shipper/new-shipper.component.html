@@ -36,7 +36,7 @@
             </td>
             <td width="14%">
               <!-- <input class="form-control" type="text" [(ngModel)]="adresse.province" /> -->
-              <select type="text" class="form-control" [(ngModel)]="adresse.province">
+              <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
                 <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
               </select>
             </td>
@@ -151,14 +151,16 @@
       <tr>
         <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td>
       </tr>
-      <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+      
+      <tr><td colspan="2"><br><strong>Adresse Principal</strong></td></tr>
       <tr>
         <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
       </tr>
       <tr>
         <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
       </tr>
-      <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
+      
+      <tr><td colspan="2"><br><strong>Personne principal a contact</strong></td></tr>
       <tr>
         <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
       </tr>

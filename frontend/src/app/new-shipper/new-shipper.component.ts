@@ -27,6 +27,31 @@ export class NewShipperComponent implements OnInit {
   
   provinceList=myGlobals.provinceList ;
   villeList= myGlobals.QuebecVilles; //villeList;
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  
+  NunavutVilles=myGlobals.NunavutVilles;
+  
+  OntarioVilles=myGlobals.OntarioVilles;
+  
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  
+  QuebecVilles=myGlobals.QuebecVilles;
+  
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  
+  YukonVilles=myGlobals.YukonVilles;
 
   constructor(public shippersService:ShippersService, public contactsService:ContactsService, 
     public adressesService:AdressesService, public authenticationService:AuthenticationService, public router:Router) { }
@@ -34,6 +59,7 @@ export class NewShipperComponent implements OnInit {
   ngOnInit() {
     this.role=localStorage.getItem('role');
     this.shipper.password='dispatch';
+    this.adresse.province=this.provinceList[10];
     this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
       //this.listAppUsers=data;
       data.forEach(aU=>{
@@ -43,6 +69,41 @@ export class NewShipperComponent implements OnInit {
     }, err=>{console.log(err)})
 
   }
+
+  async villeChange(){
+    //*
+    if(this.adresse.province!=null){
+      // check the province to limit the cities
+      if(this.adresse.province==this.provinceList[0])
+        this.villeList=this.AlbertaVilles;
+      if(this.adresse.province==this.provinceList[1])
+        this.villeList=this.BritishColumbiaVilles;        
+      if(this.adresse.province==this.provinceList[2])
+        this.villeList=this.ManitobaVilles;
+      if(this.adresse.province==this.provinceList[3])
+        this.villeList=this.NewBrunswickVilles;    
+      if(this.adresse.province==this.provinceList[4])
+        this.villeList=this.NewfoundlandLabradorVilles;    
+      if(this.adresse.province==this.provinceList[5])
+        this.villeList=this.NorthwestTerritoriesVilles;
+      if(this.adresse.province==this.provinceList[6])
+        this.villeList=this.NovaScotiaVilles;
+      if(this.adresse.province==this.provinceList[7])
+        this.villeList=this.NunavutVilles;
+      if(this.adresse.province==this.provinceList[8])
+        this.villeList=this.OntarioVilles;
+      if(this.adresse.province==this.provinceList[9])
+        this.villeList=this.PrinceEdwardIslandVilles;
+      if(this.adresse.province==this.provinceList[10])
+        this.villeList=this.QuebecVilles;
+      if(this.adresse.province==this.provinceList[11])
+        this.villeList=this.SaskatchewanVilles;  
+      if(this.adresse.province==this.provinceList[12])
+        this.villeList=this.YukonVilles;
+    }
+    //this.showMap();
+  }
+
   onNameChange(){
     this.shipper.loginName=this.shipper.nom.trim().replace(/\s/g,"").toLowerCase();
   }

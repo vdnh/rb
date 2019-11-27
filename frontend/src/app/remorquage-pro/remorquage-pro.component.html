@@ -25,11 +25,11 @@
         <button (click)="appelsEncours()" style="color: orange; text-align: center">Liste en Cours</button> 
       </div>
       <div class="col-md-3 col-sm-3 col-lg-3" style="color: red; text-align: center">
-        <button (click)="appelsFinis()" style="color: red; text-align: center">Termines Avec Succes</button> 
+        <button (click)="appelsFinis()" style="color: red; text-align: center">Liste d'Antecedent</button> 
       </div>
-      <div class="col-md-3 col-sm-3 col-lg-3" style="color: blue; text-align: center">
+      <!-- <div class="col-md-3 col-sm-3 col-lg-3" style="color: blue; text-align: center">
         <button (click)="appelsAnnules()" style="color: blue; text-align: center">Appels Annulees</button> 
-      </div>
+      </div> -->
     </div>
     <br>
     <div class="row">
@@ -102,12 +102,12 @@
             <td>{{r.camionAttribue}}</td>
           </tr>
           <tr *ngIf="listRqsFini.length==0" style="color: red">
-            <td>Liste termines est vide actuellement.</td>
+            <td>Liste d'antecedent est vide actuellement.</td>
           </tr>
         </table>
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==4">
         <table class="table">
           <tr style="background-color: whitesmoke">
@@ -131,7 +131,7 @@
           </tr>
         </table>
       </div>
-    </div>
+    </div> -->
       <!--table class="table">
         <tr>
           <th>code couleur - </th>
@@ -542,14 +542,7 @@
             </div>
           </div>
           <br>
-          <div *ngIf="modeHistoire==-1 && pagePresent==9">
-            <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
-            <!--button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
-                <span>Envoyer a SOSprestige</span>
-            </button-->
-            <button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini || remorquage.id==null">Envoyer a SOSPrestige</button>
-          </div>
-
+          
           <!--br-->
           <div class="row" *ngIf="pagePresent==6">
             <!--div class="col-sm-2"><label class="control-label">Note Additionnelle</label></div-->
@@ -590,7 +583,7 @@
             </div>
           </div-->
           <!--hr style="border: 2px solid lightgray"/-->
-          <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==10">Camion et Chauffeur <br></h5>
+          <!-- <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==10">Camion et Chauffeur <br></h5>
           <div class="row" *ngIf="pagePresent==10">
             <div class="col-sm-6 col-md-3 col-lg-3">
               <div class="form-group">
@@ -623,17 +616,9 @@
             <div class="col-sm-6 col-md-3 col-lg-3">
               <div class="form-group">
                 <label for="">Courriel</label>
-                <!--input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant"
-                      class="form-control" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="xxx@yyy.zzz" required-->
                 <input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
                 required>
                   <datalist id="defaultEmails">
-                    <!--option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-                    <option value="jbond007@mi6.defence.com">
-                    <option value="jbourne@unknown.net">
-                    <option value="nfury@shield.org">
-                    <option value="tony@starkindustries.com">
-                    <option value="hulk@grrrrrrrr.arg"-->
                   </datalist>
               </div>
             </div>
@@ -646,41 +631,41 @@
                     [(ngModel)]="remorquage.driverNote" style="margin-bottom: 0px"
                     style="margin-top: 0px"></textarea>
             </div>
-          </div>
+          </div> -->
   
           <!--hr style="border: 2px solid lightgray"/-->
-          <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==11">Resumer <br></h5>
-          <div *ngIf="mode==2 && pagePresent==11" class="row" style="margin-top: 10px">
+          <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==10">Resumer <br></h5>
+          <div *ngIf="mode==2 && pagePresent==10" class="row" style="margin-top: 10px">
             <div class="col-md-2">
               <div class="form-group">
                 <label *ngIf="mode==2" class="control-label">PrixBase</label>
                 <input type="number" [(ngModel)]="remorquage.prixBase" name="prixBase"
-                     class="form-control" (change)="prixCalcul()" />
+                     class="form-control" (change)="prixCalcul()" disabled/>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label *ngIf="mode==2" class="control-label">Prix/Km</label>
                 <input type="number" [(ngModel)]="remorquage.prixKm" name="prixKm" class="form-control"
-                     (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
+                     (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)" disabled/>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label *ngIf="mode==2" class="control-label">Inclus</label>
                 <input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control"
-                      (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
-                <label class="control-label">Porter au Compte</label>
+                    (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)" disabled/>
+                <!-- <label class="control-label">Porter au Compte</label>
                 <input type="number" [(ngModel)]="remorquage.porterAuCompte" name="porterAuCompte" class="form-control"
-                (change)="prixCalcul()"/>
+                (change)="prixCalcul()"/> -->
               </div>
             </div>
             <div class="col-md-2">
               <label class="control-label">Kms</label>
               <input type="number" [(ngModel)]="remorquage.distance" name="distance" class="form-control" disabled/>
               <!--div  *ngIf="mode==2">{{remorquage.distance}}</div-->
-              <label class="control-label">Collecter d'argent</label>
-              <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/>
+              <!-- <label class="control-label">Collecter d'argent</label>
+              <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/> -->
             </div>
             <div class="col-md-4">
               <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
@@ -711,6 +696,15 @@
             <td><button class="btn btn-success" (click)="onFini()">Fini</button></td>
             <td><button class="btn btn-success" (click)="onCancel()">Cancel</button></td>
           </tr-->
+
+          <div *ngIf="modeHistoire==-1 && pagePresent==10">
+            <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
+            <!--button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
+                <span>Envoyer a SOSprestige</span>
+            </button-->
+            <button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.fini || remorquage.id==null">Envoyer a SOSPrestige</button>
+          </div>
+  
         </div>
       </div>
     </div>
@@ -737,7 +731,7 @@
           <button (click)="onBack()" [disabled]="back<=1">Avant</button>
         </div>      
         <div class="col-md-2 col-sm-2 col-lg-2">
-          <button (click)="onForward()" [disabled]="forward>=10">Suivant</button>
+          <button (click)="onForward()" [disabled]="forward>=11">Suivant</button>
         </div>
       </div>
     </div>

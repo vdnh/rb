@@ -1145,6 +1145,17 @@ onFileUpLoad(event){
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
       //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      //*/ Also App send confirmation email to client professionnel
+      if(this.remorquage.emailContact.length>10){
+        let em:EmailMessage=new EmailMessage();
+        em.emailDest=this.remorquage.emailContact;  // email of professional
+        em.titre= "Confirmation d'envoi : Appel - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+        em.content='<div><p> '+ 'Votre appel a ete envoye a SOSPrestige.' + " </p></div>"
+        this.bankClientsService.envoyerMail(em).subscribe(data=>{
+          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+        }, err=>{console.log(err)})
+      }
+      //*/
     }, err=>{
       console.log()
     })//*/
