@@ -821,7 +821,7 @@ onFileUpLoad(event){
       this.compteClient=false;
       this.remorquage=new Remorquage();
     }, err=>{console.log(err)})
-    alert("C'est enregistre.")
+    //alert("C'est enregistre.")
 
   }
 
@@ -1137,6 +1137,30 @@ onFileUpLoad(event){
       //console.log('this.em.emailDest : '+ this.em.emailDest)
       //console.log('this.em.content : ' + this.em.content)
       alert("Cette appel a ete envoye a SOS Prestige.")
+      //*/ Also App send confirmation email to client professionnel
+      if(this.remorquage.emailContact.length>10){
+        let em:EmailMessage=new EmailMessage();
+        em.emailDest=this.remorquage.emailContact;  // email of professional
+        em.titre= "Recu d'Appel - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+        em.content='<div><p> '+ em.titre + " <br>" + 
+          '<div>'+
+            '<div><br></div>'+
+            '<div>Merci de votre collaboration.</div>'+
+            '<div><br></div>'+
+            '<div>Dispatch Marc-Andre Thiffeault </div>'+
+            '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+          '</div>'+
+          '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+          " </p></div>"
+        this.bankClientsService.envoyerMail(em).subscribe(data=>{
+          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+        }, err=>{console.log(err)})
+      }
+      //*/
+      
       this.onSavePlusAlert();
       this.remorquage = new Remorquage() // declare one new case
       this.back=0;
@@ -1145,17 +1169,6 @@ onFileUpLoad(event){
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
       //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
-      //*/ Also App send confirmation email to client professionnel
-      if(this.remorquage.emailContact.length>10){
-        let em:EmailMessage=new EmailMessage();
-        em.emailDest=this.remorquage.emailContact;  // email of professional
-        em.titre= "Confirmation d'envoi : Appel - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-        em.content='<div><p> '+ 'Votre appel a ete envoye a SOSPrestige.' + " </p></div>"
-        this.bankClientsService.envoyerMail(em).subscribe(data=>{
-          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
-        }, err=>{console.log(err)})
-      }
-      //*/
     }, err=>{
       console.log()
     })//*/

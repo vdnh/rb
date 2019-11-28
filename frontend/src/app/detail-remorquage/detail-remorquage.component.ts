@@ -594,7 +594,29 @@ async showMap() {
         //this.titleService.setTitle('Case : '+this.remorquage.id + 
         this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
         (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
-        window.close();
+        if(this.remorquage.emailContact.length>10){
+          let em:EmailMessage=new EmailMessage();
+          em.emailDest=this.remorquage.emailContact;  // email of professional
+          em.titre= "Succes - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+          em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Merci de votre collaboration.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          this.bankClientsService.envoyerMail(em).subscribe(data=>{
+            console.log('Le client professionnel recois aussi message succes .')
+            window.close();
+          }, err=>{console.log(err)})
+        }
+        else window.close();
         this.router.navigate(['/remorquage']);
       }, err=>{console.log(err)})
     }
@@ -641,8 +663,30 @@ async showMap() {
       this.remorquage.sent=false; // dans le cas En Cours en attendre
       this.remorquage.driverNote=""; // dans le cas Annule en attendre
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
+        if(this.remorquage.emailContact.length>10){
+          let em:EmailMessage=new EmailMessage();
+          em.emailDest=this.remorquage.emailContact;  // email of professional
+          em.titre= "Devoir attendre - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+          em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Merci de votre comprehension.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          this.bankClientsService.envoyerMail(em).subscribe(data=>{
+            console.log('Le client professionnel recois aussi message attente .')
+            window.close();
+          }, err=>{console.log(err)})
+        }
         //this.onFermer();
-        window.close();
+        else window.close();
       }, err=>{console.log(err)})
     }
   }
@@ -670,7 +714,29 @@ async showMap() {
             +'</div>'    
             await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               alert("Un courriel annulation a ete aussi envoye au chauffeur.")
-              this.CloseWithWindowOpenTrick();
+              if(this.remorquage.emailContact.length>10){
+                let em:EmailMessage=new EmailMessage();
+                em.emailDest=this.remorquage.emailContact;  // email of professional
+                em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+                em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
+                  '<div>'+
+                    '<div><br></div>'+
+                    '<div>Merci de votre collaboration.</div>'+
+                    '<div><br></div>'+
+                    '<div>Dispatch Marc-Andre Thiffeault </div>'+
+                    '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+                  '</div>'+
+                  '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+                  '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+                  '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+                  '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                  " </p></div>"
+                this.bankClientsService.envoyerMail(em).subscribe(data=>{
+                  console.log('Le client professionnel recois aussi message succes .')
+                  window.close();
+                }, err=>{console.log(err)})
+              }
+              else this.CloseWithWindowOpenTrick();
             }, err=>{
               console.log()
             })
@@ -1048,6 +1114,27 @@ async showMap() {
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
         alert("Le courriel a ete envoye au chauffeur.")
+        if(this.remorquage.emailContact.length>10){
+          let em:EmailMessage=new EmailMessage();
+          em.emailDest=this.remorquage.emailContact;  // email of professional
+          em.titre= "Encours traitement - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+          em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Merci de votre collaboration.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          this.bankClientsService.envoyerMail(em).subscribe(data=>{
+            console.log('Le client professionnel recois aussi .')
+          }, err=>{console.log(err)})
+        }
         this.remorquage.sent=true;
         this.onSave();
         //this.titleService.setTitle('Case : '+this.remorquage.id + 
