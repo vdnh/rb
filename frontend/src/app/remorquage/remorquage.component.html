@@ -110,23 +110,25 @@
     <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==4">
       <table class="table">
         <tr style="background-color: whitesmoke">
-          <th>Numero</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>NomCompagnie</th>
-          <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
-          <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
+          <th style="width: 6%;">Numero</th><th style="width: 10%;" (click)='onSortDate(listRqsFini)'>DateReserve</th>
+          <th style="width: 10%;">NomCompagnie</th>
+          <th style="width: 10%;">DateAppel</th><th style="width: 10%;">NomClient</th><th style="width: 10%;">TelClient</th>
+          <th style="width: 18%;">Vehicule</th><th style="width: 10%;">Chauffeur</th><th style="width: 10%;">CamionUnite</th>
         </tr>
-        <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsAnnule" style="color: blue; background-color: whitesmoke">
-          <td>{{r.id}}</td>
-          <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
-          <td>{{r.nomEntreprise}}</td>
-          <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
-          <td>{{r.nomClient}}</td>
-          <td>{{r.telClient}}</td>
-          <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
-          <td>{{r.nomIntervenant}}</td>
-          <td>{{r.camionAttribue}}</td>
+        <tr *ngFor="let r of listRqsAnnule" style="color: blue; background-color: whitesmoke">
+          <td (click)="gotoDetailRemorquage(r)" style="width: 6%;">{{r.id}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.nomEntreprise}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.nomClient}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.telClient}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 18%;">{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.nomIntervenant}}</td>
+          <td (click)="gotoDetailRemorquage(r)" style="width: 10%;">{{r.camionAttribue}}</td>
+          <td style="width: 6%;"><button class="btn btn-link" (click)="onDelete(r)">Delete</button></td>
         </tr>
         <tr *ngIf="listRqsAnnule.length==0" style="color: blue">
-          <td>Il n'y a pas d'appel annule.</td>
+          <td colspan="3">Il n'y a pas d'appel annule.</td>
         </tr>
       </table>
     </div>
@@ -778,7 +780,7 @@
         <td colspan="5">Client: 
           <span>&nbsp;{{remorquage.nomClient}}</span>
           <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
-          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient2em}}</span>
+          <span>&nbsp;&nbsp;&nbsp;{{"Tel/Email: " + remorquage.telClient2em}}</span>
           <br> &nbsp;</td>  
       </tr>
       <tr>

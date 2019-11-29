@@ -108,7 +108,7 @@ export class NewShipperComponent implements OnInit {
     this.shipper.loginName=this.shipper.nom.trim().replace(/\s/g,"").toLowerCase();
   }
   
-  onCreatUser(){
+  onCreateUser(){
     this.appUser.username=this.shipper.loginName
     this.appUser.password=this.shipper.password
     this.appUser.roleSimple='DISPATCH'
@@ -141,14 +141,14 @@ export class NewShipperComponent implements OnInit {
           exist=true; // this loginName exist already
         }
     })
-    // if(this.listLoginName.includes(this.shipper.loginName)){
-    //   alert("Username existe deja. Choisir un autre username, SVP!");
-    // }
-    if(!exist){
+    if(this.shipper.password.length<4)
+      alert('Password doit avoir au moins 4 characteres!')
+
+    if(!exist && this.shipper.password.length>=4){
       this.shippersService.signUpShipper(this.shipper).subscribe((data:Shipper)=>{
         // this.mode=2;
         this.shipper=data;
-        this.onCreatUser();
+        this.onCreateUser();
         this.contact.id_shipper=this.shipper.id;
         this.adresse.id_shipper=this.shipper.id;
         this.signUpContact();

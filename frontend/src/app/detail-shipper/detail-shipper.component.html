@@ -173,14 +173,17 @@
               </tr>
               <tr *ngIf='!role.includes("SHIPPER")'>
                 <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName" disabled></td>
-                <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password" disabled></td>
-                <td>
-                  <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
-                </td>
+                <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
+                <!-- <td colspan="2">
+                  <button (click)="onModifyUser()" class="btn btn-link">Modifier password</button>
+                </td> -->
               </tr>         
       </table>            
       
       <table> 
+          <td>
+            <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+          </td>
           <td><button class="btn btn-primary" (click)="saveShipper()">Enregistrer</button></td>
           <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
           <td></td>

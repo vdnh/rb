@@ -27,6 +27,7 @@ export class AppUsersComponent implements OnInit {
   listTrans: any[];
   listPros: any[];
   listPros2em: any[];
+  //listUser: Array<AppUser>;
   
   onCreatUserTest(){
     console.log(this.appUser)
@@ -35,15 +36,26 @@ export class AppUsersComponent implements OnInit {
     this.passwordCheck='';
   }
 
-  onCreatUser(){
-    this.authenticationService.createAppUser(this.appUser).subscribe((data:AppUser)=>{
-      this.appUser = new AppUser();
-      this.passwordCheck='';
-      console.log('User was created.')
-    }, err=>{
-      console.log(err);
-    });
+  async onCreatUser(){
+    let exist=false; // this loginName doesn't exist yet
+    await this.listAppUsers.forEach(aU=>{
+      if(aU.username.includes(this.appUser.username)&&(aU.username.length==this.appUser.username.length))
+        {
+          alert("Username existe deja. Choisir un autre username, SVP!");
+          exist=true; // this loginName exist already
+        }
+    })
+    if(!exist){
+      this.authenticationService.createAppUser(this.appUser).subscribe((data:AppUser)=>{
+        this.appUser = new AppUser();
+        this.passwordCheck='';
+        console.log('User was created.')
+      }, err=>{
+        console.log(err);
+      });
+    }
   }
+  
   typeRoleChange(type){
     this.appUser.roleSimple=type
     if(this.appUser.roleSimple.includes('ADMIN')){

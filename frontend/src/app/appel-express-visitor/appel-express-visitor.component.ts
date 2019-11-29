@@ -1053,7 +1053,7 @@ async showMap() {
           this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               alert("Le sms a ete envoye a SOS Prestige.")  
-                this.em.emailDest= "ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
+                this.em.emailDest= myGlobals.emailPrincipal;//this.remorquage.emailIntervenant
                 //this.em.titre="Demande Express : " + this.remorquage.timeCall 
                 this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
                 this.bankClientsService.envoyerMail(this.em).subscribe(data=>{

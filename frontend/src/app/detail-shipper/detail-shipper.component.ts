@@ -10,6 +10,8 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { Location } from '@angular/common';
 import { Adresse } from 'src/model/model.adresse';
 import { AdressesService } from '../../services/adresses.service';
+import { AuthenticationService } from 'src/services/authentication.service';
+import { AppUser } from 'src/model/model.appUser';
 
 @Component({
   selector: 'app-detail-shipper',
@@ -25,7 +27,8 @@ export class DetailShipperComponent implements OnInit {
   adresses:Array<Adresse>;
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
-  constructor(public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
+  appUser: AppUser;
+  constructor(public authenticationService:AuthenticationService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
     //this.id=Number(localStorage.getItem('userId'))
@@ -44,6 +47,13 @@ export class DetailShipperComponent implements OnInit {
         localStorage.setItem('tel', this.shipper.tel.toString());
         localStorage.setItem('email', this.shipper.email);
       }
+      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+        data.forEach(aU=>{
+          if(aU.username.includes(this.shipper.loginName)&&(aU.username.length==this.shipper.loginName.length)){
+            this.appUser = aU
+          }
+        })
+      }, err=>{console.log(err)})
     }, err=>{
       console.log(err);
     });
@@ -75,25 +85,32 @@ export class DetailShipperComponent implements OnInit {
   }
 
   saveShipper(){
-    this.shippersService.saveShippers(this.shipper).subscribe(data=>{
-      //alert("Mise a jour.");
-    if(this.role.includes('DISPATCH')) this.router.navigate(['']);
-    this.mode=2;
-    }, err=>{
-      console.log(err);
-    });
-    this.contacts.forEach(obj => {
-      this.contactsService.saveContacts(obj).subscribe(data=>{
+    if(this.shipper.password.length>=4){
+      this.shippersService.saveShippers(this.shipper).subscribe(data=>{
+        //alert("Mise a jour.");
+        this.onModifyUser();
+        if(this.role.includes('DISPATCH')) 
+          this.router.navigate(['']);
+        this.mode=2;
       }, err=>{
-        console.log(err)
-      })
-    });    
-    this.adresses.forEach(obj => {
-      this.adressesService.saveAdresses(obj).subscribe(data=>{
-      }, err=>{
-        console.log(err)
-      })
-    });
+        console.log(err);
+      });
+      this.contacts.forEach(obj => {
+        this.contactsService.saveContacts(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });    
+      this.adresses.forEach(obj => {
+        this.adressesService.saveAdresses(obj).subscribe(data=>{
+        }, err=>{
+          console.log(err)
+        })
+      });
+    }
+    else {
+      alert('Password doit avoir au moins 4 characteres!')
+    }
   }
 
   addContact(){
@@ -134,6 +151,20 @@ export class DetailShipperComponent implements OnInit {
       console.log(err);
     });
   }  
+
+  onModifyUser(){
+    if(this.shipper.password.length<4)
+      alert('Password doit avoir au moins 4 characteres!')
+    if(this.shipper.password.length>=4){
+      this.appUser.password = this.shipper.password
+      this.authenticationService.modifyAppUser(this.appUser).subscribe((data:AppUser)=>{
+        //alert('Password was modified.')
+        console.log('Password was modified.')
+      }, err=>{
+        console.log(err);
+      });
+    }
+  }
 
   refresh(): void {
     //window.location.reload();

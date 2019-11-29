@@ -721,8 +721,8 @@ async showMap() {
                 em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
                   '<div>'+
                     '<div><br></div>'+
-                    '<div>Merci de votre collaboration.</div>'+
-                    '<div><br></div>'+
+                    //'<div>Merci de votre collaboration.</div>'+
+                    //'<div><br></div>'+
                     '<div>Dispatch Marc-Andre Thiffeault </div>'+
                     '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
                   '</div>'+
@@ -736,7 +736,31 @@ async showMap() {
                   window.close();
                 }, err=>{console.log(err)})
               }
-              else this.CloseWithWindowOpenTrick();
+              else {
+                if(this.remorquage.emailContact.length>10){
+                  let em:EmailMessage=new EmailMessage();
+                  em.emailDest=this.remorquage.emailContact;  // email of professional
+                  em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+                  em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
+                    '<div>'+
+                      '<div><br></div>'+
+                      //'<div>Merci de votre collaboration.</div>'+
+                      //'<div><br></div>'+
+                      '<div>Dispatch Marc-Andre Thiffeault </div>'+
+                      '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+                    '</div>'+
+                    '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+                    '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+                    '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+                    '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                    " </p></div>"
+                  this.bankClientsService.envoyerMail(em).subscribe(data=>{
+                    console.log('Le client professionnel recois aussi message succes .')
+                    window.close();
+                  }, err=>{console.log(err)})
+                }
+              }
+              //this.CloseWithWindowOpenTrick();
             }, err=>{
               console.log()
             })

@@ -132,13 +132,18 @@
           <tr>
             <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
             <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
-            <td>
+            <!-- <td>
               <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
-            </td>
+            </td> -->
           </tr>
         </table>          
-    
-        <div> <button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></div>
+        <table> 
+          <td>
+            <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+          </td>
+          <td><button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></td>
+        </table>
+        <!-- <div> <button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></div> -->
       </div>   
 </div>
 

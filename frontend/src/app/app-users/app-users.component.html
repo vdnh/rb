@@ -8,8 +8,7 @@
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
         <label >Username</label>
-        <input type="text"  [(ngModel)]="appUser.username" name="username"
-              class="form-control"/>
+        <input type="text"  [(ngModel)]="appUser.username" name="username" class="form-control"/>
       </div>
     </div>
     <div class="col-sm-12 col-md-2 col-lg-2">
@@ -42,7 +41,7 @@
         </select>
       </div>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
+    <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdUser(Sh/Tr)</label>
         <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
@@ -58,7 +57,7 @@
          </datalist>
       </div>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
+    <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdSecond(Sh/Tr)</label>
         <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
@@ -88,12 +87,10 @@
 <div class="row">
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
-        <label >Username</label>
-        
-            <select type="text" [(ngModel)]="appUserToMod">
-                <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
-            </select>
-        
+        <label >Username</label>        
+        <select type="text" class="form-control" [(ngModel)]="appUserToMod">
+          <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+        </select>
         <!--input type="text" [(ngModel)]="appUserToMod.username"
               name="usernameToMod" (change)="usernameToModChange()" class="form-control" list="listAppUsers">
          <datalist id="listAppUsers">
@@ -131,7 +128,7 @@
         </select>
       </div>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
+    <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdUser(Sh/Tr)</label>
         <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
@@ -140,7 +137,7 @@
               name="idUserToMod" class="form-control" disabled>
       </div>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
+    <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdSecond(Sh/Tr)</label>
         <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
