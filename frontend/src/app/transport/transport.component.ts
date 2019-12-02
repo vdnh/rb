@@ -284,7 +284,19 @@ export class TransportComponent implements OnInit {
         //this.transport.emailIntervenant=ch.email
       }
     })
+   
     this.transport.id=this.idTransportTemp;
+   
+    // clear all infos of camion, chauffeur, loaddetails, and trailers
+    this.camion=null;
+    this.chauffeur=null;
+    this.loadDetail=new LoadDetail();
+    this.loadDetails=new Array<LoadDetail>();
+    this.trailer1=null;
+    this.trailer2=null;
+    this.nomEntrepriseInputChange()   // to get shipper (client pro) and his client list
+    //
+
     if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     this.transport.dateDepart=new Date()
     this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
@@ -347,7 +359,10 @@ export class TransportComponent implements OnInit {
   onReset(){
     if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
       this.camion=null;
-      this.trailer2=null;
+      this.chauffeur=null;
+      this.loadDetail=null;
+      this.loadDetails=null;
+      this.trailer1=null;
       this.trailer2=null;
       this.back=0;
       this.pagePresent=this.back+1;

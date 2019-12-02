@@ -732,43 +732,47 @@ async showMap() {
                   '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
                   " </p></div>"
                 this.bankClientsService.envoyerMail(em).subscribe(data=>{
-                  console.log('Le client professionnel recois aussi message succes .')
+                  console.log('Le client professionnel recois aussi message annulation .')
                   window.close();
                 }, err=>{console.log(err)})
               }
-              else {
-                if(this.remorquage.emailContact.length>10){
-                  let em:EmailMessage=new EmailMessage();
-                  em.emailDest=this.remorquage.emailContact;  // email of professional
-                  em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-                  em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
-                    '<div>'+
-                      '<div><br></div>'+
-                      //'<div>Merci de votre collaboration.</div>'+
-                      //'<div><br></div>'+
-                      '<div>Dispatch Marc-Andre Thiffeault </div>'+
-                      '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-                    '</div>'+
-                    '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-                    '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-                    '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-                    '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
-                    " </p></div>"
-                  this.bankClientsService.envoyerMail(em).subscribe(data=>{
-                    console.log('Le client professionnel recois aussi message succes .')
-                    window.close();
-                  }, err=>{console.log(err)})
-                }
-              }
-              //this.CloseWithWindowOpenTrick();
+              
+              this.CloseWithWindowOpenTrick();
             }, err=>{
               console.log()
             })
             //this.CloseWithWindowOpenTrick();
           }
           //*/
-          else 
-            this.CloseWithWindowOpenTrick();
+          //else 
+          else {
+            console.log('Case cancelled - We are trying to send confirmation to client pro.')
+            if(this.remorquage.emailContact.length>10){
+              console.log("Case cancelled - Emails' pro is valid.")
+              let em:EmailMessage=new EmailMessage();
+              em.emailDest=this.remorquage.emailContact;  // email of professional
+              em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+              em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
+                '<div>'+
+                  '<div><br></div>'+
+                  //'<div>Merci de votre collaboration.</div>'+
+                  //'<div><br></div>'+
+                  '<div>Dispatch Marc-Andre Thiffeault </div>'+
+                  '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+                '</div>'+
+                '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+                '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+                '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+                '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                " </p></div>"
+              await this.bankClientsService.envoyerMail(em).subscribe(data=>{
+                console.log('Le client professionnel recois aussi message annulation.')
+                window.close();
+              }, err=>{console.log(err)})
+            }
+            else this.CloseWithWindowOpenTrick();
+          }
+            //this.CloseWithWindowOpenTrick();
         }, err=>{console.log(err)})
       }
     }

@@ -332,14 +332,18 @@ export class DetailTransportComponent implements OnInit {
             if(node.id==this.transport.idCamion)
               this.camion= node;
           })
-          this.remorques.forEach((node)=>{ 
-            if(node.id==this.transport.idTrailer1)
-              this.trailer1= node;
-          })
-          this.remorques.filter((node:Camion)=>{ 
-            if(node.id=this.transport.idTrailer2)
-              this.trailer1= node;
-          })
+          if(this.transport.idTrailer1!=undefined){
+            this.remorques.forEach((node)=>{ 
+              if(node.id==this.transport.idTrailer1)
+                this.trailer1= node;
+            })
+          }
+          if(this.transport.idTrailer2!=undefined){
+            this.remorques.forEach((node:Camion)=>{ 
+              if(node.id==this.transport.idTrailer2)
+                this.trailer2= node;
+            })
+          }
         }, err=>{
           console.log();
         })
@@ -442,9 +446,6 @@ export class DetailTransportComponent implements OnInit {
 
   async camionChange(){
     let strings:Array<string>=this.transport.camionAttribue.split("Id.");
-    console.log('strings.lenght : '+strings.length);
-    console.log('strings[0] : '+strings[0]);
-    console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
       let cId:number =  Number(strings[1])
       await this.camions.forEach(c=>{
@@ -459,7 +460,66 @@ export class DetailTransportComponent implements OnInit {
     }
     else this.camion=null;
   }
+  async trailer1Change(){
+    let strings:Array<string>=this.transport.trailer1.split("Id.");
+    console.log('strings.lenght : '+strings.length);
+    console.log('strings[0] : '+strings[0]);
+    console.log('strings[1] : '+strings[1]);
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      console.log('tId out of loop : '+tId);
+      await this.remorques.forEach(re=>{
+        console.log('reId : '+re.id);
+        console.log('tId : '+tId);
+        if(re.id==tId) 
+        {
+          this.trailer1=re;
+          this.transport.trailer1=this.trailer1.unite
+          this.transport.idTrailer1=this.trailer1.id
+        }
+      })
+      if(this.trailer1==undefined || tId!=this.trailer1.id)
+        {
+          this.trailer1=null;
+          this.trailer2=null;
+          this.transport.trailer2=''
+        }
+    }
+    else {
+      this.trailer1=null;
+      this.trailer2=null;
+      this.transport.trailer2=''
+    }
+  }
 
+  async trailer2Change(){
+    let strings:Array<string>=this.transport.trailer2.split("Id.");
+    console.log('strings.lenght : '+strings.length);
+    console.log('strings[0] : '+strings[0]);
+    console.log('strings[1] : '+strings[1]);
+    if(strings.length>1){
+      let tId:number =  Number(strings[1])
+      if(tId==this.trailer1.id){
+       alert('Il ne faut pas le meme de trailer1 !!')     
+       this.transport.trailer2=''
+      }
+      else{
+        await this.remorques.forEach(r=>{
+          if(r.id==tId) 
+          {
+            this.trailer2=r;
+            this.transport.trailer2=this.trailer2.unite
+            this.transport.idTrailer2=this.trailer2.id
+          }
+        })
+      }
+      
+      if(this.trailer2==undefined || tId!=this.trailer2.id)
+        this.trailer2=null;
+    }
+    else this.trailer2=null;
+  }
+  /*
   async trailer1Change(){
     let strings:Array<string>=this.transport.trailer1.split("Id.");
     if(strings.length>1){
@@ -508,6 +568,7 @@ export class DetailTransportComponent implements OnInit {
     }
     else this.trailer2=null;
   }
+  //*/
 
   volumeLongueur(){
     let tot : number = 0;
