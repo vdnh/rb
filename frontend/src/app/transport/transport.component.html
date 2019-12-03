@@ -259,7 +259,8 @@
               <label for="">DateReserve</label>
               <input type="date" [ngModel]="transport.dateReserve | date: 'yyyy-MM-dd'"
                    name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-                   class="form-control" (change)="dateChange($event)"/>
+                   class="form-control" (change)="dateChange($event)"
+                   required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
             </div>
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
@@ -633,7 +634,7 @@
         <div *ngIf="pagePresent==8" class="row">
           <div class="col-sm-12 col-md-12 col-lg-12">
             <label style="text-decoration-line: underline" for="">Joindre une image</label>
-            <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+            <input class="form-control" type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
             <button *ngIf="transport.imgUrl.length>0" (click)="transport.imgUrl=''" class="btn btn-link">Supprimer photo</button>
           </div>
           <div *ngIf="transport.imgUrl.length>0" class="col-sm-12 col-md-12 col-lg-12" style="border: 2px dotted gray">

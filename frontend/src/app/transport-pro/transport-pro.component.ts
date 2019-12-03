@@ -1205,15 +1205,20 @@ async showMap() {
     });  
   }
 
+  // dateChange(event){
+  //   //(ngModelChange)="dateChange($event)"
+  //   console.log('event : '+event.target.value.toString())
+    
+  //   this.transport.dateReserve = new Date(event.target.value);
+  //   this.transport.dateReserve.setDate(this.transport.dateReserve.getDate())//+1)
+    
+  //   console.log('this.transport.dateDepart : '+this.transport.dateReserve)
+  // }
+
   dateChange(event){
-    //(ngModelChange)="dateChange($event)"
-    console.log('event : '+event.target.value.toString())
-    
-    this.transport.dateReserve = new Date(event.target.value);
-    this.transport.dateReserve.setDate(this.transport.dateReserve.getDate()+1)
-    
-    console.log('this.transport.dateDepart : '+this.transport.dateReserve)
+    this.transport.dateReserve =event.target.value // new Date(event.target.value);
   }
+  
   nomContactChange(event){
     this.transport.nomContact=event.nom
     this.transport.telContact=event.tel

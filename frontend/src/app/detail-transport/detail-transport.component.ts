@@ -1250,7 +1250,7 @@ async showMap() {
     }
   }
 
-  async onSave(){
+  onSave(){
     // First, we try once more to get detail of this appel whether it was deleted
     // if good, we make save - update
     this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
@@ -1265,6 +1265,7 @@ async showMap() {
               load.id = d.id;
               //to empty the list loadDetails after save them
               //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+              window.close();
             }, err=>{
               console.log(err);
             })
@@ -1285,6 +1286,7 @@ async showMap() {
               load.id = d.id;
               //to empty the list loadDetails after save them
               //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+              window.close();
             }, err=>{
               console.log(err);
             })
@@ -1319,15 +1321,20 @@ async showMap() {
     });  
   }
 
+  // dateChange(event){
+  //   //(ngModelChange)="dateChange($event)"
+  //   console.log('event : '+event.target.value.toString())
+    
+  //   this.transport.dateReserve = new Date(event.target.value);
+  //   this.transport.dateReserve.setDate(this.transport.dateReserve.getDate()) //+1)
+    
+  //   console.log('this.transport.dateDepart : '+this.transport.dateReserve)
+  // }
+
   dateChange(event){
-    //(ngModelChange)="dateChange($event)"
-    console.log('event : '+event.target.value.toString())
-    
-    this.transport.dateReserve = new Date(event.target.value);
-    this.transport.dateReserve.setDate(this.transport.dateReserve.getDate()+1)
-    
-    console.log('this.transport.dateDepart : '+this.transport.dateReserve)
+    this.transport.dateReserve =event.target.value // new Date(event.target.value);
   }
+
   nomContactChange(event){
     this.transport.nomContact=event.nom
     this.transport.telContact=event.tel
@@ -1448,25 +1455,28 @@ async showMap() {
         " <br> <a href='"+ stringsd[0] +"/transport-client/"
         + this.transport.id   //1733  // replace by Number of Bon Transport
         +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
-        this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        await this.bankClientsService.envoyerMail(this.em).subscribe(async data=>{
           //console.log('this.em.titre : ' + this.em.titre)
           //console.log('this.em.emailDest : '+ this.em.emailDest)
           //console.log('this.em.content : ' + this.em.content)
           alert("Le courriel a ete envoye au chauffeur.")
           this.transport.sent=true;
           this.onSave();
-          this.gotoTop();
-          window.close();
-          close();
+          //this.gotoTop();
+          //window.close();
+          //close();
         }, err=>{
-          console.log()
+          console.log(err)
         })//*/
       }
       else 
-        alert("Checkez le courriel de chauffer, SVP!!!")
+        {
+          alert("Checkez le courriel de chauffer, SVP!!!")
+        }
+      //window.close();
     }, err=>{
       alert('Cette appel '+this.id+' a ete annule');
-      window.close()
+      //window.close()
     })    
   }
 

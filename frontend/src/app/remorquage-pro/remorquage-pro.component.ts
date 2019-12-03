@@ -858,12 +858,12 @@ onFileUpLoad(event){
 
   dateChange(event){
     //(ngModelChange)="dateChange($event)"
-    console.log('event : '+event.target.value.toString())
+    //console.log('event : '+event.target.value.toString())
     //this.remorquage.dateReserve = new Date(this.datePipe.transform(event.target.value,"yyyy-MM-dd"));
-    this.remorquage.dateReserve = new Date(event.target.value);
-    this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate()+1)
+    this.remorquage.dateReserve =event.target.value // new Date(event.target.value);
+    //this.remorquage.dateReserve.setDate(this.remorquage.dateReserve.getDate())//+1)
     //this.remorquage.dateDepart=event.value;
-    console.log('this.remorquage.dateDepart : '+this.remorquage.dateReserve)
+    //console.log('this.remorquage.dateReserve : '+this.remorquage.dateReserve)
   }
   nomContactChange(event){
     this.remorquage.nomContact=event.nom
