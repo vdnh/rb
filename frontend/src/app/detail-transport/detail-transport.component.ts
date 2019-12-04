@@ -1117,8 +1117,32 @@ async showMap() {
         console.log("Le cas est termine.")
         this.transport.fini=true;
         this.transportsService.saveTransports(this.transport).subscribe(data=>{
-          this.transport=new Transport();
-          window.close()
+          if(this.transport.emailContact.length>10){
+            let em:EmailMessage=new EmailMessage();
+            em.emailDest=this.transport.emailContact;  // email of professional
+            em.titre= "Succes - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+              "<div> Numero Bon: " + this.transport.id+ " </div>"+
+              '<div>'+
+                '<div><br></div>'+
+                '<div>Merci de votre collaboration.</div>'+
+                '<div><br></div>'+
+                '<div>Dispatch Marc-Andre Thiffeault </div>'+
+                '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+              '</div>'+
+              '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+              " </p></div>"
+            this.bankClientsService.envoyerMail(em).subscribe(data=>{
+              console.log('Le client professionnel recois aussi message succes .')
+              window.close();
+            }, err=>{console.log(err)})
+          }
+          else 
+            //this.transport=new Transport();
+            window.close()
           this.router.navigate(['/transport']);
         }, err=>{console.log(err)})
       }
@@ -1137,8 +1161,30 @@ async showMap() {
       this.transport.sent=false; // dans le cas En Cours en attendre
       this.transport.driverNote=""; // dans le cas Annule en attendre
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
-        //this.onFermer();
-        window.close();
+        if(this.transport.emailContact.length>10){
+          let em:EmailMessage=new EmailMessage();
+          em.emailDest=this.transport.emailContact;  // email of professional
+          em.titre= "Devoir attendre!  " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+          em.content='<div><p> '+ em.titre + " <br>" + 
+            "<div> Numero Bon: " + this.transport.id+ " </div>"+
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Merci de votre comprehension.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          this.bankClientsService.envoyerMail(em).subscribe(data=>{
+            console.log('Le client professionnel recois aussi message attente .')
+            window.close();
+          }, err=>{console.log(err)})
+        }
+        else window.close();
       }, err=>{console.log(err)})
     }
   }
@@ -1450,7 +1496,7 @@ async showMap() {
       let stringsd:string[]=location.href.split('/transport-client/')
       if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
         this.em.emailDest=this.transport.emailIntervenant
-        this.em.titre="Case numero : " + this.transport.id.toString()
+        this.em.titre="Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
         this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
         " <br> <a href='"+ stringsd[0] +"/transport-client/"
         + this.transport.id   //1733  // replace by Number of Bon Transport
@@ -1460,8 +1506,34 @@ async showMap() {
           //console.log('this.em.emailDest : '+ this.em.emailDest)
           //console.log('this.em.content : ' + this.em.content)
           alert("Le courriel a ete envoye au chauffeur.")
-          this.transport.sent=true;
-          this.onSave();
+          if(this.transport.emailContact.length>10){
+            let em:EmailMessage=new EmailMessage();
+            em.emailDest=this.transport.emailContact;  // email of professional
+            em.titre= "Encours traitement - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+              "<div> Numero Bon: " + this.transport.id+ " </div>"+
+              '<div>'+
+                '<div><br></div>'+
+                '<div>Merci de votre collaboration.</div>'+
+                '<div><br></div>'+
+                '<div>Dispatch Marc-Andre Thiffeault </div>'+
+                '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+              '</div>'+
+              '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+              '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+              " </p></div>"
+            this.bankClientsService.envoyerMail(em).subscribe(data=>{
+              console.log('Le client professionnel recois aussi .')
+              this.transport.sent=true;
+              this.onSave();
+            }, err=>{console.log(err)})
+          }
+          else{
+            this.transport.sent=true;
+            this.onSave();
+          }
           //this.gotoTop();
           //window.close();
           //close();

@@ -509,7 +509,7 @@
             </div>
             <div class="col-sm-3">
               <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
-                  (ngModelChange)="originChange()">
+              (change)="originChange()">
                 <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
               </select>
             </div>
@@ -536,7 +536,7 @@
             </div>
             <div class="col-sm-3">
               <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
-                  (ngModelChange)="destinationChange()">
+              (change)="destinationChange()">
                 <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
               </select>
             </div>

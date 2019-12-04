@@ -508,17 +508,17 @@
         </div>
         <div class="col-sm-3">
           <input type="text" [(ngModel)]="remorquage.originAdresse" name="origin"
-          (ngModelChange)="originChange()" class="form-control" placeholder="Numero & Rue / Code postal"/>
+          (change)="originChange()" class="form-control" placeholder="Numero & Rue / Code postal"/>
         </div>
         <div class="col-sm-3">
           <input type="text" [(ngModel)]="remorquage.originVille" name="originVille"
-          class="form-control" list="defaultVilles" (ngModelChange)="originChange()" placeholder="Ville">
+          class="form-control" list="defaultVilles" (change)="originChange()" placeholder="Ville">
           <datalist id="defaultVilles">
               <option *ngFor="let v of villeListO" [ngValue]="v">{{v}}</option>
           </datalist>
         </div>
         <div class="col-sm-3">
-          <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince" (ngModelChange)="originChange()">
+          <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince" (change)="originChange()">
             <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
           </select>
         </div>

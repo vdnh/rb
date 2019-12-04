@@ -342,7 +342,8 @@ export class DetailTransporterComponent implements OnInit {
       numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
-            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
+            (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
               this.camionsSurMap.push(camion)
           })
           let mapProp = {
@@ -407,7 +408,8 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
       let camionsSurMap:Array<Camion>=new Array<Camion>();
       data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
+        (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
           camionsSurMap.push(camion)
       })
       this.camionsSurMap=camionsSurMap;

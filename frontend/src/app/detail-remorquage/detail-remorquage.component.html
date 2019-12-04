@@ -364,7 +364,7 @@
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.originProvince"
-                (ngModelChange)="originChange()">
+                (change)="originChange()">
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -391,7 +391,7 @@
           </div>
           <div class="col-sm-3">
             <select type="text" class="form-control" [(ngModel)]="remorquage.destProvince"
-                (ngModelChange)="destinationChange()">
+            (change)="destinationChange()">
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -450,7 +450,7 @@
               <input type="text" [(ngModel)]="remorquage.camionAttribue" 
                 name="camionAttribue" list="defaultCamions" class="form-control" required>
               <datalist id="defaultCamions">
-                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite +' - ' +c.marque +'  ' +c.modele}}</option>
               </datalist>
             </div>
           </div>

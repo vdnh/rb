@@ -51,19 +51,19 @@
       <table *ngIf="modeGestionAppel==1" class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listTrs)'>DateReserve</th><th>Client</th>
-          <th>TelClient</th><th>Origin</th><th>Destination</th>
-          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+          <th>TelClient</th><th>Email</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>DateAppel</th>
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>          
+          <td (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
         </tr>
         <tr *ngIf="listTrs.length==0" style="color: green">
           <td>Liste d'Attente est vide actuellement.</td>
@@ -114,19 +114,19 @@
       <table *ngIf="modeGestionAppel==4" class="table">
         <tr style="background-color: whitesmoke">
           <th>Numero</th><th (click)='onSortDate(listTrsAnnule)'>DateReserve</th><th>Client</th>
-          <th>TelClient</th><th>Origin</th><th>Destination</th>
-          <th>Distance(miles)</th><th>Chauffeur</th><th>CamionUnite</th>
+          <th>TelClient</th><th>Email</th><th>Origin</th><th>Destination</th>
+          <th>Distance(miles)</th><th>DateAppel</th>
         </tr>
         <tr *ngFor="let t of listTrsAnnule" style="color: blue; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
         </tr>
         <tr *ngIf="listTrsAnnule.length==0" style="color: blue">
           <td>Il n'y a pas d'appel annule.</td>
@@ -347,7 +347,7 @@
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <select type="text" class="form-control" [(ngModel)]="transport.originProvince"
-                (ngModelChange)="originChange()">
+            (change)="originChange()">
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -392,7 +392,7 @@
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <select type="text" class="form-control" [(ngModel)]="transport.destProvince"
-                (ngModelChange)="destinationChange()">
+            (change)="destinationChange()">
               <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
             </select>
           </div>
@@ -426,7 +426,7 @@
               <td><button class="btn btn-link" (click)="deleteLoadDetail(load); dimensionResume()">Delete</button></td>
             </tr>  
             <tr>
-              <th>Ajouter des Loads</th>
+              <!-- <th>Ajouter des Loads</th> -->
             </tr>
             <tr>
               <td>
@@ -653,7 +653,7 @@
               <input type="text" [(ngModel)]="transport.camionAttribue" 
                 name="camionAttribue" list="defaultCamions" class="form-control" (change)="camionChange()" required>
               <datalist id="defaultCamions">
-                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite+'  .Id.'+c.id}}</option>
+                  <option *ngFor="let c of camions" [ngValue]="c">{{c.unite + ' - ' + c.marque +'  ' +c.modele + '  .Id.' + c.id}}</option>
               </datalist>
             </div>
             <div *ngIf="camion!=null && camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
@@ -668,7 +668,7 @@
               <input type="text" [(ngModel)]="transport.trailer1" 
                 name="trailer1" list="defaultTrailers" class="form-control" (change)="trailer1Change()">
               <datalist id="defaultTrailers">
-                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite + ' - ' + r.marque +'  ' +r.modele + '  .Id.'+r.id}}</option>
               </datalist>
             </div>
             <div *ngIf="trailer1!=null && trailer1.imgUrl!=null && trailer1.imgUrl.length>0" style="border: 2px dotted gray">
@@ -683,7 +683,7 @@
               <input type="text" [(ngModel)]="transport.trailer2" 
                 name="trailer2" list="defaultTrailers" class="form-control" (change)="trailer2Change()" [disabled]="transport.trailer1.length<1">
               <datalist id="defaultTrailers">
-                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite+'  .Id.'+r.id}}</option>
+                  <option *ngFor="let r of remorques" [ngValue]="r">{{r.unite + ' - ' + r.marque +'  ' +r.modele +'  .Id.'+r.id}}</option>
               </datalist>
             </div>
             <div *ngIf="trailer2!=null && trailer2.imgUrl!=null && trailer2.imgUrl.length>0" style="border: 2px dotted gray">

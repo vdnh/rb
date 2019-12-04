@@ -3,12 +3,12 @@ export class Camion{
     unite:string="";
     uniteMonitor:string="";
     monitor:string="";
-    plaque:string;
-    marque:string; // camionfermee, flatbed, ...
-    niv:string; // numero identificatrion vehicule (numero serie)
-    modele:string;
-    annee:string;
-    type:string; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
+    plaque:string="";
+    marque:string=""; // camionfermee, flatbed, ...
+    niv:string=""; // numero identificatrion vehicule (numero serie)
+    modele:string="";
+    annee:string="";
+    type:string=""; // remorque:1, semiRemorque:2, camionPorteur:3, tracteur:4, camionfermee:5, flatbed:6, autres:7...
     massNet:string;
     odometre:number; //=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
