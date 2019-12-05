@@ -406,7 +406,7 @@
         <div *ngIf="pagePresent==5" class="row">
           <table class="table table-striped table-sm table-responsive">
             <tr *ngIf="mode==1">
-              <th>Quantites</th><th>Description</th><th>Longueur(pouce)</th><th>Largeur(pouce)</th><th>Hauteur(pouce)</th><th>Poids(lb)</th>                        
+              <th>Quantites</th><th>Description</th><th>Longueur(pied)</th><th>Largeur(pied)</th><th>Hauteur(pied)</th><th>Poids(lb)</th>                        
             </tr>
             <tr *ngIf="mode==2">
               <th>Quantites</th><th>Description</th><th>Longueur(cm)</th><th>Largeur(cm)</th><th>Hauteur(cm)</th><th>Poids(kg)</th>                        
@@ -446,7 +446,7 @@
           <!--div class="col-sm-12 col-md-2 col-lg-2"><label>Resume Dimension: </label></div-->
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label *ngIf="mode==1">Total Longueur(pouce)</label>
+              <label *ngIf="mode==1">Total Longueur(pied)</label>
               <label *ngIf="mode==2">Total Longueur(cm)</label>
               <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
@@ -823,9 +823,9 @@
               <th colspan="3" style="text-align: center">Dimension</th>
             </tr>
             <tr>
-              <td style="width: 34%">Long(po)</td>
-              <td style="width: 33%">Larg(po)</td>
-              <td style="width: 33%">Haut(po)</td>
+              <td style="width: 34%">Long(pi)</td>
+              <td style="width: 33%">Larg(pi)</td>
+              <td style="width: 33%">Haut(pi)</td>
             </tr>
           </table>
         </td>

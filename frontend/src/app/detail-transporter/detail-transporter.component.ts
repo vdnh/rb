@@ -69,6 +69,7 @@ export class DetailTransporterComponent implements OnInit {
   servicesOffre:ServicesOffre=new ServicesOffre();
   camions:Array<Camion>;
   camionsInOperation:Array<Camion>; // all camion in service
+  camionsOutOperation:Array<Camion>; // all camion out service or antecedent
   addcamion:Camion=new Camion(); // to add more camion
   fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
   fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
@@ -147,7 +148,8 @@ export class DetailTransporterComponent implements OnInit {
       })
       //*/
       this.camions=data;
-      this.camionsInOperation = this.filterCamionOfStatus()
+      this.camionsInOperation = this.filterCamionInOperation()
+      this.camionsOutOperation = this.filterCamionOutOperation()
       this.camionsInOperation.forEach(async obj =>{
         await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
           if(data!=null){
@@ -171,8 +173,11 @@ export class DetailTransporterComponent implements OnInit {
     });
   }
   
-  filterCamionOfStatus(){ // find all camions in service
+  filterCamionInOperation(){ // find all camions in service
     return this.camions.filter(camion=>camion.status==true)
+  }
+  filterCamionOutOperation(){ // find all camions out service
+    return this.camions.filter(camion=>camion.status==false)
   }
 
   saveTransporter(){

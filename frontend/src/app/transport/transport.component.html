@@ -118,15 +118,16 @@
           <th>Distance(miles)</th><th>DateAppel</th>
         </tr>
         <tr *ngFor="let t of listTrsAnnule" style="color: blue; background-color: whitesmoke">
-          <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
+          <td style="width: 6%;" (click)="gotoDetailTransport(t)">{{t.id}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.distance}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
+          <td style="width: 6%;"><button class="btn btn-link" (click)="onDelete(t)">Delete</button></td>
         </tr>
         <tr *ngIf="listTrsAnnule.length==0" style="color: blue">
           <td>Il n'y a pas d'appel annule.</td>
@@ -407,7 +408,7 @@
         <div *ngIf="pagePresent==5" class="row">
           <table class="table table-striped table-sm table-responsive">
             <tr *ngIf="mode==1">
-              <th>Quantites</th><th>Description</th><th>Longueur(pouce)</th><th>Largeur(pouce)</th><th>Hauteur(pouce)</th><th>Poids(lb)</th>                        
+              <th>Quantites</th><th>Description</th><th>Longueur(pied)</th><th>Largeur(pied)</th><th>Hauteur(pied)</th><th>Poids(lb)</th>                        
             </tr>
             <tr *ngIf="mode==2">
               <th>Quantites</th><th>Description</th><th>Longueur(cm)</th><th>Largeur(cm)</th><th>Hauteur(cm)</th><th>Poids(kg)</th>                        
@@ -447,7 +448,7 @@
           <!--div class="col-sm-12 col-md-2 col-lg-2"><label>Resume Dimension: </label></div-->
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label *ngIf="mode==1">Total Longueur(pouce)</label>
+              <label *ngIf="mode==1">Total Longueur(pied)</label>
               <label *ngIf="mode==2">Total Longueur(cm)</label>
               <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
@@ -734,7 +735,7 @@
             <h6 class="form-control" style="border: none;">Disponible</h6>
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Longueur(pouces)</label>
+            <label for="">Longueur(pied)</label>
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
             <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
@@ -982,9 +983,9 @@
               <th colspan="3" style="text-align: center">Dimension</th>
             </tr>
             <tr>
-              <td style="width: 34%">Long(po)</td>
-              <td style="width: 33%">Larg(po)</td>
-              <td style="width: 33%">Haut(po)</td>
+              <td style="width: 34%">Long(pi)</td>
+              <td style="width: 33%">Larg(pi)</td>
+              <td style="width: 33%">Haut(pi)</td>
             </tr>
           </table>
         </td>

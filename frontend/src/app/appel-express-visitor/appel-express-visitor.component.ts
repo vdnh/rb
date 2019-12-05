@@ -773,17 +773,25 @@ async showMap() {
   ifAccident(){
     if(this.remorquage.accident)
       this.remorquage.panne=false
+    if(this.towing)
+      this.remorquage.panne=!this.remorquage.accident
     this.typeServiceChange(this.remorquage.typeService)
   }
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
+    if(this.towing)
+      this.remorquage.accident=!this.remorquage.panne
     this.typeServiceChange(this.remorquage.typeService)
   }
   ifTowing(){
-    //if(this.towing){
+    if(this.towing)
+      this.remorquage.panne = !this.remorquage.accident //false;
+    else{
       this.remorquage.panne=false;
       this.remorquage.accident=false;
+    }
+      //this.remorquage.accident=false;
       /*
       this.remorquage.destAdresse=''
       this.remorquage.destination=''

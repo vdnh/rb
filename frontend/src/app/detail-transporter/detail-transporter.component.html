@@ -165,7 +165,7 @@
                 <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th>N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
             </tr>
-            <tr *ngFor="let camion of camions">
+            <tr *ngFor="let camion of camionsInOperation">
                 <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
@@ -177,6 +177,34 @@
                 <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
                 <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion.id)">Delete</button></td>
             </tr>
+            <tr><th>Camions Antecedents</th></tr>
+            <tr *ngFor="let camion of camionsOutOperation" style="background-color: darkgray;">
+                <td>
+                    {{camion.unite}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/> -->
+                </td>
+                <td>
+                    {{camion.plaque}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.plaque" disabled/> -->
+                </td>
+                <td>
+                    {{camion.marque}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.marque" disabled/> -->
+                </td>
+                <td>
+                    {{camion.modele}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.modele" disabled/> -->
+                </td>
+                <td colspan="2">
+                    {{camion.niv}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.niv" disabled/> -->
+                </td>
+                <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion.id)">Delete</button></td>
+            </tr>            
             </div>   
             <div *ngIf="camAdd==1">
             <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     
@@ -200,7 +228,7 @@
         <table class="table table-striped table-sm table-responsive" *ngIf="modeTableau==1">
             <tr>
                 <th>Unite</th>
-                <th *ngFor="let camion of filterCamionOfStatus()" style="text-align: center">
+                <th *ngFor="let camion of camionsInOperation" style="text-align: center">
                     <button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">
                         {{camion.unite}}
                     </button>

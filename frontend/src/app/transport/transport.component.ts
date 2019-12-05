@@ -1170,25 +1170,20 @@ async showMap() {
   }
 
   onDelete(tr:Transport){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    var r = confirm("Etes vous sur de supprimer ce transport ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      console.log("Ce Transport est supprime.")
       if(tr.id>0){
         this.transportsService.deleteTransport(tr.id).subscribe(data=>{
-          if(tr.fini)
-            this.listTrsFini.splice(this.listTrsFini.indexOf(tr),1)
-          else if(tr.sent)
-            this.listTrsSent.splice(this.listTrsSent.indexOf(tr),1)
-          else this.listTrs.splice(this.listTrs.indexOf(tr),1)
-          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
+          this.listTrsAnnule.splice(this.listTrsAnnule.indexOf(tr),1)
         }, err=>{console.log(err)})
       }
     }
     else {
-      console.log('Le cas est continue.')
+      console.log('Ce Transport est maintenu.')
     }
   }
-
+  
   contactChange(){
     let strings:Array<string>=this.transport.nomContact.split("Id.");
     if(strings.length>1){

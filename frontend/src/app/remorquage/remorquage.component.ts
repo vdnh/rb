@@ -745,16 +745,17 @@ onFileUpLoad(event){
   }
 
   onDelete(rq:Remorquage){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    var r = confirm("Etes vous sur de supprimer cet appel ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      console.log("Le cas est supprime.")
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
-          if(rq.fini)
-            this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
-          else if(rq.sent)
-            this.listRqsSent.splice(this.listRqsSent.indexOf(rq),1)
-          else this.listRqs.splice(this.listRqs.indexOf(rq),1)
+          this.listRqsAnnule.splice(this.listRqsAnnule.indexOf(rq),1)
+          // if(rq.fini)
+          //   this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
+          // else if(rq.sent)
+          //   this.listRqsSent.splice(this.listRqsSent.indexOf(rq),1)
+          // else this.listRqs.splice(this.listRqs.indexOf(rq),1)
           //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
         }, err=>{console.log(err)})
       }
