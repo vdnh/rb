@@ -353,7 +353,7 @@
       <hr style="border: 2px solid lightgray"/-->
       
       <div class="row">
-        <div class="col-sm-12 col-md-2 col-lg-2"><label class="control-label">Mision/Message</label></div>
+        <div class="col-sm-12 col-md-2 col-lg-2"><label class="control-label">Mission/Message</label></div>
         <div class="col-sm-12 col-md-10 col-lg-10">
           <textarea name="comments" class="form-control" cols="80" rows="3"
                 [(ngModel)]="remorquage.driverNote" style="margin-bottom: 0px"
@@ -367,7 +367,7 @@
             <input type="text" [(ngModel)]="remorquage.camionAttribue" 
               name="camionAttribue" list="defaultCamions" class="form-control" required>
             <datalist id="defaultCamions">
-                <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
+                <option *ngFor="let c of camions" [ngValue]="c">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</option>
             </datalist>
           </div>
         </div>          

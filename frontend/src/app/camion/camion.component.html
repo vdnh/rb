@@ -83,7 +83,7 @@
             <tr>
               <td><input class="form-control" type="date" [(ngModel)]="camion.inspect6m" /></td>
             </tr>  
-            <tr><th colspan="8">Volume Disponible (en pouces et lbs) </th></tr>
+            <tr><th colspan="8">Volume Disponible (en piedss et lbs) </th></tr>
             <tr>
               <th>Longueur</th><th>Largeur</th><th>Hauteur</th><th>Poids</th>
             </tr>
@@ -108,16 +108,25 @@
               </td>
             </tr>
 
-            <tr><th colspan="8">Localisation : </th></tr>
-            <tr>
-              <th>Latitude</th><th>Longtitude</th><th>En mission</th><th>Depart</th><th>Destination</th>
-            </tr>
+            <tr><th colspan="8">Status </th></tr>
+            <!-- <tr>
+              <th>En Exploitant</th><th>Latitude</th><th>Longitude</th>
+            </tr> -->
             <tr>              
-              <td><input class="form-control" type="number" [(ngModel)]="camion.latitude" /></td>
-              <td><input class="form-control" type="number" [(ngModel)]="camion.longtitude" /></td>
-              <td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
-              <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
-              <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td>
+              <td style="width: 10%;">
+                <label for="">En Exploitant</label>
+                <input class="form-control" type="checkbox" [(ngModel)]="camion.status" />
+              </td>
+              <td style="width: 10%;">
+                <label for="">Latitude</label>
+                <input class="form-control" type="number" [(ngModel)]="camion.latitude" />
+              </td>
+              <td style="width: 10%;">
+                <label for="">Longitude</label>
+                <input class="form-control" type="number" [(ngModel)]="camion.longtitude" />
+              </td>
+              <!-- <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td> -->
             </tr>   
         </table>
         <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">          

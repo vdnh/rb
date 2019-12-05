@@ -34,7 +34,7 @@ export class Camion{
     direction:number; // 0.00 - 359.99 -- north-east-south-west;    
     speed: number;
     stopDuration:number=0; // in minute
-    status:boolean=false;   // en mission ou non
+    status:boolean=true;   // en exploitant ou non => enexploitant suivi en Tableau d'Entretiens
     localDepart:string="";
     destination:string="";
     //Entretien Control

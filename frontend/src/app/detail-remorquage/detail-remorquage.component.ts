@@ -188,7 +188,7 @@ marqueChange(){
       // this will take camions with gps monitor
       this.camions=[];
       data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
       })
       this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{

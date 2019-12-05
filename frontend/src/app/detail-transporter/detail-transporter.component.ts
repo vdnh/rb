@@ -68,6 +68,7 @@ export class DetailTransporterComponent implements OnInit {
   addadresse:Adresse=new Adresse(); // to add more adresse
   servicesOffre:ServicesOffre=new ServicesOffre();
   camions:Array<Camion>;
+  camionsInOperation:Array<Camion>; // all camion in service
   addcamion:Camion=new Camion(); // to add more camion
   fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
   fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
@@ -146,7 +147,8 @@ export class DetailTransporterComponent implements OnInit {
       })
       //*/
       this.camions=data;
-      this.camions.forEach(async obj =>{
+      this.camionsInOperation = this.filterCamionOfStatus()
+      this.camionsInOperation.forEach(async obj =>{
         await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
           if(data!=null){
             
@@ -169,6 +171,10 @@ export class DetailTransporterComponent implements OnInit {
     });
   }
   
+  filterCamionOfStatus(){ // find all camions in service
+    return this.camions.filter(camion=>camion.status==true)
+  }
+
   saveTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
       //this.mode=2;
@@ -342,8 +348,8 @@ export class DetailTransporterComponent implements OnInit {
       numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
-            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
-            (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+              camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
               this.camionsSurMap.push(camion)
           })
           let mapProp = {
@@ -408,7 +414,7 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
       let camionsSurMap:Array<Camion>=new Array<Camion>();
       data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
+        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
         (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
           camionsSurMap.push(camion)
       })

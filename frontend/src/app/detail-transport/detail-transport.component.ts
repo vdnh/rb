@@ -320,7 +320,7 @@ export class DetailTransportComponent implements OnInit {
           this.camions=[];
           this.remorques=[];
           data.forEach(camion=>{
-            if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
               this.camions.push(camion)
             else
               this.remorques.push(camion)  // Camions without GPS are trailers
