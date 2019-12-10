@@ -24,7 +24,8 @@ export class CreerVoyageComponent implements OnInit {
   //* pour checkBox list
   formGroup: FormGroup;
   camionTypes = myGlobals.camionTypes;
-  
+  optionTypes = myGlobals.optionTypes;
+
   provinceList=myGlobals.provinceList ;
   
   villeListO= myGlobals.villeList ;
@@ -149,7 +150,9 @@ export class CreerVoyageComponent implements OnInit {
     //* construct for checkbox list
     const selectAllControl = new FormControl(false);
     const formControls = this.camionTypes.map(control => new FormControl(false));
+    const formControls01 = this.optionTypes.map(control => new FormControl(false));
     this.formGroup = this.formBuilder.group({
+      optionTypes: new FormArray(formControls01),
       camionTypes: new FormArray(formControls),
       selectAll: selectAllControl
     });//*/
@@ -175,7 +178,7 @@ export class CreerVoyageComponent implements OnInit {
 
   onChangeTypeCamion() {
     const selectedCamionTypesNames = this.formGroup.value.camionTypes
-      .map((v, i) => (v==true && i<16) ? this.camionTypes[i].name : null)
+      .map((v, i) => (v==true && i<19) ? this.camionTypes[i].name : null)
       .filter(i => i !== null);
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
@@ -189,6 +192,14 @@ export class CreerVoyageComponent implements OnInit {
     console.log(selectedCamionTypesNames);
     console.log('selectedCamionTypesNames.toString() : '+selectedCamionTypesNames.toString());
     this.voyage.optionVoyage = selectedCamionTypesNames.toString();
+  }
+  onChangeOption() {
+    const selectedOptionTypesNames = this.formGroup.value.optionTypes
+      .map((v, i) => (v==true && i<16) ? this.optionTypes[i].name : null)
+      .filter(i => i !== null);
+    console.log(selectedOptionTypesNames);
+    console.log('selectedCamionTypesNames.toString() : '+selectedOptionTypesNames.toString());
+    this.voyage.optionVoyage = selectedOptionTypesNames.toString();
   }
   //*/ fin de fonctionnes de checkbox list
 

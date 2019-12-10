@@ -535,7 +535,8 @@
         <div class="row">
           <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
-              <label for="">Camion</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Camion</strong></h6></label>
+              <!-- <label for="">Camion</label> -->
               <input type="text" [(ngModel)]="transport.camionAttribue" 
                 name="camionAttribue" list="defaultCamions" class="form-control" (change)="camionChange()" required>
               <datalist id="defaultCamions">
@@ -550,7 +551,8 @@
           </div>          
           <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
-              <label for="">Trailer1</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Trailer1</strong></h6></label>
+              <!-- <label for="">Trailer1</label> -->
               <input type="text" [(ngModel)]="transport.trailer1" 
                 name="trailer1" list="defaultTrailers" class="form-control" (change)="trailer1Change()">
               <datalist id="defaultTrailers">
@@ -565,7 +567,8 @@
           </div>          
           <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="form-group">
-              <label for="">Trailer2</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Trailer2</strong></h6></label>
+              <!-- <label for="">Trailer2</label> -->
               <input type="text" [(ngModel)]="transport.trailer2" 
                 name="trailer2" list="defaultTrailers" class="form-control" (change)="trailer2Change()" [disabled]="transport.trailer1.length<1">
               <datalist id="defaultTrailers">
@@ -579,6 +582,7 @@
             </div>
           </div>          
         </div>
+        <br>
         <div class="row">
           <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for=""><h6 style="text-decoration-line: underline"><strong>Volume</strong></h6></label>
@@ -587,20 +591,23 @@
             <h6 class="form-control" style="border: none;">Disponible</h6>
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Longueur(pied)</label>
+            <label for=""><h6 style="text-decoration-line: underline"><strong>Longueur(pied)</strong></h6></label>
+            <!-- <label for="">Longueur(pied)</label> -->
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
             <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
             <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Poids(lbs)</label>
+            <label for=""><h6 style="text-decoration-line: underline"><strong>Poids(lbs)</strong></h6></label>
+            <!-- <label for="">Poids(lbs)</label> -->
             <input class="form-control" type="number" size="5" [value]="volumePoids()" disabled>
             <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
             <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
-              <label for="">Chauffeur</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Chauffeur</strong></h6></label>
+              <!-- <label for="">Chauffeur</label> -->
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
                 name="nomIntervenant" class="form-control" (change)="chauffeurChange()" list="defaultChauffeurs">
               <datalist id="defaultChauffeurs">
@@ -610,7 +617,8 @@
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
-              <label for="">Telephone</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Telephone</strong></h6></label>
+              <!-- <label for="">Telephone</label> -->
               <input type="tel" [(ngModel)]="transport.telIntervenant" name="telIntervenant"
                     class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                     (focusout)="transport.telIntervenant=reformTelEvent($event)" required>
@@ -618,7 +626,8 @@
           </div>
           <div class="col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
-              <label for="">Courriel</label>
+              <label for=""><h6 style="text-decoration-line: underline"><strong>Courriel</strong></h6></label>
+              <!-- <label for="">Courriel</label> -->
               <input type="email" [(ngModel)]="transport.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
               required>
                 <datalist id="defaultEmails">
