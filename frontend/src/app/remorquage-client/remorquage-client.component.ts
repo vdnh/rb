@@ -115,11 +115,7 @@ export class RemorquageClientComponent implements OnInit {
     //'canvasHeight': 100,
   };
   drawComplete(data) {
-    //console.log(this.signaturePad.toDataURL());
-    //console.log('data signature : '+ data);
-    //console.log('this.signaturePad.onEndEvent : '+ this.signaturePad.onEndEvent);
-    //this.remorquage.signature=this.signaturePad.  //this.signaturePad.toDataURL()
-    //console.log('this.remorquage.signature.length : '+ this.remorquage.signature.length)
+    
   }
  
   drawStart() {

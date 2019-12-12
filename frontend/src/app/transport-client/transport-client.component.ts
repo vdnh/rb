@@ -131,9 +131,7 @@ export class TransportClientComponent implements OnInit {
   disableTransCreditUS=false;
   id: any;
   drawComplete(data) {
-    //console.log(this.signaturePad.toDataURL('image/png', 0.5));
-    //this.remorquage.signature=this.signaturePad.toDataURL()
-    //console.log('this.remorquage.signature.length : '+ this.remorquage.signature.length)
+    
   }
  
   drawStart() {
