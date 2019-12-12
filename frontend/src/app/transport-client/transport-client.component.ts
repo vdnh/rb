@@ -116,7 +116,7 @@ export class TransportClientComponent implements OnInit {
   //fin
   
   //for signature pad
-  @ViewChild(SignaturePad) signaturePad: SignaturePad;
+  @ViewChild('SignaturePad') signaturePad: SignaturePad;
   private signaturePadOptions: Object = {
     'minWidth': 1,
     //'border': '2px dotted gray',

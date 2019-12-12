@@ -86,8 +86,8 @@
         <!--/td>
         <td-->
           <div class="m-signature-pad" *ngIf="!remorquage.signature.length>0">  
-            <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
-              (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)">
+            <signature-pad #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+              (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
             </signature-pad>
           </div>
           <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">

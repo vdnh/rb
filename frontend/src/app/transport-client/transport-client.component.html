@@ -183,7 +183,7 @@
         </label>
         <br>
         <div class="m-signature-pad" *ngIf="!transport.signature.length>0">  
-          <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+          <signature-pad #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
             (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)">
           </signature-pad>
         </div>

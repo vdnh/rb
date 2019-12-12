@@ -107,25 +107,35 @@ export class RemorquageClientComponent implements OnInit {
   //fin
   
   //for signature pad
-  @ViewChild(SignaturePad) signaturePad: SignaturePad;
-  private signaturePadOptions: Object = {
+  @ViewChild('SignaturePad') signaturePad: SignaturePad;
+  public signaturePadOptions: Object = {
     'minWidth': 1,
     'background-color': '#fff',
     //'canvasWidth': 250,
     //'canvasHeight': 100,
   };
   drawComplete(data) {
-    //console.log(this.signaturePad.toDataURL('image/png', 0.5));
-    //this.remorquage.signature=this.signaturePad.toDataURL()
+    //console.log(this.signaturePad.toDataURL());
+    //console.log('data signature : '+ data);
+    //console.log('this.signaturePad.onEndEvent : '+ this.signaturePad.onEndEvent);
+    //this.remorquage.signature=this.signaturePad.  //this.signaturePad.toDataURL()
     //console.log('this.remorquage.signature.length : '+ this.remorquage.signature.length)
   }
  
   drawStart() {
     //console.log('begin drawing');
   }
+  onSaveHandler(data) {
+    console.log('onsave clicked');
+    console.log(data);
+    //window.open(data);
+  }
+  onClearHandler() {
+    console.log('onclear clicked...');
+  }
 
   okHandler(){
-    console.log('this.signaturePad.toDataURL() : '+this.signaturePad.toDataURL())
+    //console.log('this.signaturePad.toDataURL() : '+this.signaturePad.toDataURL())
     if(this.remorquage.nomSignature.length==0){
       alert("On a besoins votre nom, merci.")
     }
@@ -208,7 +218,7 @@ beforeunloadHandler(event){
           this.remorquage.destLat,
           this.remorquage.destLong                                          
         )
-        this.showMap()
+        //this.showMap()
       }
     }, err=>{
       console.log(err);
