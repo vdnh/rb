@@ -840,7 +840,7 @@ export class CamionComponent implements OnInit {
       numbers.subscribe(x =>{
         this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
           //this.camion=data;
-          if((data.uniteMonitor!=null && data.monitor!=null) && (data.monitor.length!=0 && data.monitor.length!=0)){
+          if(data.status && (data.uniteMonitor!=null && data.monitor!=null) && (data.monitor.length!=0 && data.monitor.length!=0)){
             //this.latitude = this.camion.latitude;
             //this.longitude= this.camion.longtitude
             //this.marker.setMap(null);

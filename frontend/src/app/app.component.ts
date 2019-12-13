@@ -623,8 +623,10 @@ export class AppComponent implements OnInit{
     this.varsGlobal.session='no'; 
     this.varsGlobal.pro='no';
     this.roleUsernameLogin='';
-    this.router.navigateByUrl("");
-    //location.reload();
+    await this.router.navigateByUrl("");
+    // console.log('location.host : '+location.host)
+    // console.log('location.href : '+location.href)
+    location.reload();
     //window.close();
   }
   /*/ on close window

@@ -5,7 +5,10 @@
         Gerer Camion : {{camion.unite}}  &nbsp;&nbsp;&nbsp; 
         <button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</button>
       </h2>
-      <button class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
+      <button *ngIf="(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && 
+        (camion.monitor.length!=0 && camion.monitor.length!=0) && 
+        !camion.uniteMonitor.includes('no-gps'))"
+        class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
       <br>
     </div>
     <div>
