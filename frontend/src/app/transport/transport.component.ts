@@ -24,6 +24,7 @@ import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Voyage } from 'src/model/model.voyage';
+import { VoyagesService } from 'src/services/voyages.service';
 
 @Component({
   selector: 'app-transport',
@@ -222,7 +223,7 @@ export class TransportComponent implements OnInit {
   camion:Camion;
   trailer1:Camion;
   trailer2:Camion;
-  voyage:Voyage;
+  voyage:Voyage = new Voyage();
   
   templateName:string=''; // name of the transport model
   templates: Transport[]=[];  // liste transport models
@@ -241,6 +242,7 @@ export class TransportComponent implements OnInit {
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
+    public voyagesService : VoyagesService, 
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
@@ -1241,6 +1243,7 @@ async showMap() {
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
           alert("C'est enregistre.")
+        await this.createVoyage() // creer un voyage
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1317,6 +1320,34 @@ async showMap() {
       })
     }
   }
+
+  createVoyage(){
+    this.voyage.originLat=this.transport.originLat
+    this.voyage.originLong=this.transport.originLong
+    this.voyage.destLat=this.transport.destLat
+    this.voyage.destLong=this.transport.destLong
+    this.voyage.dateDepart = new Date(this.voyage.dateDepart)
+    this.voyage.origin=this.transport.origin
+    this.voyage.originAdresse=this.transport.originAdresse
+    this.voyage.originVille=this.transport.originVille
+    this.voyage.originProvince=this.transport.originProvince
+    this.voyage.destination=this.transport.destination
+    this.voyage.destAdresse=this.transport.destAdresse
+    this.voyage.destVille=this.transport.destVille
+    this.voyage.destProvince=this.transport.destProvince
+    this.voyage.typeCamion=this.transport.typeCamion
+    this.voyage.optionVoyage=this.transport.optionDemande
+    this.voyage.idTransporter=8 // id of sosprestige by default
+    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+      alert('Un voyage est aussi cree.')
+      this.voyage=data
+      this.transport.idVoyage=this.voyage.id
+      this.transportsService.saveTransports(this.transport).subscribe(data=>{},err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
+
   onPrint(heure){    
     console.log(heure)
     console.log('this.transport.timeCall : '+this.transport.timeCall)

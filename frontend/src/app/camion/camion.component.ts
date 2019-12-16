@@ -254,10 +254,12 @@ export class CamionComponent implements OnInit {
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
     this.modeBonDeTravail=1;
+    if(this.bonDeTravail.fini){  // 
+      this.newBonDeTravail()
+      this.reparations.length=0;  // vider la liste reparation
+    }
     this.modeListReparation=0;
     this.modeListGarantie=0;
-
-    this.reparations.length=0;  // vider la liste reparation
   }
 
   async onListGarantie(){
