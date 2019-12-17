@@ -79,7 +79,7 @@
       <tr>
         <td colspan="5">
           <label for="">
-            <input type="text" (change)="remorquage.nomSignature=$event.target.value; $event.target.value=''" name="nomSignature"
+            <input type="text" (change)="remorquage.nomSignature=$event.target.value.toUpperCase(); $event.target.value=''" name="nomSignature"
              style="width: 300px" class="form-control" placeholder="Nom de Signateur" [disabled]="remorquage.fini">
           </label>
           <br>
@@ -91,7 +91,7 @@
             </signature-pad>
           </div>
           <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-          <span *ngIf="remorquage.nomSignature.length>0"><br>{{remorquage.nomSignature}}</span>
+          <span *ngIf="remorquage.nomSignature.length>0"><br> &nbsp;&nbsp; {{remorquage.nomSignature}}</span>
           <div>
             <button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-signer</button>
             <span>&nbsp;&nbsp;</span>

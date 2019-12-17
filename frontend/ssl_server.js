@@ -5,9 +5,9 @@ const path = require('path');
 const https = require('https');
 const fs = require('fs');
 const options = {
-  key: fs.readFileSync('/usr/local/ssl/private.key'),
-  cert: fs.readFileSync('/usr/local/ssl/certificate.crt'),
-  ca: fs.readFileSync('/usr/local/ssl/ca_bundle.crt')
+  key: fs.readFileSync('private.key'),
+  cert: fs.readFileSync('certificate.crt'),
+  ca: fs.readFileSync('ca_bundle.crt')
 };
 
 

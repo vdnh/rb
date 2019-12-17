@@ -162,7 +162,7 @@
             <div *ngIf="camList==1">   
             <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
             <tr>
-                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th>N.I.V</th>
+                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th colspan="2">N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
             </tr>
             <tr *ngFor="let camion of camionsInOperation">
@@ -170,7 +170,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
-                <td colspan="2"><input class="form-control" type="text" [(ngModel)]="camion.niv"/></td>
+                <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv"/></td>
                 <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
@@ -209,7 +209,7 @@
             <div *ngIf="camAdd==1">
             <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     
             <tr>
-                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th>N.I.V</th>
+                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th colspan="2">N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
             </tr>    
             <tr>
@@ -217,7 +217,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.plaque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.modele" /></td>
-                <td colspan="2"><input class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
+                <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
                 <!--td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td-->

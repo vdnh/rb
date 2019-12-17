@@ -178,7 +178,7 @@
     <tr>
       <td colspan="5">
         <label for="">
-          <input type="text" (change)="transport.nomSignature=$event.target.value; $event.target.value=''" name="nomSignature"
+          <input type="text" (change)="transport.nomSignature=$event.target.value.toUpperCase(); $event.target.value=''" name="nomSignature"
             style="width: 300px" class="form-control" placeholder="Nom de Signateur" [disabled]="transport.fini">
         </label>
         <br>
