@@ -56,14 +56,14 @@
         </tr>
         <tr *ngFor="let t of listTrs" style="color: green; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.distance}}</td>          
-          <td (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateDepart | date: 'dd-MMM-yyyy'}}</td>
         </tr>
         <tr *ngIf="listTrs.length==0" style="color: green">
           <td>Liste d'Attente est vide actuellement.</td>
@@ -77,7 +77,7 @@
         </tr>
         <tr *ngFor="let t of listTrsSent" style="color: orange; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
@@ -98,7 +98,7 @@
         </tr>
         <tr *ngFor="let t of listTrsFini" style="color: red; background-color: whitesmoke">
           <td (click)="gotoDetailTransport(t)">{{t.id}}</td>
-          <td (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td (click)="gotoDetailTransport(t)">{{t.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
           <td (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
@@ -119,14 +119,14 @@
         </tr>
         <tr *ngFor="let t of listTrsAnnule" style="color: blue; background-color: whitesmoke">
           <td style="width: 6%;" (click)="gotoDetailTransport(t)">{{t.id}}</td>
-          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateReserve}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateReserve | date: 'dd-MMM-yyyy'}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.nomEntreprise}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.telClient+ ' #'+ t.extTelContact}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.emailContact}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.originVille+' - '+t.originProvince}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.destVille+' - '+t.destProvince}}</td>
           <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.distance}}</td>
-          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateDepart}}</td>
+          <td style="width: 10%;" (click)="gotoDetailTransport(t)">{{t.dateDepart | date: 'dd-MMM-yyyy'}}</td>
           <td style="width: 6%;"><button class="btn btn-link" (click)="onDelete(t)">Delete</button></td>
         </tr>
         <tr *ngIf="listTrsAnnule.length==0" style="color: blue">

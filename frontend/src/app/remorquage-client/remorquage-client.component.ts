@@ -382,7 +382,7 @@ async destinationChange(){
 }//*/
 
 printBonDeRemorquage(cmpId){
-  let envoy = document.getElementById('toprint').innerHTML;
+  //let envoy = document.getElementById('toprint').innerHTML;
   //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);

@@ -1,0 +1,24 @@
+<p>bon-signature works!</p>
+<div><button (click)="printBon('toprint')" class="btn btn-link">Print</button></div>
+<div>
+    <div [style.background]="'url(/assets/images/TestAutorisation.jpg)'" class="m-signature-pad">  
+        <signature-pad style="position: absolute; opacity: .4;" #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+            (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
+        </signature-pad>
+    </div>
+</div>
+
+<div id="toprint" class="m-signature-pad">
+    <div style="position: absolute;">
+        <img style="position: absolute; z-index: 1;" [src]="'url(/assets/images/TestAutorisation.jpg)'">
+        <img style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0">
+    </div>
+</div>
+
+<!-- <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
+<span *ngIf="remorquage.nomSignature.length>0"><br> &nbsp;&nbsp; {{remorquage.nomSignature}}</span> -->
+<!-- <div>
+<button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-signer</button>
+<span>&nbsp;&nbsp;</span>
+<button (click)="okHandler()" *ngIf="(!remorquage.signature.length>0 && remorquage.nomSignature.length>0 && !remorquage.fini)">Ok</button>
+</div> -->

@@ -419,16 +419,16 @@ export class CamionComponent implements OnInit {
           console.log(err)
         })
       });
-      await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
-      }, err=>{
-        console.log()
-      });
-      await this.reparations.forEach(obj => {
-        this.reparationsService.saveReparation(obj).subscribe(data=>{
-        }, err=>{
-          console.log(err)
-        })
-      });
+      // await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
+      // }, err=>{
+      //   console.log()
+      // });
+      // await this.reparations.forEach(obj => {
+      //   this.reparationsService.saveReparation(obj).subscribe(data=>{
+      //   }, err=>{
+      //     console.log(err)
+      //   })
+      // });
     /*
     }, err=>{
       console.log(err);
