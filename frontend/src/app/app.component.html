@@ -1,9 +1,9 @@
 <!--p></p-->
 <div class="header"> 
-  <h3 style="font-weight: bold;">  <strong> CTS - Complete Transport Solution </strong> </h3>    
+  <h3 style="font-weight: bold;" class="noprint">  <strong> CTS - Complete Transport Solution </strong> </h3>    
 </div>
 <div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
-  <div *ngIf="mode==2">
+  <div *ngIf="mode==2" class="noprint">
     <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3> 
   </div>
   <!--div class="row" *ngIf="mode!=2">
@@ -12,7 +12,7 @@
         <div  class="col-sm-12 col-md-12 col-lg-12">
           <div *ngIf="modeSignUp==0">
             <div *ngIf="usernameLogin.length>1">
-              <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+              <h6 class="noprint" style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
                 <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
               </h6>
             </div>
@@ -165,13 +165,13 @@
             <div class="panel panel-primary" *ngIf="role=='ADMIN'">     
               <button routerLink="/propos" class="btn btn-link">Propos</button>
               <button routerLink="/bank-client" class="btn btn-link">Publicite</button>
-              <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
+              <button routerLink="/shippers" class="btn btn-link">ClientPros</button> 
               <button routerLink="/transporters" class="btn btn-link">Transporters</button> 
               <button routerLink="/appUsers" class="btn btn-link">AppUsers</button>
               <button (click)="logout()" class="btn btn-link">Logout</button>
               <br>
             </div>
-            <div class="row" *ngIf="role=='DISPATCH'">     
+            <div class="row; noprint" *ngIf="role=='DISPATCH'">     
               <!--div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
                 <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
                   <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
@@ -190,11 +190,11 @@
               <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button>
               <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
               <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
-              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajouter Client</button> 
-              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Client</button> 
-              <div class="col-md-4 col-sm-4 col-lg-4">
+              <!-- <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajouter Client</button> 
+              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Client</button>  -->
+              <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
-              </div>
+              <!-- </div> -->
             </div>
             <!-- <hr style="border: 2px solid lightgray"/> -->
           </div>
@@ -243,24 +243,24 @@
   <!--/div-->
 </div>
 
-<div class="row" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
+<div class="row; noprint" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
   <br>
 </div>
 
 <div class="footer" *ngIf="mode!=2">
-  <!--div class="row">
-    <div-->
-  <span>
-    SOS Prestige,&nbsp;
-  </span>
-  <span>
-    <a href="tel:+1-450-974-9111">450-974-9111,</a>
-      &nbsp;
-    <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
-  </span>
-  <span>
-    520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
-  </span>
+  <div class="noprint">
+    <span>
+      SOS Prestige,&nbsp;
+    </span>
+    <span>
+      <a href="tel:+1-450-974-9111">450-974-9111,</a>
+        &nbsp;
+      <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
+    </span>
+    <span>
+      520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
+    </span>
+  <div>
   <!--h6 style="font: bold"><strong><a href="tel:+1-450-974-9111">450-974-9111</a></strong>&nbsp;&nbsp;-&nbsp;&nbsp;<strong><a href="mailto:sosprestige@gmail.com"> sosprestige@gmail.com</a></strong></h6-->
   <!--span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span-->
     <!--/div>

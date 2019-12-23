@@ -20,6 +20,14 @@
     color: white;
     text-align: center;
 }
+@media screen
+{
+    .noprint {display:block;}
+}
+@media print
+{
+    .noprint {display: none;}
+}
 /* .body{
     background-color: darkgray;    
 } */
