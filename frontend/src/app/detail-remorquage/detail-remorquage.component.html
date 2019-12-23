@@ -504,35 +504,75 @@
 
         <div *ngIf="mode==2" class="row" style="margin-top: 10px">
           <div class="col-md-3">
-            <div class="form-group">
+            <!-- <div class="form-group"> -->
               <label *ngIf="mode==2" class="control-label">PrixBase</label>
               <input type="number" [(ngModel)]="remorquage.prixBase" name="prixBase"
                    class="form-control" (change)="prixCalcul()" />
-            </div>
+            <!-- </div> -->
+            <table>
+              <tr>
+                <td>PorterAuCompte</td>
+                <td>
+                  <input type="checkbox" [(ngModel)]="remorquage.debit" (change)="ifDebit()">
+                </td>
+              </tr>
+            </table>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
+            <!-- <div class="form-group"> -->
               <label *ngIf="mode==2" class="control-label">Prix/Km</label>
               <input type="number" [(ngModel)]="remorquage.prixKm" name="prixKm" class="form-control"
                    (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
-            </div>
+            <!-- </div> -->
+            <table>
+              <tr>
+                <td>Collecter d'argent</td>
+                <td>
+                  <input type="checkbox" [(ngModel)]="remorquage.atPlace" (change)="ifAtPlace()">
+                </td>
+              </tr>
+              <tr *ngIf="remorquage.atPlace">
+                <td>Cash</td>
+                <td><input [(ngModel)]="remorquage.byCash" type="checkbox"></td>
+              </tr>
+            </table>
           </div>
           <div class="col-md-2">
-            <div class="form-group">
+            <!-- <div class="form-group"> -->
               <label *ngIf="mode==2" class="control-label">Inclus</label>
               <input type="number" [(ngModel)]="remorquage.inclus" name="inclus" class="form-control"
                     (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
-              <label class="control-label">Porter au Compte</label>
+              <!-- <label class="control-label">Porter au Compte</label>
               <input type="number" [(ngModel)]="remorquage.porterAuCompte" name="porterAuCompte" class="form-control"
-              (change)="prixCalcul()"/>
-            </div>
+              (change)="prixCalcul()"/> -->
+            <!-- </div> -->
+            <table *ngIf="remorquage.atPlace">
+              <tr>
+                <td>Cheque</td>
+                <td><input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+              </tr>
+              <tr>
+                <td>Carte Credit</td>
+                <td><input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+              </tr>
+            </table>
           </div>
           <div class="col-md-2">
             <label class="control-label">Kms</label>
             <input type="number" [(ngModel)]="remorquage.distance" name="distance" class="form-control" disabled/>
             <!--div  *ngIf="mode==2">{{remorquage.distance}}</div-->
-            <label class="control-label">Collecter d'argent</label>
-            <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/>
+            <!-- <label class="control-label">Collecter d'argent</label>
+            <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/> -->
+            <table *ngIf="remorquage.atPlace">
+              <tr>
+                <td>Interac</td>
+                <td><input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+              </tr>
+              <tr>
+                <td>Virement</td>
+                <td><input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+              </tr>
+            </table>
           </div>
           <div class="col-md-2">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
@@ -611,8 +651,15 @@
         <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
       </tr>
       <tr style="border: 0px">
-        <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
-        <td colspan="3" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number :'1.2'}}</td>
+        <!-- <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+        <td colspan="3" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number :'1.2'}}</td> -->
+        <td *ngIf="remorquage.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+        <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
+        <td *ngIf="remorquage.byCash" style="text-align: center; text-anchor: start "> par cash </td>
+        <td *ngIf="remorquage.byCheck" style="text-align: center; text-anchor: start "> par cheque </td>
+        <td *ngIf="remorquage.creditCard"> par carte credit </td>
+        <td *ngIf="remorquage.byInterac"> par interac </td>
+        <td *ngIf="remorquage.transfer"> par virement</td>
       </tr>
       <tr>
         <td colspan="5">Client: 

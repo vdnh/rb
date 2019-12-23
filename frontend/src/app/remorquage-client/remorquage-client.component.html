@@ -25,12 +25,32 @@
         <td style="text-align: center; text-anchor: start ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
         <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
         <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
-        <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;<!--{{remorquage.total}}--></span></td>
+        <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
       </tr>
-      <tr style="border: 0px">
-        <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
-        <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td>
+      <tr>
+        <!-- <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+        <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td> -->
+        <td *ngIf="remorquage.porterAuCompte>0" colspan="5" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+        <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
+        <!-- <th *ngIf="remorquage.collecterArgent>0" colspan="2">Mode de paiement </th> -->
+        <td *ngIf="remorquage.collecterArgent>0" colspan="3">
+          <table border="1"><tr>
+              <td>Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+              <td>Chq <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+              <td>Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+              <td>Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+              <td>Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+          </tr></table>
+        </td>        
       </tr>
+      <!-- <tr *ngIf="remorquage.collecterArgent>0"><td colspan="2">Mode de paiement </td></tr> -->
+      <!-- <tr *ngIf="remorquage.collecterArgent>0">
+        <td style="width: 20%;">Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+        <td style="width: 20%;">Cheque <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+        <td style="width: 20%;">Carte Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+        <td style="width: 20%;">Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+        <td style="width: 20%;">Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+      </tr> -->
       <tr>
         <td colspan="5">Client: 
           <span>&nbsp;{{remorquage.nomClient}}</span>

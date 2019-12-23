@@ -66,6 +66,17 @@ export class Remorquage{
     changementPneu=false;
     autres=false;
     // fin de service
+
+    //Mode payement
+    debit=false; // porter au compte
+    atPlace=false; // collecter d'argent
+    byCash=false; // cash
+    byCheck=false; // cheque
+    creditCard=false; // carte credit
+    byInterac=false; // interac
+    transfer=false; // virement
+    //fin mode payement
+
     // status
     fini=false;
     //

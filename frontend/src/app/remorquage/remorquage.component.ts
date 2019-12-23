@@ -1185,6 +1185,33 @@ onFileUpLoad(event){
     else 
       alert("Checkez le courriel de chauffer, SVP!!!")
   }
+  
+  ifDebit(){ // porter au compte
+    if(this.remorquage.debit){
+      this.remorquage.porterAuCompte=this.remorquage.total
+      this.remorquage.collecterArgent=0;
+      this.remorquage.atPlace=false
+      this.remorquage.byCash=false
+      this.remorquage.byCheck=false
+      this.remorquage.creditCard=false
+      this.remorquage.byInterac=false
+      this.remorquage.transfer=false
+    }
+    else{
+      this.remorquage.porterAuCompte=0;
+    }
+  }
+  
+  ifAtPlace(){ // collecter d'argent
+    if(this.remorquage.atPlace){
+      this.remorquage.collecterArgent=this.remorquage.total
+      this.remorquage.porterAuCompte=0;
+      this.remorquage.debit=false
+    }
+    else{
+      this.remorquage.collecterArgent=0;
+    }
+  }
 
   logout(){
     localStorage.clear();

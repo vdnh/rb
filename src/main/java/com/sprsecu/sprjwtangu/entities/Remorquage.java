@@ -98,6 +98,17 @@ public class Remorquage implements Serializable{
     private Boolean changementPneu=false;
     private Boolean autres=false;
     //fin de service
+    
+    //Mode payement
+    private Boolean debit=false; // porter au compte
+    private Boolean atPlace=false; // collecter d'argent
+    private Boolean byCash=false; // cash
+    private Boolean byCheck=false; // cheque
+    private Boolean creditCard=false; // carte credit
+    private Boolean byInterac=false; // interac
+    private Boolean transfer=false; // virement
+    //fin mode payement
+    
     // status
     private Boolean fini=false;
     //

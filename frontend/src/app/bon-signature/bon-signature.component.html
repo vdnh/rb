@@ -1,6 +1,6 @@
 <div class="noprint">
-    <button class="noprint" *ngIf="!readyToSign" (click)="toSign()" class="myBtn" title="Cliquer pour signer">Signer</button>
-    <button class="noprint" *ngIf="readyToSign && signe" (click)="validateSign()" class="myBtn" title="Valider signature">Valider</button>
+    <button class="noprint; myBtn" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">Signer</button>
+    <button class="noprint; myBtn" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
 </div>
 <div class="noprint">
     <label style="text-decoration-line: underline" for="">Joindre une image</label>
@@ -8,15 +8,24 @@
     <!-- <input type="file" #coverFilesInput (change)="onChange($event)" class="file-input"  /> -->
 </div>
 <div class="noprint"><button (click)="printBon('toprint')" class="btn btn-link">Print</button></div>
-<div style="position: relative;">
-    <!-- <div class="m-signature-pad" >   -->
-        <img id=sky *ngIf="imgUrl.length>0" style="position: absolute; z-index: 1;" [src]="imgUrl" alt="piece joint" class="img-responsive" width="width" height="height">
-        <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
-            (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
-        </signature-pad>
-        <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0">
-    <!-- </div> -->
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <!-- <div class="m-signature-pad" >   -->
+            <img id=sky *ngIf="imgUrl.length>0" style="position: absolute; z-index: 1; max-width: 100%; height: auto;" [src]="imgUrl" alt="piece joint">
+            <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+                (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
+            </signature-pad>
+            <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0">
+        <!-- </div> -->
+    </div>
 </div>
+<!-- <div class="row; noprint">
+    <div>
+        <button class="btn btn-link" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">Signer</button>
+        <button class="btn btn-link" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
+    </div>
+</div> -->
+
 <!-- <div id="toprint">
     <div class="m-signature-pad" [style.background]="signature" >
         <img style="position: absolute; opacity: 0.6; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0">
