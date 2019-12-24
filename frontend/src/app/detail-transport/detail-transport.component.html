@@ -939,9 +939,10 @@
       </tr>
       <tr>
         <td colspan="5"style="text-align: left; text-anchor: start ">
-          {{transport.nomSignature}}  <span>&nbsp;
-            <img [src]="transport.signature" height="100" width="250" *ngIf="transport.signature.length>0">
-          <br>&nbsp;</span>
+          <img [src]="transport.signature" height="100" width="250" *ngIf="transport.signature.length>0">
+          <span *ngIf="transport.nomSignature.length>0">&nbsp;
+            <br>NOM EN LETTRES MOULEES : &nbsp;{{transport.nomSignature}} 
+          </span>
         </td>
       </tr>
     </table>

@@ -111,7 +111,9 @@
             </signature-pad>
           </div>
           <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-          <span *ngIf="remorquage.nomSignature.length>0"><br> &nbsp;&nbsp; {{remorquage.nomSignature}}</span>
+          <span *ngIf="remorquage.nomSignature.length>0"><br> 
+            NOM EN LETTRES MOULEES : &nbsp;&nbsp; {{remorquage.nomSignature}}
+          </span>
           <div>
             <button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-signer</button>
             <span>&nbsp;&nbsp;</span>

@@ -188,7 +188,9 @@
           </signature-pad>
         </div>
         <img [src]="transport.signature" alt="Signature" *ngIf="transport.signature.length>0">
-        <span *ngIf="transport.nomSignature.length>0"><br>{{transport.nomSignature}}</span>
+        <span *ngIf="transport.nomSignature.length>0"><br>
+          NOM EN LETTRES MOULEES : &nbsp;{{transport.nomSignature}}
+        </span>
         <div>
           <button (click)="clearHandler()" *ngIf="transport.nomSignature.length>0 && !transport.fini">Re-signer</button>
           <span>&nbsp;&nbsp;</span>

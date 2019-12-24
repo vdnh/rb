@@ -705,7 +705,9 @@
             <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
           <br>&nbsp;</span> -->
           <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-          <span *ngIf="remorquage.nomSignature.length>0"><br> &nbsp;&nbsp; {{remorquage.nomSignature}}</span>
+          <span *ngIf="remorquage.nomSignature.length>0"><br> 
+            NOM EN LETTRES MOULEES : &nbsp;&nbsp; {{remorquage.nomSignature}}
+          </span>
         </td>
       </tr>
     </table>
