@@ -152,6 +152,67 @@ export class RemorquageClientComponent implements OnInit {
     this.remorquage.signature="";
   }
   //end for signature pad
+  
+  // for signature client bon
+  width:number;
+  height:number;
+  signe=false;
+@ViewChild('SignaturePad2') signaturePad2: SignaturePad;
+public signaturePad2Options: Object = {
+  'minWidth': 1,
+  'background-color': '#fff',
+  'canvasWidth': this.width,
+  'canvasHeight': this.height,
+};
+draw2Complete() {
+  //this.signature=this.signaturePad.toDataURL()
+  this.signe=true;
+}
+
+draw2Start() {
+  //console.log('begin drawing');
+}
+onSave2Handler(data) {
+  console.log('onsave clicked');
+  console.log(data);
+  //window.open(data);
+}
+onClear2Handler() {
+  console.log('onclear clicked...');
+}
+
+ok2Handler(){
+}
+
+clear2Handler(){
+}
+
+signature="";
+readyToSign=false;
+
+async validateSign(){
+  this.signature= await this.signaturePad2.toDataURL()
+  this.readyToSign=false;
+}
+
+async toSign(){
+  let imge = await document.getElementById('sky'); 
+  let height = imge.clientHeight 
+  let width = imge.clientWidth
+  console.log('dw - dh : '+width +' - '+ height)
+  this.signaturePad2Options = await {
+    'minWidth': 1,
+    'background-color': '#fff',
+    'canvasWidth': width,
+    'canvasHeight': height,
+  };
+  this.readyToSign=true;
+  this.signe=false;
+  this.signature=""
+  console.log('once more time of dw - dh : '+width +' - '+ height)
+  console.log('this.signe - this.readyToSign : ' + this.signe +' - '+ this.readyToSign)
+}
+  // end of sign pro bon
 
   centerCoord={lat:45.568806, lng:-73.918333}  // 
 

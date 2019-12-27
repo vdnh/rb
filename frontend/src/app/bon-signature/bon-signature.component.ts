@@ -71,15 +71,22 @@ clearHandler(){
 }
 //end for signature pad
 
-validateSign(){
-  this.signature=this.signaturePad.toDataURL()
+async validateSign(){
+  this.signature= await this.signaturePad.toDataURL()
   this.readyToSign=false;
+  // if(this.signature.length>0){
+  //   let imge = await document.getElementById('sky2'); 
+  //   let height = await imge.clientHeight 
+  //   let width = await imge.clientWidth
+  //   console.log('dw - dh of signature image : '+width +' - '+ height)
+  // }
+  
 }
 
 async toSign(){
   let imge = await document.getElementById('sky'); 
   let height = imge.clientHeight 
-  var width = imge.clientWidth
+  let width = imge.clientWidth
   console.log('dw - dh : '+width +' - '+ height)
   this.signaturePadOptions = await {
     'minWidth': 1,
