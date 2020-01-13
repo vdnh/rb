@@ -85,4 +85,9 @@ public class FichePhysiqueEntretien implements Serializable{
     private String filtreHuileHydrolique2emModele;
     private String filtreAUreeMarque;
     private String filtreAUreePiece;
+    // adding by Denis
+    private String engineNumber;
+    private String engineFamily;
+    private String model;
+    private String cPL; 
 }

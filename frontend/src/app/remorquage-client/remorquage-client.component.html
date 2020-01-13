@@ -124,18 +124,18 @@
     </table>
   </div>
   <div *ngIf="remorquage.imgUrl.length>0">
-    <!-- <a href="{{remorquage.imgUrl}}" target="_blank"> -->
-      <img id="sky" [src]="remorquage.imgUrl" alt="piece joint" style="position: absolute; z-index: 1; max-width: 216mm; max-height: 279mm;">
-      <!-- class="img-responsive" width="100%" height="auto"> -->
-      <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad2 [options]="signaturePad2Options" (onBeginEvent)="draw2Start()"
+    <a href="{{remorquage.imgUrl}}" target="_blank">
+      <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
+    </a>
+      <!-- <img id="sky" [src]="remorquage.imgUrl" alt="piece joint" style="position: absolute; z-index: 1; max-width: 216mm; max-height: 279mm;"> -->
+      <!-- <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad2 [options]="signaturePad2Options" (onBeginEvent)="draw2Start()"
           (onEndEvent)="draw2Complete()" (onSave)="onSave2Handler($event)" (onClear)="onClear2Handler()">
       </signature-pad>
-      <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0" width="width" height="height">
-    <!-- </a> -->
-    <div class="noprint">
+      <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0" width="width" height="height"> -->
+    <!-- <div class="noprint">
         <button class="noprint; myBtn" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">SignerSurBonOrigin</button>
         <button class="noprint; myBtn" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
-    </div>
+    </div> -->
   </div>
   
   

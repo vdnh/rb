@@ -63,4 +63,9 @@ export class FichePhysiqueEntretien {
     filtreHuileHydrolique2emModele:string;
     filtreAUreeMarque:string;
     filtreAUreePiece:string;
+    // adding by Denis
+    engineNumber:string;
+    engineFamily:string;
+    model:string;
+    cPL:string;
 }
