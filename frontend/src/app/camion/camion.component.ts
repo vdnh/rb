@@ -903,8 +903,7 @@ export class CamionComponent implements OnInit {
     //object.reload(forced)
   }
   deleteEntretien(id:number){
-    this.autreEntretiensService.deleteAutreEntretien(id)
-    .subscribe(data=>{
+    this.autreEntretiensService.deleteAutreEntretien(id).subscribe(data=>{
       this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
         this.entretiens=data;
       }, err=>{

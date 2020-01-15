@@ -132,17 +132,19 @@
               <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td> -->
             </tr>   
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">          
+        <!-- <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">     -->
+        <table border="1" *ngIf="modeFiche==1">      
           <tr>
-            <th>Date Achat : </th><td><input class="form-control" type="date" [(ngModel)]="fiche.dateAchat" /></td>
-            <th>Moteur : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" /></td>            
-            <th>Transmition: </th><td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" /></td>
+            <th style="text-align: right;">Date Achat : </th><td><input class="form-control" type="date" [(ngModel)]="fiche.dateAchat" /></td>
+            <th style="text-align: right;">Moteur : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" /></td>            
+            <th style="text-align: right;">Transmition : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" /></td>
+            <th style="text-align: right;">Annee : </th><td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
           </tr>
           <tr>
-            <th>Engine No : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineNumber" /></td>
-            <th>Engine Family : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineFamily" /></td>            
-            <th>Engine Model: </th><td><input class="form-control" type="text" [(ngModel)]="fiche.model" /></td>
-            <th>CPL: </th><td><input class="form-control" type="text" [(ngModel)]="fiche.cPL" /></td>
+            <th style="text-align: right;">Engine No : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineNumber" /></td>
+            <th style="text-align: right;">Engine Family : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineFamily" /></td>            
+            <th style="text-align: right;">Engine Model : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.model" /></td>
+            <th style="text-align: right;">CPL : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.cpl" /></td>
           </tr>  
           <tr><br></tr>
           <tr>
@@ -381,7 +383,7 @@
             <td><input class="form-control" type="text" [(ngModel)]="entretien.odoFait" /></td>
             <th>Avertir avant : </th>
             <td><input class="form-control" type="text" [(ngModel)]="entretien.kmAvertir" /></td>
-            <!--td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td-->
+            <td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td>
           </tr>           
           <tr><td colspan="2"><strong>Ajouter d'entretien</strong></td></tr>   
           <tr>

@@ -510,8 +510,9 @@
                    class="form-control" (change)="prixCalcul()" />
             <!-- </div> -->
             <table>
+              <tr>&nbsp;</tr>
               <tr>
-                <td>PorterAuCompte</td>
+                <th style="font-weight: bold">PorterAuCompte</th>
                 <td>
                   <input type="checkbox" [(ngModel)]="remorquage.debit" (change)="ifDebit()">
                 </td>
@@ -525,8 +526,9 @@
                    (change)="prixCalcul()" [disabled]="!(remorquage.accident || remorquage.panne)"/>
             <!-- </div> -->
             <table>
+              <tr>&nbsp;</tr>
               <tr>
-                <td>Collecter d'argent</td>
+                <th style="font-weight: bold">Collecter d'argent</th>
                 <td>
                   <input type="checkbox" [(ngModel)]="remorquage.atPlace" (change)="ifAtPlace()">
                 </td>
@@ -547,6 +549,7 @@
               (change)="prixCalcul()"/> -->
             <!-- </div> -->
             <table *ngIf="remorquage.atPlace">
+              <tr>&nbsp;</tr>
               <tr>
                 <td>Cheque</td>
                 <td><input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
@@ -564,6 +567,7 @@
             <!-- <label class="control-label">Collecter d'argent</label>
             <input type="number" [(ngModel)]="remorquage.collecterArgent" name="collecterArgent" class="form-control"/> -->
             <table *ngIf="remorquage.atPlace">
+              <tr>&nbsp;</tr>
               <tr>
                 <td>Interac</td>
                 <td><input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>

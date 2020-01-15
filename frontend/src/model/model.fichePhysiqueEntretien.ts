@@ -67,5 +67,5 @@ export class FichePhysiqueEntretien {
     engineNumber:string;
     engineFamily:string;
     model:string;
-    cPL:string;
+    cpl:string;
 }
