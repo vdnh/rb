@@ -59,10 +59,19 @@
           <br> &nbsp;</td>  
       </tr>
       <tr>
-        <td colspan="5">De: <span>&nbsp;{{remorquage.origin}}</span> <br> &nbsp;</td>
+        <td colspan="5">
+          De: <span>&nbsp;{{remorquage.origin}}</span> <br> 
+          <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.origin)" title="Ouvrir GoogleMaps">
+            Y aller avec GoogleMaps
+          </button>
+        </td>
       </tr>
       <tr>
-          <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> &nbsp;</td>
+        <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> 
+          <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.destination)" title="Ouvrir GoogleMaps">
+            Y aller avec GoogleMaps
+          </button>
+        </td>
       </tr>
       <tr>
         <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 

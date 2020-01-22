@@ -17,6 +17,7 @@ import { SignaturePad } from 'angular2-signaturepad/signature-pad';
 import { CamionsService } from 'src/services/camions.service';
 import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { GeolocationService } from 'src/services/geolocation.service';
 
 @Component({
   selector: 'app-remorquage',
@@ -236,6 +237,7 @@ async toSign(){
     private titleService: Title,
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
+    private geolocation : GeolocationService,
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
@@ -952,6 +954,19 @@ async showMap() {
       alert("Checkez le courriel de chauffer, SVP!!!")
   }
 
+  async urlGoogleMaps(address:string){  // former google maps de position actuelle a l'adresse entree
+    
+    //https://www.google.com/maps/dir/45.5689027,-73.9183723/Galeries Terrebonne,1185 Boulevard Moody,Terrebonne,Quebec
+    let url='https://www.google.com/maps/dir/'
+
+    await this.geolocation.getCurrentPosition().subscribe( (data:Position)=>{
+      url=url+data.coords.latitude+','+data.coords.longitude+'/'+address;
+      window.open(url, "_blank")  // to test open in new tab
+    },err=>{console.log(err)})
+    //console.log('I am in urlGooleMaps!!')
+    //return "https://www.google.com/maps/dir/520+Rue+Guindon,+Saint-Eustache,+QC/1185+Boulevard+Moody,+Terrebonne,+Quebec"
+  }
+  
   logout(){
     localStorage.clear();
     //this.router.navigateByUrl("");

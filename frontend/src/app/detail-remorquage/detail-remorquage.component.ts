@@ -19,6 +19,7 @@ import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -1212,6 +1213,84 @@ async showMap() {
     else{
       this.remorquage.collecterArgent=0;
     }
+  }
+
+  async onExporterSage50(){
+    //let text=await document.getElementById(cmpId).innerHTML
+    console.log('this.remorquage.dateReserve : '+this.remorquage.dateReserve.toString())
+    let yyyymmdd= this.remorquage.dateReserve.toString().split('-')
+    let date = yyyymmdd[2]
+    let month = yyyymmdd[1]
+    let year = yyyymmdd[0]
+    let dateSage=month+'-'+date+'-'+year
+    let po = this.remorquage.numPO
+    let invoiceNo = this.remorquage.id  // only use this invoiceNo when the Sage50 unse this invoiceNo
+    console.log('dateSage : '+dateSage)
+    
+    let textSage=
+        '<Version>\r\n'+  // ne pas changer
+        '"12001","1"\r\n'+  // ne pas changer
+        '</Version>\r\n'+  // ne pas changer
+        '<SalInvoice>\r\n'+  // ne pas changer
+        
+        '"'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'"'+ '\r\n'+  // non client  //"nom4"
+        // quantite - PO - FacNo - date - payer apres - source payer - total avec tax - frais rammaser
+        //avec remorquage quantite=1
+        //'"1",,,"1-15-2020","0",,"34492.00","0.00"\r\n'+
+        '"1","'+invoiceNo+'",,"'+dateSage+'","0",,"'+this.remorquage.total+'","0.00"\r\n'+
+        // article No/name - quantity - prix - montant sans tax - table de taxation
+        '"Remorquage","0.0000","0.0000","'+this.remorquage.horstax+'","TPS/TVH","0","1","5.00","'+this.remorquage.tps+'","TVQ","0","1","9.9750","'+this.remorquage.tvq+'"\r\n'+
+        //'"Rm_Tr","0.0000","0.0000","15000.00","TPS/TVH","0","1","5.00","750.00","TVQ","0","1","9.9750","1496.00"\r\n'+
+        
+        '</SalInvoice>\r\n'  // ne pas changer
+    
+    // 
+    // '
+    //console.log('text to write to file : ' + text)
+    let blob = new Blob([textSage], {
+      //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-16le"
+      type: "text/plain;charset=utf-8"
+    });
+    let filenameExport = this.remorquage.dateReserve+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')
+    FileSaver.saveAs(blob, filenameExport+"-export.IMP");   
+  }
+
+  async onExporterExcel(){
+    console.log('this.remorquage.dateReserve : '+this.remorquage.dateReserve.toString())
+    let yyyymmdd= this.remorquage.dateReserve.toString().split('-')
+    let date = yyyymmdd[2]
+    let month = yyyymmdd[1]
+    let year = yyyymmdd[0]
+    let dateExcel= date+'-'+month+'-'+year
+    let po = this.remorquage.numPO
+    let invoiceNo = "" //  this.remorquage.id  // only use this invoiceNo when the Sage50 unse this invoiceNo
+    console.log('dateExcel : '+dateExcel)
+    
+    let textSage=
+        // "000123","1-14-2020","Customer 1","34492.00","Maison Test"
+        '"","'+dateExcel+'","'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'","'+this.remorquage.total+'","'+this.remorquage.nomIntervenant+'"'
+
+        // '"'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'"'+ '\r\n'+  // non client  //"nom4"
+        // '"1","'+invoiceNo+'",,"'+dateExcel+'","0",,"'+this.remorquage.total+'","0.00"\r\n'+
+        
+        // '"Remorquage","0.0000","0.0000","'+this.remorquage.horstax+'","TPS/TVH","0","1","5.00","'+this.remorquage.tps+'","TVQ","0","1","9.9750","'+this.remorquage.tvq+'"\r\n'+
+        
+        // '</SalInvoice>\r\n'  // ne pas changer
+    
+    // 
+    // '
+    //console.log('text to write to file : ' + text)
+    let blob = new Blob([textSage], {
+      //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-16le"
+      type: "text/plain;charset=utf-8"
+    });
+    let filenameExport = this.remorquage.dateReserve+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')
+    FileSaver.saveAs(blob, filenameExport+"-export.txt");   
+  }
+
+  onExporter(){
+    this.onExporterSage50();
+    this.onExporterExcel();
   }
 
   logout(){
