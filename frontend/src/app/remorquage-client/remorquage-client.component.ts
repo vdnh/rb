@@ -19,6 +19,8 @@ import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { GeolocationService } from 'src/services/geolocation.service';
 
+import { Subscription, timer, interval } from 'rxjs';
+
 @Component({
   selector: 'app-remorquage',
   templateUrl: './remorquage-client.component.html',
@@ -242,14 +244,160 @@ async toSign(){
       this.id=activatedRoute.snapshot.params['id'];
     }
 
-// on close window
-@HostListener('window:beforeunload', ['$event'])
-beforeunloadHandler(event){
-  localStorage.clear();
-  //this.router.navigateByUrl("");
-}//*/
+  // on close window
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunloadHandler(event){
+    localStorage.clear();
+    //this.router.navigateByUrl("");
+  }//*/
 
+  subscription : Subscription;
+  toRadians (angle) {
+    return angle * (Math.PI / 180);
+  }
+  
+  toDegrees (angle) {
+    return angle * (180 / Math.PI);
+  }
+  
+  calculateDistance( lat1, lng1, lat2, lng2) {
+    let dLat = this.toRadians(lat2 - lat1);
+    let dLon = this.toRadians(lng2 - lng1);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.cos(this.toRadians(lat1))
+            * Math.cos(this.toRadians(lat2)) * Math.sin(dLon / 2)
+            * Math.sin(dLon / 2);
+    let c = 2 * Math.asin(Math.sqrt(a));
+    let distanceInMeters = Math.round(6371000 * c);
+    return distanceInMeters;
+  }
+  // Calculate heading -  this function is not exact
+  // calculateHeading(start_latitude, start_longitude, stop_latitude, stop_longitude){
+  //   let y = Math.sin(stop_longitude-start_longitude) * Math.cos(stop_latitude);
+  //   let x = Math.cos(start_latitude)*Math.sin(stop_latitude) -
+  //       Math.sin(start_latitude)*Math.cos(stop_latitude)*Math.cos(stop_longitude-start_longitude);
+  //   let brng = Math.atan2(y, x) * 180 / Math.PI;
+  //   return brng;
+  // }
+  
+  // Calculate heading -  this function is good
+  bearing(startLat, startLng, destLat, destLng){
+    startLat = this.toRadians(startLat);
+    startLng = this.toRadians(startLng);
+    destLat = this.toRadians(destLat);
+    destLng = this.toRadians(destLng);
+  
+    let y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    let x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    let brng = Math.atan2(y, x);
+    brng = this.toDegrees(brng);
+    return Math.round(((brng + 360) % 360)*100)/100;
+  }
+// calculateDistance(point1:google.maps.LatLng, point2:google.maps.LatLng) {
+//   return Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)) ;
+//   //this.distanceKm = Math.round(this.distance*1.609344)
+// }
   async ngOnInit() {    
+    
+    //this.subscription.unsubscribe();
+    const source = interval(60000); // every minute 
+  
+    
+    //positionCallback.
+    let oldPoint : google.maps.LatLng;
+    // await this.geolocation.getCurrentPosition().subscribe( async (data:Position)=>{
+    //     oldPoint= new google.maps.LatLng(data.coords.latitude, data.coords.longitude)
+    //   }, err=>{console.log(err)})
+    
+    // use the navigator to get coords of depart position
+    function showPosition(position:any){
+      //console.log('latitude from navigator - departPoint: '+position.coords.latitude)
+      //console.log('longitude from navigator - departPoint: '+position.coords.longitude)
+      oldPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+    }
+    navigator.geolocation.getCurrentPosition(showPosition)
+    //
+    
+    let speed=0;
+    let index=0;
+
+    
+    this.subscription=source.subscribe(val=>{
+    //*/ use Google Map to get current position
+    //   this.geolocation.getCurrentPosition().subscribe( async (data:Position)=>{
+    //     let newPoint = new google.maps.LatLng(data.coords.latitude, data.coords.longitude)
+    //     let distanceMetter = await this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
+    //     speed = distanceMetter*60/1000; // => kmh (minute*60=hour, m/1000=km)
+    //     oldPoint=newPoint;
+    //     index++
+    //     this.remorquage.driverNote=this.remorquage.driverNote+'-'+speed+'kmh-';
+    //   },err=>{console.log(err)})
+    //*/
+
+      //*/ use navigator to get current position
+      //let driverNote=''
+      function toRadians (angle) {
+        return angle * (Math.PI / 180);
+      }
+      
+      function toDegrees (angle) {
+        return angle * (180 / Math.PI);
+      }
+      function calculateDistance( lat1, lng1, lat2, lng2) {
+        let dLat = toRadians(lat2 - lat1);
+        let dLon = toRadians(lng2 - lng1);
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(toRadians(lat1))
+                * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        let c = 2 * Math.asin(Math.sqrt(a));
+        let distanceInMeters = Math.round(6371000 * c);
+        return distanceInMeters;
+      }
+      function getCoordsCurrent(position:any){
+        //console.log('latitude from navigator - currentPoint: '+position.coords.latitude)
+        //console.log('longitude from navigator - currentPoint: '+position.coords.longitude)
+        let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+        let distanceMetter = calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
+        speed = distanceMetter*60/1000; // => kmh (minute*60=hour, m/1000=km)
+        //console.log('Calculated speed with index : '+index)
+        oldPoint=newPoint;
+        index++;
+        //driverNote=driverNote+'-'+speed+'kmh-';
+        //console.log('driverNote in getCoordsCurrent' + driverNote)
+      }
+      navigator.geolocation.getCurrentPosition(position=>{
+      //navigator.geolocation.watchPosition(position=>{
+        //console.log('latitude from navigator - currentPoint: '+position.coords.latitude)
+        //console.log('longitude from navigator - currentPoint: '+position.coords.longitude)
+        //console.log('speed from navigator - currentPoint: '+position.coords.speed)
+        //console.log('heading from navigator - currentPoint: '+position.coords.heading)
+        let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+        let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
+        speed = distanceMetter*60/1000; // => kmh (minute*60=hour, m/1000=km)
+        let degree = this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
+        //let degree = this.bearing(45.568609,-73.920497, 45.570369,-73.919450)
+        //let degree = this.calculateHeading(45.568609,-73.920497, 45.570369,-73.919450)
+        //console.log('Calculated degree with fix data : '+degree)
+        //spherical: typeof google.maps.geometry.spherical;
+        // let F = new google.maps.LatLng(45.568609, -73.920497)
+        // let T = new google.maps.LatLng(45.570369, -73.919450)
+        // let heading = google.maps.geometry.spherical.computeHeading(F, T);
+        // console.log('Calculated heading with fix data : '+heading)
+        oldPoint=newPoint;
+        index++;
+        //driverNote=driverNote+'-'+speed+'kmh-';
+        //console.log('driverNote in getCoordsCurrent' + driverNote)
+        this.remorquage.driverNote=this.remorquage.driverNote+'-'+speed+'kmh-'+degree+'degree-';
+        //console.log('this.remorquage.driverNote in getCoordsCurrent' + this.remorquage.driverNote)
+      })
+      //*/
+    })
+    
+
+    
+
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige

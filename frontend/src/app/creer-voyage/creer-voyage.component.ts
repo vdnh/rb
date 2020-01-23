@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
-import { MouseEvent, MapsAPILoader, LatLngLiteral } from '@agm/core';
+//import { MouseEvent, MapsAPILoader } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService} from 'src/services/geolocation.service';
 import { Router } from '@angular/router';
-import { from } from 'rxjs';
+//import { from } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl, FormArray } from '@angular/forms';
 import { Demande } from 'src/model/model.demande';
 import { DemandesService } from 'src/services/demandes.service';
