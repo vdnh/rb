@@ -77,6 +77,11 @@ export class Remorquage{
     transfer=false; // virement
     //fin mode payement
 
+    // text export
+    sage="";
+    excel="";
+    //
+
     // status
     fini=false;
     //

@@ -301,7 +301,7 @@ async toSign(){
   async ngOnInit() {    
     
     //this.subscription.unsubscribe();
-    const source = interval(60000); // every minute 
+    const source = interval(15000); // every 15 seconde 
   
     
     //positionCallback.
@@ -321,7 +321,7 @@ async toSign(){
     
     let speed=0;
     let index=0;
-
+    let note = this.remorquage.driverNote;
     
     this.subscription=source.subscribe(val=>{
     //*/ use Google Map to get current position
@@ -360,13 +360,14 @@ async toSign(){
         //console.log('longitude from navigator - currentPoint: '+position.coords.longitude)
         let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
         let distanceMetter = calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
-        speed = distanceMetter*60/1000; // => kmh (minute*60=hour, m/1000=km)
+        speed = distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
         //console.log('Calculated speed with index : '+index)
         oldPoint=newPoint;
         index++;
         //driverNote=driverNote+'-'+speed+'kmh-';
         //console.log('driverNote in getCoordsCurrent' + driverNote)
       }
+      
       navigator.geolocation.getCurrentPosition(position=>{
       //navigator.geolocation.watchPosition(position=>{
         //console.log('latitude from navigator - currentPoint: '+position.coords.latitude)
@@ -375,7 +376,7 @@ async toSign(){
         //console.log('heading from navigator - currentPoint: '+position.coords.heading)
         let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
         let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
-        speed = distanceMetter*60/1000; // => kmh (minute*60=hour, m/1000=km)
+        speed = distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
         let degree = this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
         //let degree = this.bearing(45.568609,-73.920497, 45.570369,-73.919450)
         //let degree = this.calculateHeading(45.568609,-73.920497, 45.570369,-73.919450)
@@ -389,8 +390,15 @@ async toSign(){
         index++;
         //driverNote=driverNote+'-'+speed+'kmh-';
         //console.log('driverNote in getCoordsCurrent' + driverNote)
-        this.remorquage.driverNote=this.remorquage.driverNote+'-'+speed+'kmh-'+degree+'degree-';
+        this.remorquage.driverNote= note +' -  '+speed+' kmh - '+degree+' degree-';
         //console.log('this.remorquage.driverNote in getCoordsCurrent' + this.remorquage.driverNote)
+      }, err=>{
+        console.log(err)
+      },
+      {
+        timeout: 1000, // 1 second before the request errors out
+        maximumAge: 5000, // age of the position cached by the browser. Don't accept one older than the set amount
+        enableHighAccuracy: true  // require a position with highest level of accuracy possible
       })
       //*/
     })

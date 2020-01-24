@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -108,6 +109,13 @@ public class Remorquage implements Serializable{
     private Boolean byInterac=false; // interac
     private Boolean transfer=false; // virement
     //fin mode payement
+    
+    // text export
+    @Column(columnDefinition = "text")
+    private String sage;
+    @Column(columnDefinition = "text")
+    private String excel;
+    //
     
     // status
     private Boolean fini=false;
