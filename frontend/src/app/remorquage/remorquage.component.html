@@ -3,10 +3,26 @@
   <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
   <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
   <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
-  <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Exporter</button></span>
+  <span *ngIf="modeExport==-1"><button (click)="modeExport=-modeExport" class="btn btn-link">Exporter</button></span>
   <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
 </h4>
 <hr style="border: 1px dotted black"/>
+<div *ngIf="modeExport==1">
+  <div class="row">
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: green; text-align: center">
+      <!-- <label  style="color: green; text-align: center">Choisir le Jour</label>  -->
+      <div class="form-group">
+        <label for="">Choisir le Jour</label>
+        <input type="date" [ngModel]="dateExport | date: 'yyyy-MM-dd'"
+        name="dateExport" max="{{today | date: 'yyyy-MM-dd'}}" (change)="dateExport=$event.target.value"
+        class="form-control" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-3" style="color: orange; text-align: center">
+      <button (click)="onExporter()" style="color: orange; text-align: center">ExporterData(Sage50+Excel)</button> 
+    </div>
+  </div>  
+</div>
 <div *ngIf="modeHistoire==1">
   <!--div class="row">
     <div class="col-md-2 col-sm-2 col-lg-2">

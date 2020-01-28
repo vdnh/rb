@@ -1267,9 +1267,9 @@ async showMap() {
     let invoiceNo = "" //  this.remorquage.id  // only use this invoiceNo when the Sage50 unse this invoiceNo
     console.log('dateExcel : '+dateExcel)
     
-    let textSage=
+    let textExcel=
         // "000123","1-14-2020","Customer 1","34492.00","Maison Test"
-        '"","'+dateExcel+'","'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'","'+this.remorquage.total+'","'+this.remorquage.nomIntervenant+'"'
+        '"","'+dateExcel+'","'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'","'+this.remorquage.total+'","'+this.remorquage.nomIntervenant+'"'+ '\r\n'
 
         // '"'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'"'+ '\r\n'+  // non client  //"nom4"
         // '"1","'+invoiceNo+'",,"'+dateExcel+'","0",,"'+this.remorquage.total+'","0.00"\r\n'+
@@ -1281,7 +1281,7 @@ async showMap() {
     // 
     // '
     //console.log('text to write to file : ' + text)
-    let blob = new Blob([textSage], {
+    let blob = new Blob([textExcel], {
       //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-16le"
       type: "text/plain;charset=utf-8"
     });
@@ -1307,18 +1307,18 @@ async showMap() {
       //'<Version>\r\n'+  // ne pas changer
       //'"12001","1"\r\n'+  // ne pas changer
       //'</Version>\r\n'+  // ne pas changer
-      '<SalInvoice>\r\n'+'**fin**'+  // ne pas changer
+      '<SalInvoice>\r\n' + //  '**fin**'+  // ne pas changer
       
-      '"'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'"'+ '\r\n'+'**fin**'+  // non client  //"nom4"
+      '"'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'"'+ '\r\n'+ //'**fin**'+  // non client  //"nom4"
       // quantite - PO - FacNo - date - payer apres - source payer - total avec tax - frais rammaser
       //avec remorquage quantite=1
       //'"1",,,"1-15-2020","0",,"34492.00","0.00"\r\n'+
-      '"1","'+po+'",,"'+dateSage+'","0",,"'+this.remorquage.total+'","0.00"\r\n'+'**fin**'+
+      '"1","'+po+'",,"'+dateSage+'","0",,"'+this.remorquage.total+'","0.00"\r\n'+ //'**fin**'+
       // article No/name - quantity - prix - montant sans tax - table de taxation
-      '"Remorquage","0.0000","0.0000","'+this.remorquage.horstax+'","TPS/TVH","0","1","5.00","'+this.remorquage.tps+'","TVQ","0","1","9.9750","'+this.remorquage.tvq+'"\r\n'+'**fin**'+
+      '"Remorquage","0.0000","0.0000","'+this.remorquage.horstax+'","TPS/TVH","0","1","5.00","'+this.remorquage.tps+'","TVQ","0","1","9.9750","'+this.remorquage.tvq+'"\r\n'+ //'**fin**'+
       //'"Rm_Tr","0.0000","0.0000","15000.00","TPS/TVH","0","1","5.00","750.00","TVQ","0","1","9.9750","1496.00"\r\n'+
       
-      '</SalInvoice>\r\n'+'**fin**'  // ne pas changer
+      '</SalInvoice>\r\n' //+'**fin**'  // ne pas changer
   }
 
   async onTextExcel(){
@@ -1331,7 +1331,7 @@ async showMap() {
     let invoiceNo = "" //  this.remorquage.id  // only use this invoiceNo when the Sage50 unse this invoiceNo
     
     this.remorquage.excel=
-      '"","'+dateExcel+'","'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'","'+this.remorquage.total+'","'+this.remorquage.nomIntervenant+'"'+'**fin**'
+      '"","'+dateExcel+'","'+(this.remorquage.nomEntreprise.length>1 ? this.remorquage.nomEntreprise : 'occasionnel')+'","'+this.remorquage.total+'","'+this.remorquage.nomIntervenant+'"\r\n'  //+'**fin**'
   }
 
   onTextExporter(){

@@ -18,6 +18,7 @@ import { Camion } from 'src/model/model.camion';
 import { CamionsService } from 'src/services/camions.service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-remorquage',
@@ -116,6 +117,7 @@ export class RemorquageComponent implements OnInit {
     //'canvasWidth': 'auto',
     //'canvasHeight': 'auto',
   };
+  
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -155,6 +157,8 @@ export class RemorquageComponent implements OnInit {
 
   today=new Date();
   modeHistoire: number=-1;
+  modeExport: number=-1;  //to export
+  dateExport= new Date(); // to export
   listRqs: Remorquage[]; // appels waitting
   listRqsSent: Remorquage[]; // appels sent
   listRqsFini: Remorquage[]; // appels finished
@@ -1135,6 +1139,70 @@ onFileUpLoad(event){
     }
   }
   
+  //exporter en sage et excel
+  dateToString(d:any){
+    let yyyymmdd= d.toString().split('-')
+    let date = yyyymmdd[2]
+    let month = yyyymmdd[1]
+    let year = yyyymmdd[0]
+    let dateString=month+'-'+date+'-'+year
+    return dateString;
+  }
+  onExporter(){
+    let textExcel='';
+    let textSageHead=
+        '<Version>\r\n'+  // ne pas changer
+        '"12001","1"\r\n'+  // ne pas changer
+        '</Version>\r\n'  // ne pas changer
+    let textSage='';
+    this.modeExport=-this.modeExport;
+    console.log('dateExport :  '+this.dateExport.toString())
+    //if(this.modeExport==1){
+      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+        data.sort((b, a)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        })
+        data.forEach(rq=>{
+          if (rq.fini)
+          {
+            console.log('dateReserve :  '+rq.dateReserve.toString())
+            if(rq.dateReserve.toString().includes(this.dateExport.toString())){
+              textExcel = textExcel + rq.excel  //.replace("**fin**","\r\n")
+              textSage = textSage + rq.sage //.replace("**fin**","\r\n")
+            }
+          }
+        })
+        console.log('textEcel :  '+textExcel)
+        console.log('textSage :  '+textSage)
+        if(textExcel.length>0){
+          let blobExcel = new Blob([textExcel], {
+            type: "text/plain;charset=utf-8"
+          });
+          let filenameExcelExport = this.dateExport+"TousRemorquages"
+          FileSaver.saveAs(blobExcel, filenameExcelExport+"-Export.txt");   
+        }
+        
+        if(textSage.length>0){
+          let blobSage = new Blob([textSageHead+textSage], {
+            type: "text/plain;charset=utf-8"
+          });
+          let filenameSageExport = this.dateExport+"TousRemorquages"
+          FileSaver.saveAs(blobSage, filenameSageExport+"-Export.IMP"); 
+        }
+      }, err=>{
+        console.log(err)
+      })
+    // }
+    // else {
+        
+    // }
+  }
+  //
+
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       let stringsd:string[]=location.href.split('/remorquage')
