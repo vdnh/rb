@@ -452,7 +452,7 @@ export class DetailTransportComponent implements OnInit {
         if(c.id==cId) 
         {
           this.camion=c;
-          this.transport.camionAttribue=this.camion.unite
+          this.transport.camionAttribue = c.unite + ' - ' + c.marque +'  ' +c.modele
         }
       })
       if(cId!=this.camion.id)

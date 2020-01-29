@@ -20,6 +20,7 @@ import { Camion } from 'src/model/model.camion';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as FileSaver from "file-saver";
+import { Subscription, timer, interval } from 'rxjs';
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -183,24 +184,6 @@ marqueChange(){
   async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-      })
-      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
-        this.chauffeurs=data;
-      }, err=>{
-        console.log(err);
-      });
-    }, err=>{
-      console.log();
-    })
-    // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
       if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
@@ -209,6 +192,7 @@ marqueChange(){
       //this.titleService.setTitle('Case : '+this.remorquage.id + 
       this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
       (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
+
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.remorquage.originLat,
@@ -234,6 +218,25 @@ marqueChange(){
         
         this.showMap()
       }
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+      //this.camions = data
+      // this will take camions with gps monitor
+      this.camions=[];
+      data.forEach(camion=>{
+        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+          this.camions.push(camion)
+      })
+      this.findCamionId(); // to find the truck we have choosen
+      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
     }, err=>{
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
@@ -1339,6 +1342,158 @@ async showMap() {
     this.onTextExcel();
   }
 
+  // for camion on map
+  carte=-1;
+  carteText="Voir le camion"
+  subscription : Subscription;
+  marker=new google.maps.Marker();
+  camion:Camion=new Camion();
+  idCamion:any;
+
+  onPress(id:number){
+    this.carte=-this.carte;
+    if(this.carte==-1){
+      this.carteText='Voir le camion'
+      this.marker.setMap(null);
+      this.subscription.unsubscribe();
+    }
+    else{
+      this.carteText='Cacher le camion'
+      var numbers = timer(2000);
+      numbers.subscribe(x =>{
+        this.camionsService.getDetailCamion(this.camion.id).subscribe((data:Camion)=>{
+          this.camion=data;
+          if(data.status && (data.uniteMonitor!=null && data.monitor!=null) && (data.monitor.length!=0 && data.monitor.length!=0)){
+            //this.latitude = this.camion.latitude;
+            //this.longitude= this.camion.longtitude
+            //this.marker.setMap(null);
+            let location1 = new google.maps.LatLng(data.latitude, data.longtitude);
+            let mapProp = {
+              center: new google.maps.LatLng(data.latitude, data.longtitude),
+              zoom: 15,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            //this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+            this.marker = new google.maps.Marker({
+              position: location1,
+              map: this.map,
+              //icon: "http://maps.google.com/mapfiles/kml/shapes/truck.png",
+              title: data.unite,
+              icon: {
+                //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale:4,
+                rotation:data.direction,
+                fillOpacity: 1,
+                fillColor: "#FFFFFF",
+                strokeWeight: 2,
+                strokeColor: "red",
+              },
+              
+            });
+            this.infoWindow = new google.maps.InfoWindow;
+            //*  
+            this.marker.addListener('click', (event)=>{
+              var contentString:string=' Vitesse : ' + data.speed;
+              if(data.stopDuration>0)
+                contentString='Arrete depuis : ' + this.showStopDuration(data.stopDuration)
+              // Replace the info window's content and position.
+              this.infoWindow.setContent(contentString);
+              this.infoWindow.setPosition(event.latLng);
+              this.infoWindow.open(this.map);///
+            })//*/
+            /*
+            this.infoWindow.setPosition(new google.maps.LatLng( this.camion.latitude, this.camion.latitude));
+            this.infoWindow.open(this.map);//*/
+            //console.log('this.camion.uniteMonotor  + this.camion.monitor : '+this.camion.uniteMonitor +' + '+ this.camion.monitor);
+            const source = interval(60000);
+            this.subscription=source.subscribe(val=>{this.getLocalisation()})  
+          }
+          else
+            alert("Ce camion n'est pas suivi gps")
+        }, err=>{
+          console.log();
+        })//*/
+      })  
+    }
+  }
+  showStopDuration(stopDuration:number){
+    let duration='';
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' jour(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' heure(s) '
+    let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '    
+    if((stopDuration/1440)>=1)
+      duration = duration+days;
+    if(((stopDuration%1440)/24)>=1)
+      duration=duration+hours
+    duration=duration+minutes
+    return duration;
+  }
+  
+  getLocalisation(){
+    this.camionsService.getDetailCamion(this.camion.id).subscribe((data:Camion)=>{
+      console.log("from camion every 1 minute")
+      this.marker.setMap(null);
+      let location1 = new google.maps.LatLng(data.latitude, data.longtitude);
+      this.marker = new google.maps.Marker({
+        position: location1,
+        map: this.map,
+        title: data.unite,
+        icon: {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          scale:4,
+          rotation:data.direction,
+          fillOpacity: 1,
+          fillColor: "#FFFFFF",
+          strokeWeight: 2,
+          strokeColor: "red",
+        },
+      });
+      this.infoWindow = new google.maps.InfoWindow;
+      this.marker.addListener('click', (event)=>{
+        var contentString:string=' Vitesse : ' + this.camion.speed;
+        if(data.stopDuration>0)
+          contentString='Arrete depuis : ' + this.showStopDuration(data.stopDuration)
+        this.infoWindow.setContent(contentString);
+        this.infoWindow.setPosition(event.latLng);
+        this.infoWindow.open(this.map);
+      })
+    }, err=>{
+      console.log();
+    })
+  }
+  async camionChange(){
+    let strings:Array<string>=this.remorquage.camionAttribue.split("Id.");
+    if(strings.length>1){
+      let cId:number =  Number(strings[1])
+      await this.camions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          this.camion=c;
+          this.remorquage.camionAttribue = c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()
+        }
+      })
+      if(cId!=this.camion.id)
+        this.camion=null;
+    }
+    else this.camion=null;
+  }
+  
+  async findCamionId(){
+    //console.log("this.remorquage.camionAttribue : "+ this.remorquage.camionAttribue)
+    await this.camions.forEach(c=>{
+      //console.log("c.unite +' - ' +c.marque +'  ' +c.modele : "+ c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim())
+      if(this.remorquage.camionAttribue.includes(c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()) &&
+       this.remorquage.camionAttribue.length== (c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()).length) 
+      {
+        this.camion=c;
+        //console.log("find the truck : "+ this.camion.unite)
+      }
+    })
+  }
+  // end of show camion on map
+
+  
   logout(){
     localStorage.clear();
     //this.router.navigateByUrl("");

@@ -158,7 +158,7 @@ export class RemorquageComponent implements OnInit {
   today=new Date();
   modeHistoire: number=-1;
   modeExport: number=-1;  //to export
-  dateExport= new Date(); // to export
+  dateExport: Date = null; // to export
   listRqs: Remorquage[]; // appels waitting
   listRqsSent: Remorquage[]; // appels sent
   listRqsFini: Remorquage[]; // appels finished
@@ -1104,6 +1104,7 @@ onFileUpLoad(event){
   }
 
   onHistoire(){
+    this.modeExport=-1;
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
       this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
@@ -1148,16 +1149,16 @@ onFileUpLoad(event){
     let dateString=month+'-'+date+'-'+year
     return dateString;
   }
+
   onExporter(){
-    let textExcel='';
+    if(this.dateExport!=undefined){
+      let textExcel='';
     let textSageHead=
         '<Version>\r\n'+  // ne pas changer
         '"12001","1"\r\n'+  // ne pas changer
         '</Version>\r\n'  // ne pas changer
     let textSage='';
-    this.modeExport=-this.modeExport;
-    console.log('dateExport :  '+this.dateExport.toString())
-    //if(this.modeExport==1){
+    //console.log('dateExport :  '+this.dateExport.toString())
       this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
         data.sort((b, a)=>{
           if(a.id>b.id)
@@ -1169,15 +1170,15 @@ onFileUpLoad(event){
         data.forEach(rq=>{
           if (rq.fini)
           {
-            console.log('dateReserve :  '+rq.dateReserve.toString())
+            //console.log('dateReserve :  '+rq.dateReserve.toString())
             if(rq.dateReserve.toString().includes(this.dateExport.toString())){
               textExcel = textExcel + rq.excel  //.replace("**fin**","\r\n")
               textSage = textSage + rq.sage //.replace("**fin**","\r\n")
             }
           }
         })
-        console.log('textEcel :  '+textExcel)
-        console.log('textSage :  '+textSage)
+        //console.log('textEcel :  '+textExcel)
+        //console.log('textSage :  '+textSage)
         if(textExcel.length>0){
           let blobExcel = new Blob([textExcel], {
             type: "text/plain;charset=utf-8"
@@ -1193,13 +1194,16 @@ onFileUpLoad(event){
           let filenameSageExport = this.dateExport+"TousRemorquages"
           FileSaver.saveAs(blobSage, filenameSageExport+"-Export.IMP"); 
         }
+        else{
+          alert("Il n'y a pas de Remorquage pour ce jour.")
+        }
       }, err=>{
         console.log(err)
       })
-    // }
-    // else {
-        
-    // }
+    }
+    else{
+      alert('Il faut choisir le jour que vous voulez exporter.')
+    }    
   }
   //
 
