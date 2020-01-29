@@ -1353,12 +1353,12 @@ async showMap() {
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
-      this.carteText='Voir le camion'
+      this.carteText='Mettre sur la map'
       this.marker.setMap(null);
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Cacher le camion'
+      this.carteText='Supprimer sur la map'
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         this.camionsService.getDetailCamion(this.camion.id).subscribe((data:Camion)=>{

@@ -193,7 +193,7 @@
               <!-- <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajouter Client</button> 
               <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Client</button>  -->
               <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
-                <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">FeuilleCommunication</button>
+                <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">FeuilleCommunication</button>
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
               <!-- </div> -->
             </div>
