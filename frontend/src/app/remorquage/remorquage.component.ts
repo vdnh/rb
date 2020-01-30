@@ -1149,16 +1149,124 @@ onFileUpLoad(event){
     let dateString=month+'-'+date+'-'+year
     return dateString;
   }
+  
+  rqsIndayToExport = []
+  rqsInday = []
+  findRqsExport(){
+    this.rqsInday = []
+    this.rqsIndayToExport = []
+    this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      data.sort((b, a)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      })
+      data.forEach(rq=>{
+        if (rq.fini)
+        {
+          //console.log('dateReserve :  '+rq.dateReserve.toString())
+          if(rq.dateReserve.toString().includes(this.dateExport.toString())){
+            this.rqsInday.push(rq)
+          }
+        }
+      })
+      // if(this.rqsInday.length>0){
+      //   console.log('Il y a  : '+ this.rqsInday.length + ' remorquages pour ce jour.')
+      // }
+      // else{
+      //   alert("Il n'y a pas de Remorquage pour ce jour.")
+      // }
+    }, err=>{
+      console.log(err)
+    })
+  }
+  
+  boxCheckAll=false;
+  checkAll=false;
 
-  onExporter(){
-    if(this.dateExport!=undefined){
+  addAll(event){
+    this.rqsIndayToExport=[]
+    let temp=this.rqsInday
+    if(event.target.checked){
+      this.boxCheckAll = true;
+      console.log('addEvent - target.checked true - this.boxCheckAll : '+ this.boxCheckAll)
+      this.checkAll=false;
+      this.checkAll=true;
+      this.checkAll=true;
+      console.log('addEvent - target.checked true - this.checkAll : '+ this.checkAll)
+      temp.forEach(r=>{
+        this.rqsIndayToExport.push(r)
+      })
+      //this.rqsIndayToExport=temp
+      console.log('Nombre remorquage a exporter : ' + this.rqsIndayToExport.length)
+    }
+    else{
+      console.log('addEvent - target.checked false - this.boxCheckAll : '+ this.boxCheckAll)
+      this.checkAll=false;
+      this.rqsIndayToExport=[]
+      console.log('Nombre remorquage a exporter : ' + this.rqsIndayToExport.length)
+    }
+  }
+  addToExport(event, r:Remorquage){
+    if(event.target.checked){
+      this.rqsIndayToExport.push(r)
+      console.log('addToExport True - Nombre remorquage a exporter : ' + this.rqsIndayToExport.length)
+    }
+    else{
+      this.boxCheckAll=false;
+      this.rqsIndayToExport.splice(this.rqsIndayToExport.indexOf(r), 1);
+      console.log('addToExport False - Nombre remorquage a exporter : ' + this.rqsIndayToExport.length)
+      console.log('this.boxCheckAll : '+this.boxCheckAll)
+    }
+  }
+  
+  onExporter(){    
+    if(this.rqsIndayToExport.length>0){
       let textExcel='';
-    let textSageHead=
+      let textSageHead=
         '<Version>\r\n'+  // ne pas changer
         '"12001","1"\r\n'+  // ne pas changer
         '</Version>\r\n'  // ne pas changer
-    let textSage='';
-    //console.log('dateExport :  '+this.dateExport.toString())
+      let textSage='';
+  
+      this.rqsIndayToExport.forEach(rq=>{
+        if(rq.dateReserve.toString().includes(this.dateExport.toString())){
+          textExcel = textExcel + rq.excel  //.replace("**fin**","\r\n")
+          textSage = textSage + rq.sage //.replace("**fin**","\r\n")
+        }
+      })
+      if(textExcel.length>0){
+        let blobExcel = new Blob([textExcel], {
+          type: "text/plain;charset=utf-8"
+        });
+        let filenameExcelExport = this.dateExport+"TousRemorquages"
+        FileSaver.saveAs(blobExcel, filenameExcelExport+"-Export.txt");   
+      }
+      
+      if(textSage.length>0){
+        let blobSage = new Blob([textSageHead+textSage], {
+          type: "text/plain;charset=utf-8"
+        });
+        let filenameSageExport = this.dateExport+"TousRemorquages"
+        FileSaver.saveAs(blobSage, filenameSageExport+"-Export.IMP"); 
+      }
+    }
+    else{
+      alert("Il n'y a pas de Remorquage pour ce jour.")
+    }
+  }
+
+  onExporter_bk(){
+    if(this.dateExport!=undefined){
+      let textExcel='';
+      let textSageHead=
+        '<Version>\r\n'+  // ne pas changer
+        '"12001","1"\r\n'+  // ne pas changer
+        '</Version>\r\n'  // ne pas changer
+      let textSage='';
+      //console.log('dateExport :  '+this.dateExport.toString())
       this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
         data.sort((b, a)=>{
           if(a.id>b.id)

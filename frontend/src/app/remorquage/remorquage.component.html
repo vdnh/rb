@@ -14,11 +14,47 @@
     </div> -->
     <div>
       <input style="width: fit-content;" type="date" [ngModel]="dateExport | date: 'yyyy-MM-dd'"
-        name="dateExport" max="{{today | date: 'yyyy-MM-dd'}}" (change)="dateExport=$event.target.value"
+        name="dateExport" max="{{today | date: 'yyyy-MM-dd'}}" (change)="dateExport=$event.target.value; findRqsExport()"
         class="form-control" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
     </div>
     <div>
-      <button (click)="onExporter()">ExporterData(Sage50+Excel)</button> 
+      <table border="1" *ngIf="rqsInday.length>0">
+        <tr>
+          <!-- <th>NoFacture</th> -->
+          <!-- <th>Date</th> -->
+          <th>#PO</th>
+          <th>NomCompagnie</th>
+          <!-- <th>DateAppel</th> -->
+          <!-- <th>NomClient</th> -->
+          <!-- <th>TelClient</th> -->
+          <!-- <th>Vehicule</th> -->
+          <th>Montant</th>
+          <th>Chauffeur</th>
+          <!-- <th>CamionUnite</th> -->
+          <th>Tous 
+            <input type="checkbox" [(ngModel)]="boxCheckAll" (change)="addAll($event)"/>
+          </th>
+        </tr>
+        <tr *ngFor="let r of rqsInday">
+          <!-- <td></td> -->
+          <!-- <td>{{r.dateReserve | date: 'dd-MMM-yyyy'}}</td> -->
+          <td>{{r.numPO}}</td>
+          <td>{{r.nomEntreprise.length>1 ? r.nomEntreprise : 'occasionnel'}}</td>
+          <!-- <td>{{r.dateDepart | date: 'dd-MMM-yyyy'}}</td> -->
+          <!-- <td>{{r.nomClient}}</td> -->
+          <!-- <td>{{r.telClient}}</td> -->
+          <!-- <td>{{r.marque}} &nbsp;&nbsp; {{r.modele}} &nbsp;&nbsp; {{r.couleur}}</td> -->
+          <td style="text-align: right;">{{r.total}}</td>
+          <td>{{r.nomIntervenant}}</td>
+          <!-- <td>{{r.camionAttribue}}</td> -->
+          <td style="text-align: center;">
+            <input type="checkbox" [checked]="checkAll||boxCheckAll" (change)="addToExport($event, r)"/>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <button [disabled]="!rqsIndayToExport.length>0" (click)="onExporter()">ExporterData(Sage50+Excel)</button> 
     </div>
   <!-- </div>   -->
 </div>
