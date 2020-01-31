@@ -95,7 +95,7 @@ import org.springframework.web.bind.annotation.RestController;
 
         Transport transport = getMailSession.getTransport("smtp");
 	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ventes18$$$9");
+        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
         //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
         //*/
         // check list if valid or not
