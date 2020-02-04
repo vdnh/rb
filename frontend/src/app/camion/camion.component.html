@@ -521,7 +521,7 @@
             <td><input type="number" class="form-control" [(ngModel)]="rep.heures" (change)="repsPrixChange()"/></td>
             <td><input type="number" class="form-control" [(ngModel)]="rep.taux" (change)="repsPrixChange()"/></td>
             <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="repsPrixChange()"/></td>            
-            <td><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
+            <td *ngIf="reparations.length>1"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
           </tr>  
           <tr>
             <th>Ajouter des Reparations</th>
@@ -625,7 +625,7 @@
         <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
           <tr>
             <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
-            <th>ReparationAFaire</th><th>Piece</th><!--th>Fournisseur</th--><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><th>$/heure</th><th style="text-align: center">Prix</th>                    
+            <th>ReparationAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><th>$/heure</th><th style="text-align: center">Prix</th>                    
           </tr>
           <tr *ngFor="let rep of reparationsHistoire">
             <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.reparationEffectuer" disabled></td-->
@@ -636,7 +636,7 @@
               {{rep.reparationEffectuer}}
             </td>
             <td>{{rep.piece}}</td>
-            <!--td>{{rep.fournisseur}}</td-->
+            <td>{{rep.fournisseur}}</td>
             <td>{{rep.garantie}}</td>
             <td style="text-align: center">{{rep.quantite}}</td>
             <td style="text-align: right">{{rep.prixUnite | number : '1.2'}}</td>

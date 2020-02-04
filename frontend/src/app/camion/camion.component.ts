@@ -1134,8 +1134,13 @@ export class CamionComponent implements OnInit {
   }
   
   deleteReparation(rep:Reparation){
-    this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); 
-    this.prixChange();
+    if(this.reparations.length<=1){
+      alert('On ne peut que modifier la reparation unique.')
+    }
+    else{
+      this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); 
+      this.prixChange();
+    }
   }
 
   onDetailHistoire(bon : BonDeTravail){
