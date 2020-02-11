@@ -13,7 +13,8 @@
         <button class="btn btn-primary" (click)="chercher()">Chercher</button>
         <!--button class="btn btn-primary" (click)="cherDistanceTravel()">Chercher</button-->        
       </div>
-      <table class="table table-striped">
+      <!-- <table class="table table-striped"> -->
+      <table border="1">
         <tr>
           <th>Available</th><th (click)="originSort()">Origin</th><th (click)="destSort()">Destination</th><th>Comments</th><th (click)="clientSort()">Poste Par</th>
         </tr>
@@ -27,9 +28,10 @@
           <td><button class="btn btn-link" (click)="contactDemande(d)" [disabled]="disableContactDemande(d)">Ask</button></td>
           <td><button class="btn btn-link" (click)="removeDemande(d)">Desactive</button></td>
         </tr>
-      </table>
-      <table class="table table-striped" style="background-color: lightsteelblue">
-        <tr *ngFor="let d of demandesBlue">
+      <!-- </table>
+      <table border="1" style="background-color: lightsteelblue"> -->
+        <!-- class="table table-striped" -->
+        <tr *ngFor="let d of demandesBlue" style="background-color: lightsteelblue;">
           <td>{{today | date: 'yyyy-MM-dd'}}</td>
           <td>{{d.origin}}</td>
           <td>{{d.destination}}</td>
@@ -58,7 +60,8 @@
       <table class="table table-striped" *ngIf="modeMatching==2">
         <tr><h4>Please wait, Google is calculating distances !!!</h4></tr>
       </table>
-      <table class="table table-striped" *ngIf="modeMatching==1">
+      <!-- <table class="table table-striped" *ngIf="modeMatching==1"> -->
+      <table border="1" *ngIf="modeMatching==1">
         <tr>
           <th>Available</th><th (click)="originSort()">Origin</th><th (click)="destSort()">Destination</th><th (click)="dFOSort()">DFO</th><th (click)="lDSort()">LD</th><th (click)="dFDSort()">DFD</th><th>Comments</th><th (click)="clientSort()">Poste Par</th>
         </tr>

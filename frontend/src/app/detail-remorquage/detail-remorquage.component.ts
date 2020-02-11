@@ -1,6 +1,6 @@
 import {Title} from '@angular/platform-browser';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
@@ -181,7 +181,13 @@ marqueChange(){
       this.id=activatedRoute.snapshot.params['id'];
     }
 
-  async ngOnInit() {    
+    // on focus windows
+  @HostListener('window:focus', ['$event'])
+  onfocus(event:any):void {
+    this.ngOnInit()
+  }
+
+    async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{

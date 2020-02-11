@@ -426,12 +426,12 @@
           <div class="col-sm-12 col-md-5 col-lg-3">
             <!--label class="control-label">Signature</label-->
             <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
-            class="form-control" [disabled]="remorquage.fini">
+            class="form-control" disabled>
           </div>
           <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
-            <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
+            <!-- <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
               (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)" *ngIf="!remorquage.signature.length>0">
-            </signature-pad>
+            </signature-pad> -->
             <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
             <!--div>
               <button (click)="clearHandler()" *ngIf="!remorquage.fini">Re-sign</button>

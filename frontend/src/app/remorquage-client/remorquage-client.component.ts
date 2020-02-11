@@ -331,7 +331,8 @@ async toSign(){
       //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
       oldPoint=newPoint;
       index++;
-      this.remorquage.driverNote= note +' -  '+speed+' kmh - '+degree+' degree-';
+      this.remorquage.driverNote= note + 
+        (speed>0? ' Vitesse actuelle : '+speed+' kmh' : '');
       
     }, err=>{
       console.log(err)
