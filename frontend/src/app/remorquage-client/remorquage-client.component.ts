@@ -322,18 +322,20 @@ async toSign(){
     let speed=0;
     let index=0;
     let note = this.remorquage.driverNote;
-    
+    /*// watchposition deactivate for temporary
     navigator.geolocation.watchPosition(position=>{
-      let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-      let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
-      speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
-      let degree = Math.round(position.coords.heading);
-      //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
-      oldPoint=newPoint;
-      index++;
-      this.remorquage.driverNote= note + 
-        (speed>0? ' Vitesse actuelle : '+speed+' kmh' : '');
+      if(position.coords.accuracy<=10){ // take the position when accuracy<=10 meter  // && position.coords.altitudeAccuracy<=10
+        let newPoint= new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+        let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
+        speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
+        let degree = Math.round(position.coords.heading);
+        //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
+        oldPoint=newPoint;
+        index++;
+        this.remorquage.driverNote= note + 
+          (speed>0? ' \r\n Vitesse actuelle : '+speed+' kmh' + ' \r\n accuracy : '+position.coords.accuracy + ' m' : '');
       
+      }
     }, err=>{
       console.log(err)
     },
@@ -341,7 +343,7 @@ async toSign(){
       timeout: 1000, // 1 second before the request errors out
       maximumAge: 5000, // age of the position cached by the browser. Don't accept one older than the set amount
       enableHighAccuracy: true  // require a position with highest level of accuracy possible
-    })
+    })//*/
 
 
     // this.subscription=source.subscribe(val=>{
