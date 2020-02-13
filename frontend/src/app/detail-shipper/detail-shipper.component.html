@@ -12,8 +12,18 @@
               <td width="28%"><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
               <td width="14%"><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
               <td width="16%"><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="shipper.tel" /></td>
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="shipper.fax" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.tel" /> -->
+                <input type="tel" [(ngModel)]="shipper.tel" name="telShipper"
+                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                (focusout)="shipper.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.fax" /> -->
+                <input type="tel" [(ngModel)]="shipper.fax" name="faxShipper"
+                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                (focusout)="shipper.fax=reformTelEvent($event)" required>
+              </td>
               <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
             </tr>
             <br>
@@ -53,9 +63,19 @@
                 <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
                 <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
                 <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
-                <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                <td width="14%">
+                  <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
+                  <input type="tel" [(ngModel)]="contact.tel" name="telContact"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (focusout)="contact.tel=reformTelEvent($event)" required>
+                </td>
                 <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
-                <td width="8%"><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
+                <td width="8%">
+                  <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
+                  <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
+                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                   (focusout)="contact.fax=reformTelEvent($event)" required>
+                </td>
                 <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
                 <td width="7%"><button class="btn btn-link" (click)="deleteContact(contact.id)">Delete</button></td>
               </tr>   
@@ -65,9 +85,19 @@
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
-                  <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
+                  <td width="14%">
+                    <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.tel" /> -->
+                    <input type="tel" [(ngModel)]="addcontact.tel" name="telAddContact"
+                      class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                      (focusout)="addcontact.tel=reformTelEvent($event)" required>
+                  </td>
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.extTel" /></td>
-                  <td width="8%"><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
+                  <td width="8%">
+                    <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.fax" /> -->
+                    <input type="tel" [(ngModel)]="addcontact.fax" name="faxAddContact"
+                      class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                      (focusout)="addcontact.fax=reformTelEvent($event)" required>
+                  </td>
                   <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
                   <td width="7%"><button class="btn btn-link" (click)="addContact()">Add</button></td>
               </tr>   
@@ -120,7 +150,7 @@
                 <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
                 <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
               </tr>
-              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyenne</strong></td></tr>      -->
+              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
               <tr *ngIf='!role.includes("SHIPPER")'>
                 <!-- <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
@@ -132,7 +162,7 @@
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
                 <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td> -->
-                <th width="9%">Moyenne</th>
+                <th width="9%">Moyen</th>
                 <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
                 <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
                 <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
@@ -198,7 +228,8 @@
 <div class="panel panel-primary" *ngIf="mode==2">
   <div class="panel-heading">Confirmation</div>
   <div class="panel-body">
-    <table class="table table-striped">
+    <table border="1">
+      <!-- class="table table-striped"> -->
         <tr>
             <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
         </tr>
@@ -228,7 +259,8 @@
 <div class="panel panel-primary" *ngIf="mode==3">
   <div class="panel-heading">Detai Contact</div>
   <div class="panel-body">
-    <table class="table table-striped">
+    <table border="1">
+    <!-- class="table table-striped"> -->
         <tr>
             <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
         </tr>
@@ -293,9 +325,9 @@
       <td width="9%" style="text-align: right;">{{shipper.essence1}}</td>
       <td width="9%" style="text-align: right;">{{shipper.changementPneu1}}</td>
     </tr>
-    <!-- <tr><td colspan="3"><strong>Type Moyenne</strong></td></tr>      -->
+    <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
     <tr>
-      <th width="9%">Moyenne</th>
+      <th width="9%">Moyen</th>
       <td width="9%" style="text-align: right;">{{shipper.inclus2}}</td>
       <td width="9%" style="text-align: right;">{{shipper.prixKm2P}}</td>
       <td width="9%" style="text-align: right;">{{shipper.panne2}}</td>

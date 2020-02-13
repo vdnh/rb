@@ -29,7 +29,8 @@ public class Transporter {
     @Temporal(TemporalType.DATE)
     private Date depuis;
     private String email;
-    private long tel;
+    private String tel;
+    private String fax;
     private String photo;    
     @Column(unique = true)
     private String loginName;

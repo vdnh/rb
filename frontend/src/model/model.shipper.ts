@@ -4,8 +4,8 @@ export class Shipper{
     raison_sociale:string="";
     email:string="";
     depuis:Date;
-    tel:number=0;
-    fax:number=0;
+    tel:string="";
+    fax:string="";
     photo:string="";
     // prix remorquage (bas - km - inclus)
     prixBase1=100.00;

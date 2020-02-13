@@ -13,16 +13,17 @@
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="chercher()">Chercher</button>
       </div>
-      <table class="table table-striped">
+      <table border="1"> 
+      <!-- <class="table table-striped"> -->
         <tr>
-          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Fax</th>
+          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Telecopie</th>
         </tr>
         <tr *ngFor="let s of pageShipper.content">
             <td>{{s.nom}}</td><td>{{s.raison_sociale}}</td><td>{{s.email}}</td><td>{{s.tel}}</td><td>{{s.fax}}</td>
             <td><button class="btn btn-link" (click)="gotoDetailShipper(s.id)">Gerer</button></td>
             <td><button class="btn btn-link" (click)="deleteShipper(s.id); deleteAppUser(s)">Delete</button></td>
         </tr>
-      </table>
+      </table>>
       <div class="container">
         <ul class="nav nav-pills"><strong>page: </strong>
           <li *ngFor="let p of pages; let i=index">

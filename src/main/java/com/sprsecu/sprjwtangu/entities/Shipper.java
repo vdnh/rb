@@ -32,8 +32,8 @@ public class Shipper {
     @Temporal(TemporalType.DATE)
     private Date depuis;
     private String email;
-    private long tel;
-    private long fax;
+    private String tel; // old was long
+    private String fax; // old was long
     private String photo;
     private boolean status = false;
     //@Column(unique=true)

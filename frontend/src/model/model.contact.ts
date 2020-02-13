@@ -4,9 +4,9 @@ export class Contact{
     prenom:string="";    
     fonction:string="";
     email:string="";
-    tel:number=0;
-    extTel="";
-    fax:number=0;
+    tel:string="";
+    extTel:string="";
+    fax:string="";
     photo:string="";
     id_shipper:number=0;
     id_transporter:number=0;

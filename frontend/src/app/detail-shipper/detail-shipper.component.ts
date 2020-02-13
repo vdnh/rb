@@ -113,11 +113,24 @@ export class DetailShipperComponent implements OnInit {
     }
   }
 
+  reformTelEvent(tel:any){
+    if(tel.target.value.indexOf('-')<0)
+      {
+        let sub1 = tel.target.value.substr(0,3)
+        let sub2 = tel.target.value.substr(3,3)
+        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
+        tel.target.value=sub1+'-'+sub2+'-'+sub3
+      }
+    //console.log("tel after: " + tel.target.value)
+    return tel.target.value;
+  }
+
   addContact(){
     this.addcontact.id_shipper=this.id;
     this.contactsService.saveContacts(this.addcontact).subscribe((data:Contact)=>{
-      alert("Adresse added.");
+      //alert("Adresse added.");
       this.contacts.push(data)
+      this.addcontact=new Contact()
     }, err=>{
       console.log(err)
     })
@@ -125,7 +138,7 @@ export class DetailShipperComponent implements OnInit {
 
   deleteContact(id:number){
     this.contactsService.deleteContact(id).subscribe((data:Contact)=>{
-      alert("Contact : "+this.addcontact.nom+" a ete supprime.");
+      //alert("Contact : "+this.addcontact.nom+" a ete supprime.");
       this.contacts.splice(this.contacts.indexOf(data),1)
       //this.demandes.splice(this.demandes.indexOf(demande), 1)
     }, err=>{

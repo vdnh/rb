@@ -4,8 +4,8 @@ export class Transporter{
     raison_sociale:string="";
     email:string="";
     depuis:Date;
-    tel:number=0;
-    fax:number=0;
+    tel:string="";
+    fax:string="";
     photo:string="";
     emailTechnic:string="";
 }

@@ -103,6 +103,17 @@ export class NewShipperComponent implements OnInit {
     }
     //this.showMap();
   }
+  
+  reformTelEvent(tel:any){
+    if(tel.target.value.indexOf('-')<0)
+      {
+        let sub1 = tel.target.value.substr(0,3)
+        let sub2 = tel.target.value.substr(3,3)
+        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
+        tel.target.value=sub1+'-'+sub2+'-'+sub3
+      }
+    return tel.target.value;
+  }
 
   onNameChange(){
     this.shipper.loginName=this.shipper.nom.trim().replace(/\s/g,"").toLowerCase();
