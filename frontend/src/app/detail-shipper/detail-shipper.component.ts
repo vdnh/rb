@@ -89,23 +89,24 @@ export class DetailShipperComponent implements OnInit {
       this.shippersService.saveShippers(this.shipper).subscribe(data=>{
         //alert("Mise a jour.");
         this.onModifyUser();
+        this.contacts.forEach(obj => {
+          this.contactsService.saveContacts(obj).subscribe(data=>{
+          }, err=>{
+            console.log(err)
+          })
+        });    
+        this.adresses.forEach(obj => {
+          this.adressesService.saveAdresses(obj).subscribe(data=>{
+          }, err=>{
+            console.log(err)
+          })
+        });
+        alert("C'est enregistre.")
         if(this.role.includes('DISPATCH')) 
           this.router.navigate(['']);
-        this.mode=2;
+        else this.ngOnInit() //this.mode=2;
       }, err=>{
         console.log(err);
-      });
-      this.contacts.forEach(obj => {
-        this.contactsService.saveContacts(obj).subscribe(data=>{
-        }, err=>{
-          console.log(err)
-        })
-      });    
-      this.adresses.forEach(obj => {
-        this.adressesService.saveAdresses(obj).subscribe(data=>{
-        }, err=>{
-          console.log(err)
-        })
       });
     }
     else {

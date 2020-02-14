@@ -3,7 +3,7 @@
   <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
   <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
   <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button></span>
-  <span><button (click)="modeExport=-modeExport; modeHistoire=-1; pagePresent=-1" class="btn btn-link">Exporter Data</button></span>
+  <!-- <span><button (click)="modeExport=-modeExport; modeHistoire=-1; pagePresent=-1" class="btn btn-link">Exporter Data</button></span> -->
   <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
 </h4>
 <hr style="border: 1px dotted black"/>
