@@ -84,6 +84,8 @@ export class Remorquage{
 
     // status
     fini=false;
+    //situation
+    rush=false;  // se ruer, urgent
     //
     //prix total
     horstax=0.00;

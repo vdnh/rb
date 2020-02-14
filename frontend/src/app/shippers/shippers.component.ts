@@ -19,7 +19,7 @@ export class ShippersComponent implements OnInit
   pageShipper:PageShipper = new  PageShipper();  // pour tenir des Shippers
   motCle:string="";
   currentPage:number=0;
-  size:number=15;
+  size:number=25;
   pages:Array<number>;  // pour tenir des numeros des pages
   role: string;
 
@@ -53,13 +53,14 @@ export class ShippersComponent implements OnInit
 
   deleteShipper(id:number){
     this.shipperservice.deleteShipper(id).subscribe((shipper:Shipper)=>{
-      //this.doSearch();
+      this.pageShipper.content.splice(this.pageShipper.content.indexOf(shipper), 1)
+      // this.gotoPage(this.currentPage);
     }, err=>{
       console.log(err);
     });
 
-    this.gotoPage(this.currentPage);
-    alert("Avoir rafraichi apres delete!!");
+    //this.gotoPage(this.currentPage);
+    //alert("Avoir rafraichi apres delete!!");
   }
 
   deleteAppUser(shipper:Shipper){

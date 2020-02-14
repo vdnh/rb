@@ -119,6 +119,8 @@ public class Remorquage implements Serializable{
     
     // status
     private Boolean fini=false;
+    // situation
+    private Boolean rush=false;  // se ruer, urgent
     //
     //prix total
     private Float horstax=0.00f;

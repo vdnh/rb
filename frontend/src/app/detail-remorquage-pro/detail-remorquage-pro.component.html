@@ -112,19 +112,21 @@
                  class="form-control">
           </div>
         </div>
-        <div class="col-sm-6 col-md-3 col-lg-3">
+        <div class="col-sm-6 col-md-1 col-lg-1">
+          <div class="form-group">
+            <label for="" style="text-align: center; align-content: center;">Rush</label>
+            <input disabled type="checkbox" style="align-content: center;" [(ngModel)]="remorquage.rush" class="form-control" name="rush"/>
+          </div>
+        </div>
+        <div *ngIf="!remorquage.rush" class="col-sm-6 col-md-3 col-lg-3">
           <div class="form-group">
             <label for="">DateReserve</label>
-            <!--input type="date"  date='yyyy-MMM-dd' style="width: 11pc" value="remorquage.dateReserve  | date: 'yyyy-MMM-dd'" min="remorquage.dateDepart | date: 'yyyy-MMM-dd'" name="dateReserve" class="form-control"-->
-            <!--input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-                 name="dateReserve" min="{{remorquage.dateDepart | date: 'yyyy-MM-dd'}}"
-                 class="form-control" /-->
             <input disabled type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
             name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
             class="form-control" (change)="dateChange($event)"/>
           </div>
         </div>
-        <div class="col-sm-6 col-md-3 col-lg-3">
+        <div *ngIf="!remorquage.rush" class="col-sm-6 col-md-3 col-lg-3">
           <div class="form-group">
             <label for="">HeureReserve</label>
             <input disabled type="time" [(ngModel)]="remorquage.timeResrvation"
@@ -594,7 +596,8 @@
       <td style="text-align: center; text-anchor: start "># Facture <br> <span>&nbsp;{{remorquage.id}}</span></td>
     </tr>
     <tr>
-      <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+      <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
+      <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray ">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
       <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
       <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
       <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>

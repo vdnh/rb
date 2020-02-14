@@ -14,7 +14,7 @@ export class TransportersComponent implements OnInit {
   pageTransporter:PageTransporter= new PageTransporter();
   motCle:string="";
   currentPage:number=0;
-  size:number=5;
+  size:number=25;
 
   pages:Array<number>;
 

@@ -165,7 +165,7 @@ export class NewShipperComponent implements OnInit {
         this.signUpContact();
         this.signUpAdresse();
         if(this.role.includes('DISPATCH')) this.router.navigate(['']);
-        else this.mode=2;
+        else this.router.navigate(['/shippers']);  //this.mode=2;
       }, err=>{
         console.log(err);
       });
