@@ -730,8 +730,8 @@ onFileUpLoad(event){
           // commence d'envoyer email
           if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
             this.em.emailDest=this.remorquage.emailIntervenant
-            this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
-            this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
+            this.em.titre="Annuler #Bon : " + this.remorquage.id.toString()
+            this.em.content='<div><p> '+'Annuler #Bon : ' + this.remorquage.id.toString()+' </p></div>'    
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
@@ -1319,12 +1319,12 @@ onFileUpLoad(event){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
       let stringsd:string[]=location.href.split('/remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
-      //this.em.titre="Case numero : " + this.remorquage.id.toString()
+      //this.em.titre="#Bon : " + this.remorquage.id.toString()
       this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+      +"'><h4>Ouvrir la Demande</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
