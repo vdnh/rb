@@ -21,7 +21,8 @@
         <tr *ngFor="let s of pageShipper.content">
             <td>{{s.nom}}</td><td>{{s.raison_sociale}}</td><td>{{s.email}}</td><td>{{s.tel}}</td><td>{{s.fax}}</td>
             <td><button class="btn btn-link" (click)="gotoDetailShipper(s.id)">Gerer</button></td>
-            <td><button class="btn btn-link" (click)="deleteShipper(s.id); deleteAppUser(s)">Delete</button></td>
+            <td><button class="btn btn-link" (click)="deleteShipper(s.id)">Delete</button></td>
+            <!-- ; deleteAppUser(s) -->
         </tr>
       </table>
       <div class="container">
