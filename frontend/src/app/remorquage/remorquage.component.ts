@@ -225,13 +225,18 @@ export class RemorquageComponent implements OnInit {
       this.particulier=false;
       this.compteClient=false;
     }
+    else if(this.pagePresent==10 && !this.remorquage.panne && !this.remorquage.accident)
+      this.back=this.back-2; // contourner pagePresent=9, ne pas demander l'endroite de livraison
     else this.back=this.back-1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
     //console.log('onBack(): '+ this.back +' '+this.pagePresent+' '+this.forward)
   }
   onForward(){
-    this.back=this.back+1;
+    if(this.pagePresent==8 && !this.remorquage.panne && !this.remorquage.accident)
+      this.back=this.back+2; // contourner pagePresent=9, ne pas demander l'endroite de livraison
+    else this.back=this.back+1;
+
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
     //this.prixCalcul();
