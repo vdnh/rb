@@ -391,7 +391,7 @@ export class AppComponent implements OnInit{
       this.router.navigateByUrl("");
     }
   }
-  refreshData(){
+  refreshMessages(){
     //this.router.navigateByUrl("");
     //this.ngOnInit();
     /* this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(

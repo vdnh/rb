@@ -278,11 +278,25 @@
           <div class="col-md-2 col-sm-2 col-lg-2"><h5>Appel de : </h5></div-->
         </div>
         <hr style="border: 1px solid lightgray" *ngIf="pagePresent==1"/>
-
       </div>
+
       <div class="panel-body">
-          
-        
+        <table border="1" *ngIf="pagePresent>=2">
+          <tr>
+            <th>#Bon : {{remorquage.id}} </th>
+            <th><button class="btn btn-link" *ngIf="compteClient" (click)="onPage2()">Compagnie</button></th>
+            <th><button class="btn btn-link" (click)="onPage3()">Client</button></th>
+            <th><button class="btn btn-link" (click)="onPage4()">Vehicule</button></th>
+            <th><button class="btn btn-link" (click)="onPage5()">Services</button></th>
+            <th><button class="btn btn-link" (click)="onPage6()">PlusInfos</button></th>
+            <th><button class="btn btn-link" (click)="onPage7()">JoindreImage</button></th>
+            <th><button class="btn btn-link" (click)="onPage8()">De: </button></th>
+            <th><button class="btn btn-link" *ngIf="remorquage.accident || remorquage.panne" (click)="onPage9()">A: </button></th>
+            <th><button class="btn btn-link" (click)="onPage10()">CamionChauffeur</button></th>
+            <th></th><button class="btn btn-link" (click)="onPage11()">Resumer</button>
+          </tr>
+        </table>
+        <br *ngIf="pagePresent>=2">
         <h5 style="text-align: left; font: bold; text-decoration-line: underline" *ngIf="pagePresent==2">Compagnie Infos <br></h5>
         <div class="row" *ngIf="pagePresent==2">
           <div class="col-sm-6 col-md-2 col-lg-2">

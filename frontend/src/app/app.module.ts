@@ -74,6 +74,7 @@ import { CalculerExpressComponent } from './calculer-express/calculer-express.co
 import { ComingSoonComponent } from './coming-soon/coming-soon.component';
 import { BonSignatureComponent } from './bon-signature/bon-signature.component';
 import { FeuilleCommunicationComponent } from './feuille-communication/feuille-communication.component';
+import { ChauffeursComponent } from './chauffeurs/chauffeurs.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -124,6 +125,7 @@ const appRoutes:Routes=[
   {path: 'coming-soon', component:  ComingSoonComponent},
   {path: 'bon-signer', component:  BonSignatureComponent},
   {path: 'feuille-communication', component:  FeuilleCommunicationComponent},
+  {path: 'chauffeurs', component: ChauffeursComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -171,6 +173,7 @@ const appRoutes:Routes=[
     ComingSoonComponent,
     BonSignatureComponent,
     FeuilleCommunicationComponent,
+    ChauffeursComponent,
     //MapComponent,
   ],
   imports: [

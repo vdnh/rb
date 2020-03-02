@@ -284,6 +284,9 @@ export class RemorquageComponent implements OnInit {
     if(this.compteClient){
       this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
         this.listShipper=data;
+        this.listShipper.sort((a,b)=>{
+          return a.nom.localeCompare(b.nom)
+        })
         this.particulier=false;
         this.back=1;
         this.pagePresent=this.back+1;
@@ -318,6 +321,9 @@ export class RemorquageComponent implements OnInit {
       })
       this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
+        this.chauffeurs.sort((a,b)=>{
+          return a.nom.localeCompare(b.nom)
+        })
       }, err=>{
         console.log(err);
       });
@@ -537,10 +543,10 @@ onRefresh(){
 
 printBonDeRemorquage(cmpId){
   let envoy = document.getElementById('toprint').innerHTML;
-  console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
+  //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);
-   console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
+  //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
   //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
   const WindowPrt = window.open();
   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
@@ -1396,6 +1402,57 @@ onFileUpLoad(event){
     else{
       this.remorquage.collecterArgent=0;
     }
+  }
+
+  onPage2(){
+    this.pagePresent=2;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage3(){
+    this.pagePresent=3;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage4(){
+    this.pagePresent=4;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage5(){
+    this.pagePresent=5;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage6(){
+    this.pagePresent=6;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage7(){
+    this.pagePresent=7;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage8(){
+    this.pagePresent=8;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage9(){
+    this.pagePresent=9;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage10(){
+    this.pagePresent=10;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage11(){
+    this.pagePresent=11;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
   }
 
   logout(){
