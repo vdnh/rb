@@ -226,8 +226,48 @@
   
         </div>
         <div class="panel-body">
-            
-          
+          <table border="1" *ngIf="pagePresent>=2">
+            <tr>
+              <th>#Bon : {{remorquage.id}} </th>
+              <th><button class="btn btn-link" *ngIf="compteClient" (click)="onPage2()">
+                <strong *ngIf="pagePresent==2">Compagnie</strong>
+                <span *ngIf="pagePresent!=2">Compagnie</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage3()">
+                <strong *ngIf="pagePresent==3">Client</strong>
+                <span *ngIf="pagePresent!=3">Client</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage4()">
+                <strong *ngIf="pagePresent==4">Vehicule</strong>
+                <span *ngIf="pagePresent!=4">Vehicule</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage5()">
+                <strong *ngIf="pagePresent==5">Problems</strong>
+                <span *ngIf="pagePresent!=5">Problems</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage6()">
+                <strong *ngIf="pagePresent==6">PlusInfos</strong>
+                <span *ngIf="pagePresent!=6">PlusInfos</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage7()">
+                <strong *ngIf="pagePresent==7">JoindreImage</strong>
+                <span *ngIf="pagePresent!=7">JoindreImage</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage8()">
+                <strong *ngIf="pagePresent==8">EndroitPanne</strong>
+                <span *ngIf="pagePresent!=8">EndroitPanne</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage9()">
+                <strong *ngIf="pagePresent==9">EndroitLivraison</strong>
+                <span *ngIf="pagePresent!=9">EndroitLivraison</span>
+              </button></th>
+              <th><button class="btn btn-link" (click)="onPage10()">
+                <strong *ngIf="pagePresent==10">Resumer</strong>
+                <span *ngIf="pagePresent!=10">Resumer</span>
+              </button></th>
+            </tr>
+          </table>  
+          <br>
           <h5 style="text-align: left; font: bold; text-decoration-line: underline" *ngIf="pagePresent==2">Compagnie Infos <br></h5>
           <div class="row" *ngIf="pagePresent==2">
             <div class="col-sm-6 col-md-2 col-lg-2">
@@ -544,7 +584,7 @@
               </select>
             </div>
           </div>
-          <br>
+          <!-- <br> -->
           
           <!--br-->
           <div class="row" *ngIf="pagePresent==6">
@@ -567,76 +607,7 @@
               <img [src]="remorquage.imgUrl" alt="piece joint">
             </div>
           </div>
-          <!--br-->
-          <!--div class="row">
-            <div class="col-sm-12 col-md-5 col-lg-3">
-              <input type="text" placeholder="Nom de Signateur" [(ngModel)]="remorquage.nomSignature" name="nomSignature"
-              class="form-control">
-            </div>
-            <div class="col-sm-12 col-md-7 col-lg-9" style="border: 2px dotted gray">
-              <signature-pad [options]="signaturePadOptions" (onBeginEvent)="drawStart()" 
-                (onEndEvent)="drawComplete()" (onSave)="saveHandler($event)" *ngIf="!remorquage.signature.length>0">
-              </signature-pad>
-              <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-              <div>
-                <button (click)="clearHandler()">Re-sign</button>
-                <span>&nbsp;&nbsp;</span>
-                <button (click)="okHandler()" *ngIf="!remorquage.signature.length>0">Ok</button>
-              </div>
-            </div>
-          </div-->
-          <!--hr style="border: 2px solid lightgray"/-->
-          <!-- <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==10">Camion et Chauffeur <br></h5>
-          <div class="row" *ngIf="pagePresent==10">
-            <div class="col-sm-6 col-md-3 col-lg-3">
-              <div class="form-group">
-                <label for="">Camion</label>
-                <input type="text" [(ngModel)]="remorquage.camionAttribue" 
-                  name="camionAttribue" list="defaultCamions" class="form-control" required>
-                <datalist id="defaultCamions">
-                    <option *ngFor="let c of camions" [ngValue]="c">{{c.unite}}</option>
-                </datalist>
-              </div>
-            </div>          
-            <div class="col-sm-6 col-md-3 col-lg-3">
-              <div class="form-group">
-                <label for="">Chauffeur</label>
-                <input type="text" (change)="chauffeurChange()" [(ngModel)]="remorquage.nomIntervenant"
-                  name="nomIntervenant" class="form-control" list="defaultChauffeurs">
-                <datalist id="defaultChauffeurs">
-                  <option *ngFor="let e of chauffeurs" [ngValue]="e">{{e.nom+'  .Id.'+e.id}}</option>
-                </datalist>
-              </div>
-            </div>
-            <div class="col-sm-6 col-md-3 col-lg-3">
-              <div class="form-group">
-                <label for="">Telephone</label>
-                <input type="tel" [(ngModel)]="remorquage.telIntervenant" name="telIntervenant"
-                      class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                      (focusout)="remorquage.telIntervenant=reformTelEvent($event)" required>
-              </div>
-            </div>
-            <div class="col-sm-6 col-md-3 col-lg-3">
-              <div class="form-group">
-                <label for="">Courriel</label>
-                <input type="email" [(ngModel)]="remorquage.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
-                required>
-                  <datalist id="defaultEmails">
-                  </datalist>
-              </div>
-            </div>
-          </div>
-  
-          <div class="row" *ngIf="pagePresent==10">
-            <div class="col-sm-2"><label class="control-label">Note au Chauffeur</label></div>
-            <div class="col-sm-9">
-              <textarea name="comments" class="form-control" cols="80" rows="2"
-                    [(ngModel)]="remorquage.driverNote" style="margin-bottom: 0px"
-                    style="margin-top: 0px"></textarea>
-            </div>
-          </div> -->
-  
-          <!--hr style="border: 2px solid lightgray"/-->
+          
           <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==10">Resumer <br></h5>
           <div *ngIf="mode==2 && pagePresent==10" class="row" style="margin-top: 10px">
             <div class="col-md-2">

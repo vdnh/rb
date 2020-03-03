@@ -1181,36 +1181,51 @@ onFileUpLoad(event){
       behavior: 'smooth' 
     });  // go to top  
   }
-  /*
-  onEnvoyer(){
-    if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
-      let stringsd:string[]=location.href.split('/remorquage')
-      this.em.emailDest=this.remorquage.emailIntervenant
-      //this.em.titre="Case numero : " + this.remorquage.id.toString()
-      this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+stringsd[0]+"/remorquage-client/"
-      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
-      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-        //console.log('this.em.titre : ' + this.em.titre)
-        //console.log('this.em.emailDest : '+ this.em.emailDest)
-        //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
-        this.remorquage.sent=true;
-        this.onSavePlusAlert();
-      }, err=>{
-        console.log()
-      })
-      window.scroll({ 
-        top: 0, 
-        left: 0, 
-        behavior: 'smooth' 
-      });  // go to top  
-    }
-    else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
-  }//*/
+  onPage2(){
+    this.pagePresent=2;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage3(){
+    this.pagePresent=3;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage4(){
+    this.pagePresent=4;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage5(){
+    this.pagePresent=5;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage6(){
+    this.pagePresent=6;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage7(){
+    this.pagePresent=7;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage8(){
+    this.pagePresent=8;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage9(){
+    this.pagePresent=9;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage10(){
+    this.pagePresent=10;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
 
   logout(){
     localStorage.clear();

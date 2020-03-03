@@ -284,16 +284,46 @@
         <table border="1" *ngIf="pagePresent>=2">
           <tr>
             <th>#Bon : {{remorquage.id}} </th>
-            <th><button class="btn btn-link" *ngIf="compteClient" (click)="onPage2()">Compagnie</button></th>
-            <th><button class="btn btn-link" (click)="onPage3()">Client</button></th>
-            <th><button class="btn btn-link" (click)="onPage4()">Vehicule</button></th>
-            <th><button class="btn btn-link" (click)="onPage5()">Services</button></th>
-            <th><button class="btn btn-link" (click)="onPage6()">PlusInfos</button></th>
-            <th><button class="btn btn-link" (click)="onPage7()">JoindreImage</button></th>
-            <th><button class="btn btn-link" (click)="onPage8()">De: </button></th>
-            <th><button class="btn btn-link" *ngIf="remorquage.accident || remorquage.panne" (click)="onPage9()">A: </button></th>
-            <th><button class="btn btn-link" (click)="onPage10()">CamionChauffeur</button></th>
-            <th></th><button class="btn btn-link" (click)="onPage11()">Resumer</button>
+            <th><button class="btn btn-link" *ngIf="compteClient" (click)="onPage2()">
+              <strong *ngIf="pagePresent==2">Compagnie</strong>
+              <span *ngIf="pagePresent!=2">Compagnie</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage3()">
+              <strong *ngIf="pagePresent==3">Client</strong>
+              <span *ngIf="pagePresent!=3">Client</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage4()">
+              <strong *ngIf="pagePresent==4">Vehicule</strong>
+              <span *ngIf="pagePresent!=4">Vehicule</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage5()">
+              <strong *ngIf="pagePresent==5">Problems</strong>
+              <span *ngIf="pagePresent!=5">Problems</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage6()">
+              <strong *ngIf="pagePresent==6">PlusInfos</strong>
+              <span *ngIf="pagePresent!=6">PlusInfos</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage7()">
+              <strong *ngIf="pagePresent==7">JoindreImage</strong>
+              <span *ngIf="pagePresent!=7">JoindreImage</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage8()">
+              <strong *ngIf="pagePresent==8">EndroitPanne</strong>
+              <span *ngIf="pagePresent!=8">EndroitPanne</span>
+            </button></th>
+            <th><button class="btn btn-link" *ngIf="remorquage.accident || remorquage.panne" (click)="onPage9()">
+              <strong *ngIf="pagePresent==9">EndroitLivraison</strong>
+              <span *ngIf="pagePresent!=9">EndroitLivraison</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage10()">
+              <strong *ngIf="pagePresent==10">CamionChauffeur</strong>
+              <span *ngIf="pagePresent!=10">CamionChauffeur</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage11()">
+              <strong *ngIf="pagePresent==11">Resumer</strong>
+              <span *ngIf="pagePresent!=11">Resumer</span>
+            </button></th>
           </tr>
         </table>
         <br *ngIf="pagePresent>=2">
@@ -800,7 +830,11 @@
               </tr>
             </table>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-1">
+            <label class="control-label">Taxable</label>
+            <input style="width: 2pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="remorquage.taxable" name="taxable" class="form-control"/>
+          </div>
+          <div class="col-md-3">
             <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
             <table  >
               <tr>

@@ -88,6 +88,7 @@ export class Remorquage{
     rush=false;  // se ruer, urgent
     //
     //prix total
+    taxable=true;
     horstax=0.00;
     tps=0.00;
     tvq=0.00;

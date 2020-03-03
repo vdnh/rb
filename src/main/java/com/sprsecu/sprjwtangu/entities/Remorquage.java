@@ -123,6 +123,7 @@ public class Remorquage implements Serializable{
     private Boolean rush=false;  // se ruer, urgent
     //
     //prix total
+    private Boolean taxable=true;
     private Float horstax=0.00f;
     private Float tps=0.00f;
     private Float tvq=0.00f;

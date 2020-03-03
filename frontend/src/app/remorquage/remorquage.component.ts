@@ -562,8 +562,14 @@ async prixCalcul(){
   if((this.remorquage.distance-this.remorquage.inclus)>0){
     this.remorquage.horstax =await this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
   }
-  this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
-  this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+  if(this.remorquage.taxable){
+    this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
+    this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+  }
+  else{
+    this.remorquage.tps =0.00;
+    this.remorquage.tvq =0.00;
+  }
   this.remorquage.total=await Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
   //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
@@ -1453,6 +1459,19 @@ onFileUpLoad(event){
     this.pagePresent=11;
     this.back=this.pagePresent-1;
     this.forward=this.pagePresent+1
+  }
+
+  prixCalculWithHorsTax(){
+    if(this.remorquage.taxable){
+      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
+    }
+    else{
+      this.remorquage.tps =0.00; 
+      this.remorquage.tvq =0.00; 
+      this.remorquage.total= this.remorquage.horstax; 
+    }
   }
 
   logout(){

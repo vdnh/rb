@@ -8,30 +8,31 @@
                 <th><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link"><strong>Imprimer</strong></button></th>
             </tr>
             <tr>
-                <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                <td style="width: fit-content;"><input style="width: 35ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
                 <!-- <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td> -->
                 <td>
                     <input type="tel" [(ngModel)]="addchauffeur.tel" name="telChauffeur"
                       class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                       (focusout)="addchauffeur.tel=reformTelEvent($event)" required>
                   </td>
-                <td><input class="form-control" type="email" [(ngModel)]="addchauffeur.email" /></td>
+                <td><input  style="width: 35ch;" class="form-control" type="email" [(ngModel)]="addchauffeur.email" /></td>
                 <td><button class="btn btn-link" (click)="addChauffeur()">Ajouter</button></td>
             </tr>
-
-            <tr><td colspan="2"><strong>Liste Chauffeurs</strong></td></tr>
+        </table>
+        <table border="1">
+            <tr><td><strong>Liste Chauffeurs</strong></td></tr>
             <!-- <tr>
                 <th>Nom</th><th>CellPhone</th><th>Courriel</th>
             </tr> -->
             <tr *ngFor="let chauffeur of chauffeurs">
-                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
+                <td style="width: fit-content;"><input style="width: 35ch;" class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
                 <td>
                     <!-- <input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /> -->
                     <input type="tel" [(ngModel)]="chauffeur.tel" name="telChauffeur"
                       class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                       (focusout)="chauffeur.tel=reformTelEvent($event)" required>
                 </td>                
-                <td><input class="form-control" type="email" [(ngModel)]="chauffeur.email" /></td>
+                <td><input style="width: 35ch;" class="form-control" type="email" [(ngModel)]="chauffeur.email" /></td>
                 <td><button class="btn btn-link" (click)="modifyChauffeur(chauffeur)">Modifier</button></td>
                 <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur)">Delete</button></td>
             </tr>    
