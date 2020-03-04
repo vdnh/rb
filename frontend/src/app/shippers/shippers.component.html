@@ -1,17 +1,22 @@
 <!--div class="container"-->
   <button *ngIf='role.includes("ADMIN")' routerLink="/new-shipper" class="btn btn-info">Nouveau</button>&nbsp;&nbsp;&nbsp;
   <!--button routerLink="/calcule-prix" class="btn btn-info">Estimation le prix </button-->
-  <p></p>
 <!--/div-->
 <!---->
 <!--div class="container spacer"-->
   <div class="panel panel-primary">
-    <div class="panel-heading"><h3>Liste de Profs</h3></div>
+    <!-- <div><button class="btn btn-link" (click)="gotoDetailShipperParticulier(1)"><h3>Gerer Prix Particulier</h3></button></div> -->
+    <div class="panel-heading; row"><h3>Liste de Clients</h3> 
+      <!-- <h3>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</h3>
+      <button class="btn btn-link" (click)="gotoDetailShipperParticulier(1)"><h3>Gerer Prix Particulier</h3></button> -->
+    </div>
     <div class="panel-body">
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="chercher()">Chercher</button>
+        <span>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</span>
+        <button class="btn btn-primary" (click)="gotoDetailShipperParticulier(1)">Gerer Prix Particulier</button>
       </div>
       <table border="1"> 
       <!-- <class="table table-striped"> -->

@@ -1,12 +1,12 @@
 <!-- <div class="container spacer"> -->
   <br>
   <div class="panel panel-primary" *ngIf="mode==1">
-    <div class="panel-heading"><H4><strong>Nouveau Client Prof</strong></H4></div>
+    <div class="panel-heading"><H4><strong>Nouveau Client</strong></H4></div>
       <div class="panel-body">
               <!-- <table class="table table-striped"> -->
         <table border="1">  
           <tr>
-            <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">En Affaire Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
+            <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">Client Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
           </tr>
           <tr>
             <td width="14%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="shipper.nom" /></td>

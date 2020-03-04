@@ -19,6 +19,8 @@ import { CamionsService } from 'src/services/camions.service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as FileSaver from "file-saver";
+import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
+import { ShipperParticulier } from 'src/model/model.shipperParticulier';
 
 @Component({
   selector: 'app-remorquage',
@@ -117,6 +119,7 @@ export class RemorquageComponent implements OnInit {
     //'canvasWidth': 'auto',
     //'canvasHeight': 'auto',
   };
+  shipperParticulier: Shipper;
   
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -197,6 +200,7 @@ export class RemorquageComponent implements OnInit {
     private datePipe: DatePipe,
     public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
+    public shipperParticuliersService:ShipperParticuliersService,
     ) { 
   }
   /*/ on close window
@@ -276,7 +280,7 @@ export class RemorquageComponent implements OnInit {
       this.remorquage.telContact="";
       this.remorquage.extTelContact="";
       this.remorquage.emailContact="";
-      this.shipper=new Shipper();
+      this.shipper= this.shipperParticulier //new Shipper();
       //console.log('Particulier - begin with back=1: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
@@ -292,7 +296,7 @@ export class RemorquageComponent implements OnInit {
         this.pagePresent=this.back+1;
         this.forward=this.back+2;
         this.onSave();
-        this.shipper=new Shipper();
+        this.shipper= this.shipperParticulier //new Shipper();
       }, err=>{
         console.log(err);
       })
@@ -303,10 +307,22 @@ export class RemorquageComponent implements OnInit {
   }
 
   setPrixParticulier(){ // prix dans ficher model.shipper.ts sont des prix pareticuliers
-    this.shipper=new Shipper();
+    this.shipper= this.shipperParticulier //new Shipper();
   }
 
   async ngOnInit() {    
+    this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+      this.shipperParticulier=<Shipper>data;
+      this.shipper=this.shipperParticulier;
+    }, err=>{
+      console.log(err);
+    });
+    // this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+    //   this.shipperParticulier=data;
+    //   this.shipper=this.shipperParticulier;
+    // }, err=>{
+    //   console.log(err);
+    // });
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     //if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
@@ -964,7 +980,7 @@ onFileUpLoad(event){
       });
     }
     else {
-      this.shipper=new Shipper();
+      this.shipper= this.shipperParticulier //new Shipper();
       this.contacts=[];
       // console.log('Attention !!! - nomEntrepriseInputChange ne trouve pas Shipper.')
     }

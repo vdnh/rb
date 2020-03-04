@@ -56,6 +56,10 @@ export class ShippersComponent implements OnInit
     this.router.navigate(['detail-shipper',id]);
   }
 
+  gotoDetailShipperParticulier(id:number){
+    this.router.navigate(['detail-shipper-particulier',id]);
+  }
+
   deleteShipper(id:number){
     this.shipperservice.deleteShipper(id).subscribe((shipper:Shipper)=>{
       this.deleteAppUser(shipper);

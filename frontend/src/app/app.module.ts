@@ -75,6 +75,8 @@ import { ComingSoonComponent } from './coming-soon/coming-soon.component';
 import { BonSignatureComponent } from './bon-signature/bon-signature.component';
 import { FeuilleCommunicationComponent } from './feuille-communication/feuille-communication.component';
 import { ChauffeursComponent } from './chauffeurs/chauffeurs.component';
+import { DetailShipperParticulierComponent } from './detail-shipper-particulier/detail-shipper-particulier.component';
+import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -94,6 +96,7 @@ const appRoutes:Routes=[
   {path: 'shippers', component: ShippersComponent},
   {path: 'new-shipper', component:  NewShipperComponent},
   {path: 'detail-shipper/:id', component:  DetailShipperComponent},
+  {path: 'detail-shipper-particulier/:id', component:  DetailShipperParticulierComponent},
   {path: 'shippers/testlink', component:  TestComponent},
   {path: 'map/:id', component: MapComponent},
   {path: 'map-flotte/:id', component: MapFlotteComponent},
@@ -174,6 +177,7 @@ const appRoutes:Routes=[
     BonSignatureComponent,
     FeuilleCommunicationComponent,
     ChauffeursComponent,
+    DetailShipperParticulierComponent,
     //MapComponent,
   ],
   imports: [
@@ -185,7 +189,7 @@ const appRoutes:Routes=[
     }),
   ],
   providers: [DatePipe, AuthenticationService, ContactsService, ChauffeursService, TransportersService, 
-    ShippersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
+    ShippersService, ShipperParticuliersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
     RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService],

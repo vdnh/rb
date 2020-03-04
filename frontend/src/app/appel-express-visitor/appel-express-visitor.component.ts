@@ -24,6 +24,8 @@ import { UserLogsService } from 'src/services/userLogs.service';
 import { UserLogs } from 'src/model/model.userLogs';
 import { HttpClient } from '@angular/common/http';
 import { GeolocationService } from 'src/services/geolocation.service';
+import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
+import { ShipperParticulier } from 'src/model/model.shipperParticulier';
 
 @Component({
   selector: 'app-appel-express-visitor',
@@ -56,7 +58,7 @@ export class AppelExpressVisitorComponent implements OnInit {
   listIdEntreprise=[1, 2, 3, 4];
   filteredEntreprises=this.listEntreprise;//*/
 
-  shipper=new Shipper();
+  shipper=new Shipper(); //:any;
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
@@ -130,6 +132,7 @@ export class AppelExpressVisitorComponent implements OnInit {
     //'canvasHeight': 'auto',
   };
   titreAjout: string='';
+  shipperParticulier: ShipperParticulier;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -187,6 +190,7 @@ export class AppelExpressVisitorComponent implements OnInit {
     public userLogsService: UserLogsService,
     private http: HttpClient,
     private geolocation : GeolocationService,
+    public shipperParticuliersService:ShipperParticuliersService,
     )
   { 
     this.form = fb.group({
@@ -216,6 +220,12 @@ export class AppelExpressVisitorComponent implements OnInit {
   }
   
   ngOnInit() {    
+    this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+      this.shipperParticulier=<Shipper>data;
+      this.shipper=this.shipperParticulier;
+    }, err=>{
+      console.log(err);
+    });
     if(localStorage.getItem('tonken')!=null) 
     {
       this.answer=61 // 35 + 25 = 61
@@ -767,7 +777,7 @@ async showMap() {
         console.log(err);
       });
     }
-    else this.shipper=new Shipper()
+    else this.shipper= this.shipperParticulier //new Shipper()
     this.firstFilteredShipper=this.remorquage.nomEntreprise
   }
   ifAccident(){
