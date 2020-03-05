@@ -1358,7 +1358,7 @@ async showMap() {
 
   // for camion on map
   carte=-1;
-  carteText="Voir le camion"
+  carteText="Mettre sur la Carte"
   subscription : Subscription;
   marker=new google.maps.Marker();
   camion:Camion=new Camion();
@@ -1367,12 +1367,12 @@ async showMap() {
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
-      this.carteText='Mettre sur la map'
+      this.carteText='Mettre sur la Carte'
       this.marker.setMap(null);
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Supprimer sur la map'
+      this.carteText='Supprimer sur la Carte'
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         this.camionsService.getDetailCamion(this.camion.id).subscribe((data:Camion)=>{

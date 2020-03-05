@@ -220,12 +220,30 @@ export class AppelExpressVisitorComponent implements OnInit {
   }
   
   ngOnInit() {    
+    /*//
     this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
       this.shipperParticulier=<Shipper>data;
       this.shipper=this.shipperParticulier;
     }, err=>{
       console.log(err);
     });
+    //*/
+    // take particular price
+    const user=this.form.value;
+    this.authService.loginDefaultDriver(user).subscribe(resp=> {
+      let jwtToken=resp.headers.get('Authorization');
+      this.authService.saveTonken(jwtToken);
+      this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+        this.shipperParticulier=<Shipper>data;
+        this.shipper=this.shipperParticulier;
+        localStorage.clear();  //  erase localstorage after taken particular price 
+      }, err=>{
+        console.log(err);
+      });
+    }, err=>{          
+      console.log(err);
+    });
+
     if(localStorage.getItem('tonken')!=null) 
     {
       this.answer=61 // 35 + 25 = 61
@@ -1024,7 +1042,7 @@ async showMap() {
       let listeOperateurs : Array<string> = 
       [
         telSosPrestige.replace("-","").replace("-","")+"@txt.bellmobility.ca",
-        telSosPrestige.replace("-","").replace("-","")+"@text.mtsmobility.com",
+        //telSosPrestige.replace("-","").replace("-","")+"@text.mtsmobility.com",
         telSosPrestige.replace("-","").replace("-","")+"@pcs.rogers.com",
         telSosPrestige.replace("-","").replace("-","")+"@msg.telus.com",
       ];

@@ -1003,7 +1003,7 @@ async showMap() {
       let listeOperateurs : Array<string> = 
       [
         telSosPrestige.replace("-","").replace("-","")+"@txt.bellmobility.ca",
-        telSosPrestige.replace("-","").replace("-","")+"@text.mtsmobility.com",
+        //telSosPrestige.replace("-","").replace("-","")+"@text.mtsmobility.com",
         telSosPrestige.replace("-","").replace("-","")+"@pcs.rogers.com",
         telSosPrestige.replace("-","").replace("-","")+"@msg.telus.com",
       ];

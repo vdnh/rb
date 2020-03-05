@@ -162,10 +162,10 @@ export class RemorquageComponent implements OnInit {
   modeHistoire: number=-1;
   modeExport: number=-1;  //to export
   dateExport: Date = null; // to export
-  listRqs: Remorquage[]; // appels waitting
-  listRqsSent: Remorquage[]; // appels sent
-  listRqsFini: Remorquage[]; // appels finished
-  listRqsAnnule: Remorquage[]; // appels annules
+  listRqs: Remorquage[]=[]; // appels waitting
+  listRqsSent: Remorquage[]=[]; // appels sent
+  listRqsFini: Remorquage[]=[]; // appels finished
+  listRqsAnnule: Remorquage[]=[]; // appels annules
   contacts: Contact[];
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
@@ -782,12 +782,12 @@ onFileUpLoad(event){
   }
 
   onDelete(rq:Remorquage){
-    var r = confirm("Etes vous sur de supprimer cet appel ?")
-    if(r==true){
-      console.log("Le cas est supprime.")
+    var r = confirm("Etes vous sure de supprimer cet appel ?")
+    if(r==true){      
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
           this.listRqsAnnule.splice(this.listRqsAnnule.indexOf(rq),1)
+          console.log("Le cas est supprime.")
           // if(rq.fini)
           //   this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
           // else if(rq.sent)

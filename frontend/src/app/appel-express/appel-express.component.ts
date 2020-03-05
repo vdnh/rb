@@ -891,7 +891,7 @@ async showMap() {
         //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@txt.bell.ca", 
         this.remorquage.telIntervenant.replace("-","").replace("-","")+"@txt.bellmobility.ca",
         // this.remorquage.telIntervenant.replace("-","").replace("-","")+"@fido.ca", //same roger
-        this.remorquage.telIntervenant.replace("-","").replace("-","")+"@text.mtsmobility.com",
+        //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@text.mtsmobility.com",
         //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@wirefree.informe.ca", // same bell
         // this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pmcl.net",
         //this.remorquage.telIntervenant.replace("-","").replace("-","")+"@pagegate.pagenet.ca",

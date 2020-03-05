@@ -234,8 +234,8 @@
                 <span *ngIf="pagePresent!=2">Compagnie</span>
               </button></th>
               <th><button class="btn btn-link" (click)="onPage3()">
-                <strong *ngIf="pagePresent==3">Client</strong>
-                <span *ngIf="pagePresent!=3">Client</span>
+                <strong *ngIf="pagePresent==3">Contact</strong>
+                <span *ngIf="pagePresent!=3">Contact</span>
               </button></th>
               <th><button class="btn btn-link" (click)="onPage4()">
                 <strong *ngIf="pagePresent==4">Vehicule</strong>
@@ -272,14 +272,14 @@
           <div class="row" *ngIf="pagePresent==2">
             <div class="col-sm-6 col-md-2 col-lg-2">
               <div class="form-group">
-                <label for="">Nom de Compagnie</label>
+                <label for="">Nom</label>
                 <input type="text" [(ngModel)]="remorquage.nomEntreprise"
                      name="nomEntreprise"  class="form-control" disabled>
               </div>
             </div>
             <div class="col-sm-6 col-md-2 col-lg-2">
               <div class="form-group">
-                <label for="">Contact / Commande par</label>
+                <label for="">Commande par</label>
                 <input type="text" (change)="contactChange()"  [(ngModel)]="remorquage.nomContact"
                       name="nomContact" class="form-control" list="defaultContacts">
                 <datalist id="defaultContacts">
@@ -336,11 +336,11 @@
           
   
           <!--hr style="border: 2px solid lightgray"/-->
-          <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==3">Client Infos <br></h5>
+          <h5 style="text-align: left; font: bold;text-decoration-line: underline" *ngIf="pagePresent==3">Contact Infos <br></h5>
           <div class="row" *ngIf="pagePresent==3">
             <div class="col-sm-12 col-md-3 col-lg-3">
               <div class="form-group">
-                <label for="">Nom Client</label>
+                <label for="">Nom</label>
                 <input type="text"  [(ngModel)]="remorquage.nomClient"
                      name="nomClient" class="form-control">
               </div>
@@ -739,13 +739,20 @@
           <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
           <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>
         </tr>
-        <tr style="border: 0px">
+        <!-- <tr style="border: 0px">
           <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
-          <!--td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td-->
           <th colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
+        </tr> -->
+        <tr>
+          <td colspan="5" *ngIf="remorquage.nomEntreprise!=null&&remorquage.nomEntreprise.length>0">Client: 
+            <span>&nbsp;{{remorquage.nomEntreprise}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telContact}}</span>
+            <span *ngIf="remorquage.extTelContact!=null&&remorquage.extTelContact.length>0">&nbsp;&nbsp;&nbsp;{{"Ext: " + remorquage.extTelContact}}</span> <br>
+            <span *ngIf="remorquage.nomContact!=null&&remorquage.nomContact.length>0">{{"Commande par : " + remorquage.nomContact}}</span>
+            <br> &nbsp;</td>  
         </tr>
         <tr>
-          <td colspan="5">Client: 
+          <td colspan="5">Contact: 
             <span>&nbsp;{{remorquage.nomClient}}</span>
             <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
             <span>&nbsp;&nbsp;&nbsp;{{"Tel/Email: " + remorquage.telClient2em}}</span>
