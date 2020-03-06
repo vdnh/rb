@@ -96,7 +96,6 @@ import org.springframework.web.bind.annotation.RestController;
         Transport transport = getMailSession.getTransport("smtp");
 	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
         transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
-        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
         //*/
         // check list if valid or not
         //System.out.println("em.getEmailDest() : " + em.getEmailDest());
@@ -152,8 +151,8 @@ import org.springframework.web.bind.annotation.RestController;
 
         Transport transport = getMailSession.getTransport("smtp");
 	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ventes18$$$9");
-        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
+        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
+        
         //*/
 	        
         bankClientRepository.chercher("%"+em.getAddressCondition()+"%").forEach(client->{
@@ -220,12 +219,6 @@ import org.springframework.web.bind.annotation.RestController;
         //System.out.println("lines.toString() : "+ lines.toString());
         //System.out.println("bodyModified.toString() : "+ bodyModified.toString());
         generateMailMessage.setContent(bodyModified.toString() , "text/html");
-        //*/
-        /* we can move Transport to EmailAll function to avoid login many time
-        Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        //transport.connect("smtp.gmail.com", "ventessosprestige@gmail.com", "ventes18");
-        //transport.connect("smtp.gmail.com", "sosprestige@gmail.com", "10420Oli");
         //*/
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 	/*we can move Transport to EmailAll function to avoid login many time
