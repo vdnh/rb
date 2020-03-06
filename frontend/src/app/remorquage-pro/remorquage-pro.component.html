@@ -36,8 +36,8 @@
       <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==1">
         <table class="table">
           <tr style="background-color: whitesmoke">
-            <th>#Bon</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>NomCompagnie</th>
-            <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
+            <th>#Bon</th><th (click)='onSortDate(listRqs)'>DateReserve</th><th>Client</th>
+            <th>DateAppel</th><th>Contact</th><th>TelContact</th>
             <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
           </tr>
           <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqs" style="color: green; background-color: whitesmoke">
@@ -61,8 +61,8 @@
       <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==2">
         <table class="table">
           <tr style="background-color: whitesmoke">
-            <th>#Bon</th><th (click)='onSortDate(listRqsSent)'>DateReserve</th><th>NomCompagnie</th>
-            <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
+            <th>#Bon</th><th (click)='onSortDate(listRqsSent)'>DateReserve</th><th>Client</th>
+            <th>DateAppel</th><th>Contact</th><th>TelContact</th>
             <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
           </tr>
           <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsSent" style="color:orange; background-color: whitesmoke">
@@ -86,8 +86,8 @@
       <div class="col-md-12 col-sm-12 col-lg-12" *ngIf="modeGestionAppel==3">
         <table class="table">
           <tr style="background-color: whitesmoke">
-            <th>#Bon</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>NomCompagnie</th>
-            <th>DateAppel</th><th>NomClient</th><th>TelClient</th>
+            <th>#Bon</th><th (click)='onSortDate(listRqsFini)'>DateReserve</th><th>Client</th>
+            <th>DateAppel</th><th>Contact</th><th>TelContact</th>
             <th>Vehicule</th><th>Chauffeur</th><th>CamionUnite</th>
           </tr>
           <tr (click)="gotoDetailRemorquage(r)" *ngFor="let r of listRqsFini" style="color: red; background-color: whitesmoke">

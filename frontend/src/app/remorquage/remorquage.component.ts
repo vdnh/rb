@@ -51,7 +51,7 @@ export class RemorquageComponent implements OnInit {
   listIdEntreprise=[1, 2, 3, 4];
   filteredEntreprises=this.listEntreprise;//*/
 
-  shipper=new Shipper();
+  shipper:Shipper; //=new Shipper();
   listShipper=[];
   //filteredShippers=[]; //=this.listShipper;
   //firstFilteredShipper='' //new Shipper();
@@ -281,6 +281,8 @@ export class RemorquageComponent implements OnInit {
       this.remorquage.extTelContact="";
       this.remorquage.emailContact="";
       this.shipper= this.shipperParticulier //new Shipper();
+      this.calculePrixbase()
+      this.prixCalcul()
       //console.log('Particulier - begin with back=1: '+ this.back +' '+this.pagePresent+' '+this.forward);
     }
   }
@@ -297,6 +299,8 @@ export class RemorquageComponent implements OnInit {
         this.forward=this.back+2;
         this.onSave();
         this.shipper= this.shipperParticulier //new Shipper();
+        this.calculePrixbase()
+        this.prixCalcul()
       }, err=>{
         console.log(err);
       })
@@ -311,12 +315,7 @@ export class RemorquageComponent implements OnInit {
   }
 
   async ngOnInit() {    
-    this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
-      this.shipperParticulier=<Shipper>data;
-      this.shipper=this.shipperParticulier;
-    }, err=>{
-      console.log(err);
-    });
+    
     // this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
     //   this.shipperParticulier=data;
     //   this.shipper=this.shipperParticulier;
@@ -360,7 +359,16 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.timeCall=heure+':'+minute
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
-    this.typeServiceChange(this.serviceTypes[0]);
+    
+    // First get the price particular - then calculate price default
+    this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+      this.shipperParticulier=<Shipper>data;
+      this.shipper=this.shipperParticulier;
+      this.typeServiceChange(this.serviceTypes[0]);
+    }, err=>{
+      console.log(err);
+    });
+    //this.typeServiceChange(this.serviceTypes[0]);
     //this.prixCalcul()
   }
   
