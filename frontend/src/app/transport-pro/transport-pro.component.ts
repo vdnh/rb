@@ -1360,6 +1360,70 @@ async showMap() {
     });  // go to top  
   }
 
+  onPage2(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=2;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage3(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=3;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage4(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=4;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage5(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=5;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage6(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=6;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage7(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=7;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage8(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=8;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+
   // onEnvoyer(){
   //   let stringsd:string[]=location.href.split('/transport-client/')
   //   if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){

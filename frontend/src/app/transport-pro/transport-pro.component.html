@@ -174,6 +174,54 @@
     </div-->              
     <div class="panel panel-primary">
       <div class="col-sm-12 col-lg-12 col-md-12">
+
+        <table border="1" *ngIf="pagePresent>=2">
+          <tr>
+            <th>#Bon : {{transport.id}} </th>
+            <!-- <th><button class="btn btn-link" (click)="onPage1()">
+              <strong *ngIf="pagePresent==1">ModeleRemplis</strong>
+              <span *ngIf="pagePresent!=1">ModeleRemplis</span>
+            </button></th> -->
+            <th><button class="btn btn-link" (click)="onPage2()">
+              <strong *ngIf="pagePresent==2">Client</strong>
+              <span *ngIf="pagePresent!=2">Client</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage3()">
+              <strong *ngIf="pagePresent==3">ContactOrigin</strong>
+              <span *ngIf="pagePresent!=3">ContactOrigin</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage4()">
+              <strong *ngIf="pagePresent==4">ContactDestination</strong>
+              <span *ngIf="pagePresent!=4">ContactDestination</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage5()">
+              <strong *ngIf="pagePresent==5">Loads</strong>
+              <span *ngIf="pagePresent!=5">Loads</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage6()">
+              <strong *ngIf="pagePresent==6">TypeEquipement</strong>
+              <span *ngIf="pagePresent!=6">TypeEquipement</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage7()">
+              <strong *ngIf="pagePresent==7">PlusInfos</strong>
+              <span *ngIf="pagePresent!=7">PlusInfos</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage8()">
+              <strong *ngIf="pagePresent==8">JoindreImage</strong>
+              <span *ngIf="pagePresent!=8">JoindreImage</span>
+            </button></th>
+            <!-- <th><button class="btn btn-link" (click)="onPage9()">
+              <strong *ngIf="pagePresent==9">CamionTrailersChauffeur</strong>
+              <span *ngIf="pagePresent!=9">CamionTrailersChauffeur</span>
+            </button></th>
+            <th><button class="btn btn-link" (click)="onPage10()">
+              <strong *ngIf="pagePresent==10">Resumer</strong>
+              <span *ngIf="pagePresent!=10">Resumer</span>
+            </button></th> -->
+          </tr>
+        </table>
+        <br>
+
         <!--div class="row">
           <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">AnnulerAppel</button> 
           <button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Appels</button>
@@ -187,7 +235,7 @@
             </label></h5> 
           </div-->
           <div class="col-md-3 col-sm-3 col-lg-3">
-            <label for=""><h5>Auto-remplir par un modele</h5></label>
+            <label for=""><h5>ModeleRemplis (s'il y a)</h5></label>
             <input type="text"  [(ngModel)]="templateName"
                 name="templateName" class="form-control" (change)="templateChange()" list="defaultTemplates">
               <datalist id="defaultTemplates">
@@ -213,7 +261,7 @@
                 <table>
                     <tr><th><h4>Liste de Transport-Modeles</h4></th></tr> 
                     <tr>
-                        <th>Model</th><th>Compagnie</th>
+                        <th>Modele</th><th>Compagnie</th>
                     </tr>                    
                     <tr *ngFor="let t of templates">
                         <td><input class="form-control" type="text" [(ngModel)]="t.modelName" /></td>
@@ -222,7 +270,7 @@
                         <td><button class="btn btn-link" (click)="deleteTemplate(t.id)">Supprimer</button></td>
                     </tr>
                     <tr *ngIf="templates.length==0">
-                      <td>Il n'y a pas de model, actuellement.</td>
+                      <td>Il n'y a pas de modele, actuellement.</td>
                     </tr>
                     <tr>
                       <td colspan="2" style="text-align: center;"><button class="btn btn-link" (click)="modifyModels=false">Fermer la liste</button></td>
@@ -233,7 +281,7 @@
         <!--hr *ngIf="pagePresent==1" style="border: 1px solid lightgray"/-->
       </div>
       <div class="panel-body">
-        <h5 style="text-align: left; font: bold; text-decoration-line: underline" *ngIf="pagePresent==2">Compagnie Infos <br></h5>
+        <h5 style="text-align: left; font: bold; text-decoration-line: underline" *ngIf="pagePresent==2">Client <br></h5>
         <div *ngIf="pagePresent==2" class="row">
           <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
@@ -606,7 +654,7 @@
         </div-->
         
         <div class="row" *ngIf="pagePresent==7">
-          <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note Additionnelle</label></div>
+          <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Plus infos</label></div>
           <div class="col-sm-10 col-md-10 col-lg-10">
             <textarea name="comments" class="form-control" cols="80" rows="2"
                   [(ngModel)]="transport.comments"
@@ -766,9 +814,9 @@
       <tr>
         <td style="text-align: center; text-anchor: start; width: 22%">Heure d'Appel <br> <span>&nbsp;{{transport.dateDepart | date: 'dd-MMM-yyyy'}} - {{transport.timeCall}}</span></td>
         <td style="text-align: center; text-anchor: start; width: 20%">Repartiteur <br> <span>&nbsp;{{transport.nomDispatch}}</span></td>
-        <td style="text-align: center; text-anchor: start; width: 20%">Chauffeur <br> <span>&nbsp;{{transport.nomIntervenant}}</span></td>
+        <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray; width: 20%">Chauffeur <br> <span>&nbsp;{{transport.nomIntervenant}}</span></td>
         <td style="text-align: center; text-anchor: start; width: 20%"># PO <br> <span>&nbsp;{{transport.numPO}}</span></td>
-        <td style="text-align: center; text-anchor: start; width: 18%"># Facture <br> <span>&nbsp;{{transport.id}}</span></td>
+        <td style="text-align: center; text-anchor: start; width: 18%"># Bon <br> <span>&nbsp;{{transport.id}}</span></td>
       </tr>
       <tr>
         <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</th>
@@ -776,10 +824,10 @@
         <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
         <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span>&nbsp;</span></td> <!--{{transport.total | number : '1.2'}}-->
       </tr>
-      <tr style="border: 0px">
+      <!-- <tr style="border: 0px">
         <td colspan="3" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte}}</td>
         <th colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{transport.collecterArgent | number : '1.2'}}</th>
-      </tr>
+      </tr> -->
       <tr>
         <td colspan="5"><span style="text-decoration-line: underline">Client:</span>
           <span>&nbsp;{{transport.nomEntreprise}} <br> </span>
@@ -877,7 +925,7 @@
       </tr> 
       <tr> 
         <td colspan="5"style="text-align: left; text-anchor: start ">
-            <span style="text-decoration-line: underline">Note Additionnelle :</span> <span>&nbsp;{{transport.comments}} <br>&nbsp;</span>
+            <span style="text-decoration-line: underline">Plus infos :</span> <span>&nbsp;{{transport.comments}} <br>&nbsp;</span>
         </td>
       </tr>
       <tr> 

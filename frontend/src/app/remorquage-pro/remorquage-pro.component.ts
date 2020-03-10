@@ -347,7 +347,7 @@ export class RemorquageProComponent implements OnInit {
       this.shipper=data;
       //this.remorquage.nomEntreprise=this.shipper.nom
       //this.remorquage.idEntreprise=this.id
-      this.onNouvelAppel();
+      //this.onNouvelAppel();  // deactive for do not create appel ngonInit
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
       }, err=>{

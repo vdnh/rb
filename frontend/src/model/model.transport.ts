@@ -110,4 +110,14 @@ export class Transport{
     largeurDispo:number;
     hauteurDispo:number;
     poidsDispo:number;
+
+    //Mode payement
+    debit=false; // porter au compte
+    atPlace=false; // collecter d'argent
+    byCash=false; // cash
+    byCheck=false; // cheque
+    creditCard=false; // carte credit
+    byInterac=false; // interac
+    transfer=false; // virement
+    //fin mode payement
 }

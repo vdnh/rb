@@ -184,7 +184,8 @@ marqueChange(){
     // on focus windows
   @HostListener('window:focus', ['$event'])
   onfocus(event:any):void {
-    this.ngOnInit()
+    if(!this.remorquage.fini)
+      this.ngOnInit()
   }
 
     async ngOnInit() {    

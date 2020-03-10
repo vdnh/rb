@@ -208,12 +208,12 @@ export class TransportComponent implements OnInit {
 
   today=new Date();
   modeHistoire: number=-1;
-  listTrs: Transport[]; // appels waitting
-  listTrsSent: Transport[]; // appels sent
-  listTrsFini: Transport[]; // appels finished
-  listTrsAnnule: Transport[]; // appels annules
-  contacts: Contact[];
-  chauffeurs: Chauffeur[];
+  listTrs: Transport[]=[]; // appels waitting
+  listTrsSent: Transport[]=[]; // appels sent
+  listTrsFini: Transport[]=[]; // appels finished
+  listTrsAnnule: Transport[]=[]; // appels annules
+  contacts: Contact[]=[];
+  chauffeurs: Chauffeur[]=[];
   chauffeur: Chauffeur;
 
   em:EmailMessage=new EmailMessage();
@@ -442,7 +442,7 @@ export class TransportComponent implements OnInit {
         if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
         else
-          this.remorques.push(camion)  // Camions without GPS are trailers
+          if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
       })
       this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
@@ -507,18 +507,18 @@ export class TransportComponent implements OnInit {
     else this.chauffeur=null;
   }
 
-  async camionChange(){
-    let strings:Array<string>=this.transport.camionAttribue.split("Id.");
-    console.log('strings.lenght : '+strings.length);
-    console.log('strings[0] : '+strings[0]);
-    console.log('strings[1] : '+strings[1]);
+  camionChange(){
+    let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
+    // console.log('strings.lenght : '+strings.length);
+    // console.log('strings[0] : '+strings[0]);
+    // console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
       let cId:number =  Number(strings[1])
-      await this.camions.forEach(c=>{
+      this.camions.forEach(c=>{
         if(c.id==cId) 
         {
           this.camion=c;
-          this.transport.camionAttribue=this.camion.unite
+          this.transport.camionAttribue= strings[0].trimRight(); //this.camion.unite
           this.transport.idCamion=this.camion.id
         }
       })
@@ -528,15 +528,15 @@ export class TransportComponent implements OnInit {
     else this.camion=null;
   }
 
-  async trailer1Change(){
-    let strings:Array<string>=this.transport.trailer1.split("Id.");
+  trailer1Change(){
+    let strings:Array<string>=this.transport.trailer1.split(".Id.");
     if(strings.length>1){
       let tId:number =  Number(strings[1])
-      await this.remorques.forEach(r=>{
+      this.remorques.forEach(r=>{
         if(r.id==tId) 
         {
           this.trailer1=r;
-          this.transport.trailer1=this.trailer1.unite
+          this.transport.trailer1= strings[0].trimRight(); //this.trailer1.unite
           this.transport.idTrailer1=this.trailer1.id
         }
       })
@@ -554,8 +554,8 @@ export class TransportComponent implements OnInit {
     }
   }
 
-  async trailer2Change(){
-    let strings:Array<string>=this.transport.trailer2.split("Id.");
+  trailer2Change(){
+    let strings:Array<string>=this.transport.trailer2.split(".Id.");
     if(strings.length>1){
       let tId:number =  Number(strings[1])
       if(tId==this.trailer1.id){
@@ -563,11 +563,11 @@ export class TransportComponent implements OnInit {
        this.transport.trailer2=''
       }
       else{
-        await this.remorques.forEach(r=>{
+        this.remorques.forEach(r=>{
           if(r.id==tId) 
           {
             this.trailer2=r;
-            this.transport.trailer2=this.trailer2.unite
+            this.transport.trailer2= strings[0].trimRight(); //this.trailer2.unite
             this.transport.idTrailer2=this.trailer2.id
           }
         })
@@ -1243,7 +1243,7 @@ async showMap() {
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
           alert("C'est enregistre.")
-        await this.createVoyage() // creer un voyage
+        //await this.createVoyage() // creer un voyage
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1550,6 +1550,120 @@ async showMap() {
     }
     else 
       alert("Checkez le courriel de chauffer, SVP!!!")
+  }
+
+  ifDebit(){ // porter au compte
+    if(this.transport.debit){
+      this.transport.porterAuCompte=this.transport.total
+      this.transport.collecterArgent=0;
+      this.transport.atPlace=false
+      this.transport.byCash=false
+      this.transport.byCheck=false
+      this.transport.creditCard=false
+      this.transport.byInterac=false
+      this.transport.transfer=false
+    }
+    else{
+      this.transport.porterAuCompte=0;
+    }
+  }
+  
+  ifAtPlace(){ // collecter d'argent
+    if(this.transport.atPlace){
+      this.transport.collecterArgent=this.transport.total
+      this.transport.porterAuCompte=0;
+      this.transport.debit=false
+    }
+    else{
+      this.transport.collecterArgent=0;
+    }
+  }
+
+  onPage1(){
+    this.pagePresent=1;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage2(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=2;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage3(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=3;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage4(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=4;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage5(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=5;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage6(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=6;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage7(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=7;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage8(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=8;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage9(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=9;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage10(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=10;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
   }
 
   logout(){

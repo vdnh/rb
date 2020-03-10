@@ -141,6 +141,16 @@ public class Transport implements Serializable{
     private Float hauteurDispo;
     private Float poidsDispo;
     
+    //Mode payement
+    private Boolean debit=false; // porter au compte
+    private Boolean atPlace=false; // collecter d'argent
+    private Boolean byCash=false; // cash
+    private Boolean byCheck=false; // cheque
+    private Boolean creditCard=false; // carte credit
+    private Boolean byInterac=false; // interac
+    private Boolean transfer=false; // virement
+    //fin mode payement
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){
