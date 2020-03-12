@@ -151,6 +151,11 @@ public class Transport implements Serializable{
     private Boolean transfer=false; // virement
     //fin mode payement
     
+    // waiting time and price
+    private Float waitingTime;
+    private Float waitingPrice; // per hours
+    private Float waitingFee;   // = waitingTime * waitingPrice
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

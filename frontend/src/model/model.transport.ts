@@ -120,4 +120,9 @@ export class Transport{
     byInterac=false; // interac
     transfer=false; // virement
     //fin mode payement
+    
+    // waiting time and price
+    waitingTime:number=0.00;
+    waitingPrice:number=0.00; // per hours
+    waitingFee:number=0.00;   // = waitingTime * waitingPrice
 }

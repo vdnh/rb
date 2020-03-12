@@ -140,34 +140,46 @@ export class DetailTransporterComponent implements OnInit {
       console.log();
     });    
 
-    this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+    this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
       /*/this.camionsSurMap.length=0;
       data.forEach(camion=>{
         if(camion.uniteMonitor!=null && camion.monitor!=null)
           this.camionsSurMap.push(camion)
       })
       //*/
-      this.camions=data;
-      this.camionsInOperation = this.filterCamionInOperation()
-      this.camionsOutOperation = this.filterCamionOutOperation()
-      this.camionsInOperation.forEach(async obj =>{
-        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data:Array<AutreEntretien>)=>{
-          if(data!=null){
-            
-            let entsAutre:AutreEntretienList=new AutreEntretienList();
-            
-            entsAutre.entsList=data;
-            entsAutre.unite=obj.unite;
-            entsAutre.odometre=obj.odometre;
-            if(entsAutre.entsList.length != 0)
+      data.sort((a,b)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      });
+      this.camions= data
+      // this.camions.sort((a,b)=>{
+      //   if(a.id>b.id)
+      //     return 1;
+      //   if(a.id<b.id)
+      //     return -1;
+      //   return 0;
+      // })
+      this.camionsInOperation = await this.camions.filter(camion=>camion.status==true) //this.filterCamionInOperation()
+      this.camionsOutOperation = await this.camions.filter(camion=>camion.status==false) //this.filterCamionOutOperation()
+      this.camionsInOperation.forEach(async (obj) => {
+        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data: Array<AutreEntretien>) => {
+          if (data != null) {
+            let entsAutre: AutreEntretienList = new AutreEntretienList();
+            entsAutre.entsList = data;
+            entsAutre.unite = obj.unite;
+            entsAutre.odometre = obj.odometre;
+            if (entsAutre.entsList.length != 0)
               this.arrayArrayEnts.push(entsAutre);
           }
-        }, err=>{
-          console.log(err)
-        })
-      }, err=>{
-
-      })//*/
+        }, err => {
+          console.log(err);
+        });
+      }, err => {
+      }) //*/
+//*/
     }, err=>{
       console.log();
     });
@@ -285,43 +297,46 @@ export class DetailTransporterComponent implements OnInit {
     });
   }  
 
-  async addCamion(){
+  addCamion(){
     this.addcamion.idTransporter=this.id;
     //*
-    await this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+    this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+      alert('Camion unite '+data.unite+' a ete ajoute.')
+      this.camions.push(data) // refresh list camions
+      this.camionsInOperation.push(data)  // refresh list camionsInOperation
       this.addcamion=data;
       this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
       this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
-      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-        this.camions=data;
-      }, err=>{
-        console.log();
-      });
+      // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      //   this.camions=data;
+      // }, err=>{
+      //   console.log();
+      // });
       this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
         console.log('fiche1 ok ' +  data.idCamion)
+        this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+          console.log('fiche2 ok ' +  data.idCamion) 
+          this.addcamion=new Camion();
+        }, err=>{
+          console.log(err)
+        });
       }, err=>{
         console.log(err)
       });
-      this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
-        console.log('fiche2 ok ' +  data.idCamion) 
-      }, err=>{
-        console.log(err)
-      });
-      this.addcamion=new Camion();
     }, err=>{
       console.log(err)
     })//*/
   }
 
-  deleteCamion(id:number){
+  deleteCamion(camion, camions:Array<Camion>){
     //*
-    this.camionsService.deleteCamion(id)
-    .subscribe(data=>{
-      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-        this.camions=data;
-      }, err=>{
-        console.log(err);
-      });
+    this.camionsService.deleteCamion(camion.id).subscribe(data=>{
+      // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      //   this.camions=data;
+      // }, err=>{
+      //   console.log(err);
+      // });
+      camions.splice(camions.indexOf(camion), 1)
     }, err=>{
       console.log(err);
     });//*/
@@ -554,7 +569,7 @@ export class DetailTransporterComponent implements OnInit {
   codeCouleurEnt1(camion:Camion){
     //if(camion.odo1Fait!=camion.odo2Fait)
       //return this.codeCouleurEnt2(camion)
-    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null || camion.odometre==0)      
       return '';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
       return "btn-success";
@@ -568,7 +583,7 @@ export class DetailTransporterComponent implements OnInit {
   codeCouleurEnt2(camion:Camion){
     //if(camion.odo2Fait!=camion.odo3Fait)
       //return this.codeCouleurEnt3(camion)
-    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null || camion.odometre==0)
       //console.log('btn-danger" [disabled]="true');
       return '';
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
@@ -582,7 +597,7 @@ export class DetailTransporterComponent implements OnInit {
   }
   codeCouleurEnt3(camion:Camion){
     //console.log("I am called. And odoAFait : " + odoAFaire)
-    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null || camion.odometre==0)
       //console.log('btn-danger" [disabled]="true');
       return '';
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
@@ -597,7 +612,7 @@ export class DetailTransporterComponent implements OnInit {
 
   codeCouleur(odometre, odoFait:number, odoAFaire:number){
     //console.log("I am called. And odoAFait : " + odoAFaire)
-    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+    if(odoAFaire==0 || odoAFaire==null || odometre==null || odometre==0)
       //console.log('btn-danger" [disabled]="true');
       return '';
     if((odometre-odoFait)<(odoAFaire-5000))
@@ -628,8 +643,8 @@ export class DetailTransporterComponent implements OnInit {
   codeTextEnt1(camion:Camion){
     //if(camion.odo1Fait!=camion.odo2Fait)
       //return this.codeTextEnt2(camion)
-    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)      
-      return '';
+    if(camion.ent1==null || camion.ent1==0 || camion.odometre==null || camion.odometre==0)      
+      return 'pas_data';
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
       return "bon-etat";
     if((camion.odometre-camion.odo1Fait)<camion.ent1)
@@ -642,8 +657,8 @@ export class DetailTransporterComponent implements OnInit {
   codeTextEnt2(camion:Camion){
     //if(camion.odo2Fait!=camion.odo3Fait)
       //return this.codeTextEnt3(camion)
-    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
-      return '';
+    if(camion.ent2==null || camion.ent2==0 || camion.odometre==null || camion.odometre==0)
+      return 'pas_data';
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
       return "bon-etat";
     if((camion.odometre-camion.odo2Fait)<camion.ent2)
@@ -654,8 +669,8 @@ export class DetailTransporterComponent implements OnInit {
       return "";
   }
   codeTextEnt3(camion:Camion){
-    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
-      return '';
+    if(camion.ent3==null || camion.ent3==0 || camion.odometre==null || camion.odometre==0)
+      return 'pas_data';
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
       return "bon-etat";
     if((camion.odometre-camion.odo3Fait)<camion.ent3)
@@ -667,8 +682,8 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   codeText(odometre, odoFait:number, odoAFaire:number){
-    if(odoAFaire==0 || odoAFaire==null || odometre==null)
-      return 'pas-data';
+    if(odoAFaire==0 || odoAFaire==null || odometre==null || odometre==0)
+      return 'pas_data';
     if((odometre-odoFait)<(odoAFaire-5000))
       return "bon-etat";
     if((odometre-odoFait)<odoAFaire)
@@ -680,7 +695,7 @@ export class DetailTransporterComponent implements OnInit {
   codeTextInspect(inspect6m:Date){
     if(inspect6m==null)
     {
-      return 'pas-data';
+      return 'pas_data';
     }
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
@@ -698,7 +713,7 @@ export class DetailTransporterComponent implements OnInit {
     //*
     //if(camion.odo1Fait!=camion.odo2Fait)
       //return this.disableButton2(camion)
-    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null)
+    if(camion.ent1==0 || camion.ent1==null || camion.odometre==null || camion.odometre==0)
       return true;
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
       return true;
@@ -709,7 +724,7 @@ export class DetailTransporterComponent implements OnInit {
     //*
     //if(camion.odo2Fait!=camion.odo3Fait)
       //return this.disableButton3(camion)
-    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null)
+    if(camion.ent2==0 || camion.ent2==null || camion.odometre==null || camion.odometre==0)
       return true;
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
       return true;
@@ -718,7 +733,7 @@ export class DetailTransporterComponent implements OnInit {
   }
   disableButton3(camion:Camion) : boolean{
     //*
-    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null)
+    if(camion.ent3==0 || camion.ent3==null || camion.odometre==null || camion.odometre==0)
       return true;
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
       return true;
@@ -728,7 +743,7 @@ export class DetailTransporterComponent implements OnInit {
 
   disableButton(odometre, odoFait:number, odoAFaire:number) : boolean{
     //*
-    if(odoAFaire==0 || odoAFaire==null || odometre==null)
+    if(odoAFaire==0 || odoAFaire==null || odometre==null || odometre==0)
       return true;
     if((odometre-odoFait)<(odoAFaire-5000))
       return true;

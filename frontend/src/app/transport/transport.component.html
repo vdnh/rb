@@ -219,7 +219,7 @@
           </button></th>
         </tr>
       </table>
-      <br>
+      <br *ngIf="pagePresent>=2">
       <div class="col-sm-12 col-lg-12 col-md-12">
         <!--div class="row">
           <button (click)="onReset()" class="btn btn-link" *ngIf="(transport.id>0)">AnnulerAppel</button> 
@@ -230,21 +230,27 @@
         <div class="row" *ngIf="pagePresent==1">
           <div class="col-md-3 col-sm-3 col-lg-3">
             <h5><label>
-            Repartiteur <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
+              Repartiteur 
+              <input type="text" [(ngModel)]="transport.nomDispatch" name="nomDispatch" class="form-control">
             </label></h5> 
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
-            <label for=""><h5>ModeleRemplis</h5></label>
-            <input type="text"  [(ngModel)]="templateName"
+            <label for=""><h5>
+              ModeleRemplis
+              <input type="text"  [(ngModel)]="templateName"
                 name="templateName" class="form-control" (change)="templateChange()" list="defaultTemplates">
               <datalist id="defaultTemplates">
                 <option *ngFor="let t of templates" [ngValue]="t">{{t.modelName +' &nbsp;&nbsp; .Id.'+t.id}}</option>
               </datalist>
-              <label for="">
-                <button class="btn btn-link" (click)="modifyModels=true">
-                  Modifier des modeles
-                </button>
-              </label>
+              <button class="btn btn-link" (click)="modifyModels=true">
+                Liste modeleRemplis
+              </button>
+            </h5></label>
+            <!-- <label for="">
+              <button class="btn btn-link" (click)="modifyModels=true">
+                Modifier des modeles
+              </button>
+            </label> -->
           </div>
           <div class="col-md-3 col-sm-3 col-lg-3">
             <h5>
@@ -772,26 +778,7 @@
             <h5 style="text-decoration-line: underline"><strong>Volume (en pouces et lbs)</strong></h5>
           </div>
         </div> -->
-        <div *ngIf="pagePresent==9" class="row">
-          <div  class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for=""><h6 style="text-decoration-line: underline"><strong>Volume</strong></h6></label>
-            <!-- <label for="">&nbsp;&nbsp;</label> -->
-            <strong class="form-control" style="border: none;">Default</strong>
-            <span class="form-control" style="border: none;">Utilise</span>
-            <h6 class="form-control" style="border: none;">Disponible</h6>
-          </div>
-          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Longueur(pied)</label>
-            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()" disabled>
-            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
-            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
-          </div>
-          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
-            <label for="">Poids(lbs)</label>
-            <input class="form-control" type="number" size="5" [value]="volumePoids()" disabled>
-            <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
-            <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
-          </div>
+        <div *ngIf="pagePresent==9" class="row">          
           <!-- <div class="col-sm-6 col-md-2 col-lg-2; form-group">
             <label for="">Largeur</label>
             <input class="form-control" type="number" size="5" disabled>
@@ -802,7 +789,7 @@
             <input class="form-control" type="number" size="5" disabled>
             <input class="form-control"  type="number" size="5">
           </div> -->
-          <div class="col-sm-6 col-md-2 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for=""><h5 style="text-decoration-line: underline"><strong>Chauffeur</strong></h5></label>
               <input type="text"  [(ngModel)]="transport.nomIntervenant"
@@ -820,7 +807,7 @@
                     (focusout)="transport.telIntervenant=reformTelEvent($event)" required>
             </div>
           </div>
-          <div class="col-sm-6 col-md-2 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
               <label for="">Courriel</label>
               <input type="email" [(ngModel)]="transport.emailIntervenant" name="emailIntervenant" class="form-control" list="defaultEmails" 
@@ -828,6 +815,25 @@
                 <datalist id="defaultEmails">
                 </datalist>
             </div>
+          </div>
+          <div  class="col-sm-6 col-md-1 col-lg-1; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>Volume</strong></h6></label>
+            <!-- <label for="">&nbsp;&nbsp;</label> -->
+            <strong class="form-control" style="border: none;">Default</strong>
+            <span class="form-control" style="border: none;">Utilise</span>
+            <h6 class="form-control" style="border: none;">Disponible</h6>
+          </div>
+          <div class="col-sm-6 col-md-1 col-lg-1; form-group">
+            <label for="">Longueur(pi)</label>
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()">
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.longueur" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumeLongueur()-transport.longueur" style="background-color:greenyellow;">
+          </div>
+          <div class="col-sm-6 col-md-2 col-lg-2; form-group">
+            <label for="">Poids(lbs)</label>
+            <input class="form-control" type="number" size="5" [value]="volumePoids()">
+            <input class="form-control" type="number" size="5" [(ngModel)]="transport.poids" style="background-color: darkorange;">
+            <input class="form-control"  type="number" size="5" [value]="volumePoids()-transport.poids" style="background-color:greenyellow;">
           </div>
         </div>
         <!-- <div class="row">
@@ -850,13 +856,45 @@
         </div> -->
   
         <div *ngIf="pagePresent==9" class="row">
-          <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note au Chauffeur</label></div>
-          <div class="col-sm-10 col-md-10 col-lg-10">
+          <!-- <div class="col-sm-2 col-md-2 col-lg-2"><label style="text-decoration-line: underline;" class="control-label">Note au Chauffeur</label></div> -->
+          
+          <div class="col-sm-6 col-md-6 col-lg-6; form-group">
+            <label for="" style="text-decoration-line: underline;" class="control-label">Note au Chauffeur</label>
             <textarea name="comments" class="form-control" cols="80" rows="2"
                   [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
                   style="margin-top: 0px"></textarea>
           </div>
+          <div  class="col-sm-1 col-md-1 col-lg-1; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>HeuresAttente</strong></h6></label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime"
+            (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-1 col-md-1 col-lg-1; form-group">
+            <label for="">PrixAttente</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingPrice"
+            (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-1 col-md-1 col-lg-1; form-group">
+            <label for="">FraisAttente</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingFee"
+            (change)="prixCalcul()">
+          </div>
         </div>
+        <!-- <div *ngIf="pagePresent==9" class="row">
+          <div  class="col-sm-6 col-md-1 col-lg-1; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>HeuresAttente</strong></h6></label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime">
+          </div>
+          <div class="col-sm-6 col-md-1 col-lg-1; form-group">
+            <label for="">PrixAttente</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingPrice">
+          </div>
+          <div class="col-sm-6 col-md-1 col-lg-1; form-group">
+            <label for="">FraisAttente</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingFee">
+          </div>
+        </div>
+         -->
 
         <!--hr *ngIf="pagePresent==9" style="border: 2px solid lightgray"/-->
         <h5 style="text-decoration-line: underline" *ngIf="pagePresent==10">Resumer</h5>
@@ -1018,8 +1056,15 @@
       <tr>
         <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transport.dateReserve | date : 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</th>
         <td style="text-align: center; text-anchor: start; width: 20%"># Camion <br> <span>&nbsp;{{transport.camionAttribue}}</span></td>
+        <td style="text-align: center; text-anchor: start; width: 20%"># Trailer<br> 
+          <span *ngIf="trailer1!=null">{{transport.trailer1}}</span>
+          <span *ngIf="trailer2!=null"><br>{{transport.trailer2}}</span>
+        </td>
         <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
-        <td style="text-align: center; text-anchor: start;; width: 38%" colspan="2">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td>
+        <td style="text-align: center; text-anchor: start;; width: 20%">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td>
+      </tr>
+      <tr>
+        <th *ngIf="transport.waitingTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Temps d'attente : {{transport.waitingTime | number : '1.2'}} heures</th>
       </tr>
       <!-- <tr style="border: 0px">
         <td colspan="3" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte}}</td>

@@ -462,19 +462,19 @@ export class DetailTransportComponent implements OnInit {
   }
   async trailer1Change(){
     let strings:Array<string>=this.transport.trailer1.split("Id.");
-    console.log('strings.lenght : '+strings.length);
-    console.log('strings[0] : '+strings[0]);
-    console.log('strings[1] : '+strings[1]);
+    // console.log('strings.lenght : '+strings.length);
+    // console.log('strings[0] : '+strings[0]);
+    // console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
       let tId:number =  Number(strings[1])
-      console.log('tId out of loop : '+tId);
+      // console.log('tId out of loop : '+tId);
       await this.remorques.forEach(re=>{
-        console.log('reId : '+re.id);
-        console.log('tId : '+tId);
+        // console.log('reId : '+re.id);
+        // console.log('tId : '+tId);
         if(re.id==tId) 
         {
           this.trailer1=re;
-          this.transport.trailer1=this.trailer1.unite
+          this.transport.trailer1=this.trailer1.unite + ' - ' + this.trailer1.marque +'  ' +this.trailer1.modele
           this.transport.idTrailer1=this.trailer1.id
         }
       })
@@ -494,9 +494,9 @@ export class DetailTransportComponent implements OnInit {
 
   async trailer2Change(){
     let strings:Array<string>=this.transport.trailer2.split("Id.");
-    console.log('strings.lenght : '+strings.length);
-    console.log('strings[0] : '+strings[0]);
-    console.log('strings[1] : '+strings[1]);
+    // console.log('strings.lenght : '+strings.length);
+    // console.log('strings[0] : '+strings[0]);
+    // console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
       let tId:number =  Number(strings[1])
       if(tId==this.trailer1.id){
@@ -508,7 +508,7 @@ export class DetailTransportComponent implements OnInit {
           if(r.id==tId) 
           {
             this.trailer2=r;
-            this.transport.trailer2=this.trailer2.unite
+            this.transport.trailer2=this.trailer2.unite + ' - ' + this.trailer2.marque +'  ' +this.trailer2.modele
             this.transport.idTrailer2=this.trailer2.id
           }
         })
@@ -950,15 +950,34 @@ printBonDeTransport(cmpId){
   })
 }
 
+// async prixCalcul(){
+//   this.transport.horstax=this.transport.prixBase
+//   if((this.transport.distance-this.transport.inclus)>0){
+//     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+//   }
+//   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
+//   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
+//   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+//   //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+// }
+
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase
+  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
-  this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  this.ifAtPlace()
+  this.ifDebit()
 }
 
 prixCalculWithHorsTax(){
@@ -972,6 +991,8 @@ prixCalculWithHorsTax(){
     this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
     this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
+  this.ifAtPlace()
+  this.ifDebit()
 }
 
 async showMap() {
@@ -1552,6 +1573,33 @@ async showMap() {
     })    
   }
 
+  ifDebit(){ // porter au compte
+    if(this.transport.debit){
+      this.transport.porterAuCompte=this.transport.total
+      this.transport.collecterArgent=0;
+      this.transport.atPlace=false
+      this.transport.byCash=false
+      this.transport.byCheck=false
+      this.transport.creditCard=false
+      this.transport.byInterac=false
+      this.transport.transfer=false
+    }
+    else{
+      this.transport.porterAuCompte=0;
+    }
+  }
+  
+  ifAtPlace(){ // collecter d'argent
+    if(this.transport.atPlace){
+      this.transport.collecterArgent=this.transport.total
+      this.transport.porterAuCompte=0;
+      this.transport.debit=false
+    }
+    else{
+      this.transport.collecterArgent=0;
+    }
+  }
+  
   logout(){
     localStorage.clear();
     //this.router.navigateByUrl("");

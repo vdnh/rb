@@ -509,16 +509,18 @@ export class TransportComponent implements OnInit {
 
   camionChange(){
     let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
+    //let string0 :string = strings[0]
     // console.log('strings.lenght : '+strings.length);
     // console.log('strings[0] : '+strings[0]);
     // console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
+      let string0 :string = strings[0]
       let cId:number =  Number(strings[1])
       this.camions.forEach(c=>{
         if(c.id==cId) 
         {
           this.camion=c;
-          this.transport.camionAttribue= strings[0].trimRight(); //this.camion.unite
+          this.transport.camionAttribue= string0.trim(); //this.camion.unite
           this.transport.idCamion=this.camion.id
         }
       })
@@ -530,13 +532,15 @@ export class TransportComponent implements OnInit {
 
   trailer1Change(){
     let strings:Array<string>=this.transport.trailer1.split(".Id.");
+    //let string0 :string = strings[0]
     if(strings.length>1){
+      let string0 :string = strings[0]
       let tId:number =  Number(strings[1])
       this.remorques.forEach(r=>{
         if(r.id==tId) 
         {
           this.trailer1=r;
-          this.transport.trailer1= strings[0].trimRight(); //this.trailer1.unite
+          this.transport.trailer1= string0.trim(); //this.trailer1.unite
           this.transport.idTrailer1=this.trailer1.id
         }
       })
@@ -556,7 +560,9 @@ export class TransportComponent implements OnInit {
 
   trailer2Change(){
     let strings:Array<string>=this.transport.trailer2.split(".Id.");
+    //let string0 :string = strings[0]
     if(strings.length>1){
+      let string0 :string = strings[0]
       let tId:number =  Number(strings[1])
       if(tId==this.trailer1.id){
        alert('Il ne faut pas le meme de trailer1 !!')     
@@ -567,7 +573,7 @@ export class TransportComponent implements OnInit {
           if(r.id==tId) 
           {
             this.trailer2=r;
-            this.transport.trailer2= strings[0].trimRight(); //this.trailer2.unite
+            this.transport.trailer2= string0.trim(); //this.trailer2.unite
             this.transport.idTrailer2=this.trailer2.id
           }
         })
@@ -966,7 +972,7 @@ printBonDeTransport(cmpId){
 }
 
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase
+  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
@@ -980,6 +986,8 @@ async prixCalcul(){
     this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
     this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
+  this.ifAtPlace()
+  this.ifDebit()
 }
 
 prixCalculWithHorsTax(){
@@ -993,6 +1001,8 @@ prixCalculWithHorsTax(){
     this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
     this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
+  this.ifAtPlace()
+  this.ifDebit()
 }
 
 async showMap() {
