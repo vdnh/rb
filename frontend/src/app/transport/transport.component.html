@@ -898,17 +898,36 @@
 
         <!--hr *ngIf="pagePresent==9" style="border: 2px solid lightgray"/-->
         <h5 style="text-decoration-line: underline" *ngIf="pagePresent==10">Resumer</h5>
-        <div *ngIf="pagePresent==10" class="row" style="margin-top: 10px">
-          <!--div class="col-md-3">
+        <div *ngIf="pagePresent==10" class="row">
+          <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-            
+              <label *ngIf="mode==1">Total Longueur(pied)</label>
+              <label *ngIf="mode==2">Total Longueur(cm)</label>
+              <input type="number" [(ngModel)]="transport.longueur" name="longueur" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              
+              <label *ngIf="mode==1">Total Poids(lb)</label>
+              <label *ngIf="mode==2">Total Poids(kg)</label>
+              <input type="number" [(ngModel)]="transport.poids" name="poids" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
-          </div-->
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >Valeur($)</label>
+              <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label *ngIf="mode==1">Distance(mile)</label>
+              <label *ngIf="mode==2">Distance(km)</label>
+              <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control" disabled/>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="pagePresent==10" class="row" style="margin-top: 10px">
           <div class="col-md-2">
             <div class="form-group">
               <table>

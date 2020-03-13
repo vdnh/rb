@@ -9,7 +9,7 @@
   <button (click)="onCancel()" class="btn btn-link" [disabled]="(!(transport.id>0)||transport.fini)">AnnulerAppel</button-->
   <table>
     <tr>
-      <td><button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button></td>
+      <!-- <td><button (click)="printBonDeTransport('toprint')" class="btn btn-link">Print</button></td> -->
       <td><button (click)="onFermer()" class="btn btn-link" >Fermer</button></td>
     </tr>
   </table>
@@ -34,7 +34,18 @@
       <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
       <td style="text-align: center; text-anchor: start; width: 20%">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td> <!--<span>&nbsp;{{transport.total | number : '1.2'}}</span>-->
     </tr>
-    
+    <tr>
+      <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
+        <span>Heures d'attente </span>
+      </th>
+      <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
+        <!-- *ngIf="transport.waitingTime>0"  -->
+        <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime"
+        (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
+            <!-- (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()"> -->
+        <!-- Temps d'attente : {{transport.waitingTime | number : '1.2'}} heures -->
+      </th>
+    </tr>
     <tr>
       <td *ngIf="transport.porterAuCompte>0" colspan="5" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte | number : '1.2'}}</td>
       <th *ngIf="transport.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{transport.collecterArgent | number : '1.2'}}</th>

@@ -362,8 +362,8 @@ export class TransportComponent implements OnInit {
     if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
       this.camion=null;
       this.chauffeur=null;
-      this.loadDetail=null;
-      this.loadDetails=null;
+      this.loadDetail=new LoadDetail();;
+      this.loadDetails=new Array<LoadDetail>();
       this.trailer1=null;
       this.trailer2=null;
       this.back=0;
@@ -1155,7 +1155,7 @@ async showMap() {
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    var r = confirm("Etes vous sur d'annuler ce cas ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.transport.id>0){

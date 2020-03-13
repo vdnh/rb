@@ -695,17 +695,74 @@ printBonDeTransport(cmpId){
     window.close()
   })
 }
-
+onWaitingTime(){
+  this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
+    //this.transport.signature=this.signaturePad.toDataURL()
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+    }, 
+      err=>{console.log(err)
+    })
+  }, err=>{
+    alert('On ne peut pas modifier temps attente!');
+    window.close()
+  })
+}
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase
+  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
-  this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
-  this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
-  this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+  if(this.transport.taxable){
+    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  else{
+    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+  }
+  this.ifAtPlace()
+  this.ifDebit()
+  this.onWaitingTime();
 }
+ifDebit(){ // porter au compte
+  if(this.transport.debit){
+    this.transport.porterAuCompte=this.transport.total
+    this.transport.collecterArgent=0;
+    this.transport.atPlace=false
+    this.transport.byCash=false
+    this.transport.byCheck=false
+    this.transport.creditCard=false
+    this.transport.byInterac=false
+    this.transport.transfer=false
+  }
+  else{
+    this.transport.porterAuCompte=0;
+  }
+}
+
+ifAtPlace(){ // collecter d'argent
+  if(this.transport.atPlace){
+    this.transport.collecterArgent=this.transport.total
+    this.transport.porterAuCompte=0;
+    this.transport.debit=false
+  }
+  else{
+    this.transport.collecterArgent=0;
+  }
+}
+// async prixCalcul(){
+//   this.transport.horstax=this.transport.prixBase
+//   if((this.transport.distance-this.transport.inclus)>0){
+//     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+//   }
+//   this.transport.tps =await Math.round(this.transport.horstax*0.05*100)/100
+//   this.transport.tvq =await Math.round(this.transport.horstax*0.09975*100)/100
+//   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+//   //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
+// }
 
 prixCalculWithHorsTax(){
   /*
