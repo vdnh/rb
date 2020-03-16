@@ -351,6 +351,8 @@ export class TransportProComponent implements OnInit {
       if(this.transport.id!=null){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
+          this.loadDetail=new LoadDetail();
+          this.loadDetails=new Array<LoadDetail>();
           this.transport.nomEntreprise=this.shipper.nom
           this.transport.idEntreprise=this.id
           this.templateName='';
@@ -378,19 +380,7 @@ export class TransportProComponent implements OnInit {
     load=this.loadDetail
     this.loadDetails.push(load)
     this.dimensionResume()
-    /*
-    if(load.longueur!=null){
-      if(this.transport.longueur!=null)
-        this.transport.longueur=this.transport.longueur + (load.longueur*load.quantity)
-      else  
-        this.transport.longueur=load.longueur*load.quantity
-    }
-    if(load.poids!=null){
-      if(this.transport.poids!=null)
-        this.transport.poids=this.transport.poids + (load.poids*load.quantity)
-      else  
-        this.transport.poids=load.poids*load.quantity
-    }//*/
+    
     this.loadDetail=new LoadDetail();
   }
   dimensionResume(){
@@ -1345,6 +1335,29 @@ async showMap() {
     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
       alert("Cette appel a ete envoye a SOS Prestige.")
+      //*/ Also App send confirmation email to client professionnel
+      if(this.transport.emailContact.length>10){
+        let em:EmailMessage=new EmailMessage();
+        em.emailDest=this.transport.emailContact;  // email of professional
+        em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
+        em.content='<div><p> '+ em.titre + " <br>" + 
+          '<div>'+
+            '<div><br></div>'+
+            '<div>Merci de votre collaboration.</div>'+
+            '<div><br></div>'+
+            '<div>Dispatch Marc-Andre Thiffeault </div>'+
+            '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+          '</div>'+
+          '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+          '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+          " </p></div>"
+        this.bankClientsService.envoyerMail(em).subscribe(data=>{
+          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+        }, err=>{console.log(err)})
+      }
+      //*/
       this.onSaveWithMessage();
       this.transport = new Transport() // declare one new case
       this.back=0;
