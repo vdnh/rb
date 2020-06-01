@@ -94,8 +94,8 @@ import org.springframework.web.bind.annotation.RestController;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 
         Transport transport = getMailSession.getTransport("smtp");
-	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
+	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        //transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
         //*/
         // check list if valid or not
         //System.out.println("em.getEmailDest() : " + em.getEmailDest());
@@ -150,8 +150,8 @@ import org.springframework.web.bind.annotation.RestController;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 
         Transport transport = getMailSession.getTransport("smtp");
-	//transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "dlink4449");
-        transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
+	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        //transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
         
         //*/
 	        
