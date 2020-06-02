@@ -86,6 +86,8 @@ export class DetailShipperComponent implements OnInit {
 
   saveShipper(){
     if(this.shipper.password.length>=4){
+      if(this.shipper.idTransporter==undefined && localStorage.getItem('idTransporter')!=undefined) // checker si shipper n'appartient aucun transporter, et dispatch transporter modifie son shipper
+        this.shipper.idTransporter=Number(localStorage.getItem('idTransporter'))
       this.shippersService.saveShippers(this.shipper).subscribe(data=>{
         //alert("Mise a jour.");
         this.onModifyUser();

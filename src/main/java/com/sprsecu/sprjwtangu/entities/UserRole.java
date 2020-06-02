@@ -27,4 +27,5 @@ public class UserRole {
     private String roleName;
     private String entrepriseNom; // name of principal entreprise    
     private String fullName=""; // fullname of user
+    private Long idTransporter;  // id de Transporter - besoins dans le cas de dispatch de transporter
 }

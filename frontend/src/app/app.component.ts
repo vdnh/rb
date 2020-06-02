@@ -323,7 +323,8 @@ export class AppComponent implements OnInit{
         //localStorage.setItem('userId', res.id.toString());
       }
       //*
-      if(this.role.includes('DISPATCH')) {         
+      if(this.role.includes('DISPATCH')) {  
+        //localStorage.setItem('idTransporter',this.us)       
         //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
         if(!location.href.includes("detail-remorquage")){
           if(location.href.includes("detail-transport-pro")){
@@ -417,6 +418,8 @@ export class AppComponent implements OnInit{
         localStorage.setItem('usernameLogin', this.usernameLogin)
         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
         localStorage.setItem('eligible',this.roleUsernameLogin) 
+        //console.log('res.idTransporter : '+res.idTransporter)
+        if(res.idTransporter != undefined) localStorage.setItem('idTransporter',res.idTransporter.toString()) // prendre idTransporter s'il en a
         if(res.id!=null) {
           localStorage.setItem('userId', res.id.toString());
           localStorage.setItem('entrepriseNom', res.entrepriseNom);

@@ -65,6 +65,16 @@ public class ShipperRestService {
         @RequestParam(name = "size", defaultValue = "5")int size){
         return shipperRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
     }
+    
+    @RequestMapping(value = "/chercherShippersByIdTransporter", method = RequestMethod.GET)
+    public Page<Shipper> chercherByIdTransporter(
+        @RequestParam(name = "mc", defaultValue = "") String mc, 
+        @RequestParam(name = "id", defaultValue = "") Long id, 
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        return shipperRepository.chercherByIdTransporter("%"+mc+"%", id, PageRequest.of(page, size));
+    }
+    
     //*
     @RequestMapping(value = "/shipperParLogin/{loginName}", method = RequestMethod.GET)
     public Shipper shipperParLogin_name(@PathVariable String loginName)

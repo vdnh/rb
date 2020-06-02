@@ -50,6 +50,13 @@ export class ShipperParticuliersService{
         .pipe(map(res => {return res}));
     }
 
+    getDetailShipperParticulierByIdTransporter(idTransporter:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/shipperParticuliersByIdTransporter/"+idTransporter
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+
     deleteShipperParticulier(id:number){
         this.loadTonken();
         return this.http.delete(this.adServer+":8080/shipperParticuliers/"+id

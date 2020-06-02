@@ -46,6 +46,7 @@ export class Transport{
     telIntervenant="";
     emailIntervenant="";
     idEntreprise:number;  // bientot id de Shipper
+    idTransporter:number;  // id de Transporter
     sent=false; // sent or didn't send to driver
     camionAttribue="";
     signature="";

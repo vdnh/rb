@@ -1,5 +1,6 @@
 export class ShipperParticulier{
     id:number;
+    idTransporter:number=8;  // id de Transporter (par default : SOSPrestige id=8)
     nom:string="";
     raison_sociale:string="";
     email:string="";

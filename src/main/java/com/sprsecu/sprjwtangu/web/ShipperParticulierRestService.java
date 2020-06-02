@@ -35,6 +35,11 @@ public class ShipperParticulierRestService {
         return shipperParticulierRepository.findById(id).get();
     }
     
+    @RequestMapping(value = "/shipperParticuliersByIdTransporter/{idTransporter}", method = RequestMethod.GET)
+    public ShipperParticulier getShipperParticulierByIdTransporter(@PathVariable Long idTransporter){
+        return shipperParticulierRepository.findByIdTransporter(idTransporter);
+    }
+    
     @RequestMapping(value = "/shipperParticuliers", method = RequestMethod.POST)
     public ShipperParticulier save(@RequestBody ShipperParticulier t){
         return shipperParticulierRepository.save(t);

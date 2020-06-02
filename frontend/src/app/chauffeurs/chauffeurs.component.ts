@@ -11,12 +11,13 @@ export class ChauffeursComponent implements OnInit {
 
   chauffeurs:Array<Chauffeur>;
   addchauffeur:Chauffeur=new Chauffeur(); // to add more chauffeur
-
+  idTransporter = Number(localStorage.getItem('idTransporter'))
   constructor(public chauffeursService:ChauffeursService,) { }
 
   ngOnInit() {
     // here we find drivers of SOSPrestige, therefore, id transporter = 8
-    this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+    
+    this.chauffeursService.chauffeursDeTransporter(this.idTransporter).subscribe((data:Array<Chauffeur>)=>{
       this.chauffeurs=data;
       this.chauffeurs.sort((a, b)=>{
         return a.nom.localeCompare(b.nom)
@@ -36,7 +37,7 @@ export class ChauffeursComponent implements OnInit {
   }
 
   addChauffeur(){
-    this.addchauffeur.idTransporter=8 // here we find drivers of SOSPrestige, therefore, id transporter = 8
+    this.addchauffeur.idTransporter=this.idTransporter // here we find drivers of SOSPrestige, therefore, id transporter = 8
     this.chauffeursService.saveChauffeurs(this.addchauffeur).subscribe((data:Chauffeur)=>{
       //alert("Chauffeur added.");
       //this.refresh()

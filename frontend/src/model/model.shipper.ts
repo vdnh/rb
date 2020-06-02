@@ -1,5 +1,6 @@
 export class Shipper{
     id:number;
+    idTransporter:number;  // id de Transporter
     nom:string="";
     raison_sociale:string="";
     email:string="";

@@ -48,4 +48,6 @@ public class AppUser  implements Serializable{
         this.password=password;
     }
     
+    private Long idTransporter;  // id de Transporter - besoins dans le cas de dispatch de transporter
+    
 }

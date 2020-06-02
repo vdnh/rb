@@ -59,6 +59,8 @@ export class NewShipperComponent implements OnInit {
   ngOnInit() {
     this.role=localStorage.getItem('role');
     this.shipper.password='dispatch';
+    if(localStorage.getItem('idTransporter')!=undefined) 
+      this.shipper.idTransporter=Number(localStorage.getItem('idTransporter'))
     this.adresse.province=this.provinceList[10];
     this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
       //this.listAppUsers=data;

@@ -74,6 +74,7 @@ public class Transport implements Serializable{
     private String telIntervenant="";
     private String emailIntervenant="";
     private Long idEntreprise;  // bientot id de Shipper
+    private Long idTransporter;  // id de Transporter
     private Boolean sent=false; // sent or didn't send to driver
     private String nomDispatch="";
     private String camionAttribue="";  // name of camion

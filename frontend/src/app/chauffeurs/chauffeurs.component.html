@@ -4,10 +4,11 @@
 
             <!-- <tr><td colspan="2"><strong>Add Chauffeur</strong></td></tr> -->
             <tr>
-                <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                <th>&nbsp;&nbsp;&nbsp;</th><th>Nom</th><th>CellPhone</th><th>Courriel</th>
                 <th><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link"><strong>Imprimer</strong></button></th>
             </tr>
             <tr>
+                <th>&nbsp;&nbsp;&nbsp;</th>
                 <td style="width: fit-content;"><input style="width: 35ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
                 <!-- <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td> -->
                 <td>
@@ -20,11 +21,12 @@
             </tr>
         </table>
         <table border="1">
-            <tr><td><strong>Liste Chauffeurs</strong></td></tr>
+            <tr><td colspan="2"><strong>Liste Chauffeurs</strong></td></tr>
             <!-- <tr>
                 <th>Nom</th><th>CellPhone</th><th>Courriel</th>
             </tr> -->
-            <tr *ngFor="let chauffeur of chauffeurs">
+            <tr *ngFor="let chauffeur of chauffeurs; let i = index">
+                <td>&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: fit-content;"><input style="width: 35ch;" class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
                 <td>
                     <!-- <input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /> -->
@@ -43,11 +45,12 @@
         <br><br>
         <table border="1">
             <tr>
-                <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                <th>&nbsp;&nbsp;&nbsp;</th><th>Nom</th><th>CellPhone</th><th>Courriel</th>
             </tr>
             <tr><td colspan="3"><strong> &nbsp; </strong></td></tr>
-            <ng-container *ngFor="let chauffeur of chauffeurs">
+            <ng-container *ngFor="let chauffeur of chauffeurs; let i = index">
                 <tr>
+                    <td>&nbsp;{{i+1}}&nbsp;</td>
                     <td style="margin: 5px;" >{{chauffeur.nom}}</td >
                     <td style="margin: 5px;">{{chauffeur.tel}}</td>                
                     <td style="margin: 5px;">{{chauffeur.email}}</td>

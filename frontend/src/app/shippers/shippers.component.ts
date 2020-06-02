@@ -22,28 +22,58 @@ export class ShippersComponent implements OnInit
   size:number=50;
   pages:Array<number>;  // pour tenir des numeros des pages
   role: string;
+  //index=1;
 
   //*/
   constructor(public authenticationService:AuthenticationService, public shipperservice:ShippersService, public router:Router) { }
 
   ngOnInit() {
+    //this.index=1;
     this.role=localStorage.getItem('role');
     this.doSearch();
     console.log("this from shippers component")
   }
 //*
   doSearch(){
-    this.shipperservice.getShippers(this.motCle, this.currentPage, this.size).subscribe((data:PageShipper)=>{
-      this.pageShipper=data;
-      // sort list of shippers
-      this.pageShipper.content.sort((a, b)=>{
-        return a.nom.localeCompare(b.nom)
+    if(localStorage.getItem('idTransporter')!=undefined)
+    {
+      let idTransporter = Number(localStorage.getItem('idTransporter'))
+      this.shipperservice.getShippersByIdTransporter(this.motCle, idTransporter, this.currentPage, this.size).subscribe((data:PageShipper)=>{
+        this.pageShipper=data;
+        // sort list of shippers
+        this.pageShipper.content.sort((a, b)=>{
+          return a.nom.localeCompare(b.nom)
+        })
+        //
+        this.pages=new Array(data.totalPages);
+      }, err=>{
+        console.log(err);
       })
-      //
-      this.pages=new Array(data.totalPages);
-    }, err=>{
-      console.log(err);
-    })
+    }
+    else{
+      this.shipperservice.getShippers(this.motCle, this.currentPage, this.size).subscribe((data:PageShipper)=>{
+        this.pageShipper=data;
+        // sort list of shippers
+        this.pageShipper.content.sort((a, b)=>{
+          return a.nom.localeCompare(b.nom)
+        })
+        //
+        this.pages=new Array(data.totalPages);
+      }, err=>{
+        console.log(err);
+      })
+    }
+    // this.shipperservice.getShippers(this.motCle, this.currentPage, this.size).subscribe((data:PageShipper)=>{
+    //   this.pageShipper=data;
+    //   // sort list of shippers
+    //   this.pageShipper.content.sort((a, b)=>{
+    //     return a.nom.localeCompare(b.nom)
+    //   })
+    //   //
+    //   this.pages=new Array(data.totalPages);
+    // }, err=>{
+    //   console.log(err);
+    // })
   }
   chercher(){
     this.doSearch();
@@ -57,6 +87,11 @@ export class ShippersComponent implements OnInit
   }
 
   gotoDetailShipperParticulier(id:number){
+    
+    // check if idTransporter exist to confirm idTransporter
+    if(localStorage.getItem('idTransporter')!=undefined) 
+      id=Number(localStorage.getItem('idTransporter'))
+    
     this.router.navigate(['detail-shipper-particulier',id]);
   }
 

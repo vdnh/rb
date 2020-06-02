@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class Shipper {
     @Id @GeneratedValue
     private Long id; // to identify shipper
+    private Long idTransporter;  // id de Transporter
     private String nom; // enterprise's name
     private String raison_sociale;
     @Temporal(TemporalType.DATE)

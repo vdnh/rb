@@ -21,5 +21,5 @@ public interface ShipperParticulierRepository  extends JpaRepository<ShipperPart
     //public AppUser findByUsername(String username);    
     //public Shipper findByEmail(String email);    
     //email
-    
+    public ShipperParticulier findByIdTransporter(Long id);
 }

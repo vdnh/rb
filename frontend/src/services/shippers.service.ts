@@ -40,6 +40,16 @@ export class ShippersService{
         }))
     }
 
+    getShippersByIdTransporter(motCle:string, id:number, page:number, size:number)    //:Observable<PageShipper>
+        {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/chercherShippersByIdTransporter?mc="+motCle+"&id="+id+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+
     getAllShippers()    //
         {    
         this.loadTonken();

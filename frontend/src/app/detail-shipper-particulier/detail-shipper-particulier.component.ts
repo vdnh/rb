@@ -33,12 +33,24 @@ export class DetailShipperParticulierComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.role=localStorage.getItem('role');
-    this.shipperParticuliersService.getDetailShipperParticulier(this.id).subscribe((data:ShipperParticulier)=>{
-      this.shipperParticulier=data;
-    }, err=>{
-      console.log(err);
-    });
+    if(localStorage.getItem('idTransporter')==undefined){
+      // this is finded by id dans ShipperParticulier
+      this.role=localStorage.getItem('role');
+      this.shipperParticuliersService.getDetailShipperParticulier(this.id).subscribe((data:ShipperParticulier)=>{
+        if(data!=null) this.shipperParticulier=data;
+      }, err=>{
+        console.log(err);
+      });
+    }
+    else{
+      // this is finded by idTransporter
+      this.shipperParticuliersService.getDetailShipperParticulierByIdTransporter(this.id).subscribe((data:ShipperParticulier)=>{
+        if(data!=null) this.shipperParticulier=data;
+      }, err=>{
+        console.log(err);
+      });
+    }
+    
   }
 
   printPriceList(cmpId){
@@ -54,6 +66,8 @@ export class DetailShipperParticulierComponent implements OnInit {
   }
 
   saveShipperParticulier(){
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.shipperParticulier.idTransporter = Number(localStorage.getItem('idTransporter'));
     this.shipperParticuliersService.saveShipperParticuliers(this.shipperParticulier).subscribe(data=>{
       alert("C'est enregistre.")
       //this.router.navigate(['']);
