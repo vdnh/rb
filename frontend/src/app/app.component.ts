@@ -48,7 +48,7 @@ export class AppComponent implements OnInit{
   form:FormGroup;  // use for chauffeur
   //formExpress:FormGroup;  // use for dispatch express
   idRemorquage: any;
-  idTransport: string;
+  idTransport: string;  // c'est numero bon de transport
   textExpressSign="Demande Express";
 
   modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 

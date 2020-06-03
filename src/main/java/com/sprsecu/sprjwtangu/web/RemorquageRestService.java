@@ -30,9 +30,16 @@ public class RemorquageRestService {
         return remorquageRepository.findAll();
     }
     
+    // All remorquage of un shipper - client pro
     @RequestMapping(value = "/remorquagesEntreprise/{idEntreprise}", method = RequestMethod.GET)
     public List<Remorquage> getRemorquagesEntreprise(@PathVariable Long idEntreprise){
         return remorquageRepository.findByIdEntreprise(idEntreprise);
+    }
+    
+    // All remorquage of un transporter
+    @RequestMapping(value = "/remorquagesTransporter/{idTransporter}", method = RequestMethod.GET)
+    public List<Remorquage> getRemorquagesTransporter(@PathVariable Long idTransporter){
+        return remorquageRepository.findByIdTransporter(idTransporter);
     }
     
     @RequestMapping(value = "/remorquages/{id}", method = RequestMethod.GET)

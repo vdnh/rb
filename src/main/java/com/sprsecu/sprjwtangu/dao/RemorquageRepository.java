@@ -18,4 +18,6 @@ public interface RemorquageRepository extends JpaRepository<Remorquage, Long>{
     public Page<Remorquage> chercher(@Param("x") String mc,  Pageable pageable);  
     
     public List<Remorquage> findByIdEntreprise(Long idEntreprise);
+    
+    public List<Remorquage> findByIdTransporter(Long idTransporter);
 }

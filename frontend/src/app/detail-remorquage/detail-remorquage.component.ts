@@ -21,6 +21,8 @@ import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as FileSaver from "file-saver";
 import { Subscription, timer, interval } from 'rxjs';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 
 @Component({
   selector: 'app-detail-remorquage',
@@ -117,6 +119,7 @@ export class DetailRemorquageComponent implements OnInit {
     //'canvasWidth': 250,
     //'canvasHeight': 100,
   };
+  transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -177,6 +180,7 @@ marqueChange(){
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
+    public transportersService:TransportersService
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
@@ -188,7 +192,7 @@ marqueChange(){
       this.ngOnInit()
   }
 
-    async ngOnInit() {    
+  async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
@@ -215,6 +219,12 @@ marqueChange(){
             this.shipper=data;
             this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
               this.contacts=data;
+              this.transportersService.getDetailTransporter(this.remorquage.idTransporter)
+              .subscribe((data:Transporter)=>{
+                this.transporter=data;
+              }), err=>{
+                console.log(err);
+              };
             }, err=>{
               console.log(err);
             });
@@ -226,7 +236,9 @@ marqueChange(){
         this.showMap()
       }
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    //this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    this.camionsService.camionsDeTransporter(this.remorquage.idTransporter).
+    subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
@@ -235,7 +247,9 @@ marqueChange(){
           this.camions.push(camion)
       })
       this.findCamionId(); // to find the truck we have choosen
-      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      //this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      this.chauffeursService.chauffeursDeTransporter(this.remorquage.idTransporter)
+      .subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
       }, err=>{
         console.log(err);
@@ -624,13 +638,17 @@ async showMap() {
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi message succes .')
@@ -693,13 +711,17 @@ async showMap() {
               '<div><br></div>'+
               '<div>Merci de votre comprehension.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi message attente .')
@@ -744,13 +766,17 @@ async showMap() {
                     '<div><br></div>'+
                     //'<div>Merci de votre collaboration.</div>'+
                     //'<div><br></div>'+
-                    '<div>Dispatch Marc-Andre Thiffeault </div>'+
-                    '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-                  '</div>'+
-                  '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-                  '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-                  '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-                  '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                    //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
                   " </p></div>"
                 this.bankClientsService.envoyerMail(em).subscribe(data=>{
                   console.log('Le client professionnel recois aussi message annulation .')
@@ -778,13 +804,17 @@ async showMap() {
                   '<div><br></div>'+
                   //'<div>Merci de votre collaboration.</div>'+
                   //'<div><br></div>'+
-                  '<div>Dispatch Marc-Andre Thiffeault </div>'+
-                  '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-                '</div>'+
-                '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-                '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-                '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-                '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                  //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
                 " </p></div>"
               await this.bankClientsService.envoyerMail(em).subscribe(data=>{
                 console.log('Le client professionnel recois aussi message annulation.')
@@ -1177,13 +1207,17 @@ async showMap() {
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')

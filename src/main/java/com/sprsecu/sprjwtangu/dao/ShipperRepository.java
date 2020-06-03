@@ -1,6 +1,7 @@
 package com.sprsecu.sprjwtangu.dao;
 
 import com.sprsecu.sprjwtangu.entities.Shipper;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,6 @@ public interface ShipperRepository  extends JpaRepository<Shipper, Long>{
     public Shipper findByLoginName(String loginName);
     //public AppUser findByUsername(String username);    
     //public Shipper findByEmail(String email);    
-    //email
+    public List<Shipper> findByIdTransporter(Long idTransporter);
     
 }

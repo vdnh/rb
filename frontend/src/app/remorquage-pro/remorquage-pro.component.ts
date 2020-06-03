@@ -19,6 +19,8 @@ import { CamionsService } from 'src/services/camions.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 
 @Component({
   selector: 'app-remorquage-pro',
@@ -117,6 +119,7 @@ export class RemorquageProComponent implements OnInit {
     //'canvasWidth': 'auto',
     //'canvasHeight': 'auto',
   };
+  transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -196,6 +199,7 @@ export class RemorquageProComponent implements OnInit {
     public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
+    public transportersService:TransportersService
     ) { 
       this.id = Number (localStorage.getItem("userId"));
   }
@@ -338,6 +342,10 @@ export class RemorquageProComponent implements OnInit {
     this.shipper.essence3=templShipper.essence3
   }
   async ngOnInit() {    
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.remorquage.idTransporter=Number(localStorage.getItem('idTransporter'))
+
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     //if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
@@ -350,6 +358,12 @@ export class RemorquageProComponent implements OnInit {
       //this.onNouvelAppel();  // deactive for do not create appel ngonInit
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
+        this.transportersService.getDetailTransporter(this.remorquage.idTransporter)
+              .subscribe((data:Transporter)=>{
+                this.transporter=data;
+              }), err=>{
+                console.log(err);
+              };
       }, err=>{
         console.log(err);
       });
@@ -1131,7 +1145,7 @@ onFileUpLoad(event){
       //console.log('this.em.titre : ' + this.em.titre)
       //console.log('this.em.emailDest : '+ this.em.emailDest)
       //console.log('this.em.content : ' + this.em.content)
-      alert("Cette appel a ete envoye a SOS Prestige.")
+      alert("Cette appel a ete envoye.")
       //*/ Also App send confirmation email to client professionnel
       if(this.remorquage.emailContact.length>10){
         let em:EmailMessage=new EmailMessage();
@@ -1142,13 +1156,17 @@ onFileUpLoad(event){
             '<div><br></div>'+
             '<div>Merci de votre collaboration.</div>'+
             '<div><br></div>'+
-            '<div>Dispatch Marc-Andre Thiffeault </div>'+
-            '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-          '</div>'+
-          '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
           " </p></div>"
         this.bankClientsService.envoyerMail(em).subscribe(data=>{
           console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')

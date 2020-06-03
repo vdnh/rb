@@ -30,6 +30,11 @@ public class ShipperRestService {
         return shipperRepository.findAll();
     }
     
+    @RequestMapping(value = "/shippersTransporter/{id}", method = RequestMethod.GET)
+    public List<Shipper> getShippersTransporter(@PathVariable Long id){
+        return shipperRepository.findByIdTransporter(id);
+    }
+    
     @RequestMapping(value = "/shippers/{id}", method = RequestMethod.GET)
     public Shipper getShipper(@PathVariable Long id){
         return shipperRepository.findById(id).get();

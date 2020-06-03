@@ -21,6 +21,8 @@ import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as FileSaver from "file-saver";
 import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
 import { ShipperParticulier } from 'src/model/model.shipperParticulier';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 
 @Component({
   selector: 'app-remorquage',
@@ -120,6 +122,7 @@ export class RemorquageComponent implements OnInit {
     //'canvasHeight': 'auto',
   };
   shipperParticulier: Shipper;
+  transporter: Transporter;
   
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -201,6 +204,7 @@ export class RemorquageComponent implements OnInit {
     public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
     public shipperParticuliersService:ShipperParticuliersService,
+    public transportersService:TransportersService
     ) { 
   }
   /*/ on close window
@@ -288,7 +292,9 @@ export class RemorquageComponent implements OnInit {
   }
   ifCompteClient(){
     if(this.compteClient){
-      this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+      //this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+      this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Shipper>)=>{
         this.listShipper=data;
         this.listShipper.sort((a,b)=>{
           return a.nom.localeCompare(b.nom)
@@ -315,7 +321,10 @@ export class RemorquageComponent implements OnInit {
   }
 
   async ngOnInit() {    
-    
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.remorquage.idTransporter=Number(localStorage.getItem('idTransporter'))
+
     // this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
     //   this.shipperParticulier=data;
     //   this.shipper=this.shipperParticulier;
@@ -326,7 +335,9 @@ export class RemorquageComponent implements OnInit {
     //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
     //if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
     if(localStorage.getItem('fullName')!=null) this.remorquage.nomDispatch=localStorage.getItem('fullName')
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    //await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    await this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
@@ -334,7 +345,9 @@ export class RemorquageComponent implements OnInit {
         if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
           this.camions.push(camion)
       })
-      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      // this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
         this.chauffeurs.sort((a,b)=>{
           return a.nom.localeCompare(b.nom)
@@ -360,14 +373,28 @@ export class RemorquageComponent implements OnInit {
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
     
-    // First get the price particular - then calculate price default
-    this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
-      this.shipperParticulier=<Shipper>data;
-      this.shipper=this.shipperParticulier;
-      this.typeServiceChange(this.serviceTypes[0]);
-    }, err=>{
-      console.log(err);
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Transporter)=>{
+      this.transporter=data;
+      // First get the price particular - then calculate price default
+      this.shipperParticuliersService.getDetailShipperParticulierByIdTransporter(this.transporter.id)
+      .subscribe((data:ShipperParticulier)=>{
+        this.shipperParticulier=<Shipper>data;
+        this.shipper=this.shipperParticulier;
+        this.typeServiceChange(this.serviceTypes[0]);
+      }, err=>{
+        console.log(err);
+      });
     });
+
+    // // First get the price particular - then calculate price default
+    // this.shipperParticuliersService.getDetailShipperParticulier(1).subscribe((data:ShipperParticulier)=>{
+    //   this.shipperParticulier=<Shipper>data;
+    //   this.shipper=this.shipperParticulier;
+    //   this.typeServiceChange(this.serviceTypes[0]);
+    // }, err=>{
+    //   console.log(err);
+    // });
     //this.typeServiceChange(this.serviceTypes[0]);
     //this.prixCalcul()
   }
@@ -537,7 +564,9 @@ onSortDate(data:Array<Remorquage>){
   })
 }
 onRefresh(){
-  this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+  //this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+  this.remorquagesService.getRemorquagesTransporter(Number(localStorage.getItem('idTransporter')))
+  .subscribe((data:Array<Remorquage>)=>{
     this.listRqs=[]  //data;
     this.listRqsSent=[]
     this.listRqsFini=[]
@@ -1148,7 +1177,9 @@ onFileUpLoad(event){
     this.modeExport=-1;
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      //this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      this.remorquagesService.getRemorquagesTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Remorquage>)=>{
         this.listRqs=[]  //data;
         this.listRqsSent=[]
         this.listRqsFini=[]
@@ -1196,7 +1227,9 @@ onFileUpLoad(event){
   findRqsExport(){
     this.rqsInday = []
     this.rqsIndayToExport = []
-    this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+    //this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+    this.remorquagesService.getRemorquagesTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Remorquage>)=>{
       data.sort((b, a)=>{
         if(a.id>b.id)
           return 1;
@@ -1308,7 +1341,9 @@ onFileUpLoad(event){
         '</Version>\r\n'  // ne pas changer
       let textSage='';
       //console.log('dateExport :  '+this.dateExport.toString())
-      this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      //this.remorquagesService.getAllRemorquages().subscribe((data:Array<Remorquage>)=>{
+      this.remorquagesService.getRemorquagesTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Remorquage>)=>{
         data.sort((b, a)=>{
           if(a.id>b.id)
             return 1;
@@ -1380,13 +1415,17 @@ onFileUpLoad(event){
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')

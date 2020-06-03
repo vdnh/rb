@@ -40,6 +40,16 @@ export class RemorquagesService{
         }))
     }
 
+    getRemorquagesTransporter(idTransporter:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/remorquagesTransporter/"+idTransporter, 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+
     getRemorquagesEntreprise(idEntreprise:number)
     {    
         this.loadTonken();
