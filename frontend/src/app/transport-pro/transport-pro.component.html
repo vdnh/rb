@@ -788,7 +788,7 @@
           <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.id==null || transport.fini">
               <span *ngIf="!transport.sent">EnvoyerAuChauffeur</span><span *ngIf="transport.sent">Re-EnvoyerAuChauffeur</span>
           </button-->
-          <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.fini || transport.id==null">Envoyer a SOSPrestige</button>
+          <button (click)="transport.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="transport.fini || transport.id==null">Envoyer</button>
           <br>
         </div>
       </div>

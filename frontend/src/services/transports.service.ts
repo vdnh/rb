@@ -73,6 +73,16 @@ export class TransportsService{
             return resp;
         }))
     }
+    
+    getTransportsTransporter(idTransporter:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/transportsTransporter/"+idTransporter, 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
 
     getTransportsEntreprise(idEntreprise:number)
     {    

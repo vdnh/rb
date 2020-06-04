@@ -25,6 +25,8 @@ import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Voyage } from 'src/model/model.voyage';
 import { VoyagesService } from 'src/services/voyages.service';
+import { TransportersService } from 'src/services/transporters.service';
+import { Transporter } from 'src/model/model.transporter';
 
 @Component({
   selector: 'app-transport',
@@ -97,6 +99,7 @@ export class TransportComponent implements OnInit {
   mode=1; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
+  testVar:number;
 
   zoom: number = 6;
   
@@ -132,6 +135,7 @@ export class TransportComponent implements OnInit {
   disableAuthority=false;
   disableTransCreditUS=false;
   modeGestionAppel: number = 2;
+  transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -243,6 +247,7 @@ export class TransportComponent implements OnInit {
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
     public voyagesService : VoyagesService, 
+    public transportersService:TransportersService
     ) { 
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
@@ -427,13 +432,18 @@ export class TransportComponent implements OnInit {
   }
   
   async ngOnInit() {    
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
+
     if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     this.loadDetails.length=0;
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     if(localStorage.getItem('fullName')!=null) 
       this.transport.nomDispatch=localStorage.getItem('fullName')
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    await this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
@@ -444,7 +454,8 @@ export class TransportComponent implements OnInit {
         else
           if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
       })
-      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
       }, err=>{
         console.log(err);
@@ -453,7 +464,9 @@ export class TransportComponent implements OnInit {
       console.log();
     })
     // end of taking list camion SOSPrestige
-    await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+    //await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+    await this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data;
       /*this.listShipper.forEach((sh:Shipper)=>{
         console.log('Shipper nom : '+ sh.nom)
@@ -470,6 +483,14 @@ export class TransportComponent implements OnInit {
     }, err=>{
       console.log(err);
     })
+    
+    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Transporter)=>{
+      this.transporter=data;
+    }), err=>{
+      console.log(err)
+    };
+    
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
@@ -926,7 +947,9 @@ onSortDate(data:Array<Transport>){
   })
 }
 onRefresh(){
-  this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+  //this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+  this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+  .subscribe((data:Array<Transport>)=>{
     // refresh the templates
     this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
       this.templates = data; // just for test
@@ -1467,7 +1490,9 @@ async showMap() {
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+      //this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Transport>)=>{
         //this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
@@ -1529,13 +1554,17 @@ async showMap() {
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')

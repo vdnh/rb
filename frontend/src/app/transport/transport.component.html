@@ -486,8 +486,20 @@
                 <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" placeholder="quantite"/>
               </td>
               <td>
-                <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="this.loadDetail.description" placeholder="description"></textarea>
+                <div class="form-group">
+                <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="this.loadDetail.description" 
+                  placeholder="description" list="defaultShippers"></textarea>
+                <datalist id="defaultShippers">
+                  <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+                </datalist>
+                </div>
               </td> 
+              <td>
+                <input type="text" name="test" class="form-control" list="defaultShippers">
+                <datalist id="defaultShippers">
+                  <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+                </datalist>
+              </td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.longueur" placeholder="longueur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.largeur" placeholder="largeur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.hauteur" placeholder="hauteur"/></td>

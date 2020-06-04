@@ -228,6 +228,7 @@ export class AppelExpressVisitorComponent implements OnInit {
       console.log(err);
     });
     //*/
+    this.remorquage.idTransporter=8; // par default appel visitor appartient de SOSPrestige
     // take particular price
     const user=this.form.value;
     this.authService.loginDefaultDriver(user).subscribe(resp=> {
@@ -1038,7 +1039,7 @@ async showMap() {
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
 
     //if(this.remorquage.telIntervenant!=null && this.remorquage.telIntervenant.length>=10){
-      let telSosPrestige= myGlobals.telPrincipal; //"514-728-3785";  // cellphone de SOSPrestige
+      let telSosPrestige= myGlobals.telPrincipal; //"514-728-3785";  // cellphone de cts.solution.transport
       let listeOperateurs : Array<string> = 
       [
         telSosPrestige.replace("-","").replace("-","")+"@txt.bellmobility.ca",
@@ -1061,12 +1062,12 @@ async showMap() {
       if(localStorage.getItem('tonken')!=null){
         this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
           this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-            alert("Le sms a ete envoye a SOS Prestige.")  
+            alert("Un sms a ete envoye.")  
               this.em.emailDest= myGlobals.emailPrincipal; //"ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
               //this.em.titre="Demande Express : " + this.remorquage.timeCall 
               this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
               this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-                alert("Le courriel a ete envoye a SOS Prestige, aussi.")
+                alert("Un courriel a ete envoye aussi.")
                 //this.answer=null;
                 this.remorquage=new Remorquage();
                 //localStorage.clear();  //  erase localstorage after sent sms and email

@@ -35,10 +35,19 @@ public class TransportRestService {
         return transportModelRepository.findAll();
     }
     
+    // All transports of un entreprise
     @RequestMapping(value = "/transportModelsEntreprise/{idEntreprise}", method = RequestMethod.GET)
     public List<TransportModel> getTransportModelsEntreprise(@PathVariable Long idEntreprise){
         return transportModelRepository.findByIdEntreprise(idEntreprise);
     }
+    
+    // All transports of un transporter
+    @RequestMapping(value = "/transportsTransporter/{idTransporter}", method = RequestMethod.GET)
+    public List<Transport> getTransportsTransporter(@PathVariable Long idTransporter){
+        return transportRepository.findByIdTransporter(idTransporter);
+    }
+    
+    
     @RequestMapping(value = "/transportModels", method = RequestMethod.POST)
     public TransportModel save(@RequestBody TransportModel t){
         return transportModelRepository.save(t);

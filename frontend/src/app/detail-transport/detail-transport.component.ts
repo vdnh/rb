@@ -25,6 +25,8 @@ import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Chauffeur } from 'src/model/model.chauffeur';
+import { TransportersService } from 'src/services/transporters.service';
+import { Transporter } from 'src/model/model.transporter';
 
 @Component({
   selector: 'app-detail-transport',
@@ -133,6 +135,7 @@ export class DetailTransportComponent implements OnInit {
   disableTransCreditUS=false;
   id: any;
   chauffeurs: Chauffeur[];
+  transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -232,6 +235,7 @@ export class DetailTransportComponent implements OnInit {
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
+    public transportersService:TransportersService
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
       //* construct for checkbox list
@@ -312,9 +316,9 @@ export class DetailTransportComponent implements OnInit {
     // end of taking list camion SOSPrestige
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
-      this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+      this.chauffeursService.chauffeursDeTransporter(this.transport.idTransporter).subscribe((data:Array<Chauffeur>)=>{
         this.chauffeurs=data;
-        this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+        this.camionsService.camionsDeTransporter(this.transport.idTransporter).subscribe((data:Array<Camion>)=>{
           //this.camions = data
           // this will take camions with gps monitor
           this.camions=[];
@@ -323,11 +327,11 @@ export class DetailTransportComponent implements OnInit {
             if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
               this.camions.push(camion)
             else
-              this.remorques.push(camion)  // Camions without GPS are trailers
+              if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
           })
-          console.log('this.transport.idCamion : '+this.transport.idCamion)
-          console.log('this.transport.idTrailer1 : '+this.transport.idTrailer1)
-          console.log('this.transport.idTrailer2 : '+this.transport.idTrailer2)
+          //console.log('this.transport.idCamion : '+this.transport.idCamion)
+          //console.log('this.transport.idTrailer1 : '+this.transport.idTrailer1)
+          //console.log('this.transport.idTrailer2 : '+this.transport.idTrailer2)
           this.camions.forEach((node)=>{ 
             if(node.id==this.transport.idCamion)
               this.camion= node;
@@ -350,6 +354,12 @@ export class DetailTransportComponent implements OnInit {
       }, err=>{
         console.log(err);
       });
+      this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Transporter)=>{
+        this.transporter=data;
+      }), err=>{
+        console.log(err)
+      };
       if(localStorage.getItem('fullName')!=null && !(this.transport.nomDispatch.length>0)) 
       this.transport.nomDispatch=localStorage.getItem('fullName')
       this.loadDetailsService.loadDetailsDeTransport(this.id).subscribe((lds:Array<LoadDetail>)=>{
@@ -1135,7 +1145,9 @@ async showMap() {
     this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
       var r = confirm("Etes vous sur que ce cas est fini ?")
       if(r==true){
-        console.log("Le cas est termine.")
+        //this.onTextExporter(); //  write into text export sage et excel
+        await this.printBonDeTransport('toprint');  // wait for print first tag html id="toprint"
+        //console.log("Le cas est termine.")
         this.transport.fini=true;
         this.transportsService.saveTransports(this.transport).subscribe(data=>{
           if(this.transport.emailContact.length>10){
@@ -1148,13 +1160,17 @@ async showMap() {
                 '<div><br></div>'+
                 '<div>Merci de votre collaboration.</div>'+
                 '<div><br></div>'+
-                '<div>Dispatch Marc-Andre Thiffeault </div>'+
-                '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-              '</div>'+
-              '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
               " </p></div>"
             this.bankClientsService.envoyerMail(em).subscribe(data=>{
               console.log('Le client professionnel recois aussi message succes .')
@@ -1192,13 +1208,17 @@ async showMap() {
               '<div><br></div>'+
               '<div>Merci de votre comprehension.</div>'+
               '<div><br></div>'+
-              '<div>Dispatch Marc-Andre Thiffeault </div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
               '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi message attente .')
@@ -1537,13 +1557,17 @@ async showMap() {
                 '<div><br></div>'+
                 '<div>Merci de votre collaboration.</div>'+
                 '<div><br></div>'+
-                '<div>Dispatch Marc-Andre Thiffeault </div>'+
-                '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-              '</div>'+
-              '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-              '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
               " </p></div>"
             this.bankClientsService.envoyerMail(em).subscribe(data=>{
               console.log('Le client professionnel recois aussi .')

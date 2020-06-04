@@ -15,11 +15,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class LoadDetail implements Serializable{
+public class LoadFrequent implements Serializable{
     @Id @GeneratedValue
     private Long id;
-    private Long idTransport;
-    private Integer quantity;
+    private Long idTransporter;
+    //private Integer quantity;
+    private String nom;
     private String description;
     private Float longueur;
     private Float largeur;

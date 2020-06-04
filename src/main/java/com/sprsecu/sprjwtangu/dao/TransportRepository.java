@@ -17,5 +17,6 @@ public interface TransportRepository  extends JpaRepository<Transport, Long>{
     public Page<Transport> chercher(@Param("x") String mc,  Pageable pageable);  
     
     public List<Transport> findByIdEntreprise(Long Transport);
-
+    
+    public List<Transport> findByIdTransporter(Long idTransporter);
 }

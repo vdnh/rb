@@ -24,6 +24,8 @@ import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { TransportersService } from 'src/services/transporters.service';
+import { Transporter } from 'src/model/model.transporter';
 
 
 @Component({
@@ -133,6 +135,7 @@ export class TransportProComponent implements OnInit {
   disableTransCreditUS=false;
   modeGestionAppel: number = 2;
   id: number;
+  transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -239,6 +242,7 @@ export class TransportProComponent implements OnInit {
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
+    public transportersService:TransportersService
     ) { 
       this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
@@ -405,6 +409,10 @@ export class TransportProComponent implements OnInit {
     this.loadDetails.length=0;
     
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
     
     await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
       this.shipper=data;
@@ -424,6 +432,12 @@ export class TransportProComponent implements OnInit {
     }, err=>{
       console.log(err);
     })
+    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Transporter)=>{
+      this.transporter=data;
+    }), err=>{
+      console.log(err)
+    };
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
@@ -1345,13 +1359,17 @@ async showMap() {
             '<div><br></div>'+
             '<div>Merci de votre collaboration.</div>'+
             '<div><br></div>'+
-            '<div>Dispatch Marc-Andre Thiffeault </div>'+
+            //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+            '<div>Dispatch - '+this.transporter.nom+' </div>'+
             '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-          '</div>'+
-          '<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
-          '<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
           " </p></div>"
         this.bankClientsService.envoyerMail(em).subscribe(data=>{
           console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
