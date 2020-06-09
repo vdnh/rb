@@ -1,4 +1,6 @@
 <h4 style="text-align: left; font: bold">Remorquage<span>&nbsp;&nbsp;&nbsp;</span>
+  <span><button (click)="remorquage.sent=true; onSave()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||
+    remorquage.sent)||remorquage.driverNote.includes('!!Cancelled!!')">MettreEnCours</button></span>
   <span><button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||!remorquage.sent||remorquage.fini)">TerminerAvecSucces</button></span>
   <span>
     <button (click)="onDevoirAttendre()" class="btn btn-link" 
@@ -303,7 +305,7 @@
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <div class="form-group">
-              <label>DebaragePorte <input type="checkbox"
+              <label>DebarragePorte <input type="checkbox"
                             [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
@@ -597,7 +599,11 @@
             <table  >
               <tr>
                 <td style="text-align: right">HorsTax:</td>
-                <td style="text-align: right">{{remorquage.horstax | number : '1.2'}}</td>
+                <!-- <td style="text-align: right">{{remorquage.horstax | number : '1.2'}}</td> -->
+                <td>
+                  <input type="number" [(ngModel)]="remorquage.horstax" name="horstax" style="text-align: right;"
+                   class="form-control" (change)="horstaxChange()" />
+                </td>
               </tr>
               <tr>
                 <td style="text-align: right">TPS:</td>

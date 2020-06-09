@@ -1388,6 +1388,57 @@ async showMap() {
       window.close()
     })
   }
+  onSaveNoClose(){
+    // First, we try once more to get detail of this appel whether it was deleted
+    // if good, we make save - update
+    this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
+      if(this.mode==2){
+        this.changeUnite();  // we must change to mode=1
+        await this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+          if(this.transport.id!=null)
+            alert("C'est enregistre.")
+          this.loadDetails.forEach(async load=>{
+            load.idTransport=data.id;
+            await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+              load.id = d.id;
+              //to empty the list loadDetails after save them
+              //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+              //window.close();
+            }, err=>{
+              console.log(err);
+            })
+          })
+          //this.transport=data;
+        }, 
+          err=>{console.log(err)
+        })
+        this.changeUnite();  // we must rechange to mode=2
+      }
+      else{ // mode=1 already, just save
+        this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+          if(this.transport.id!=null)
+            alert("C'est enregistre.")
+          this.loadDetails.forEach(async load=>{
+            load.idTransport=data.id;
+            await this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+              load.id = d.id;
+              //to empty the list loadDetails after save them
+              //this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); //test to remove loadDetail dans list loadDetail;
+              //window.close();
+            }, err=>{
+              console.log(err);
+            })
+          })
+          //this.transport=data;
+        }, 
+          err=>{console.log(err)
+        })
+      }
+    }, err=>{
+      alert('Cette appel '+this.id+' a ete annule');
+      window.close()
+    })
+  }
   onPrint(heure){    
     console.log(heure)
     console.log('this.transport.timeCall : '+this.transport.timeCall)

@@ -1554,7 +1554,19 @@ async showMap() {
       this.remorquage.total= this.remorquage.horstax; 
     }
   }
-  
+
+  horstaxChange(){
+    if(this.remorquage.taxable){
+      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+    }
+    else{
+      this.remorquage.tps =0.00;
+      this.remorquage.tvq =0.00;
+    }
+    this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  }
+
   logout(){
     localStorage.clear();
     //this.router.navigateByUrl("");

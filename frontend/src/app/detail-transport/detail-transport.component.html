@@ -1,4 +1,6 @@
 <h4 style="text-align: left; font: bold">Transport<span>&nbsp;&nbsp;&nbsp;</span>
+  <span><button (click)="transport.sent=true; onSaveNoClose()" class="btn btn-link" [disabled]="(!(transport.id>0)||
+    transport.sent)||transport.driverNote.includes('!!Cancelled!!')">MettreEnCours</button></span>
   <span><button (click)="onFini()" class="btn btn-link" [disabled]="(!(transport.id>0)||!transport.sent||transport.fini)">TerminerAvecSucces</button></span>
   <span>
     <button (click)="onDevoirAttendre()" class="btn btn-link" 

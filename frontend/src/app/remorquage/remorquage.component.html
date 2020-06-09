@@ -558,7 +558,7 @@
           </div>
           <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
             <div class="form-group">
-              <label>DebaragePorte <input type="checkbox"
+              <label>DebarragePorte <input type="checkbox"
                             [(ngModel)]="remorquage.debaragePorte" (change)="typeServiceChange(remorquage.typeService)"></label>
             </div>
           </div>
@@ -840,7 +840,11 @@
             <table  >
               <tr>
                 <td style="text-align: right">HorsTax:</td>
-                <td style="text-align: right">{{remorquage.horstax | number : '1.2'}}</td>
+                <!-- <td style="text-align: right">{{remorquage.horstax | number : '1.2'}}</td> -->
+                <td>
+                  <input type="number" [(ngModel)]="remorquage.horstax" name="horstax" style="text-align: right;"
+                   class="form-control" (change)="horstaxChange()" />
+                </td>
               </tr>
               <tr>
                 <td style="text-align: right">TPS:</td>

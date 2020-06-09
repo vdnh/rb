@@ -27,6 +27,7 @@ import { Voyage } from 'src/model/model.voyage';
 import { VoyagesService } from 'src/services/voyages.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
+import { LoadFrequent } from 'src/model/model.loadFrequent';
 
 @Component({
   selector: 'app-transport',
@@ -99,7 +100,6 @@ export class TransportComponent implements OnInit {
   mode=1; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
-  testVar:number;
 
   zoom: number = 6;
   
@@ -1704,6 +1704,26 @@ async showMap() {
     this.back=this.pagePresent-1;
     this.forward=this.pagePresent+1
   }
+
+  // testVar:Shipper=new Shipper();
+  // textreturn(id:number){
+  //   let s:Shipper=new Shipper();
+  //   this.listShipper.forEach(sp=>{if(sp.id==id)s=sp})
+  //   console.log('Shipper : ' + s.nom)
+  //   return ' .aa.' + s.nom
+  // }
+  // onListFrequentChange(e){
+  //   //this.extractLoadFrequent(e.target.value)
+  //   alert('e : '+ e)
+  //   alert('e.target.value : '+ e.target.value)
+  //   //this.extractShipper(e.target.value)
+  // }
+  // extractLoadFrequent(l:LoadFrequent){
+  //   alert('l.idTransporter + l.nom + l.description : '+ l.idTransporter +  ' - ' + l.nom +  ' - ' + l.description)
+  // }
+  // extractShipper(){
+  //   //alert('Shipper : idTransporter + nom + tel : '+ this.testVar.idTransporter +  ' - ' + this.testVar.nom +  ' - ' + this.testVar.tel)
+  // }
 
   logout(){
     localStorage.clear();

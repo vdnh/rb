@@ -289,7 +289,7 @@ export class AppComponent implements OnInit{
     //     console.log(err);  
     //   });//*/
     // }
-    else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("192.168.0.") )
+    else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("ctstrack.") && !location.href.includes("192.168.0.") )
     {
       location.href='https://cts.sosprestige.com';
       this.mode=2 // show the message for bad url
@@ -419,7 +419,13 @@ export class AppComponent implements OnInit{
         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
         localStorage.setItem('eligible',this.roleUsernameLogin) 
         //console.log('res.idTransporter : '+res.idTransporter)
-        if(res.idTransporter != undefined) localStorage.setItem('idTransporter',res.idTransporter.toString()) // prendre idTransporter s'il en a
+        
+        if(res.idTransporter != undefined) {
+          localStorage.setItem('idTransporter',res.idTransporter.toString())
+          localStorage.setItem('entrepriseNom', res.entrepriseNom);
+          this.entrepriseNom=res.entrepriseNom;
+        } // prendre idTransporter s'il en a
+        
         if(res.id!=null) {
           localStorage.setItem('userId', res.id.toString());
           localStorage.setItem('entrepriseNom', res.entrepriseNom);
