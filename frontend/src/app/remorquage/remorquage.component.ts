@@ -1166,11 +1166,11 @@ onFileUpLoad(event){
       this.remorquage.inclus=-1.00;
       this.remorquage.prixKm=-1.00;
     }
-    console.log('this.remorquage.prixBase in typyserviceChange() before prixCalcul() : '+this.remorquage.prixBase)
-    console.log('this.remorquage.prixKm in typyserviceChange() before prixCalcul() : '+this.remorquage.prixKm)
+    //console.log('this.remorquage.prixBase in typyserviceChange() before prixCalcul() : '+this.remorquage.prixBase)
+    //console.log('this.remorquage.prixKm in typyserviceChange() before prixCalcul() : '+this.remorquage.prixKm)
     this.prixCalcul()
-    console.log('this.remorquage.prixBase in typyserviceChange() after prixCalcul() : '+this.remorquage.prixBase)
-    console.log('this.remorquage.prixKm in typyserviceChange() after prixCalcul() : '+this.remorquage.prixKm)
+    //console.log('this.remorquage.prixBase in typyserviceChange() after prixCalcul() : '+this.remorquage.prixBase)
+    //console.log('this.remorquage.prixKm in typyserviceChange() after prixCalcul() : '+this.remorquage.prixKm)
   }
 
   onHistoire(){
@@ -1535,6 +1535,18 @@ onFileUpLoad(event){
       this.remorquage.tvq =0.00; 
       this.remorquage.total= this.remorquage.horstax; 
     }
+  }
+
+  horstaxChange(){
+    if(this.remorquage.taxable){
+      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+    }
+    else{
+      this.remorquage.tps =0.00;
+      this.remorquage.tvq =0.00;
+    }
+    this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
   }
 
   logout(){

@@ -1348,7 +1348,7 @@ async showMap() {
     + this.transport.id   //1733  // replace by Number of Bon Transport
     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-      alert("Cette appel a ete envoye a SOS Prestige.")
+      alert("Cette appel a ete envoye.")
       //*/ Also App send confirmation email to client professionnel
       if(this.transport.emailContact.length>10){
         let em:EmailMessage=new EmailMessage();

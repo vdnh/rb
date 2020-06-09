@@ -460,10 +460,10 @@
         <div *ngIf="pagePresent==5" class="row">
           <table class="table table-striped table-sm table-responsive">
             <tr *ngIf="mode==1">
-              <th>Quantites</th><th>Description</th><th>Longueur(pied)</th><th>Largeur(pied)</th><th>Hauteur(pied)</th><th>Poids(lb)</th>                        
+              <th>Quantites</th><th>Nom & Description</th><th>Longueur(pied)</th><th>Largeur(pied)</th><th>Hauteur(pied)</th><th>Poids(lb)</th>                        
             </tr>
             <tr *ngIf="mode==2">
-              <th>Quantites</th><th>Description</th><th>Longueur(cm)</th><th>Largeur(cm)</th><th>Hauteur(cm)</th><th>Poids(kg)</th>                        
+              <th>Quantites</th><th>Nom & Description</th><th>Longueur(cm)</th><th>Largeur(cm)</th><th>Hauteur(cm)</th><th>Poids(kg)</th>                        
             </tr>
             <tr *ngFor="let load of loadDetails">
               <td>
@@ -486,20 +486,15 @@
                 <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" placeholder="quantite"/>
               </td>
               <td>
-                <div class="form-group">
                 <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="this.loadDetail.description" 
-                  placeholder="description" list="defaultShippers"></textarea>
-                <datalist id="defaultShippers">
-                  <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
-                </datalist>
-                </div>
+                  placeholder="description"></textarea>
               </td> 
-              <td>
-                <input type="text" name="test" class="form-control" list="defaultShippers">
-                <datalist id="defaultShippers">
-                  <option *ngFor="let e of listShipper" [ngValue]="e">{{e.nom}}</option>
+              <!-- <td>
+                <input type="text" name="test" class="form-control" list="defaultShippers02" (change)="extractShipper()">
+                <datalist id="defaultShippers02">
+                  <option *ngFor="let e of listShipper; let i = index" [ngValue]="e">{{e.nom+" .id-"+e.id}} + {{textreturn(e.id)}}</option>
                 </datalist>
-              </td>
+              </td> -->
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.longueur" placeholder="longueur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.largeur" placeholder="largeur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.hauteur" placeholder="hauteur"/></td>
