@@ -52,6 +52,8 @@ export class AppComponent implements OnInit{
   textExpressSign="Demande Express";
 
   modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
+  soumission: boolean=false;
+  gererCompte: boolean=true; // a default paraitre gererCompte
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
@@ -653,6 +655,8 @@ export class AppComponent implements OnInit{
     this.router.navigateByUrl("");
   }//*/
   onTransporter(){
+    this.soumission=false;
+    this.gererCompte=true;
     let role = localStorage.getItem('role')
     let userId = localStorage.getItem('userId')       
     if(role.includes('TRANSPORTER') || role.includes('TECHNICIEN')) {         
@@ -704,6 +708,35 @@ export class AppComponent implements OnInit{
       alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
   }
 
+  //for dispatch switch role : remor - trans - ressource - suivi
+  remor:boolean=false;
+  trans:boolean=false;
+  ressource:boolean=false;
+  suivi:boolean=false;
+  onRemor(){
+    this.remor=true;
+    this.trans=false;
+    this.ressource=false;
+    this.suivi=false;
+  }
+  onTrans(){
+    this.remor=false;
+    this.trans=true;
+    this.ressource=false;
+    this.suivi=false;
+  }
+  onRessource(){
+    this.remor=false;
+    this.trans=false;
+    this.ressource=true;
+    this.suivi=false;
+  }
+  onSuivi(){
+    this.remor=true;
+    this.trans=false;
+    this.ressource=false;
+    this.suivi=true;
+  }
   alertComingSoon(){
     alert('Coming soon ...')
   }

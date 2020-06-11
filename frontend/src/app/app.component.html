@@ -136,17 +136,27 @@
               <br>      
             </div>
             <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
-              <button routerLink="/propos" class="btn btn-link">Propos</button>
-              <button class="btn btn-link"  (click)="onTransporter()">Gerer Compte</button>     
-              <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
-              <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
-              <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>          
+              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+              <button routerLink="/" class="btn btn-link" (click)="soumission=true; gererCompte=false">
+                <strong *ngIf="soumission">Soumission</strong>
+                <span *ngIf="!soumission">Soumission</span>
+              </button>
+              <button class="btn btn-link"  (click)="onTransporter()">
+                <strong *ngIf="gererCompte">Gerer Compte</strong>
+                <span *ngIf="!gererCompte">Gerer Compte</span>
+              </button>     
               <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
               <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
-              <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
-              <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button>
               <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
               <button (click)="logout()" class="btn btn-link">Logout</button>
+              <br>
+            </div>
+            <div class="panel panel-primary" *ngIf="soumission && role=='TRANSPORTER'" style="margin-left: 10pt;">
+              <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
+              <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
+              <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>     
+              <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+              <!-- <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button> -->     
               <br>
             </div>
             <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
@@ -181,18 +191,21 @@
               <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
               <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
-              <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
+              <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">Remorquage</button> 
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
-              <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> 
+              <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">Transport</button> 
               <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>
+              <button routerLink="/" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"  (click)="onRessource()">
+                <span *ngIf="!ressource">Ressource</span>
+                <strong *ngIf="ressource">Ressource</strong>
+              </button> 
+              <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">Suivi Rapide</button>
               <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>  -->
               <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> -->
               <!-- <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button> -->
               <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
               <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
-              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajout Client</button> 
-              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Clients</button> 
-              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Chauffeurs</button>
+              
               <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
                 <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
                 <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
@@ -200,7 +213,12 @@
             </div>
             <!-- <hr style="border: 2px solid lightgray"/> -->
           </div>
-          
+          <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
+            <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajout Client</button> 
+            <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Clients</button> 
+            <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Chauffeurs</button>
+          </div>
+
           <div *ngIf="role==''">
             <!-- <div>
               <h3 id="RMEX" style="font-weight: bold;">Services 24/7

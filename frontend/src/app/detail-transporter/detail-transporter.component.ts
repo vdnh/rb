@@ -38,7 +38,7 @@ export class DetailTransporterComponent implements OnInit {
   map: google.maps.Map;
   markers=Array<google.maps.Marker>();
   carte:number=-1;
-  carteText:string="Voir la carte";
+  carteText:string="Reperer sur la carte";
   iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 //*
   quitButton:string=''; //role
@@ -359,11 +359,11 @@ export class DetailTransporterComponent implements OnInit {
     this.carte=-this.carte;
     if(this.carte==-1){
       this.camionsSurMap=[];// to empty this list
-      this.carteText='Voir la carte'
+      this.carteText='Reperer sur la carte'
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Cacher la carte'    
+      this.carteText='Fermer la carte'    
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{

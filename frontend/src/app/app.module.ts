@@ -77,6 +77,7 @@ import { FeuilleCommunicationComponent } from './feuille-communication/feuille-c
 import { ChauffeursComponent } from './chauffeurs/chauffeurs.component';
 import { DetailShipperParticulierComponent } from './detail-shipper-particulier/detail-shipper-particulier.component';
 import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
+import { SuiviRapideComponent } from './suivi-rapide/suivi-rapide.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -129,6 +130,7 @@ const appRoutes:Routes=[
   {path: 'bon-signer', component:  BonSignatureComponent},
   {path: 'feuille-communication', component:  FeuilleCommunicationComponent},
   {path: 'chauffeurs', component: ChauffeursComponent},
+  {path: 'suivi-rapide', component:SuiviRapideComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -178,6 +180,7 @@ const appRoutes:Routes=[
     FeuilleCommunicationComponent,
     ChauffeursComponent,
     DetailShipperParticulierComponent,
+    SuiviRapideComponent,
     //MapComponent,
   ],
   imports: [

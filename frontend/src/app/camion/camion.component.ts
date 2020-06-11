@@ -43,7 +43,7 @@ export class CamionComponent implements OnInit {
   longitude:number=-73;
   iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
   carte: number=-1;
-  carteText:string='Voir sur la carte'
+  carteText:string='Reperer sur la carte'
   //*/
   modeInfos:number=0;
   modeFiche:number=0;
@@ -833,11 +833,11 @@ export class CamionComponent implements OnInit {
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
-      this.carteText='Voir la carte'
+      this.carteText='Reperer sur la carte'
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Cacher la carte'
+      this.carteText='Fermer la carte'
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{

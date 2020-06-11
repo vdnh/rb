@@ -1,14 +1,14 @@
 <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
-    <div class="panel-heading" *ngIf="mode==1"> 
+    <div *ngIf="mode==1"> 
         <h2>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </h2>
         <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
         <button class="btn btn-link" (click)="onPress()">{{carteText}}</button>
         <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
-        <button class="btn btn-link">
+        <button class="btn btn-link" *ngIf='quitButton.includes("TRANSPORTER")'>
             <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Conditions de routes</a>
         </button>        
         <!--button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button-->
-        <button class="btn btn-link">
+        <button class="btn btn-link"  *ngIf='quitButton.includes("TRANSPORTER")'>
             <a href="https://client2.avltrack.com/" target="_blank">Carte AvlTrack</a>
         </button>
         <!--iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-same-origin" *ngIf="quebec511==-1">
