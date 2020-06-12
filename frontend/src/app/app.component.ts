@@ -11,6 +11,8 @@ import { UserLogs } from 'src/model/model.userLogs';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { HttpClient } from '@angular/common/http';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 
 declare global {
   interface Window {
@@ -54,11 +56,13 @@ export class AppComponent implements OnInit{
   modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
   soumission: boolean=false;
   gererCompte: boolean=true; // a default paraitre gererCompte
+  transporter: Transporter;
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
     private geolocation : GeolocationService, public geocoding : GeocodingService, 
-    public userLogsService: UserLogsService, private http: HttpClient, private zone: NgZone) 
+    public userLogsService: UserLogsService, public transportersService:TransportersService,
+    private http: HttpClient, private zone: NgZone) 
     {
       this.form = fb.group({
         username:'chauffeur',
@@ -423,6 +427,9 @@ export class AppComponent implements OnInit{
         //console.log('res.idTransporter : '+res.idTransporter)
         
         if(res.idTransporter != undefined) {
+          this.transportersService.getDetailTransporter(res.idTransporter).subscribe((tr:Transporter)=>{
+            this.transporter = tr;
+          }, err=>{console.log(err)})
           localStorage.setItem('idTransporter',res.idTransporter.toString())
           localStorage.setItem('entrepriseNom', res.entrepriseNom);
           this.entrepriseNom=res.entrepriseNom;

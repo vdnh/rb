@@ -11,15 +11,6 @@
         class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button>
       <br>
     </div>
-    <div>
-      <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
-      <button class="btn btn-link" (click)="onFiche()">Fiche Technique</button>&nbsp;&nbsp;&nbsp;
-      <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a Definir</button>
-      <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
-      <button class="btn btn-link" (click)="onBonDeTravail()">Entretien-BonDeTravail</button>
-      <button class="btn btn-link" (click)="onListReparation()">Historique & Print</button>
-      <button class="btn btn-link" (click)="onListGarantie()">List Garantie</button>
-    </div>
     <div class="panel-body" *ngIf="carte==1">
       <div class="col-md-12">
         <div class="text-center">
@@ -28,6 +19,16 @@
           </h3>
         </div>
       </div>
+    </div>
+
+    <div>
+      <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onFiche()">Fiche Technique</button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a Definir</button>
+      <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
+      <button class="btn btn-link" (click)="onBonDeTravail()">Entretien-BonDeTravail</button>
+      <button class="btn btn-link" (click)="onListReparation()">Historique & Print</button>
+      <button class="btn btn-link" (click)="onListGarantie()">List Garantie</button>
     </div>    
     <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
     <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>

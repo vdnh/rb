@@ -238,6 +238,26 @@ export class AppelExpressVisitorComponent implements OnInit {
         this.shipperParticulier=<Shipper>data;
         this.shipper=this.shipperParticulier;
         localStorage.clear();  //  erase localstorage after taken particular price 
+        //console.clear(); // try to clear infos 
+        
+        // var CACHE_VERSION = 1;
+        // var CURRENT_CACHES = {
+        //   font: 'font-vache-v' + CACHE_VERSION
+        // };
+        // var expectedCacheNames = Object.keys(CURRENT_CACHES).map(function(key){
+        //   return CURRENT_CACHES[key];
+        // });
+        // caches.keys().then((cacheNames)=>{
+        //   return Promise.all(
+        //     cacheNames.map(function(cacheName){
+        //       if(expectedCacheNames.indexOf(cacheName)==-1){
+        //         console.log('Deleting out of date cach:', cacheName);
+        //         return caches.delete(cacheName)
+        //       }
+        //     })
+        //   )
+        // })
+
       }, err=>{
         console.log(err);
       });

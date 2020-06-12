@@ -308,7 +308,7 @@
               <td><input type="number" class="form-control" [(ngModel)]="load.largeur" (change)="dimensionResume()"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="load.hauteur" (change)="dimensionResume()"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="load.poids" (change)="dimensionResume()"/></td>
-              <td><button class="btn btn-link" (click)="deleteLoadDetail(load); dimensionResume()">Delete</button></td>
+              <td><button class="btn btn-link" (click)="deleteLoadDetail(load); dimensionResume()" [disabled]="transport.fini">Delete</button></td>
             </tr>  
             <tr>
               <!-- <th>Ajouter des Loads</th> -->
@@ -324,7 +324,7 @@
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.largeur" placeholder="largeur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.hauteur" placeholder="hauteur"/></td>
               <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.poids" placeholder="poids"/></td>
-              <td><button class="btn btn-link" (click)="addLoadDetail()">Ajouter</button></td>
+              <td><button class="btn btn-link" (click)="addLoadDetail()" [disabled]="transport.fini">Ajouter</button></td>
             </tr>           
           </table>
         </div>
