@@ -17,6 +17,8 @@ import { EmailMessage } from 'src/model/model.emailMessage';
 import {VarsGlobal} from 'src/services/VarsGlobal'
 import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 
 @Component({
   selector: 'app-detail-remorquage-pro',
@@ -113,6 +115,7 @@ private signaturePadOptions: Object = {
   //'canvasWidth': 250,
   //'canvasHeight': 100,
 };
+  transporter: Transporter;
 drawComplete(data) {
   //console.log(this.signaturePad.toDataURL('image/png', 0.5));
   //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -157,6 +160,7 @@ clearHandler(){
     private titleService: Title,
     public varsGlobal:VarsGlobal,
     public camionsService:CamionsService,
+    public transportersService:TransportersService
     ) { 
       this.id=activatedRoute.snapshot.params['id'];
     }
@@ -164,6 +168,9 @@ clearHandler(){
   async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
+    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+      this.transporter=data;
+    }), err=>{ console.log(err) }
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
       //this.camions = data

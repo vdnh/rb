@@ -195,6 +195,11 @@ marqueChange(){
   async ngOnInit() {    
     sessionStorage.setItem('temporary', 'yes') // to control we are in session
     this.varsGlobal.session='yes'  // to control we are in session
+    
+    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+      this.transporter=data;
+    }), err=>{ console.log(err) }
+
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
       if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
@@ -219,12 +224,6 @@ marqueChange(){
             this.shipper=data;
             this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
               this.contacts=data;
-              this.transportersService.getDetailTransporter(this.remorquage.idTransporter)
-              .subscribe((data:Transporter)=>{
-                this.transporter=data;
-              }), err=>{
-                console.log(err);
-              };
             }, err=>{
               console.log(err);
             });

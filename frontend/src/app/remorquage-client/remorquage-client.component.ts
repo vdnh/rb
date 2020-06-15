@@ -801,14 +801,9 @@ async showMap() {
   }
   
   onFermer(){
-    //window.open('location','_self','');
     localStorage.clear();
-    //await this.router.navigate(['cts.sosprestige.com/propos']); //1753//location.href
-    //this.router.navigateByUrl("https://cts.sosprestige.com")
-    window.open("https://cts.sosprestige.com", "_self");
-    //window.close();
-    //var win = window.open("about:blank", "_self");
-    //win.close();
+    this.router.navigateByUrl("").then(()=>{location.reload()});
+    //location.reload();
   }
 
   onCancel(){
@@ -1111,10 +1106,11 @@ async showMap() {
   
   onEnvoyer(){
     if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
+      let stringsd:string[]=location.href.split('/remorquage')
       this.em.emailDest=this.remorquage.emailIntervenant
       this.em.titre="#Bon : " + this.remorquage.id.toString()
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='https://cts.sosprestige.com/detail-remorquage/"
+      " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>Ouvrir la Demande</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{

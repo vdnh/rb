@@ -663,7 +663,24 @@
     <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
   </div>
   <div id="toprint" hidden  *ngIf="modeHistoire==-1">
+    <!-- <table border='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
+      <h4 *ngIf="transporter!=null" style="text-decoration-line: underline; float: left">
+        <br>
+        {{transporter.nom}}
+        <span> <br> Tel: {{transporter.tel}}</span>
+        <span><br> Email: {{transporter.email}}</span>
+        <br>
+      </h4>
+    </table> -->
+    
     <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
+      <tr *ngIf="transporter!=null" >
+        <th colspan="5" style="text-align: left;">
+            <span>{{transporter.nom}}</span>
+            <span> <br> Tel: {{transporter.tel}}</span>
+            <span><br> Email: {{transporter.email}}</span>
+        </th>
+      </tr>
       <tr>
         <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
         <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>

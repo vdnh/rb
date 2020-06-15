@@ -50,7 +50,7 @@ export class SuiviRapideComponent implements OnInit {
       if(fini) this.result = " bien termine.";
     }
   }
-  onResearh(){
+  async onResearh(){
     
     // before finding, we must clear the lasts remorquage and transport
     this.remorquage = new Remorquage();
@@ -114,7 +114,12 @@ export class SuiviRapideComponent implements OnInit {
       return 
     }
 
-    this.remorquageService.getDetailRemorquage(this.numBon).subscribe((data:Remorquage)=>{
+    // get transporter
+    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((tr:Transporter)=>{
+      this.transporter = tr;
+    }, err=>{console.log(err)})
+
+    await this.remorquageService.getDetailRemorquage(this.numBon).subscribe((data:Remorquage)=>{
       if(data.idTransporter==Number(localStorage.getItem('idTransporter')))
       {
         if(localStorage.getItem('userId')!=undefined){ // si c'est dispatch-pro - parce userId pas null
@@ -168,6 +173,15 @@ export class SuiviRapideComponent implements OnInit {
         this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
       })
     })
+
+    // if(this.remorquage.idTransporter!=null) // get the transporter for this remorquage
+    //   this.transportersService.getDetailTransporter(this.remorquage.idTransporter).subscribe((tr:Transporter)=>{
+    //     this.transporter = tr;
+    //   }, err=>{console.log(err)})
+    // if(this.transport.idTransporter!=null)  // get the transporter for this transport
+    //   this.transportersService.getDetailTransporter(this.transport.idTransporter).subscribe((tr:Transporter)=>{
+    //     this.transporter = tr;
+    //   }, err=>{console.log(err)})
   }
   
   problemService(){
@@ -187,6 +201,28 @@ export class SuiviRapideComponent implements OnInit {
     if(this.remorquage.changementPneu)
       probSer=probSer+"Changement Pneu, "
     return probSer;
+  }
+  
+  printBonDeRemorquage(cmpId){
+    const printContent = document.getElementById(cmpId);
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
+  }
+
+  printBonDeTransport(cmpId){
+    const printContent = document.getElementById(cmpId);
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
   }
 
   gotoDetailRemorquage(r:Remorquage){

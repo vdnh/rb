@@ -4,7 +4,8 @@
 </div>
 <div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
   <div *ngIf="mode==2" class="noprint">
-    <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3> 
+    <!-- <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3>  -->
+    <br> <br> <h3>Wrong domain name.</h3> 
   </div>
   <!--div class="row" *ngIf="mode!=2">
     <div class="col-sm-12 col-lg-12 col-md-12"-->
@@ -15,7 +16,7 @@
               <h6 class="noprint" style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
                 <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
               </h6>
-              <h6 *ngIf="entrepriseNom.length>0" class="noprint" style="text-decoration-line: underline; float: right">
+              <h6 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
                 {{transporter.nom}}
                 <span> <br> Tel: {{transporter.tel}}</span>
                 <span><br> Email: {{transporter.email}}</span>

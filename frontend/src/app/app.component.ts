@@ -68,11 +68,6 @@ export class AppComponent implements OnInit{
         username:'chauffeur',
         password:'chauffeur'
       })
-      /*
-      this.formExpress = fb.group({
-        username:'dispatch1',
-        password:'dispatch1'
-      })//*/
   }
 
   private determineLocalIp() {
@@ -116,14 +111,18 @@ export class AppComponent implements OnInit{
     if(localStorage.getItem('role')) 
       this.role = localStorage.getItem('role')
     if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
-      localStorage.clear();
+      {
+        this.logout();
+        localStorage.clear();
+      }
     if(localStorage.getItem('usernameLogin')) {
       this.usernameLogin = localStorage.getItem('usernameLogin');
       this.roleUsernameLogin=btoa(this.role+this.usernameLogin)
       //console.log('this.roleUsernameLogin : '+ this.roleUsernameLogin)
       this.eligible=this.roleUsernameLogin.includes(localStorage.getItem('eligible'))
       if(!this.eligible){
-        localStorage.clear()
+        this.logout();
+        localStorage.clear();
       }
       else{
         let userLogsId = Number (localStorage.getItem('userLogsId'))
@@ -297,9 +296,9 @@ export class AppComponent implements OnInit{
     // }
     else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("ctstrack.") && !location.href.includes("192.168.0.") )
     {
-      location.href='https://cts.sosprestige.com';
+      //location.href='https://cts.sosprestige.com';
       this.mode=2 // show the message for bad url
-      console.log('Notre site : cts.sosprestige.com')
+      //console.log('Wrong domain')
     }
     else { console.log("There is no cas special!")}
     if(localStorage.getItem('userId')!=null) {
@@ -330,6 +329,11 @@ export class AppComponent implements OnInit{
       }
       //*
       if(this.role.includes('DISPATCH')) {  
+        if(localStorage.getItem('idTransporter') != undefined) {
+          this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((tr:Transporter)=>{
+            this.transporter = tr;
+          }, err=>{console.log(err)})
+        }
         //localStorage.setItem('idTransporter',this.us)       
         //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
         if(!location.href.includes("detail-remorquage")){
