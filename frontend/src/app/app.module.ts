@@ -78,6 +78,7 @@ import { ChauffeursComponent } from './chauffeurs/chauffeurs.component';
 import { DetailShipperParticulierComponent } from './detail-shipper-particulier/detail-shipper-particulier.component';
 import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
 import { SuiviRapideComponent } from './suivi-rapide/suivi-rapide.component';
+import { CamionsListComponent } from './camions-list/camions-list.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -131,6 +132,7 @@ const appRoutes:Routes=[
   {path: 'feuille-communication', component:  FeuilleCommunicationComponent},
   {path: 'chauffeurs', component: ChauffeursComponent},
   {path: 'suivi-rapide', component:SuiviRapideComponent},
+  {path: 'camions-list', component:CamionsListComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -181,6 +183,7 @@ const appRoutes:Routes=[
     ChauffeursComponent,
     DetailShipperParticulierComponent,
     SuiviRapideComponent,
+    CamionsListComponent,
     //MapComponent,
   ],
   imports: [

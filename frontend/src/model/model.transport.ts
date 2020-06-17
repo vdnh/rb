@@ -126,4 +126,11 @@ export class Transport{
     waitingTime:number=0.00;
     waitingPrice:number=0.00; // per hours
     waitingFee:number=0.00;   // = waitingTime * waitingPrice
+
+    // PTO time and price
+    ptoTime:number=0.00;
+    ptoPrice:number=0.00; // per hours
+    ptoFee:number=0.00;   // = ptoTime * ptoPrice
+    
+    loadsFee:number=0.00;   // 
 }

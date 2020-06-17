@@ -1,0 +1,158 @@
+<div>
+    <button (click)="camionsList=true; itineraire=false" class="btn btn-link">
+        <span *ngIf="!camionsList">Camions</span>
+        <strong *ngIf="camionsList">Camions</strong>
+    </button>
+    <button (click)="itineraire=true; camionsList=false" class="btn btn-link">        
+        <span *ngIf="!itineraire">Itineraires</span>
+        <strong *ngIf="itineraire">Itineraires</strong>
+    </button>
+    <button (click)="print('toprint')" class="btn btn-link">Print</button>
+</div>
+<!-- <div *ngIf="camionsList">
+    <button class="btn btn-link" (click)="onPress()">{{carteText}}</button>
+</div> -->
+<!-- <div class="row" *ngIf="carte==1 && camionsList"> -->
+<div class="row">
+    <div *ngIf="camionsList" id="toprint" class="col-md-7">
+        <table border="1">
+            <tr>
+                <th>Unite</th> <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
+                <th>Occupe</th> <th>Disponible</th>
+            </tr>
+            <!-- <tr>
+                <td>28</td> <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>17-06-2020</td> 
+                <td>50'</td> <td style="color: black; background-color: orange;">20'</td>
+            </tr>
+            <tr>
+                <td>29</td> <td></td> <td></td> <td></td> 
+                <td></td> <td style="color: black; background-color:greenyellow;"></td>
+            </tr>
+            <tr>
+                <td>30</td> <td>Mascouche, Quebec - Granby, Quebec</td> <td>18-06-2020</td> <td>18-06-2020</td> 
+                <td>60'</td> <td style="color: black; background-color:red;">12'</td>
+            </tr> -->
+            <tr *ngFor="let c of camionsSurMap">
+                <td>
+                    <button (click)="onClickCamion(c)" class="btn btn-link">
+                        {{c.unite + ' - ' + c.marque +'  ' +c.modele}}
+                    </button>
+                </td>
+                <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> 
+                <td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>
+            </tr>
+        </table>
+    </div>
+    <div *ngIf="itineraire" id="toprint" class="col-md-7">
+        <table border="1">
+            <!-- <tr><td colspan="7">Ajouter Itineraire</td></tr> -->
+            <tr></tr>
+            <tr>
+                <td>
+                    <!-- <label>Endroit Pick</label> -->
+                    <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" style="width: 30ch;" class="form-control"></td>
+                
+                <td>
+                    <!-- <label>Date Pick</label> -->
+                    <input type="date" placeholder="Pick date" [(ngModel)]="itiner.datePick" style="width: 20ch;" class="form-control"></td>
+
+                <td colspan="2">
+                    <label for="">Unite &nbsp;</label>
+                    <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange(); 
+                        itiner.camionAttribue=(camionMap.unite + ' - ' + camionMap.marque +'  ' +camionMap.modele);">
+                        <!-- "onClickCamion(camionMap)" -->
+                        <option *ngFor="let c of camionsSurMap" [ngValue]="c">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</option>
+                    </select>
+                </td>
+                
+                
+            </tr>
+            <tr>
+                <td>
+                    <!-- <label>Endroit Drop</label> -->
+                    <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" style="width: 30ch;" class="form-control"></td>
+                <td>
+                    <!-- <label>Date Drop</label> -->
+                    <input type="date" placeholder="Drop date" [(ngModel)]="itiner.dateDrop" style="width: 20ch;" class="form-control"></td>
+                <td>
+                    <!-- <label>Longueur</label> -->
+                    <input type="text" placeholder="Longueur" [(ngModel)]="itiner.longueur" style="width: 12ch;" class="form-control"></td>
+                <td><button class="btn btn-link" (click)="onAjouter()">Ajouter</button></td>
+            </tr>
+        </table>
+
+        <div><br></div>
+        
+        <table border="1">
+            <tr><td colspan="6"><h4><strong>Liste Itineraires</strong></h4></td></tr>
+            <tr>
+                <th>Itineraire</th> 
+                <th>Pick</th> 
+                <th>Drop</th> 
+                <th>Longueur</th> 
+                <th>Unite</th>
+            </tr>
+            <tr>
+                <td>Montreal, Quebec - Alma, Quebec</td> 
+                <td>17-06-2020</td> 
+                <td>17-06-2020</td> 
+                <td>50'</td> 
+                <td>8 - Peterbilt PB348</td> 
+            </tr>
+            <tr>
+                <td>Montreal, Quebec - Granby, Quebec</td> 
+                <td>18-06-2020</td> 
+                <td>18-06-2020</td> 
+                <td>50'</td> 
+                <td>8 - Peterbilt PB348</td> 
+            </tr>
+            <tr *ngFor="let it of itiners">
+                <td>{{it.origin +' - '+ it.destination}}</td>
+                <td>{{it.datePick}}</td> 
+                <td>{{it.dateDrop}}</td> 
+                <td>{{it.longueur}}</td> 
+                <td>{{it.camionAttribue}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-5">            
+        <div #gmap style="width:100%;height:650px" ></div>
+    </div>
+</div>
+
+<!-- <div *ngIf="camionsList && carte!=1" id="toprint" >
+    <table border="1">
+        <tr>
+            <th>Unite</th> <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
+            <th>Occupe</th> <th>Disponible</th>
+        </tr>
+        <tr *ngFor="let c of camionsSurMap">
+            <td>
+                {{c.unite + ' - ' + c.marque +'  ' +c.modele}}
+            </td>
+            <td></td> <td></td> <td></td> 
+                <td></td> <td style="color: black; background-color:greenyellow;"></td>
+        </tr>
+    </table>
+</div> -->
+
+<!-- <div *ngIf="itineraire" id="toprint" >
+    <table border="1">
+        <tr>
+            <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
+            <th>Occupe</th> <th>Unite</th>
+        </tr>
+        <tr>
+            <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>17-06-2020</td> 
+            <td>50'</td> <td></td> 
+        </tr>
+        <tr>
+            <td>Montreal, Quebec - Granby, Quebec</td> <td>18-06-2020</td> <td>18-06-2020</td> 
+            <td>50'</td> <td></td> 
+        </tr>
+        <tr>
+            <td></td> <td></td> <td></td> 
+            <td></td> <td></td> 
+        </tr>
+    </table>
+</div> -->

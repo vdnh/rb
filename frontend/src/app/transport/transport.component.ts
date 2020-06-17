@@ -496,10 +496,11 @@ export class TransportComponent implements OnInit {
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
     
     this.transport.timeCall=heure+':'+minute
-    console.log('this.transport.timeCall : '+this.transport.timeCall)
+    //console.log('this.transport.timeCall : '+this.transport.timeCall)
     //this.transport.typeService=this.serviceTypes[0];
     //this.typeServiceChange(this.serviceTypes[0]);
-    this.calculTotalpoints() 
+    //this.calculTotalpoints() 
+    this.prixBaseInit();
     this.prixCalcul()
     // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
   }
@@ -809,6 +810,24 @@ export class TransportComponent implements OnInit {
   // prix base
   prixBase(totalPoints:number){
     this.transport.prixBase = 250.00;
+    this.transport.loadsFee=250.00;
+    this.transport.waitingPrice=0.00;
+    this.transport.waitingTime=0.00;
+    this.transport.ptoPrice=0.00;
+    this.transport.ptoTime=0.00;
+    this.transport.ptoFee=0.00;
+    this.transport.waitingFee=0.00;
+  }
+  // prix base
+  prixBaseInit(){
+    this.transport.prixBase = 250.00;
+    this.transport.loadsFee=250.00;
+    this.transport.waitingPrice=0.00;
+    this.transport.waitingTime=0.00;
+    this.transport.ptoPrice=0.00;
+    this.transport.ptoTime=0.00;
+    this.transport.ptoFee=0.00;
+    this.transport.waitingFee=0.00;
   }
   prixDistance(totalPoints:number){
     
@@ -995,7 +1014,8 @@ printBonDeTransport(cmpId){
 }
 
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
+  //this.transport.prixBase +
+  this.transport.horstax= this.transport.loadsFee + this.transport.waitingFee + this.transport.ptoFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }

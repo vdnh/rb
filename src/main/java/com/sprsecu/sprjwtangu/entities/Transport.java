@@ -157,6 +157,13 @@ public class Transport implements Serializable{
     private Float waitingPrice; // per hours
     private Float waitingFee;   // = waitingTime * waitingPrice
     
+    // PTO time and price
+    private Float ptoTime;
+    private Float ptoPrice; // per hours
+    private Float ptoFee;   // = ptoTime * ptoPrice
+    
+    private Float loadsFee;   // 
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

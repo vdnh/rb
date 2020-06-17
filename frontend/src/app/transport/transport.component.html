@@ -535,16 +535,50 @@
           </div>
           <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="form-group">
-              <label >Valeur($)</label>
-              <input type="number" [(ngModel)]="transport.valeur" name="valeur" (change)="calculTotalpoints()" class="form-control"/>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="form-group">
               <label *ngIf="mode==1">Distance(mile)</label>
               <label *ngIf="mode==2">Distance(km)</label>
               <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control" disabled/>
             </div>
+          </div>
+          <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="form-group">
+              <label >FraisLoads($)</label>
+              <input type="number" [(ngModel)]="transport.loadsFee" (change)="prixCalcul()" class="form-control"/>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="pagePresent==5" class="row">
+          <div  class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>HeuresAttente</strong></h6></label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime"
+            (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for="">PrixAttente($)</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingPrice"
+            (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for="">FraisAttente($)</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingFee"
+            (change)="prixCalcul()">
+          </div>
+        </div>
+        <div *ngIf="pagePresent==5" class="row">
+          <div  class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for=""><h6 style="text-decoration-line: underline"><strong>HeuresPTO</strong></h6></label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.ptoTime"
+            (change)="transport.ptoFee=transport.ptoTime*transport.ptoPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for="">PrixPTO($)</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.ptoPrice"
+            (change)="transport.ptoFee=transport.ptoTime*transport.ptoPrice; prixCalcul()">
+          </div>
+          <div class="col-sm-2 col-md-2 col-lg-2; form-group">
+            <label for="">FraisPTO($)</label>
+            <input class="form-control"  type="number" size="5" [(ngModel)]="transport.ptoFee"
+            (change)="prixCalcul()">
           </div>
         </div>
         <!--div class="row">
@@ -871,7 +905,7 @@
                   [(ngModel)]="transport.driverNote" style="margin-bottom: 0px"
                   style="margin-top: 0px"></textarea>
           </div>
-          <div  class="col-sm-1 col-md-1 col-lg-1; form-group">
+          <!-- <div  class="col-sm-1 col-md-1 col-lg-1; form-group">
             <label for=""><h6 style="text-decoration-line: underline"><strong>HeuresAttente</strong></h6></label>
             <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime"
             (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
@@ -885,7 +919,7 @@
             <label for="">FraisAttente</label>
             <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingFee"
             (change)="prixCalcul()">
-          </div>
+          </div> -->
         </div>
         <!-- <div *ngIf="pagePresent==9" class="row">
           <div  class="col-sm-6 col-md-1 col-lg-1; form-group">
@@ -1089,9 +1123,9 @@
         <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transport.typeCamion}}</span></td>
         <td style="text-align: center; text-anchor: start;; width: 20%">$ Montant $ <br> <span>&nbsp;{{transport.total | number : '1.2'}}</span></td>
       </tr>
-      <tr>
+      <!-- <tr>
         <th *ngIf="transport.waitingTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Temps d'attente : {{transport.waitingTime | number : '1.2'}} heures</th>
-      </tr>
+      </tr> -->
       <!-- <tr style="border: 0px">
         <td colspan="3" style="text-align: center; text-anchor: start ">Porter au Compte : {{transport.porterAuCompte}}</td>
         <th colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{transport.collecterArgent | number : '1.2'}}</th>
@@ -1200,14 +1234,20 @@
         <td colspan="2" style="width: 30%">
           <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
             <tr>
-              <th style="width: 34%; text-align: right">{{transport.longueur}}</th>
+              <th *ngIf="transport.longueur!=null" style="width: 34%; text-align: right">{{transport.longueur}}</th>
               <td style="width: 33%; text-align: center">{{" "}}</td>
               <td style="width: 33%; text-align: center">{{" "}}</td>      
             </tr>
           </table>
         </td>
-        <th style="text-align: right; width:10%">{{transport.poids}}</th>
+        <th *ngIf="transport.poids!=null" style="text-align: right; width:10%">{{transport.poids}}</th>
       </tr> 
+      <tr *ngIf="transport.waitingTime>0">
+        <th colspan="2">Temps Attente : {{transport.waitingTime | number : '1.2'}} heures</th>
+      </tr>
+      <tr *ngIf="transport.waitingTime>0">
+        <th colspan="2">Temps PTO : {{transport.waitingTime | number : '1.2'}} heures</th>
+      </tr>
     <!--/table-->
       <!--tr>
         <td *ngIf="transport.quantity!=null"> Quantite : {{transport.quantity}} </td>

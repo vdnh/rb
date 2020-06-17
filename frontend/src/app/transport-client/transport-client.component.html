@@ -36,7 +36,7 @@
     </tr>
     <tr>
       <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
-        <span>Heures d'attente </span>
+        <span>Heures Attente </span>
       </th>
       <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
         <!-- *ngIf="transport.waitingTime>0"  -->
@@ -44,6 +44,13 @@
         (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()">
             <!-- (change)="transport.waitingFee=transport.waitingTime*transport.waitingPrice; prixCalcul()"> -->
         <!-- Temps d'attente : {{transport.waitingTime | number : '1.2'}} heures -->
+      </th>
+      <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
+        <span>Heures PTO </span>
+      </th>
+      <th style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">
+        <input class="form-control"  type="number" size="5" [(ngModel)]="transport.waitingTime"
+        (change)="transport.ptoFee=transport.ptoTime*transport.ptoPrice; prixCalcul()">
       </th>
     </tr>
     <tr>
