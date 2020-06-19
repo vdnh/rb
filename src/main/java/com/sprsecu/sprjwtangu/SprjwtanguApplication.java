@@ -205,6 +205,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                 try {
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
+                    //https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1
                     if(!listUnite.isEmpty()) {
                         //System.out.println("listUnite : " + listUnite.toString());
                         //System.out.println("Sure! listUnite isn't empty!!");

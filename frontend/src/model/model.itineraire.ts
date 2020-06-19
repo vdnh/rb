@@ -4,6 +4,7 @@ export class Itineraire{
     
     origin:string="";
     destination="";
+    
     datePick=new Date();
     dateDrop=new Date();
     longueur:number;

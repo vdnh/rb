@@ -57,7 +57,7 @@
                   <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
                   <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
                     <span>&nbsp;&nbsp;&nbsp;</span>
-                  <button class="btn btn-link" (click)="modeExpress=2;"><h4>Transport</h4></button>
+                  <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Transport</h4></a></button>
                     <span>&nbsp;&nbsp;&nbsp;</span>
                   <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Suivi Rapide</h4></a></button>
                 </div>
@@ -80,9 +80,14 @@
                   </marquee>
                 </div>
               </div>
-              <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
-              <h4 *ngIf="modeExpress==2">Transport Express - Coming soon ...</h4>
-              <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
+              
+              
+              <p style="background-color: whitesmoke;">
+                <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+                <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span>
+                <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
+                
+              </p>
               <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <!-- [style.background]="'url(/assets/images/bkgrd01.png)'" -->

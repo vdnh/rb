@@ -18,7 +18,8 @@
         <table border="1">
             <tr>
                 <th>Unite</th> <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
-                <th>Occupe</th> <th>Disponible</th>
+                <th>Occupe</th> <th>Disponible</th> 
+                <!-- <th>PositionActuelle</th> -->
             </tr>
             <!-- <tr>
                 <td>28</td> <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>17-06-2020</td> 
@@ -39,7 +40,8 @@
                     </button>
                 </td>
                 <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> 
-                <td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>
+                <td>50 ft</td> <td style="color: black; background-color:greenyellow;">25 ft</td>
+                <!-- <td>520 Guindon, St Eustach, QC</td> -->
             </tr>
         </table>
     </div>
@@ -50,35 +52,65 @@
             <tr>
                 <td>
                     <!-- <label>Endroit Pick</label> -->
-                    <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" style="width: 30ch;" class="form-control"></td>
+                    <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
+                    style="width: 30ch;" class="form-control"></td>
                 
                 <td>
                     <!-- <label>Date Pick</label> -->
-                    <input type="date" placeholder="Pick date" [(ngModel)]="itiner.datePick" style="width: 20ch;" class="form-control"></td>
+                    <input type="date" placeholder="Pick date" [ngModel]="itiner.datePick  | date: 'yyyy-MM-dd'" style="width: 20ch;" 
+                    name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
+                    <!-- <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
+                            name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
+                                class="form-control" (change)="dateChange($event)"/> -->
+                </td>
 
-                <td colspan="2">
+                <!-- <td colspan="2">
                     <label for="">Unite &nbsp;</label>
                     <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange(); 
                         itiner.camionAttribue=(camionMap.unite + ' - ' + camionMap.marque +'  ' +camionMap.modele);">
-                        <!-- "onClickCamion(camionMap)" -->
-                        <option *ngFor="let c of camionsSurMap" [ngValue]="c">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</option>
+                        <option *ngFor="let c of camionsSurMap" [ngValue]="c"><h3 style="color: greenyellow;">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</h3></option>
                     </select>
-                </td>
-                
-                
+                </td> -->
+
+                <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue"></td>
+
             </tr>
             <tr>
                 <td>
                     <!-- <label>Endroit Drop</label> -->
-                    <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" style="width: 30ch;" class="form-control"></td>
+                    <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
+                    style="width: 30ch;" class="form-control"></td>
                 <td>
                     <!-- <label>Date Drop</label> -->
-                    <input type="date" placeholder="Drop date" [(ngModel)]="itiner.dateDrop" style="width: 20ch;" class="form-control"></td>
+                    <input type="date" placeholder="Drop date" [ngModel]="itiner.dateDrop | date: 'yyyy-MM-dd'" style="width: 20ch;" 
+                    name="dateDrop" min="{{todaySuite | date: 'yyyy-MM-dd'}}" class="form-control" (change)="dropDateChange($event)"></td>
                 <td>
                     <!-- <label>Longueur</label> -->
                     <input type="text" placeholder="Longueur" [(ngModel)]="itiner.longueur" style="width: 12ch;" class="form-control"></td>
                 <td><button class="btn btn-link" (click)="onAjouter()">Ajouter</button></td>
             </tr>
+
+            <tr *ngIf="itiner.origin.length>0">
+                <th colspan="4">Camions Disponibles</th>
+            </tr>
+            <tr *ngIf="itiner.origin.length>0">
+                <th>Unite</th>
+                <th>ItineraireActuel</th>
+                <th>Disponible</th>
+                <!-- <th>PositionActuelle</th> -->
+            </tr>
+            <ng-container *ngFor="let c of camionsSurMap">
+                <tr *ngIf="itiner.origin.length>0">
+                    <td>
+                        <button (click)="onSelectCamion(c)" class="btn btn-link">
+                            {{c.unite + ' - ' + c.marque +'  ' +c.modele}}
+                        </button>
+                    </td>
+                    <td>Montreal, Quebec - Alma, Quebec</td>
+                    <td style="color: black; background-color:greenyellow;">25 ft</td>
+                    <!-- <td>520 Guindon, St Eustach, QC</td> -->
+                </tr>
+            </ng-container>
         </table>
 
         <div><br></div>
@@ -96,20 +128,20 @@
                 <td>Montreal, Quebec - Alma, Quebec</td> 
                 <td>17-06-2020</td> 
                 <td>17-06-2020</td> 
-                <td>50'</td> 
+                <td>50 ft</td> 
                 <td>8 - Peterbilt PB348</td> 
             </tr>
             <tr>
                 <td>Montreal, Quebec - Granby, Quebec</td> 
                 <td>18-06-2020</td> 
                 <td>18-06-2020</td> 
-                <td>50'</td> 
+                <td>50 ft</td> 
                 <td>8 - Peterbilt PB348</td> 
             </tr>
-            <tr *ngFor="let it of itiners">
+            <tr *ngFor="let it of itiners" (click)="onModify(it)">
                 <td>{{it.origin +' - '+ it.destination}}</td>
-                <td>{{it.datePick}}</td> 
-                <td>{{it.dateDrop}}</td> 
+                <td>{{it.datePick | date: 'dd-MM-yyyy'}}</td> 
+                <td>{{it.dateDrop | date: 'dd-MM-yyyy'}}</td> 
                 <td>{{it.longueur}}</td> 
                 <td>{{it.camionAttribue}}</td>
             </tr>

@@ -21,6 +21,9 @@ import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Itineraire } from 'src/model/model.itineraire';
+import { async } from '@angular/core/testing';
+import { GeocodingService } from 'src/services/geocoding.service';
+import { GeolocationService } from 'src/services/geolocation.service';
 
 
 @Component({
@@ -54,10 +57,14 @@ export class CamionsListComponent implements OnInit {
   camionsInOperation: Camion[];
   camionsOutOperation: Camion[];
 
+  today=new Date();
+  todaySuite = new Date(this.itiner.datePick);
+
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer){    
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
+    private geolocation : GeolocationService){    
     //this.id=activatedRoute.snapshot.params['id'];
     //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
@@ -74,8 +81,9 @@ export class CamionsListComponent implements OnInit {
       //       this.camionsSurMap.push(camion)
       //   })
       //
-      alert("Attendre 2 secondes, on loade la carte, SVP!")
+      //alert("Attendre 2 secondes, on loade la carte, SVP!")
       this.onPress(); // show carte right now
+      alert("Attendre 2 secondes, on loade la carte, SVP!")
       // this.camionsService.camionsDeTransporter(this.transporter.id).subscribe(async (data:Array<Camion>)=>{
       //   data.sort((a,b)=>{
       //     if(a.id>b.id)
@@ -120,6 +128,18 @@ export class CamionsListComponent implements OnInit {
           data.forEach(camion=>{
             if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
               camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+              // this.geocoding.geocode(new google.maps.LatLng(              
+              //   camion.latitude,
+              //   camion.longtitude
+              // ))
+              // .forEach(
+              //   (results: google.maps.GeocoderResult[]) => {
+              //     console.log(results[0].formatted_address);
+              //   }
+              // ).then(()=>{
+              //   this.camionsSurMap.push(camion)
+                
+              // })
               this.camionsSurMap.push(camion)
           })
           let mapProp = {
@@ -207,6 +227,13 @@ export class CamionsListComponent implements OnInit {
     })
     return textHtnl;
   }
+
+  pickDateChange(event){
+    this.itiner.dateDrop = this.todaySuite = this.itiner.datePick = event.target.value // new Date(event.target.value);
+  }
+  dropDateChange(event){
+    this.itiner.dateDrop =event.target.value
+  }
   onChange(){
     this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
     var c= this.camionMap;
@@ -229,20 +256,324 @@ export class CamionsListComponent implements OnInit {
     this.infoWindow.open(this.map);//*/      
   }
   onAjouter(){
-    console.log('this.itiner.camionAttribue: '+this.itiner.camionAttribue)
+    //console.log('this.itiner.camionAttribue: '+this.itiner.camionAttribue)
     let it=this.itiner
     this.itiners.push(it)
     this.itiner=new Itineraire()
-    console.log('it.camionAttribue: '+it.camionAttribue)
+    this.drawOrigin()
+    
+    if(this.originCircle){
+      this.originCircle.setMap(null)
+    }
+    if(this.destCircle1)(
+      this.destCircle1.setMap(null)
+    )
+    if(this.flightPath){
+      this.flightPath.setMap(null)
+    }
+    this.latLngOrigin=null
+    this.latLngDestination=null
+    this.flightPath=null
+    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+      this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+    })
+    
   }
   onClickCamion(c:Camion){
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow = new google.maps.InfoWindow;
-    var contentString:string='Unite '+c.unite+' - '+'Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-    this.infoWindow.setContent(contentString);
-    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow.open(this.map);//*/      
+    let placePresent :string;
+    //this.placePresent(c, placePresent)
+    this.geocoding.geocode(new google.maps.LatLng(              
+      c.latitude,
+      c.longtitude
+    ))
+    .forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        placePresent=results[0].formatted_address;
+        // console.log('results[0].formatted_address : '+results[0].formatted_address)
+        // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+        // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+        // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+        // console.log('results[0].geometry : '+results[0].geometry.location)
+      }
+    ).then(()=>{
+      //console.log('Place present dans pP(): '+placePresent)
+      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+      this.infoWindow.setContent(contentString);
+      this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+      this.infoWindow.open(this.map);//*/
+    })
+    // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow = new google.maps.InfoWindow;
+    // var contentString:string='Unite '+c.unite+' - '+'Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/      
+  }
+  
+
+  pP(c:Camion, place:string){
+    return this.geocoding.geocode(new google.maps.LatLng(              
+      c.latitude,
+      c.longtitude
+    ))
+    .forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        place=results[0].formatted_address;
+        //console.log('results[0].formatted_address : '+results[0].formatted_address)
+        //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+        //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+        //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+        //console.log('results[0].geometry : '+results[0].geometry.location)
+        //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+        //console.log('results[0].place_id : '+results[0].place_id)
+        //console.log('results[0].types : '+results[0].types)
+      }
+    ).then(()=>{
+      console.log('Place present dans pP(): '+place)
+    })
+    // console.log('Place present : '+placePresent)
+    // return placePresent
+  }
+
+  placePresent(c:Camion, place:string){
+    this.geocoding.geocode(new google.maps.LatLng(              
+      c.latitude,
+      c.longtitude
+    ))
+    .forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        place=results[0].formatted_address;
+        //console.log('results[0].formatted_address : '+results[0].formatted_address)
+        //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+        //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+        //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+        //console.log('results[0].geometry : '+results[0].geometry.location)
+        //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+        //console.log('results[0].place_id : '+results[0].place_id)
+        //console.log('results[0].types : '+results[0].types)
+      }
+    )
+    // console.log('Place present : '+placePresent)
+    // return placePresent
+  }
+
+  // latLngOrigin= new google.maps.LatLng(0,0);   //:any
+  latLngOrigin:google.maps.LatLng =null;
+  async originChange(){
+    this.latLngOrigin=null
+    await this.geocoding.codeAddress(this.itiner.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        if(results[0].geometry.location.lat()>0){
+          this.latLngOrigin= new google.maps.LatLng(
+            this.itiner.originLat= results[0].geometry.location.lat(),
+            this.itiner.originLong= results[0].geometry.location.lng()                            
+          )
+          //this.drawOrigin();
+          //if(this.latLngDestination!=null) this.drawDest()
+        }
+        else
+          {
+            // this.latLngOrigin=null;
+            //this.latLngOrigin = new google.maps.LatLng(0,0);
+            this.flightPath = new google.maps.Polyline(null)  //null;
+            //this.drawOrigin()
+            //this.drawflightPlan()
+            alert("Ne pas pouvoir localiser de cette endroit.")
+          }
+    }).then(()=>{
+      this.drawOrigin();
+      if(this.latLngDestination!=null) this.drawDest()
+    });//*/
+    // await this.drawOrigin();
+    // if(this.latLngDestination!=null) await this.drawDest()
+  }
+  
+  // latLngDestination:any
+  latLngDestination:google.maps.LatLng =null;
+  async destinationChange(){
+    this.latLngDestination=null
+    if(this.latLngOrigin!=null)
+      await this.geocoding.codeAddress(this.itiner.destination).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+          if(results[0].geometry.location.lat()>0){
+            this.latLngDestination= new google.maps.LatLng(
+              this.itiner.destLat= results[0].geometry.location.lat(),
+              this.itiner.destLong= results[0].geometry.location.lng()                            
+            )
+            //this.drawDest();
+          }
+          else
+          {
+            //this.latLngDestination= new google.maps.LatLng(0,0);
+            this.flightPath=null;
+            //this.drawDest();
+            alert("Ne pas pouvoir localiser cette endroit.")
+          }
+      }).then(()=>{
+        this.drawDest();
+      });//*/
+    else 
+      alert("Ne pas pouvoir localiser d'Endroit Pick.")
+    // await this.drawDest();
+  }
+
+  originCircle = new google.maps.Circle(); 
+  destCircle1 = new google.maps.Circle(); 
+  flightPath = new google.maps.Polyline();
+  flightPlanCoordinates:any;
+  drawOrigin(){
+    if(this.originCircle){
+      this.originCircle.setMap(null)
+    }
+    if(this.latLngOrigin!=null){
+      this.originCircle = new google.maps.Circle({
+        center: new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()),
+        radius: 10000, // par default 10 kms --------  this.mileEnKm(this.voyage.radiusOrigin)*1000,  // en metre
+        fillColor: '#FFFF00',
+        editable: false,
+        draggable: false,
+      });
+      this.originCircle.setMap(this.map);
+      this.map.setCenter(new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()));
+      //alert('this.map.zoom: '+ this.map.getZoom())
+      this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
+      // this.originCircle.addListener('click', (event)=>{
+      //   var contentString:string='Origin : '+ this.voyage.origin + '  -  Rayon : ' + this.voyage.radiusOrigin + ' miles.';
+      //   // Replace the info window's content and position.
+      //   this.infoWindow.setContent(contentString);
+      //   this.infoWindow.setPosition(event.latLng);
+      //   this.infoWindow.open(this.map);
+      // })
+    }
+    
+  }
+  drawDest(){
+    if(this.destCircle1){
+      this.destCircle1.setMap(null)
+    }
+    if(this.flightPath){
+      this.flightPath.setMap(null)
+    }
+    if(this.latLngDestination!=null){
+      this.destCircle1 = new google.maps.Circle({
+        center: new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()),
+        radius: 10000, // par default 10 kms --------this.mileEnKm(this.voyage.radiusDestination)*1000, // en metre
+        fillColor: '#FF00FF',
+        editable: false,
+        draggable: false,
+      })
+      this.destCircle1.setMap(this.map);
+      // this.destCircle1.addListener('click', (event)=>{
+      //   var contentString:string='Destination : '+ this.voyage.destination + '  -  Rayon : ' + this.voyage.radiusDestination + ' miles.';
+      //   // Replace the info window's content and position.
+      //   this.infoWindow.setContent(contentString);
+      //   this.infoWindow.setPosition(event.latLng);
+      //   this.infoWindow.open(this.map);
+      // })
+      this.flightPlanCoordinates = [
+        {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+        {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+      ];
+      this.flightPath = new google.maps.Polyline({
+        path: this.flightPlanCoordinates,
+        geodesic: true,
+        strokeColor: 'Gray',
+        strokeOpacity: 0.5,
+        strokeWeight: 5,
+        icons: [{
+          icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+          offset: '100%'
+        }]
+      });
+      this.flightPath.setMap(this.map);
+    }
+    
+  }
+  
+  drawflightPlan(){
+    if(this.flightPath){
+      this.flightPath.setMap(null)
+    }
+    // this.destCircle1 = new google.maps.Circle({
+    //   center: new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()),
+    //   radius: 10000, // par default 10 kms --------this.mileEnKm(this.voyage.radiusDestination)*1000, // en metre
+    //   fillColor: '#FF00FF',
+    //   editable: false,
+    //   draggable: false,
+    // })
+    // this.destCircle1.setMap(this.map);
+    // this.destCircle1.addListener('click', (event)=>{
+    //   var contentString:string='Destination : '+ this.voyage.destination + '  -  Rayon : ' + this.voyage.radiusDestination + ' miles.';
+    //   // Replace the info window's content and position.
+    //   this.infoWindow.setContent(contentString);
+    //   this.infoWindow.setPosition(event.latLng);
+    //   this.infoWindow.open(this.map);
+    // })
+    var flightPlanCoordinates = [
+      {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+      {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+    ];
+    this.flightPath = new google.maps.Polyline({
+      path: flightPlanCoordinates,
+      geodesic: true,
+      strokeColor: 'Gray',
+      strokeOpacity: 0.5,
+      strokeWeight: 5,
+      icons: [{
+        icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+        offset: '100%'
+      }]
+    });
+    this.flightPath.setMap(this.map);
+  }
+  onModify(it:Itineraire){
+    this.itiner=it;
+    this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
+    this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
+    this.drawOrigin();
+    this.drawDest();
+  }
+  onSelectCamion(c:Camion){
+    this.itiner.camionAttribue=(c.unite + ' - ' + c.marque +'  ' +c.modele);
+    this.infoWindow.close();
+    this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    this.infoWindow = new google.maps.InfoWindow;
+    let placePresent :string;
+    //this.placePresent(c, placePresent)
+    this.geocoding.geocode(new google.maps.LatLng(              
+      c.latitude,
+      c.longtitude
+    ))
+    .forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        placePresent=results[0].formatted_address;
+        // console.log('results[0].formatted_address : '+results[0].formatted_address)
+        // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+        // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+        // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+        // console.log('results[0].geometry : '+results[0].geometry.location)
+      }
+    ).then(()=>{
+      //console.log('Place present dans pP(): '+placePresent)
+      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+      this.infoWindow.setContent(contentString);
+      this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+      this.infoWindow.open(this.map);//*/
+    })
+    // this.pP(c, placePresent).then(()=>{
+    //   let contentString:string= ('Unite '+c.unite+' - '+'PositionActuelle: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+    //   this.infoWindow.setContent(contentString);
+    //   this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    //   this.infoWindow.open(this.map);//*/      
+    // })
+    
+    // let contentString:string= ('Unite '+c.unite+' - '+'PositionActuelle: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/      
   }
   getLocalisation(){
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
