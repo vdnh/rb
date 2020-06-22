@@ -17,8 +17,20 @@
     <div *ngIf="camionsList" id="toprint" class="col-md-7">
         <table border="1">
             <tr>
-                <th>Unite</th> <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
-                <th>Occupe</th> <th>Disponible</th> 
+                <th>Unite</th> 
+                <th colspan="5">
+                    <table class="table-responsive" border="1">
+                        <tr>
+                            <th>Itineraire</th> 
+                            <th>Pick</th> 
+                            <th>Drop</th> 
+                            <th>Occupe</th> 
+                            <th>Disponible</th> 
+                        </tr>
+                    </table>
+                </th>
+                <!-- <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
+                <th>Occupe</th> <th>Disponible</th>  -->
                 <!-- <th>PositionActuelle</th> -->
             </tr>
             <!-- <tr>
@@ -39,8 +51,19 @@
                         {{c.unite + ' - ' + c.marque +'  ' +c.modele}}
                     </button>
                 </td>
-                <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> 
-                <td>50 ft</td> <td style="color: black; background-color:greenyellow;">25 ft</td>
+                <td colspan="5">
+                    <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
+                    <table class="table-responsive" border="1">
+                        <tr *ngFor="let iti of camionItinersFind(c.id)">
+                            <td>{{iti.origin +"  -  "+ iti.destination}}</td> 
+                            <td>{{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
+                            <td>{{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
+                            <td>{{iti.longueur+" ft"}}</td> 
+                            <td style="color: black; background-color:greenyellow;">25 ft</td>
+                        </tr>
+                    </table>
+                </td>
+                
                 <!-- <td>520 Guindon, St Eustach, QC</td> -->
             </tr>
         </table>
@@ -116,7 +139,7 @@
         <div><br></div>
         
         <table border="1">
-            <tr><td colspan="6"><h4><strong>Liste Itineraires</strong></h4></td></tr>
+            <tr><td colspan="7"><h4><strong>Liste Itineraires</strong></h4></td></tr>
             <tr>
                 <th>Itineraire</th> 
                 <th>Pick</th> 
@@ -124,7 +147,7 @@
                 <th>Longueur</th> 
                 <th>Unite</th>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>Montreal, Quebec - Alma, Quebec</td> 
                 <td>17-06-2020</td> 
                 <td>17-06-2020</td> 
@@ -137,13 +160,15 @@
                 <td>18-06-2020</td> 
                 <td>50 ft</td> 
                 <td>8 - Peterbilt PB348</td> 
-            </tr>
+            </tr> -->
+            <tr *ngIf="itineraire.length==null"><th colspan="6">Il n'y a aucun itineraire actuellement.</th></tr>
             <tr *ngFor="let it of itiners" (click)="onModify(it)">
                 <td>{{it.origin +' - '+ it.destination}}</td>
                 <td>{{it.datePick | date: 'dd-MM-yyyy'}}</td> 
                 <td>{{it.dateDrop | date: 'dd-MM-yyyy'}}</td> 
                 <td>{{it.longueur}}</td> 
                 <td>{{it.camionAttribue}}</td>
+                <td><button (click)="deleteItiner(it)" class="btn btn-link">Annuler</button></td>
             </tr>
         </table>
     </div>

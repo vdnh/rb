@@ -157,16 +157,18 @@ export class CamionsListComponent implements OnInit {
                 position: location1,
                 map: this.map,
                 icon: {
-                  //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                 // url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
                   path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                  scale:4,
+                  //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                  scale:5,
                   rotation:camion.direction,
                   fillOpacity: 1,
-                  fillColor: "#FFFFFF",
+                  fillColor: "#7FFF00", //"#FFFFFF"
                   strokeWeight: 2,
-                  strokeColor: "red",
+                  strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
-                title: camion.unite
+                title: camion.unite,
+                label: {text:camion.unite, color:"red"},
               });
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
@@ -190,6 +192,7 @@ export class CamionsListComponent implements OnInit {
           })
           const source = interval(60000);
           this.subscription=source.subscribe(val=>{this.getLocalisation()})
+          this.makeCIsLList(); // make the lists itiniers follow each camion
         }, err=>{
           console.log();
         })
@@ -255,10 +258,20 @@ export class CamionsListComponent implements OnInit {
     this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow.open(this.map);//*/      
   }
+  camionItinersFind(idCamion){
+    return this.cIsLList.find(res=>res.camionId==idCamion).itiners
+  }
+  deleteItiner(it:Itineraire){
+    //this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
+    this.itiners.splice(this.itiners.indexOf(it))
+    this.itiner=new Itineraire()
+    this.makeCIsLList()
+  }
   onAjouter(){
     //console.log('this.itiner.camionAttribue: '+this.itiner.camionAttribue)
     let it=this.itiner
     this.itiners.push(it)
+    this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
     this.itiner=new Itineraire()
     this.drawOrigin()
     
@@ -489,6 +502,7 @@ export class CamionsListComponent implements OnInit {
         }]
       });
       this.flightPath.setMap(this.map);
+      this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
     }
     
   }
@@ -537,6 +551,7 @@ export class CamionsListComponent implements OnInit {
     this.drawDest();
   }
   onSelectCamion(c:Camion){
+    this.itiner.idCamion=c.id
     this.itiner.camionAttribue=(c.unite + ' - ' + c.marque +'  ' +c.modele);
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
@@ -575,6 +590,34 @@ export class CamionsListComponent implements OnInit {
     // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow.open(this.map);//*/      
   }
+
+  
+  cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
+  makeCIsLList(){
+    this.cIsLList=new Array<CamionItinersList>();
+    let cIsL : CamionItinersList;
+    this.camionsSurMap.forEach(c=>{
+      cIsL= new CamionItinersList();
+      cIsL.camionId=c.id
+      cIsL.itiners= this.camionItiners(c.id)
+      this.cIsLList.push(cIsL)
+    })
+    // let test :CamionItinersList;
+    // test = this.cIsLList.find(res=>res.camionId==108)
+    // console.log("this.cIsLList.length: "+ ' - ' +this.cIsLList.length + ' - '+ test.camionId.toString())
+  }
+  camionItiners(id:number){
+    let cIs:Array<Itineraire>=[]
+    if(this.itiners.length>0){
+      //alert("Hi from camionItiners(): " + id)
+      this.itiners.forEach(it=>{
+       if(it.idCamion==id) cIs.push(it)
+      })
+      alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
+      //return cIs
+    }
+    return cIs
+  }
   getLocalisation(){
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
       let camionsSurMap:Array<Camion>=new Array<Camion>();
@@ -601,14 +644,17 @@ export class CamionsListComponent implements OnInit {
             icon: {
               path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
               //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
-              scale:4,
+              //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+              // green-dot.png yellow-dot.png blue-dot.png
+              scale:5,
               rotation:camion.direction,
               fillOpacity: 1,
-              fillColor: "#FFFFFF",
+              fillColor: "#7FFF00", //"#FFFFFF"
               strokeWeight: 2,
-              strokeColor: "red",
+              strokeColor: "#008000", //"#FFFFFF""red",
             },
-            title: camion.unite
+            label: {text:camion.unite, color:"red",},
+            title: camion.unite,
           });
           this.infoWindow = new google.maps.InfoWindow;
           marker.addListener('click', (event)=>{
@@ -650,4 +696,9 @@ export class CamionsListComponent implements OnInit {
     WindowPrt.close();
   }
 
+}
+
+export class CamionItinersList{
+  camionId:number
+  itiners:Array<Itineraire>
 }
