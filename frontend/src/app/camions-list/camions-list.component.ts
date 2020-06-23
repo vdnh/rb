@@ -173,7 +173,12 @@ export class CamionsListComponent implements OnInit {
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
                 //var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-                var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+                //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+                var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+                  '<table border="1">' +
+                  this.prepareText(camion)
+                  '</table>'+'<br>'
+                  ' </p></div>'
                 // if(camion.stopDuration>0)
                 //   contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + this.showStopDuration(camion.stopDuration)//camion.stopDuration +' minutes.';
                 // Replace the info window's content and position.
@@ -218,16 +223,39 @@ export class CamionsListComponent implements OnInit {
 
     return duration;
   }
-  prepareText(obj){
+  prepareText(c:Camion){
+    //find list itineraire
+    let itiList= this.camionItinersFind(c.id)
+    let tempText=''
+    itiList.forEach(iti=>{
+      tempText=tempText+
+      '<tr>'+
+        '<td>'+iti.origin +"  -  "+ iti.destination+'</td>'+
+        "<td>Pick: "+iti.datePick.toLocaleDateString('ca-CA')+"</td>"+ 
+        "<td>Drop: "+iti.dateDrop.toLocaleDateString('ca-CA')+"</td>"+
+        '<td>Occupe: '+iti.longueur+" ft"+'</td>'+
+        '<td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>'+
+      '</tr>'
+    })
     let textHtnl = ''
     //obj=this.camionsSurMap;
     //obj.for
-    obj.forEach(camion=>{
-      textHtnl=textHtnl+'<tr *ngFor="let c of camionsSurMap">'+
-      '<td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> '+
-      '<td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>'+
-      '</tr>'
-    })
+    // obj.forEach(camion=>{
+    //   textHtnl=textHtnl+'<tr *ngFor="let c of camionsSurMap">'+
+    //   '<td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> '+
+    //   '<td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>'+
+    //   '</tr>'
+    // })
+    //obj.forEach(iti=>{
+      textHtnl=textHtnl+tempText
+      // '<tr *ngFor="let iti of camionItinersFind(c.id)">'+
+      //   '<td>{{iti.origin +"  -  "+ iti.destination}}</td>'+
+      //   "<td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td>"+ 
+      //   "<td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td>"+
+      //   '<td>Occupe: {{iti.longueur+" ft"}}</td>'+
+      //   '<td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>'+
+      // '</tr>'
+    //})
     return textHtnl;
   }
 
@@ -251,7 +279,7 @@ export class CamionsListComponent implements OnInit {
     // '<td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> '+
     // '<td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>'+
     // '</tr>'+
-    this.prepareText(this.camionsSurMap)
+    //this.prepareText(this.camionsSurMap)
     '</table>'+'<br>'
     ' </p></div>'
     this.infoWindow.setContent(contentString);
@@ -273,7 +301,7 @@ export class CamionsListComponent implements OnInit {
     this.itiners.push(it)
     this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
     this.itiner=new Itineraire()
-    this.drawOrigin()
+    //this.drawOrigin()
     
     if(this.originCircle){
       this.originCircle.setMap(null)
@@ -408,7 +436,7 @@ export class CamionsListComponent implements OnInit {
   latLngDestination:google.maps.LatLng =null;
   async destinationChange(){
     this.latLngDestination=null
-    if(this.latLngOrigin!=null)
+    //if(this.latLngOrigin!=null)
       await this.geocoding.codeAddress(this.itiner.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
@@ -428,10 +456,27 @@ export class CamionsListComponent implements OnInit {
       }).then(()=>{
         this.drawDest();
       });//*/
-    else 
-      alert("Ne pas pouvoir localiser d'Endroit Pick.")
+    // else 
+    //   alert("Ne pas pouvoir localiser d'Endroit Pick.")
     // await this.drawDest();
   }
+  onFocusOrigin(){
+    if(this.latLngOrigin!=null){
+      this.map.setCenter(new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()));
+      //alert('this.map.zoom: '+ this.map.getZoom())
+      this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
+    }
+    
+  }
+
+  onFocusDestination(){
+    if(this.latLngDestination!=null){
+      this.map.setCenter(new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()));
+      //alert('this.map.zoom: '+ this.map.getZoom())
+      this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
+    }
+  }
+  
 
   originCircle = new google.maps.Circle(); 
   destCircle1 = new google.maps.Circle(); 
@@ -451,7 +496,26 @@ export class CamionsListComponent implements OnInit {
       });
       this.originCircle.setMap(this.map);
       this.map.setCenter(new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()));
-      //alert('this.map.zoom: '+ this.map.getZoom())
+
+      if(this.latLngDestination!=null){
+        this.flightPlanCoordinates = [
+          {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+          {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+        ];
+        this.flightPath = new google.maps.Polyline({
+          path: this.flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: 'Gray',
+          strokeOpacity: 0.5,
+          strokeWeight: 5,
+          icons: [{
+            icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+            offset: '100%'
+          }]
+        });
+        this.flightPath.setMap(this.map);
+      }
+
       this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
       // this.originCircle.addListener('click', (event)=>{
       //   var contentString:string='Origin : '+ this.voyage.origin + '  -  Rayon : ' + this.voyage.radiusOrigin + ' miles.';
@@ -486,22 +550,25 @@ export class CamionsListComponent implements OnInit {
       //   this.infoWindow.setPosition(event.latLng);
       //   this.infoWindow.open(this.map);
       // })
-      this.flightPlanCoordinates = [
-        {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
-        {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
-      ];
-      this.flightPath = new google.maps.Polyline({
-        path: this.flightPlanCoordinates,
-        geodesic: true,
-        strokeColor: 'Gray',
-        strokeOpacity: 0.5,
-        strokeWeight: 5,
-        icons: [{
-          icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
-          offset: '100%'
-        }]
-      });
-      this.flightPath.setMap(this.map);
+      if(this.latLngOrigin!=null){
+        this.flightPlanCoordinates = [
+          {lat: this.latLngOrigin.lat(), lng: this.latLngOrigin.lng()},
+          {lat: this.latLngDestination.lat(), lng: this.latLngDestination.lng()}
+        ];
+        this.flightPath = new google.maps.Polyline({
+          path: this.flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: 'Gray',
+          strokeOpacity: 0.5,
+          strokeWeight: 5,
+          icons: [{
+            icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+            offset: '100%'
+          }]
+        });
+        this.flightPath.setMap(this.map);
+      }
+      
       this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
     }
     
@@ -658,7 +725,12 @@ export class CamionsListComponent implements OnInit {
           });
           this.infoWindow = new google.maps.InfoWindow;
           marker.addListener('click', (event)=>{
-            var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+            //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+            var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+                  '<table border="1">' +
+                  this.prepareText(camion)
+                  '</table>'+'<br>'
+                  ' </p></div>'
             // if(camion.stopDuration>0)
             //   contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + this.showStopDuration(camion.stopDuration)//camion.stopDuration +' minutes.';
             // Replace the info window's content and position.

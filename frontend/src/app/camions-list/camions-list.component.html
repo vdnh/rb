@@ -17,8 +17,8 @@
     <div *ngIf="camionsList" id="toprint" class="col-md-7">
         <table border="1">
             <tr>
-                <th>Unite</th> 
-                <th colspan="5">
+                <!-- <th colspan="6">Unite</th>  -->
+                <!-- <th colspan="5">
                     <table class="table-responsive" border="1">
                         <tr>
                             <th>Itineraire</th> 
@@ -28,7 +28,7 @@
                             <th>Disponible</th> 
                         </tr>
                     </table>
-                </th>
+                </th> -->
                 <!-- <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
                 <th>Occupe</th> <th>Disponible</th>  -->
                 <!-- <th>PositionActuelle</th> -->
@@ -53,13 +53,13 @@
                 </td>
                 <td colspan="5">
                     <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
-                    <table class="table-responsive" border="1">
-                        <tr *ngFor="let iti of camionItinersFind(c.id)">
+                    <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive" border="1" style="border-color: blue;">
+                        <tr *ngFor="let iti of camionItinersFind(c.id)" (click)="itineraire=true; camionsList=false; onModify(iti)">
                             <td>{{iti.origin +"  -  "+ iti.destination}}</td> 
-                            <td>{{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
-                            <td>{{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
-                            <td>{{iti.longueur+" ft"}}</td> 
-                            <td style="color: black; background-color:greenyellow;">25 ft</td>
+                            <td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
+                            <td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
+                            <td>Occupe: {{iti.longueur+" ft"}}</td> 
+                            <td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>
                         </tr>
                     </table>
                 </td>
@@ -76,7 +76,7 @@
                 <td>
                     <!-- <label>Endroit Pick</label> -->
                     <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
-                    style="width: 30ch;" class="form-control"></td>
+                    (focus)="onFocusOrigin()" style="width: 30ch;" class="form-control"></td>
                 
                 <td>
                     <!-- <label>Date Pick</label> -->
@@ -95,43 +95,55 @@
                     </select>
                 </td> -->
 
-                <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue"></td>
+                <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
+                <td>
+                    <input type="text" placeholder="Longueur" [(ngModel)]="itiner.longueur" style="width: 12ch;" class="form-control">
+                </td>
+                <td><button class="btn btn-link" (click)="onAjouter()">Ajouter</button></td>
 
             </tr>
             <tr>
                 <td>
                     <!-- <label>Endroit Drop</label> -->
                     <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
-                    style="width: 30ch;" class="form-control"></td>
+                    (focus)="onFocusDestination()" style="width: 30ch;" class="form-control"></td>
                 <td>
                     <!-- <label>Date Drop</label> -->
                     <input type="date" placeholder="Drop date" [ngModel]="itiner.dateDrop | date: 'yyyy-MM-dd'" style="width: 20ch;" 
                     name="dateDrop" min="{{todaySuite | date: 'yyyy-MM-dd'}}" class="form-control" (change)="dropDateChange($event)"></td>
-                <td>
-                    <!-- <label>Longueur</label> -->
-                    <input type="text" placeholder="Longueur" [(ngModel)]="itiner.longueur" style="width: 12ch;" class="form-control"></td>
-                <td><button class="btn btn-link" (click)="onAjouter()">Ajouter</button></td>
+                <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td>
             </tr>
 
-            <tr *ngIf="itiner.origin.length>0">
+            <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
                 <th colspan="4">Camions Disponibles</th>
             </tr>
-            <tr *ngIf="itiner.origin.length>0">
+            <!-- <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
                 <th>Unite</th>
                 <th>ItineraireActuel</th>
                 <th>Disponible</th>
-                <!-- <th>PositionActuelle</th> -->
-            </tr>
-            <ng-container *ngFor="let c of camionsSurMap">
-                <tr *ngIf="itiner.origin.length>0">
+            </tr> -->
+            <ng-container *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
+                <tr *ngFor="let c of camionsSurMap">
                     <td>
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             {{c.unite + ' - ' + c.marque +'  ' +c.modele}}
                         </button>
                     </td>
-                    <td>Montreal, Quebec - Alma, Quebec</td>
-                    <td style="color: black; background-color:greenyellow;">25 ft</td>
+                    <!-- <td>Montreal, Quebec - Alma, Quebec</td>
+                    <td style="color: black; background-color:greenyellow;">25 ft</td> -->
                     <!-- <td>520 Guindon, St Eustach, QC</td> -->
+                    <td colspan="5">
+                        <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
+                        <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive" border="1" style="border-color: blue;">
+                            <tr *ngFor="let iti of camionItinersFind(c.id)">
+                                <td>{{iti.origin +"  -  "+ iti.destination}}</td> 
+                                <td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
+                                <td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
+                                <td>Occupe: {{iti.longueur+" ft"}}</td> 
+                                <td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </ng-container>
         </table>
@@ -161,7 +173,7 @@
                 <td>50 ft</td> 
                 <td>8 - Peterbilt PB348</td> 
             </tr> -->
-            <tr *ngIf="itineraire.length==null"><th colspan="6">Il n'y a aucun itineraire actuellement.</th></tr>
+            <tr *ngIf="itiners==null||itiners.length==0"><th colspan="6">Il n'y a aucun itineraire actuellement.</th></tr>
             <tr *ngFor="let it of itiners" (click)="onModify(it)">
                 <td>{{it.origin +' - '+ it.destination}}</td>
                 <td>{{it.datePick | date: 'dd-MM-yyyy'}}</td> 
