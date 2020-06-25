@@ -1,11 +1,15 @@
 <div>
-    <button (click)="camionsList=true; itineraire=false" class="btn btn-link">
+    <button (click)="camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
-    <button (click)="itineraire=true; camionsList=false" class="btn btn-link">        
+    <button (click)="itineraire=true; camionsList=false; repere=false;" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
+    </button>
+    <button (click)="itineraire=false; camionsList=false; repere=true;" class="btn btn-link">        
+        <span *ngIf="!repere">Points de repere</span>
+        <strong *ngIf="repere">Points de repere</strong>
     </button>
     <button (click)="print('toprint')" class="btn btn-link">Print</button>
 </div>
@@ -14,6 +18,68 @@
 </div> -->
 <!-- <div class="row" *ngIf="carte==1 && camionsList"> -->
 <div class="row">
+    <div *ngIf="repere" id="toprint" class="col-md-7">
+        <table border="1">
+            <tr>
+                <th style="width: 20ch;">Nom de repere</th>
+                <th style="width: 30ch;">Adresse</th>
+                <th style="width: 15ch;">Rayon(m)</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <td>
+                    <!-- <label>Endroit Pick</label> -->
+                    <input type="text" placeholder="Nom de repere " [(ngModel)]="rep.nom" style="width: 20ch;" class="form-control">
+                </td>
+                
+                <td>
+                    <!-- <label>Endroit Pick</label> -->
+                    <input type="text" placeholder="Adresse " [(ngModel)]="rep.address" (change)="addressChange()" 
+                    (focus)="onFocusAddress()" style="width: 30ch;" class="form-control">
+                </td>
+
+                <td>
+                    <input type="number" placeholder="rayon (m)" [(ngModel)]="rep.radius" style="width: 15ch;" class="form-control" (change)="drawAddress()">
+                </td>
+                <td>
+                    <button class="btn btn-link" (click)="onAjouterRepere()">Ajouter</button>
+                </td>
+
+            </tr>
+            
+        </table>
+
+        <div><br></div>
+        
+        <table border="1">
+            <tr><td colspan="5"><h4><strong>Liste Points de Repere</strong></h4></td></tr>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Rayon(m)</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr *ngIf="reps==null||reps.length==0"><th colspan="6">Il n'y a aucun point de repere actuellement.</th></tr>
+            <tr *ngFor="let r of reps">
+                <td (click)="onModifyRepere(r)">
+                    <!-- {{r.nom}} -->
+                    <input type="text" placeholder="Nom de repere " [(ngModel)]="r.nom" style="width: 20ch;" class="form-control">
+                </td>
+                <td (click)="onModifyRepere(r)">
+                    <!-- {{r.address}} -->
+                    <input type="text" placeholder="Adresse " [(ngModel)]="r.address" (change)="addressChangeInList()" 
+                    (focus)="onFocusAddressInList()" style="width: 30ch;" class="form-control">
+                </td> 
+                <td (click)="onModifyRepere(r)">
+                    <!-- {{r.radius}} -->
+                    <input type="number" placeholder="rayon (m)" [(ngModel)]="r.radius" style="width: 15ch;" class="form-control" (change)="drawAddressInList()">
+                </td>
+                <td><button (click)=" modifyRepere(r)" class="btn btn-link">Modifier</button></td>
+                <td><button (click)="deleteRepere(r)" class="btn btn-link">Delete</button></td>
+            </tr>
+        </table>
+    </div>
     <div *ngIf="camionsList" id="toprint" class="col-md-7">
         <table border="1">
             <tr>
@@ -58,8 +124,8 @@
                             <td>{{iti.origin +"  -  "+ iti.destination}}</td> 
                             <td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
                             <td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
-                            <td>Occupe: {{iti.longueur+" ft"}}</td> 
-                            <td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>
+                            <td>Occupe: {{(iti.longueur!=null ? iti.longueur+" ft" : '')}}</td> 
+                            <td style="color: black; background-color:greenyellow;">Dispo: </td>
                         </tr>
                     </table>
                 </td>
@@ -76,7 +142,11 @@
                 <td>
                     <!-- <label>Endroit Pick</label> -->
                     <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
-                    (focus)="onFocusOrigin()" style="width: 30ch;" class="form-control"></td>
+                    (focus)="onFocusOrigin()" style="width: 30ch;" class="form-control" list="defaultTemplates">
+                    <datalist id="defaultTemplates">
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option>
+                    </datalist>
+                </td>
                 
                 <td>
                     <!-- <label>Date Pick</label> -->
@@ -106,7 +176,11 @@
                 <td>
                     <!-- <label>Endroit Drop</label> -->
                     <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
-                    (focus)="onFocusDestination()" style="width: 30ch;" class="form-control"></td>
+                    (focus)="onFocusDestination()" style="width: 30ch;" class="form-control" list="defaultTemplates">
+                    <datalist id="defaultTemplates">
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option>
+                    </datalist>
+                </td>
                 <td>
                     <!-- <label>Date Drop</label> -->
                     <input type="date" placeholder="Drop date" [ngModel]="itiner.dateDrop | date: 'yyyy-MM-dd'" style="width: 20ch;" 
@@ -136,7 +210,7 @@
                         <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
                         <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive" border="1" style="border-color: blue;">
                             <tr *ngFor="let iti of camionItinersFind(c.id)">
-                                <td>{{iti.origin +"  -  "+ iti.destination}}</td> 
+                                <td>{{iti.origin +' ' +"  -  "+' '+ iti.destination}}</td> 
                                 <td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
                                 <td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
                                 <td>Occupe: {{iti.longueur+" ft"}}</td> 
@@ -174,12 +248,12 @@
                 <td>8 - Peterbilt PB348</td> 
             </tr> -->
             <tr *ngIf="itiners==null||itiners.length==0"><th colspan="6">Il n'y a aucun itineraire actuellement.</th></tr>
-            <tr *ngFor="let it of itiners" (click)="onModify(it)">
-                <td>{{it.origin +' - '+ it.destination}}</td>
-                <td>{{it.datePick | date: 'dd-MM-yyyy'}}</td> 
-                <td>{{it.dateDrop | date: 'dd-MM-yyyy'}}</td> 
-                <td>{{it.longueur}}</td> 
-                <td>{{it.camionAttribue}}</td>
+            <tr *ngFor="let it of itiners">
+                <td (click)="onModify(it)">{{it.origin +' - '+ it.destination}}</td>
+                <td (click)="onModify(it)">{{it.datePick | date: 'dd-MM-yyyy'}}</td> 
+                <td (click)="onModify(it)">{{it.dateDrop | date: 'dd-MM-yyyy'}}</td> 
+                <td (click)="onModify(it)">{{it.longueur}}</td> 
+                <td (click)="onModify(it)">{{it.camionAttribue}}</td>
                 <td><button (click)="deleteItiner(it)" class="btn btn-link">Annuler</button></td>
             </tr>
         </table>

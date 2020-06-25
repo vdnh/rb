@@ -24,6 +24,7 @@ import { Itineraire } from 'src/model/model.itineraire';
 import { async } from '@angular/core/testing';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
+import { Repere } from 'src/model/model.repere';
 
 
 @Component({
@@ -34,10 +35,13 @@ import { GeolocationService } from 'src/services/geolocation.service';
 export class CamionsListComponent implements OnInit {
 
   itineraire:boolean=false;
-  camionsList:boolean=true
+  camionsList:boolean=true; // par default, on voit la liste de camions
+  repere:boolean=false;
 
   itiner:Itineraire=new Itineraire();
   itiners:Array<Itineraire>=[];
+  rep:Repere=new Repere();
+  reps:Array<Repere>=[];
 
   //* for map flotte truck
   subscription : Subscription;
@@ -168,7 +172,7 @@ export class CamionsListComponent implements OnInit {
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
                 title: camion.unite,
-                label: {text:camion.unite, color:"red"},
+                label: {text:camion.unite, color:"orange"},
               });
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
@@ -233,8 +237,8 @@ export class CamionsListComponent implements OnInit {
         '<td>'+iti.origin +"  -  "+ iti.destination+'</td>'+
         "<td>Pick: "+iti.datePick.toLocaleDateString('ca-CA')+"</td>"+ 
         "<td>Drop: "+iti.dateDrop.toLocaleDateString('ca-CA')+"</td>"+
-        '<td>Occupe: '+iti.longueur+" ft"+'</td>'+
-        '<td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>'+
+        '<td>Occup: '+(iti.longueur!=null ? iti.longueur+" ft" : '')+'</td>'+
+        '<td style="color: black; background-color:greenyellow;">Dispo: </td>'+
       '</tr>'
     })
     let textHtnl = ''
@@ -289,10 +293,14 @@ export class CamionsListComponent implements OnInit {
   camionItinersFind(idCamion){
     return this.cIsLList.find(res=>res.camionId==idCamion).itiners
   }
+  deleteRepere(r:Repere){
+    this.reps.splice(this.reps.indexOf(r))
+    // this.rep=new Repere()
+  }
   deleteItiner(it:Itineraire){
     //this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
     this.itiners.splice(this.itiners.indexOf(it))
-    this.itiner=new Itineraire()
+    // this.itiner=new Itineraire()
     this.makeCIsLList()
   }
   onAjouter(){
@@ -400,6 +408,91 @@ export class CamionsListComponent implements OnInit {
     // console.log('Place present : '+placePresent)
     // return placePresent
   }
+  
+  // adresse de point de repere
+  latLngAddress:google.maps.LatLng =null;
+  async addressChange(){
+    this.latLngAddress=null
+    await this.geocoding.codeAddress(this.rep.address).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+        if(results[0].geometry.location.lat()>0){
+          this.latLngAddress= new google.maps.LatLng(
+            this.rep.originLat= results[0].geometry.location.lat(),
+            this.rep.originLong= results[0].geometry.location.lng()                            
+          )
+        }
+        else
+          {
+            alert("Ne pas pouvoir localiser de cette adresse.")
+          }
+    }).then(()=>{
+      this.drawAddress();
+    });
+  }
+  radiusChange(){
+    this.drawAddress();
+  }
+  addressCircle = new google.maps.Circle(); 
+  markerAdsress =new google.maps.Marker();
+  drawAddress(){
+    if(this.addressCircle){
+      this.addressCircle.setMap(null)
+    }
+    if(this.markerAdsress){
+      this.markerAdsress.setMap(null)
+    }
+    if(this.latLngAddress!=null){
+      this.addressCircle = new google.maps.Circle({
+        center: new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()),
+        radius: (this.rep.radius>0 ? this.rep.radius : 100), // en metre, 1 metre par defaut
+        fillColor: '#FFFF00',
+        editable: false,
+        draggable: false,
+      });
+      this.addressCircle.setMap(this.map);
+      this.markerAdsress = new google.maps.Marker({
+        position: this.latLngAddress,
+        map: this.map,
+        icon: {
+          //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+          //path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+          scale:5,
+          //rotation:camion.direction,
+          fillOpacity: 1,
+          fillColor: "#7FFF00", //"#FFFFFF"
+          strokeWeight: 2,
+          strokeColor: "#008088", //"#FFFFFF",//"red",
+        },
+        title: this.rep.nom,
+        label: {text:this.rep.nom, color:"orange"},
+      });
+      //marker.setMap(this.map)
+      this.map.setCenter(new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
+      this.map.setZoom(15) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
+    }
+    
+  }
+  onFocusAddress(){
+    if(this.latLngAddress!=null){
+      this.map.setCenter(new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
+      this.map.setZoom(15);
+    }
+  }
+  onAjouterRepere(){
+    let rep=this.rep
+    this.reps.push(rep)
+    this.rep=new Repere()
+    if(this.addressCircle){
+      this.addressCircle.setMap(null)
+    }
+    if(this.markerAdsress){
+      this.markerAdsress.setMap(null)
+    }
+    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+      this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+    })
+  }
 
   // latLngOrigin= new google.maps.LatLng(0,0);   //:any
   latLngOrigin:google.maps.LatLng =null;
@@ -466,7 +559,6 @@ export class CamionsListComponent implements OnInit {
       //alert('this.map.zoom: '+ this.map.getZoom())
       this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
     }
-    
   }
 
   onFocusDestination(){
@@ -610,6 +702,11 @@ export class CamionsListComponent implements OnInit {
     });
     this.flightPath.setMap(this.map);
   }
+  onModifyRepere(r:Repere){
+    this.rep=r;
+    this.latLngAddress=new google.maps.LatLng(r.originLat, r.originLong)
+    this.drawAddress();
+  }
   onModify(it:Itineraire){
     this.itiner=it;
     this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
@@ -720,7 +817,7 @@ export class CamionsListComponent implements OnInit {
               strokeWeight: 2,
               strokeColor: "#008000", //"#FFFFFF""red",
             },
-            label: {text:camion.unite, color:"red",},
+            label: {text:camion.unite, color:"orange",},
             title: camion.unite,
           });
           this.infoWindow = new google.maps.InfoWindow;

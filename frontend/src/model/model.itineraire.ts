@@ -11,7 +11,9 @@ export class Itineraire{
     camionAttribue="";
     
     idCamion:number;
-    
+    idPickStone:number; // Repere Pick
+    idDropStone:number; // Repere Drop
+
     idEntreprise:number;  // bientot id de Shipper
     idTransporter:number;  // id de Transporter
     distance:number=0.00;
