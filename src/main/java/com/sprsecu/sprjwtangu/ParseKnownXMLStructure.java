@@ -116,7 +116,32 @@ public class ParseKnownXMLStructure {
                 ui.setLongitude(eElement.getElementsByTagName("longitude").item(0).getTextContent());
                 ui.setDirection(eElement.getElementsByTagName("direction").item(0).getTextContent());
                 ui.setSpeed(eElement.getElementsByTagName("speed").item(0).getTextContent());
-                //System.out.println("ui speed - xml: "+ ui.getSpeed());
+                ui.setLocation(eElement.getElementsByTagName("address").item(0).getTextContent());
+                //System.out.println("ui.location : "+ ui.getLocation());
+//                ui.setLocalName(eElement.getElementsByTagName("name").item(0).getTextContent());
+//                System.out.println("ui.localName : "+ ui.getLocalName());
+                // here node is the node taken from the top with ("landmark")
+                //System.out.println("node.toString(): " + node.toString());
+                if(eElement.getElementsByTagName("landmark").item(0)!=null){  // If landmark not null
+//                    System.out.println("eElement.getElementsByTagName('landmark').item(0).getTextContent(): " + eElement.getElementsByTagName("landmark").item(0).getTextContent());
+                    String[] strs= eElement.getElementsByTagName("landmark").item(0).getTextContent().split("\n"); // split by sign new line \n
+//                    System.out.println("strs[0]: "+ strs[0]); // this is just space
+                    //System.out.println("strs[1]: "+ strs[1]); // this is name of landmark, we need it
+                    ui.setLocalName(strs[1]); // set it to the name repere
+//                    System.out.println("strs[2]: "+ strs[2]); // this is address, we have already in the up line
+                }
+//                Document underDocument = builder.parse(node.toString());
+//                NodeList underNList = underDocument.getElementsByTagName("landmark");
+//                for (int t = 0; t < underNList.getLength(); t++)
+//                {
+//                    Node underNode = underNList.item(t);
+//                    if (underNode.getNodeType() == Node.ELEMENT_NODE)
+//                    {
+//                        Element underElement = (Element) underNode;
+//                        ui.setLocation(underElement.getElementsByTagName("address").item(0).getTextContent());
+//                        ui.setLocalName(underElement.getElementsByTagName("name").item(0).getTextContent());
+//                    }
+//                }
                 listUniteInfos.add(ui);
             }
         }	//*/

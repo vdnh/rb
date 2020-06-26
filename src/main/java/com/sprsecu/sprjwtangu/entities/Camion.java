@@ -104,6 +104,10 @@ public class Camion implements Serializable{
     // Camions' Photo 
     private String imgUrl="";
     
+    // Camions' location and name of location
+    private String location; // address in AVL
+    private String localName; // name in AVL
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

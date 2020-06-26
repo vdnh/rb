@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor @NoArgsConstructor
 public class UniteInfos {
-    private String unite;
-    private String odometer;
-    private String latitude;
-    private String longitude;    
-    private String direction;
-    private String speed;
+    private String unite="";
+    private String odometer="";
+    private String latitude="";
+    private String longitude="";    
+    private String direction="";
+    private String speed="";
+    private String location="";
+    private String localName="";
 }

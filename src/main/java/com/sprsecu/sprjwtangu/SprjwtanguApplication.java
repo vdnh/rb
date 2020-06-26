@@ -204,7 +204,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
             while (true) {
                 try {
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
-                    List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
+                    List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
                     //https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1
                     if(!listUnite.isEmpty()) {
                         //System.out.println("listUnite : " + listUnite.toString());
@@ -214,6 +214,8 @@ public class SprjwtanguApplication implements CommandLineRunner{
                         camions.forEach(camion ->{
                             listUnite.forEach(unite->{
                                 if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
+                                    camion.setLocation(unite.getLocation());
+                                    camion.setLocalName(unite.getLocalName());
                                     camion.setOdometre(new Float(unite.getOdometer()).longValue());
                                     camion.setLongtitude(new Double(unite.getLongitude()));
                                     camion.setLatitude(new Double(unite.getLatitude()));

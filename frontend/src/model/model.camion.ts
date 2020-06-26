@@ -65,7 +65,11 @@ export class Camion{
     largeur:number;
     hauteur:number;
     poids:number;
-
+    
+    // Camions' location and name of location
+    location:string=""; // address in AVL
+    localName:string=""; // name in AVL
+    
     // camions' photo
     imgUrl="";
 

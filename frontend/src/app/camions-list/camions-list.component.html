@@ -83,21 +83,9 @@
     <div *ngIf="camionsList" id="toprint" class="col-md-7">
         <table border="1">
             <tr>
-                <!-- <th colspan="6">Unite</th>  -->
-                <!-- <th colspan="5">
-                    <table class="table-responsive" border="1">
-                        <tr>
-                            <th>Itineraire</th> 
-                            <th>Pick</th> 
-                            <th>Drop</th> 
-                            <th>Occupe</th> 
-                            <th>Disponible</th> 
-                        </tr>
-                    </table>
-                </th> -->
-                <!-- <th>Itineraire</th> <th>Pick</th> <th>Drop</th> 
-                <th>Occupe</th> <th>Disponible</th>  -->
-                <!-- <th>PositionActuelle</th> -->
+                <th>Unite</th> 
+                <th colspan="5">Itineraires</th>
+                <th>Emplacement</th>
             </tr>
             <!-- <tr>
                 <td>28</td> <td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>17-06-2020</td> 
@@ -129,7 +117,7 @@
                         </tr>
                     </table>
                 </td>
-                
+                <td>{{c.localName.length>0 ? c.localName : c.location}}</td>
                 <!-- <td>520 Guindon, St Eustach, QC</td> -->
             </tr>
         </table>
@@ -144,7 +132,8 @@
                     <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
                     (focus)="onFocusOrigin()" style="width: 30ch;" class="form-control" list="defaultTemplates">
                     <datalist id="defaultTemplates">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option>
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom }}</option>
+                        <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
                 
@@ -176,9 +165,10 @@
                 <td>
                     <!-- <label>Endroit Drop</label> -->
                     <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
-                    (focus)="onFocusDestination()" style="width: 30ch;" class="form-control" list="defaultTemplates">
-                    <datalist id="defaultTemplates">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option>
+                    (focus)="onFocusDestination()" style="width: 30ch;" class="form-control" list="defaultTemplates01">
+                    <datalist id="defaultTemplates01">
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom}}</option>
+                        <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
                 <td>
@@ -213,7 +203,7 @@
                                 <td>{{iti.origin +' ' +"  -  "+' '+ iti.destination}}</td> 
                                 <td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td> 
                                 <td>Drop: {{iti.dateDrop | date: 'dd-MM-yyyy'}}</td> 
-                                <td>Occupe: {{iti.longueur+" ft"}}</td> 
+                                <td>Occupe: {{(iti.longueur!=null ? iti.longueur+" ft" : '')}}</td> 
                                 <td style="color: black; background-color:greenyellow;">Dispo: 25 ft</td>
                             </tr>
                         </table>

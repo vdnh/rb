@@ -272,23 +272,16 @@ export class CamionsListComponent implements OnInit {
   onChange(){
     this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
     var c= this.camionMap;
-    this.infoWindow.close();
+    //this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow = new google.maps.InfoWindow;
-    var contentString:string='<div><p> '+ 'Unite '+c.unite+" <br>" +
-    // ' - '+'Montreal, Quebec - Alma, Quebec. Occupe : 25"' + " <br>" +
-    // ' - '+'Montreal, Quebec - Alma, Quebec. Occupe : 50"' + " <br>" +
-    '<table border="1">' +
-    //'<tr *ngFor="let c of camionsSurMap">'+
-    // '<td>Montreal, Quebec - Alma, Quebec</td> <td>17-06-2020</td> <td>18-06-2020</td> '+
-    // '<td>50"</td> <td style="color: black; background-color:greenyellow;">25"</td>'+
-    // '</tr>'+
-    //this.prepareText(this.camionsSurMap)
-    '</table>'+'<br>'
-    ' </p></div>'
-    this.infoWindow.setContent(contentString);
-    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow.open(this.map);//*/      
+    // this.infoWindow = new google.maps.InfoWindow;
+    // var contentString:string='<div><p> '+ 'Unite '+c.unite+" <br>" +
+    // '<table border="1">' +
+    //     '</table>'+'<br>'
+    // ' </p></div>'
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/      
   }
   camionItinersFind(idCamion){
     return this.cIsLList.find(res=>res.camionId==idCamion).itiners
@@ -347,13 +340,14 @@ export class CamionsListComponent implements OnInit {
         // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
         // console.log('results[0].geometry : '+results[0].geometry.location)
       }
-    ).then(()=>{
-      //console.log('Place present dans pP(): '+placePresent)
-      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-      this.infoWindow.setContent(contentString);
-      this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-      this.infoWindow.open(this.map);//*/
-    })
+    )
+    // .then(()=>{
+    //   //console.log('Place present dans pP(): '+placePresent)
+    //   let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+    //   this.infoWindow.setContent(contentString);
+    //   this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    //   this.infoWindow.open(this.map);//*/
+    // })
     // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow = new google.maps.InfoWindow;
     // var contentString:string='Unite '+c.unite+' - '+'Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
@@ -720,28 +714,23 @@ export class CamionsListComponent implements OnInit {
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow = new google.maps.InfoWindow;
-    let placePresent :string;
+    //let placePresent :string;
     //this.placePresent(c, placePresent)
-    this.geocoding.geocode(new google.maps.LatLng(              
-      c.latitude,
-      c.longtitude
-    ))
-    .forEach(
-      (results: google.maps.GeocoderResult[]) => {
-        placePresent=results[0].formatted_address;
-        // console.log('results[0].formatted_address : '+results[0].formatted_address)
-        // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-        // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-        // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-        // console.log('results[0].geometry : '+results[0].geometry.location)
-      }
-    ).then(()=>{
+    // this.geocoding.geocode(new google.maps.LatLng(              
+    //   c.latitude,
+    //   c.longtitude
+    // ))
+    // .forEach(
+    //   (results: google.maps.GeocoderResult[]) => {
+    //     placePresent=results[0].formatted_address;
+    //   }
+    // ).then(()=>{
       //console.log('Place present dans pP(): '+placePresent)
-      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ (c.localName.length>0 ? c.localName : c.location));//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
       this.infoWindow.setContent(contentString);
       this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
       this.infoWindow.open(this.map);//*/
-    })
+    //})
     // this.pP(c, placePresent).then(()=>{
     //   let contentString:string= ('Unite '+c.unite+' - '+'PositionActuelle: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
     //   this.infoWindow.setContent(contentString);
