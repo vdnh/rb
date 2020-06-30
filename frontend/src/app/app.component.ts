@@ -88,11 +88,11 @@ export class AppComponent implements OnInit{
           //console.log('ice.candidate.toJSON().candidate : '+ice.candidate.toJSON().candidate)
           //console.log('ice.candidate.component : '+ice.candidate.component.toString())
           this.varsGlobal.userLogs.ipLocal = this.ipRegex.exec(ice.candidate.candidate)[1]
-          console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
+          //console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
         }
         else {
           this.varsGlobal.userLogs.ipLocal = ice.candidate.candidate
-          console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
+          //console.log('this.varsGlobal.userLogs.ipLocal : '+this.varsGlobal.userLogs.ipLocal)
         }
         pc.onicecandidate = () => {};
         pc.close();
@@ -619,9 +619,9 @@ export class AppComponent implements OnInit{
     if(this.varsGlobal.userLogs.loginTime!=null){
       this.varsGlobal.userLogs.logoutTime=new Date();
       this.varsGlobal.userLogs.loginTime=new Date(this.varsGlobal.userLogs.loginTime);
-      console.log("this.varsGlobal.userLogs.logoutTime.getTime() : "+this.varsGlobal.userLogs.logoutTime.getTime());
-      console.log("this.varsGlobal.userLogs.loginTime.getTime() : "+this.varsGlobal.userLogs.loginTime.getTime());
-      console.log("this.varsGlobal.userLogs.ipLocal : "+this.varsGlobal.userLogs.ipLocal)
+      //console.log("this.varsGlobal.userLogs.logoutTime.getTime() : "+this.varsGlobal.userLogs.logoutTime.getTime());
+      //console.log("this.varsGlobal.userLogs.loginTime.getTime() : "+this.varsGlobal.userLogs.loginTime.getTime());
+      //console.log("this.varsGlobal.userLogs.ipLocal : "+this.varsGlobal.userLogs.ipLocal)
       this.varsGlobal.userLogs.duration = 
         await (this.varsGlobal.userLogs.logoutTime.getTime() - this.varsGlobal.userLogs.loginTime.getTime())/1000/60  // to find minutes
       await this.userLogsService.saveUserLogs(this.varsGlobal.userLogs).subscribe((data:UserLogs)=>{

@@ -21,7 +21,7 @@ export class ItinerairesService{
     
     itinerairesDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/itinerairesTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8080/itinerairesTransporter/"+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

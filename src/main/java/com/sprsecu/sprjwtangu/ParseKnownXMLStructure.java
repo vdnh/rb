@@ -111,6 +111,7 @@ public class ParseKnownXMLStructure {
 //                System.out.println("Latitude : "  + eElement.getElementsByTagName("latitude").item(0).getTextContent());
 //                System.out.println("Longtitude : "    + eElement.getElementsByTagName("longitude").item(0).getTextContent());
                 ui.setUnite(eElement.getElementsByTagName("id").item(0).getTextContent());
+                ui.setForeignName(eElement.getElementsByTagName("name").item(0).getTextContent());  // get name at GPS Supplier
                 ui.setOdometer(eElement.getElementsByTagName("odometer").item(0).getTextContent());
                 ui.setLatitude(eElement.getElementsByTagName("latitude").item(0).getTextContent());
                 ui.setLongitude(eElement.getElementsByTagName("longitude").item(0).getTextContent());

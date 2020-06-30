@@ -21,7 +21,7 @@ export class ReperesService{
     
     reperesTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reperesTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8080/reperesTransporter/"+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

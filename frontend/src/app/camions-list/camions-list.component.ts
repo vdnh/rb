@@ -25,6 +25,8 @@ import { async } from '@angular/core/testing';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { Repere } from 'src/model/model.repere';
+import { ItinerairesService } from 'src/services/itineraires.service';
+import { ReperesService } from 'src/services/reperes.service';
 
 
 @Component({
@@ -68,53 +70,36 @@ export class CamionsListComponent implements OnInit {
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
     public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
-    private geolocation : GeolocationService){    
+    private geolocation : GeolocationService,
+    private itinerairesService:ItinerairesService, private reperesService:ReperesService){    
     //this.id=activatedRoute.snapshot.params['id'];
     //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
 
   ngOnInit() {
     this.camionsSurMap=[];
-    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
-      //
-      // this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
-      //   data.forEach(camion=>{
-      //     if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-      //       camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-      //       this.camionsSurMap.push(camion)
-      //   })
-      //
-      //alert("Attendre 2 secondes, on loade la carte, SVP!")
+     
+      // get list itineraires
+      await this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+        if(data!=null) this.itiners=data
+      },err=>{console.log(err)})
+      
+      //get list reperes
+      await this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+        if(data!=null) this.reps=data
+      }, err=>{console.log(err)})
+      
       this.onPress(); // show carte right now
       alert("Attendre 2 secondes, on loade la carte, SVP!")
-      // this.camionsService.camionsDeTransporter(this.transporter.id).subscribe(async (data:Array<Camion>)=>{
-      //   data.sort((a,b)=>{
-      //     if(a.id>b.id)
-      //       return 1;
-      //     if(a.id<b.id)
-      //       return -1;
-      //     return 0;
-      //   });
-      //   // data.forEach(camion=>{
-      //   //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-      //   //     camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-      //   //     this.camionsSurMap.push(camion)
-      //   // })
-      //   this.camions= data
-      //   this.camionsInOperation = await this.camions.filter(camion=>camion.status==true) //this.filterCamionInOperation()
-      //   this.camionsOutOperation = await this.camions.filter(camion=>camion.status==false) //this.filterCamionOutOperation()
-      //   alert("Attendre 2 secondes, on loade la carte, SVP!")
-      //   this.onPress(); // show carte right now
-      // }, err=>{
-      //   console.log();
-      // });
+      
     }, err=>{
       console.log(err);
     });
   }
 
-  myWindow: any;
+  //myWindow: any;
 
   onPress(){
     //this.carte=-this.carte;
@@ -153,6 +138,7 @@ export class CamionsListComponent implements OnInit {
           };
           this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
           this.camionsSurMap.forEach(camion=>{
+            if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
             //console.log("camion.id : "+ camion.id)
             if(camion.uniteMonitor!=null && camion.monitor!=null){
               //this.marker.setMap(null);
@@ -171,16 +157,24 @@ export class CamionsListComponent implements OnInit {
                   strokeWeight: 2,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
-                title: camion.unite,
-                label: {text:camion.unite, color:"orange"},
+                title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
+                label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
               });
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
                 //var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
                 //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-                var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+                //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+                var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
-                  this.prepareText(camion)
+                  '<tr>'+
+                    '<td>Itineraire</td>'+
+                    '<td>PickDate</td>'+ 
+                    "<td>DropDate</td>"+
+                    '<td>Occup</td>'+
+                    '<td>Dispo </td>'+
+                  '</tr>'+
+                  this.prepareText(camion)+
                   '</table>'+'<br>'
                   ' </p></div>'
                 // if(camion.stopDuration>0)
@@ -232,13 +226,15 @@ export class CamionsListComponent implements OnInit {
     let itiList= this.camionItinersFind(c.id)
     let tempText=''
     itiList.forEach(iti=>{
+      //iti.datePick = new Date();
+      //iti.dateDrop = new Date()
       tempText=tempText+
       '<tr>'+
         '<td>'+iti.origin +"  -  "+ iti.destination+'</td>'+
-        "<td>Pick: "+iti.datePick.toLocaleDateString('ca-CA')+"</td>"+ 
-        "<td>Drop: "+iti.dateDrop.toLocaleDateString('ca-CA')+"</td>"+
-        '<td>Occup: '+(iti.longueur!=null ? iti.longueur+" ft" : '')+'</td>'+
-        '<td style="color: black; background-color:greenyellow;">Dispo: </td>'+
+        '<td>'+ "<input type=date disabled value="+iti.datePick+" style='width: 17ch;'>"+" </input>"+"</td>"+ 
+        "<td>"+ "<input type=date disabled value="+iti.dateDrop+" style='width: 17ch;'>"+" </input>"+"</td>"+
+        '<td>'+(iti.longueur!=null ? iti.longueur+" ft" : '')+'</td>'+
+        '<td style="color: black; background-color:greenyellow;"></td>'+
       '</tr>'
     })
     let textHtnl = ''
@@ -252,6 +248,10 @@ export class CamionsListComponent implements OnInit {
     // })
     //obj.forEach(iti=>{
       textHtnl=textHtnl+tempText
+      if(textHtnl.length==0) textHtnl=
+      '<tr>'+
+      '<td colspan="5">Auccun itineraire.</td>'+
+      '</tr>'
       // '<tr *ngFor="let iti of camionItinersFind(c.id)">'+
       //   '<td>{{iti.origin +"  -  "+ iti.destination}}</td>'+
       //   "<td>Pick: {{iti.datePick | date: 'dd-MM-yyyy'}}</td>"+ 
@@ -287,21 +287,28 @@ export class CamionsListComponent implements OnInit {
     return this.cIsLList.find(res=>res.camionId==idCamion).itiners
   }
   deleteRepere(r:Repere){
-    this.reps.splice(this.reps.indexOf(r))
+    this.reperesService.deleteRepere(r.id).subscribe(data=>{}, err=>console.log(err))
+    this.reps.splice(this.reps.indexOf(r),1)
     // this.rep=new Repere()
   }
   deleteItiner(it:Itineraire){
-    //this.listRqsFini.splice(this.listRqsFini.indexOf(rq),1)
-    this.itiners.splice(this.itiners.indexOf(it))
-    // this.itiner=new Itineraire()
+    this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{}, err=>{console.log(err)})
+    this.itiners.splice(this.itiners.indexOf(it),1)
     this.makeCIsLList()
   }
   onAjouter(){
     //console.log('this.itiner.camionAttribue: '+this.itiner.camionAttribue)
-    let it=this.itiner
-    this.itiners.push(it)
-    this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
-    this.itiner=new Itineraire()
+    //let it=this.itiner
+    this.itiner.idTransporter=this.transporter.id;
+    this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
+      //this.itiner=data
+      this.itiners.push(data) // put this itinaire to the list of transporter
+      this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+      this.itiner=new Itineraire()
+    }, err=>{console.log(err)})
+    //this.itiners.push(it)
+    // this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
+    // this.itiner=new Itineraire()
     //this.drawOrigin()
     
     if(this.originCircle){
@@ -321,26 +328,55 @@ export class CamionsListComponent implements OnInit {
     })
     
   }
+
+  camionTemp:Camion; // this is camion temporaire for list itineraires 
+  findCamionById(id:number){
+    //let c: Camion;
+    this.camionTemp= this.camionsSurMap.find(x=>x.id===id)
+    // this.infoWindow.close();
+    // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow = new google.maps.InfoWindow;
+    // let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/
+    //return c;
+  }
+  onClickCamionId(id:number){
+    let c: Camion;
+    c= this.camionsSurMap.find(x=>x.id===id)
+    this.infoWindow.close();
+    this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    this.infoWindow = new google.maps.InfoWindow;
+    let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    this.infoWindow.setContent(contentString);
+    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    this.infoWindow.open(this.map);//*/
+  }
   onClickCamion(c:Camion){
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow = new google.maps.InfoWindow;
-    let placePresent :string;
+    let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    this.infoWindow.setContent(contentString);
+    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    this.infoWindow.open(this.map);//*/
+    // let placePresent :string;
     //this.placePresent(c, placePresent)
-    this.geocoding.geocode(new google.maps.LatLng(              
-      c.latitude,
-      c.longtitude
-    ))
-    .forEach(
-      (results: google.maps.GeocoderResult[]) => {
-        placePresent=results[0].formatted_address;
-        // console.log('results[0].formatted_address : '+results[0].formatted_address)
-        // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-        // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-        // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-        // console.log('results[0].geometry : '+results[0].geometry.location)
-      }
-    )
+    // this.geocoding.geocode(new google.maps.LatLng(              
+    //   c.latitude,
+    //   c.longtitude
+    // ))
+    // .forEach(
+    //   (results: google.maps.GeocoderResult[]) => {
+    //     placePresent=results[0].formatted_address;
+    //     // console.log('results[0].formatted_address : '+results[0].formatted_address)
+    //     // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+    //     // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+    //     // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+    //     // console.log('results[0].geometry : '+results[0].geometry.location)
+    //   }
+    // )
     // .then(()=>{
     //   //console.log('Place present dans pP(): '+placePresent)
     //   let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
@@ -357,51 +393,51 @@ export class CamionsListComponent implements OnInit {
   }
   
 
-  pP(c:Camion, place:string){
-    return this.geocoding.geocode(new google.maps.LatLng(              
-      c.latitude,
-      c.longtitude
-    ))
-    .forEach(
-      (results: google.maps.GeocoderResult[]) => {
-        place=results[0].formatted_address;
-        //console.log('results[0].formatted_address : '+results[0].formatted_address)
-        //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-        //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-        //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-        //console.log('results[0].geometry : '+results[0].geometry.location)
-        //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-        //console.log('results[0].place_id : '+results[0].place_id)
-        //console.log('results[0].types : '+results[0].types)
-      }
-    ).then(()=>{
-      console.log('Place present dans pP(): '+place)
-    })
-    // console.log('Place present : '+placePresent)
-    // return placePresent
-  }
+  // pP(c:Camion, place:string){
+  //   return this.geocoding.geocode(new google.maps.LatLng(              
+  //     c.latitude,
+  //     c.longtitude
+  //   ))
+  //   .forEach(
+  //     (results: google.maps.GeocoderResult[]) => {
+  //       place=results[0].formatted_address;
+  //       //console.log('results[0].formatted_address : '+results[0].formatted_address)
+  //       //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+  //       //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+  //       //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+  //       //console.log('results[0].geometry : '+results[0].geometry.location)
+  //       //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+  //       //console.log('results[0].place_id : '+results[0].place_id)
+  //       //console.log('results[0].types : '+results[0].types)
+  //     }
+  //   ).then(()=>{
+  //     console.log('Place present dans pP(): '+place)
+  //   })
+  //   // console.log('Place present : '+placePresent)
+  //   // return placePresent
+  // }
 
-  placePresent(c:Camion, place:string){
-    this.geocoding.geocode(new google.maps.LatLng(              
-      c.latitude,
-      c.longtitude
-    ))
-    .forEach(
-      (results: google.maps.GeocoderResult[]) => {
-        place=results[0].formatted_address;
-        //console.log('results[0].formatted_address : '+results[0].formatted_address)
-        //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-        //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-        //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-        //console.log('results[0].geometry : '+results[0].geometry.location)
-        //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-        //console.log('results[0].place_id : '+results[0].place_id)
-        //console.log('results[0].types : '+results[0].types)
-      }
-    )
-    // console.log('Place present : '+placePresent)
-    // return placePresent
-  }
+  // placePresent(c:Camion, place:string){
+  //   this.geocoding.geocode(new google.maps.LatLng(              
+  //     c.latitude,
+  //     c.longtitude
+  //   ))
+  //   .forEach(
+  //     (results: google.maps.GeocoderResult[]) => {
+  //       place=results[0].formatted_address;
+  //       //console.log('results[0].formatted_address : '+results[0].formatted_address)
+  //       //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
+  //       //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
+  //       //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
+  //       //console.log('results[0].geometry : '+results[0].geometry.location)
+  //       //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
+  //       //console.log('results[0].place_id : '+results[0].place_id)
+  //       //console.log('results[0].types : '+results[0].types)
+  //     }
+  //   )
+  //   // console.log('Place present : '+placePresent)
+  //   // return placePresent
+  // }
   
   // adresse de point de repere
   latLngAddress:google.maps.LatLng =null;
@@ -467,6 +503,55 @@ export class CamionsListComponent implements OnInit {
     }
     
   }
+  onDrawAddressPrecise(r:Repere){
+    if(this.flightPath){
+      this.flightPath.setMap(null)
+    }
+    if(this.originCircle){
+      this.originCircle.setMap(null)
+    }
+    if(this.destCircle1){
+      this.destCircle1.setMap(null)
+    }
+    if(this.addressCircle){
+      this.addressCircle.setMap(null)
+    }
+    if(this.markerAdsress){
+      this.markerAdsress.setMap(null)
+    }
+    //if(this.latLngAddress!=null){
+      this.latLngAddress=new google.maps.LatLng(r.originLat, r.originLong)
+      this.addressCircle = new google.maps.Circle({
+        center: new google.maps.LatLng(r.originLat, r.originLong),
+        radius: (r.radius>0 ? r.radius : 100), // en metre, 1 metre par defaut
+        fillColor: '#FFFF00',
+        editable: false,
+        draggable: false,
+      });
+      this.addressCircle.setMap(this.map);
+      this.markerAdsress = new google.maps.Marker({
+        position: this.latLngAddress,
+        map: this.map,
+        icon: {
+          //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+          //path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+          scale:5,
+          //rotation:camion.direction,
+          fillOpacity: 1,
+          fillColor: "#7FFF00", //"#FFFFFF"
+          strokeWeight: 2,
+          strokeColor: "#008088", //"#FFFFFF",//"red",
+        },
+        title: r.nom,
+        label: {text:r.nom, color:"orange"},
+      });
+      //marker.setMap(this.map)
+      this.map.setCenter(this.latLngAddress)// new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
+      this.map.setZoom(15) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
+    //}
+    
+  }
   onFocusAddress(){
     if(this.latLngAddress!=null){
       this.map.setCenter(new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
@@ -474,9 +559,14 @@ export class CamionsListComponent implements OnInit {
     }
   }
   onAjouterRepere(){
-    let rep=this.rep
-    this.reps.push(rep)
-    this.rep=new Repere()
+    this.rep.idTransporter=this.transporter.id;
+    this.reperesService.saveReperes(this.rep).subscribe((data:Repere)=>{
+      this.reps.push(data)
+      this.rep=new Repere()
+    }, err=>{console.log(err)})
+    // let rep=this.rep
+    // this.reps.push(rep)
+    // this.rep=new Repere()
     if(this.addressCircle){
       this.addressCircle.setMap(null)
     }
@@ -569,6 +659,9 @@ export class CamionsListComponent implements OnInit {
   flightPath = new google.maps.Polyline();
   flightPlanCoordinates:any;
   drawOrigin(){
+    if(this.flightPath){
+      this.flightPath.setMap(null)
+    }
     if(this.originCircle){
       this.originCircle.setMap(null)
     }
@@ -702,7 +795,7 @@ export class CamionsListComponent implements OnInit {
     this.drawAddress();
   }
   onModify(it:Itineraire){
-    this.itiner=it;
+    //this.itiner=it;
     this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
     this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
     this.drawOrigin();
@@ -726,7 +819,8 @@ export class CamionsListComponent implements OnInit {
     //   }
     // ).then(()=>{
       //console.log('Place present dans pP(): '+placePresent)
-      let contentString:string= ('Unite '+c.unite+' - '+'A: '+ (c.localName.length>0 ? c.localName : c.location));//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+      let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+      //let contentString:string= ('Unite '+c.unite+' - '+'A: '+ (c.localName.length>0 ? c.localName : c.location));//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
       this.infoWindow.setContent(contentString);
       this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
       this.infoWindow.open(this.map);//*/
@@ -766,7 +860,7 @@ export class CamionsListComponent implements OnInit {
       this.itiners.forEach(it=>{
        if(it.idCamion==id) cIs.push(it)
       })
-      alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
+      //alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
       //return cIs
     }
     return cIs
@@ -788,6 +882,7 @@ export class CamionsListComponent implements OnInit {
       this.markers = [];
       //*/
       this.camionsSurMap.forEach(camion=>{
+        if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into localname
         //console.log("camion.id : "+ camion.id)
         if(camion.uniteMonitor!=null && camion.monitor!=null){
           let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
@@ -806,15 +901,23 @@ export class CamionsListComponent implements OnInit {
               strokeWeight: 2,
               strokeColor: "#008000", //"#FFFFFF""red",
             },
-            label: {text:camion.unite, color:"orange",},
-            title: camion.unite,
+            label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange",},
+            title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), //camion.unite,
           });
           this.infoWindow = new google.maps.InfoWindow;
           marker.addListener('click', (event)=>{
             //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-            var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+            //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
+            var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
-                  this.prepareText(camion)
+                  '<tr>'+
+                    '<td>Itineraire</td>'+
+                    '<td>PickDate</td>'+ 
+                    "<td>DropDate</td>"+
+                    '<td>Occup</td>'+
+                    '<td>Dispo </td>'+
+                  '</tr>'+
+                  this.prepareText(camion)+
                   '</table>'+'<br>'
                   ' </p></div>'
             // if(camion.stopDuration>0)
@@ -837,7 +940,42 @@ export class CamionsListComponent implements OnInit {
       console.log();
     })
   }
+  
+  //this is to check whe we need compare between 2 functions calculate the distance
+  calculateDistanceWithGoogle(point1:google.maps.LatLng, point2:google.maps.LatLng) { // must pass by Google Maps
+    return Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2));
+    // this.distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween(point1, point2)/1000/1.609344) ;
+    // this.distanceKm = Math.round(this.distance*1.609344)
+  }
 
+  calculateDistance( lat1, lng1, lat2, lng2) { // don't need pass by Google Map
+    let dLat = this.toRadians(lat2 - lat1);
+    let dLon = this.toRadians(lng2 - lng1);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.cos(this.toRadians(lat1))
+            * Math.cos(this.toRadians(lat2)) * Math.sin(dLon / 2)
+            * Math.sin(dLon / 2);
+    let c = 2 * Math.asin(Math.sqrt(a));
+    let distanceInMeters = Math.round(6371000 * c);
+    //console.log('distanceInMeters: '+distanceInMeters)
+    return distanceInMeters;
+  }
+  toRadians (angle) {
+    return angle * (Math.PI / 180);
+  }
+  
+  // return name repere if has
+  belongingRepere(c:Camion){
+    this.reps.forEach(r=>{
+      if(r.radius>=this.calculateDistance(c.latitude, c.longtitude, r.originLat, r.originLong))
+        {
+          //console.log(c.unite +" -appartient- "+ r.nom)
+          c.localName=r.nom
+          //return r.nom;
+        }
+    })
+    //return c.location;
+  }
   print(cmpId){
     let envoy = document.getElementById('toprint').innerHTML;
     //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')

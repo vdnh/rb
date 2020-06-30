@@ -79,6 +79,8 @@ import { DetailShipperParticulierComponent } from './detail-shipper-particulier/
 import { ShipperParticuliersService } from 'src/services/shipperParticuliers.service';
 import { SuiviRapideComponent } from './suivi-rapide/suivi-rapide.component';
 import { CamionsListComponent } from './camions-list/camions-list.component';
+import { ItinerairesService } from 'src/services/itineraires.service';
+import { ReperesService } from 'src/services/reperes.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -198,7 +200,8 @@ const appRoutes:Routes=[
     ShippersService, ShipperParticuliersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
-    RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService],
+    RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService,
+    ItinerairesService, ReperesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

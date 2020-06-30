@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor @NoArgsConstructor
 public class UniteInfos {
     private String unite="";
+    private String foreignName=""; // name at GPS Supplier
     private String odometer="";
     private String latitude="";
     private String longitude="";    

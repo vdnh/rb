@@ -103,7 +103,7 @@ public class Camion implements Serializable{
     
     // Camions' Photo 
     private String imgUrl="";
-    
+    private String foreignName=""; // name at GPS Supplier
     // Camions' location and name of location
     private String location; // address in AVL
     private String localName; // name in AVL

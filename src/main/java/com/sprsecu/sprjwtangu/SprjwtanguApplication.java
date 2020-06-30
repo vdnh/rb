@@ -216,6 +216,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                 if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
                                     camion.setLocation(unite.getLocation());
                                     camion.setLocalName(unite.getLocalName());
+                                    camion.setForeignName(unite.getForeignName());  // set name at GPS fournisseur for camions
                                     camion.setOdometre(new Float(unite.getOdometer()).longValue());
                                     camion.setLongtitude(new Double(unite.getLongitude()));
                                     camion.setLatitude(new Double(unite.getLatitude()));

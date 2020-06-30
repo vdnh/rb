@@ -68,7 +68,7 @@ export class AuthenticationService{
   }
 
     getUserInfo(){
-        console.log("From authentication services, getUserInfo() : "+this.hostUserInfo+ this.userName + " "+this.jwToken)
+        //console.log("From authentication services, getUserInfo() : "+this.hostUserInfo+ this.userName + " "+this.jwToken)
         return this.http.get(this.hostUserInfo+ this.userName, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
         //*/

@@ -72,5 +72,6 @@ export class Camion{
     
     // camions' photo
     imgUrl="";
+    foreignName=""; // name at GPS Supplier
 
 }
