@@ -13,6 +13,7 @@
     </button>
     <button (click)="print('toprint')" class="btn btn-link">Print</button>
 </div>
+
 <!-- <div *ngIf="camionsList">
     <button class="btn btn-link" (click)="onPress()">{{carteText}}</button>
 </div> -->
@@ -108,7 +109,16 @@
                         <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                     </button>
                 </td>
-                <td>{{c.localName.length>0 ? c.localName : c.location}}</td>
+                <td>
+                    <span>{{c.localName.length>0 ? c.localName : c.location}}</span>
+                    <span *ngIf="c.speed>0"> <br>
+                        <img [src]="imgArrow" [style.transform]="orientation(c)">
+                         {{c.speed}} km/h
+                        <!-- <h4 [style.transform]="orientation(c)">
+                            &#8593;  this is arrow up ^ (0 degree). It will be rotated in clockwise >
+                        </h4>  -->
+                    </span>
+                </td>
                 <td colspan="5">
                     <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
                     <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive">
@@ -194,7 +204,7 @@
                 <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td>
             </tr>
 
-            <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
+            <tr *ngIf="itiner.origin.length>4 && itiner.destination.length>4"> <!-- because good address has at least 5 characters-->
                 <th colspan="4">Camions Disponibles</th>
             </tr>
             <!-- <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
@@ -202,7 +212,7 @@
                 <th>ItineraireActuel</th>
                 <th>Disponible</th>
             </tr> -->
-            <ng-container *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
+            <ng-container *ngIf="itiner.origin.length>4 && itiner.destination.length>4">
                 <tr *ngFor="let c of camionsSurMap">
                     <td>
                         <button (click)="onSelectCamion(c)" class="btn btn-link">

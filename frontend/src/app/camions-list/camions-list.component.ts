@@ -35,7 +35,9 @@ import { ReperesService } from 'src/services/reperes.service';
   styleUrls: ['./camions-list.component.css']
 })
 export class CamionsListComponent implements OnInit {
-
+  
+  imgArrow = "assets/images/arrow.png";
+  
   itineraire:boolean=false;
   camionsList:boolean=true; // par default, on voit la liste de camions
   repere:boolean=false;
@@ -202,6 +204,11 @@ export class CamionsListComponent implements OnInit {
       })      
     }
     //this.router.navigate(["/map-flotte", this.id]);
+  }
+
+  orientation(c:Camion){
+    //let degreeText="rotate("+c.direction+"deg)";
+    return "rotate("+c.direction+"deg)"; //degreeText;
   }
 
   // to show the stop duration in day-hours-minute
@@ -581,7 +588,8 @@ export class CamionsListComponent implements OnInit {
   // latLngOrigin= new google.maps.LatLng(0,0);   //:any
   latLngOrigin:google.maps.LatLng =null;
   async originChange(){
-    this.latLngOrigin=null
+    if(this.itiner.origin.length>4){ // address has at least 5 character
+      this.latLngOrigin=null
     await this.geocoding.codeAddress(this.itiner.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
         if(results[0].geometry.location.lat()>0){
@@ -599,7 +607,7 @@ export class CamionsListComponent implements OnInit {
             this.flightPath = new google.maps.Polyline(null)  //null;
             //this.drawOrigin()
             //this.drawflightPlan()
-            alert("Ne pas pouvoir localiser de cette endroit.")
+            //alert("Ne pas pouvoir localiser de cette endroit.")
           }
     }).then(()=>{
       this.drawOrigin();
@@ -607,12 +615,24 @@ export class CamionsListComponent implements OnInit {
     });//*/
     // await this.drawOrigin();
     // if(this.latLngDestination!=null) await this.drawDest()
+    }
+    else {
+      this.latLngOrigin=null
+      //this.flightPath = new google.maps.Polyline(null)  //null; //alert("Ne pas pouvoir localiser de cette endroit.")
+      if(this.flightPath){
+        this.flightPath.setMap(null)
+      }
+      this.drawOrigin();
+      //if(this.latLngDestination!=null) this.drawDest()
+    }
+    
   }
   
   // latLngDestination:any
   latLngDestination:google.maps.LatLng =null;
   async destinationChange(){
-    this.latLngDestination=null
+    if(this.itiner.destination.length>4){ // address has at least 5 character
+      this.latLngDestination=null
     //if(this.latLngOrigin!=null)
       await this.geocoding.codeAddress(this.itiner.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
@@ -626,9 +646,9 @@ export class CamionsListComponent implements OnInit {
           else
           {
             //this.latLngDestination= new google.maps.LatLng(0,0);
-            this.flightPath=null;
+            this.flightPath = new google.maps.Polyline(null)  //null;this.flightPath=null;
             //this.drawDest();
-            alert("Ne pas pouvoir localiser cette endroit.")
+            //alert("Ne pas pouvoir localiser cette endroit.")
           }
       }).then(()=>{
         this.drawDest();
@@ -636,6 +656,16 @@ export class CamionsListComponent implements OnInit {
     // else 
     //   alert("Ne pas pouvoir localiser d'Endroit Pick.")
     // await this.drawDest();
+    }
+    else {
+      this.latLngDestination=null
+      //this.flightPath = new google.maps.Polyline(null)  //null; this.flightPath=null; //alert("Ne pas pouvoir localiser de cette endroit.")
+      if(this.flightPath){
+        this.flightPath.setMap(null)
+      }
+      this.drawDest();
+    }
+    
   }
   onFocusOrigin(){
     if(this.latLngOrigin!=null){
