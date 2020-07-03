@@ -196,7 +196,17 @@ export class CamionsListComponent implements OnInit {
             }  
           })
           const source = interval(60000);
-          this.subscription=source.subscribe(val=>{this.getLocalisation()})
+          this.subscription=source.subscribe(val=>{
+            //get list itineraires
+            this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+              if(data!=null) this.itiners=data
+            },err=>{console.log(err)})
+            //get list reperes
+            this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+              if(data!=null) this.reps=data
+            }, err=>{console.log(err)})
+            this.getLocalisation()
+          })
           this.makeCIsLList(); // make the lists itiniers follow each camion
         }, err=>{
           console.log();
@@ -584,6 +594,29 @@ export class CamionsListComponent implements OnInit {
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
     })
   }
+  
+  onClearMap(){
+    
+    this.infoWindow.close();
+    this.map.setZoom(9)
+    
+    if(this.addressCircle){
+      this.addressCircle.setMap(null)
+    }
+    if(this.markerAdsress){
+      this.markerAdsress.setMap(null)
+    }
+
+    this.itiner.longueur=null; 
+    this.itiner.origin=''; 
+    this.originChange();                     
+    this.itiner.destination=''; 
+    this.destinationChange();
+
+    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+      this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+    })
+  }
 
   // latLngOrigin= new google.maps.LatLng(0,0);   //:any
   latLngOrigin:google.maps.LatLng =null;
@@ -833,7 +866,7 @@ export class CamionsListComponent implements OnInit {
   }
   onSelectCamion(c:Camion){
     this.itiner.idCamion=c.id
-    this.itiner.camionAttribue=(c.unite + ' - ' + c.marque +'  ' +c.modele);
+    this.itiner.camionAttribue= c.foreignName.length>0 ? c.foreignName : (c.unite + ' - ' + c.marque +'  ' +c.modele)//(c.unite + ' - ' + c.marque +'  ' +c.modele);
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow = new google.maps.InfoWindow;
