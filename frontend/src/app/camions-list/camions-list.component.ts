@@ -94,7 +94,7 @@ export class CamionsListComponent implements OnInit {
       }, err=>{console.log(err)})
       
       this.onPress(); // show carte right now
-      alert("Attendre 2 secondes, on loade la carte, SVP!")
+      // alert("Attendre 2 secondes, on loade la carte, SVP!")
       
     }, err=>{
       console.log(err);
@@ -169,13 +169,13 @@ export class CamionsListComponent implements OnInit {
                 //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
                 var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
-                  '<tr>'+
-                    '<td>Itineraire</td>'+
-                    '<td>PickDate</td>'+ 
-                    "<td>DropDate</td>"+
-                    '<td>Occup</td>'+
-                    '<td>Dispo </td>'+
-                  '</tr>'+
+                  // '<tr>'+
+                  //   '<td>Itineraire</td>'+
+                  //   '<td>PickDate</td>'+ 
+                  //   "<td>DropDate</td>"+
+                  //   '<td>Occup</td>'+
+                  //   '<td>Dispo </td>'+
+                  // '</tr>'+
                   this.prepareText(camion)+
                   '</table>'+'<br>'
                   ' </p></div>'
@@ -247,11 +247,24 @@ export class CamionsListComponent implements OnInit {
       //iti.dateDrop = new Date()
       tempText=tempText+
       '<tr>'+
-        '<td>'+iti.origin +"  -  "+ iti.destination+'</td>'+
-        '<td>'+ "<input type=date disabled value="+iti.datePick+" style='width: 17ch;'>"+" </input>"+"</td>"+ 
-        "<td>"+ "<input type=date disabled value="+iti.dateDrop+" style='width: 17ch;'>"+" </input>"+"</td>"+
-        '<td>'+(iti.longueur!=null ? iti.longueur+" ft" : '')+'</td>'+
-        '<td style="color: black; background-color:greenyellow;"></td>'+
+        // '<td>'+iti.origin +"  -  "+ iti.destination+'</td>'+
+        // '<td>'+ "<input type=date disabled value="+iti.datePick+" style='width: 17ch;'>"+" </input>"+"</td>"+ 
+        // "<td>"+ "<input type=date disabled value="+iti.dateDrop+" style='width: 17ch;'>"+" </input>"+"</td>"+
+        // '<td>'+(iti.longueur!=null ? iti.longueur+" ft" : '')+'</td>'+
+        // '<td style="color: black; background-color:greenyellow;"></td>'+
+        '<td>'+
+        '<p>'+                                    
+          '<strong>Pick</strong> '+ iti.origin+ '&nbsp;&nbsp;'+  
+          "<input type=date disabled value="+iti.datePick+
+          " style='width: 17ch; border: none; border-width: 0; box-shadow:none; background-color: transparent;'>"+
+          " </input>" + '&nbsp;&nbsp;&nbsp;&nbsp;' +  (iti.longueur!=null ? iti.longueur+"'" : '') +
+          
+          '<br><strong>Drop</strong> '+ iti.destination +'&nbsp;&nbsp;'+ 
+          "<input type=date disabled value="+iti.dateDrop+
+          " style='width: 17ch; border: none; border-width: 0; box-shadow:none; background-color: transparent;'>"+
+          " </input>"+                                    
+        '</p>'+
+        '</td>'+
       '</tr>'
     })
     let textHtnl = ''
@@ -267,7 +280,7 @@ export class CamionsListComponent implements OnInit {
       textHtnl=textHtnl+tempText
       if(textHtnl.length==0) textHtnl=
       '<tr>'+
-      '<td colspan="5">Auccun itineraire.</td>'+
+      '<td>Aucun itineraire.</td>'+
       '</tr>'
       // '<tr *ngFor="let iti of camionItinersFind(c.id)">'+
       //   '<td>{{iti.origin +"  -  "+ iti.destination}}</td>'+
@@ -596,6 +609,8 @@ export class CamionsListComponent implements OnInit {
   }
   
   onClearMap(){
+
+    this.itiner = new Itineraire();
     
     this.infoWindow.close();
     this.map.setZoom(9)
@@ -616,22 +631,36 @@ export class CamionsListComponent implements OnInit {
     this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
     })
+
+    //get list itineraires
+    this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      if(data!=null) this.itiners=data
+    },err=>{console.log(err)})
+    //get list reperes
+    this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+      if(data!=null) this.reps=data
+    }, err=>{console.log(err)})
+    //this.getLocalisation()
   }
 
   // latLngOrigin= new google.maps.LatLng(0,0);   //:any
   latLngOrigin:google.maps.LatLng =null;
+  originFound=false;
   async originChange(){
+    this.originFound=false;
     if(this.itiner.origin.length>4){ // address has at least 5 character
       this.latLngOrigin=null
     await this.geocoding.codeAddress(this.itiner.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
         if(results[0].geometry.location.lat()>0){
+          this.originFound=true;
           this.latLngOrigin= new google.maps.LatLng(
             this.itiner.originLat= results[0].geometry.location.lat(),
             this.itiner.originLong= results[0].geometry.location.lng()                            
           )
           //this.drawOrigin();
           //if(this.latLngDestination!=null) this.drawDest()
+          this.filterCamion();
         }
         else
           {
@@ -663,18 +692,22 @@ export class CamionsListComponent implements OnInit {
   
   // latLngDestination:any
   latLngDestination:google.maps.LatLng =null;
+  destFound=false;
   async destinationChange(){
+    this.destFound=false;
     if(this.itiner.destination.length>4){ // address has at least 5 character
       this.latLngDestination=null
     //if(this.latLngOrigin!=null)
       await this.geocoding.codeAddress(this.itiner.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
+            this.destFound=true;
             this.latLngDestination= new google.maps.LatLng(
               this.itiner.destLat= results[0].geometry.location.lat(),
               this.itiner.destLong= results[0].geometry.location.lng()                            
             )
             //this.drawDest();
+            this.filterCamion();
           }
           else
           {
@@ -973,13 +1006,13 @@ export class CamionsListComponent implements OnInit {
             //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
             var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
-                  '<tr>'+
-                    '<td>Itineraire</td>'+
-                    '<td>PickDate</td>'+ 
-                    "<td>DropDate</td>"+
-                    '<td>Occup</td>'+
-                    '<td>Dispo </td>'+
-                  '</tr>'+
+                  // '<tr>'+
+                  //   '<td>Itineraire</td>'+
+                  //   '<td>PickDate</td>'+ 
+                  //   "<td>DropDate</td>"+
+                  //   '<td>Occup</td>'+
+                  //   '<td>Dispo </td>'+
+                  // '</tr>'+
                   this.prepareText(camion)+
                   '</table>'+'<br>'
                   ' </p></div>'
@@ -1039,8 +1072,98 @@ export class CamionsListComponent implements OnInit {
     })
     //return c.location;
   }
+
+  idCamionsFiltre=[];
+  idCamionsItinersFar=[];
+  camionsFiltre:Array<Camion>=[];
+  camionsItinersFar:Array<Camion>=[];
+  camionsFree:Array<Camion>=[];
+  camionsFreeClose:Array<Camion>=[];
+  camionsFreeFar:Array<Camion>=[];
+  //filtre camions selon itinearie
+  filterCamion(){
+    if(this.originFound && this.destFound){
+      let itinersTemp = this.itiners;
+      //let itinersFitre:Array<Itineraire>=[];
+      // get radius search - by defaut 50km - 50000m
+      let radius = (this.itiner.radiusSearch>0?(this.itiner.radiusSearch*1000):50000)
+      this.itiner.radiusSearch=radius/1000
+      
+      this.idCamionsFiltre=[];
+      this.camionsFiltre=[]
+      this.camionsItinersFar=[]
+      this.camionsFree=[];
+      this.camionsFreeClose=[];
+      this.camionsFreeFar=[];
+      
+      itinersTemp.forEach(iti=>{
+        if(
+            //iti.dateDrop==it.datePick &&
+            this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<radius
+          ){
+            console.log('Itineraire destination: '+iti.destination) 
+            //itinersFitre.push(iti)
+            // let c = this.camionsSurMap.find(c=>{c.id==iti.idCamion})
+            // if(c!=null){
+            //   console.log('unite: '+c.unite) 
+            //   this.camionsFiltre.push(c)
+            // }
+            if(!this.idCamionsFiltre.includes(iti.idCamion))
+              {
+                this.idCamionsFiltre.push(iti.idCamion)
+              }
+          }
+          else
+            {
+              //this.idCamionsItinersFar
+              if(!this.idCamionsItinersFar.includes(iti.idCamion))
+              {
+                this.idCamionsItinersFar.push(iti.idCamion)
+              }
+            }
+      })
+      // this.idCamionsFiltre.forEach(id=>{
+      //   //if(rq.fini) this.listRqsFini.push(rq)
+      //   let c = this.camionsSurMap.find(camion=>{camion.id==id})
+      //   if(c!=null){
+      //     console.log('unite: '+c.unite) 
+      //     this.camionsFiltre.push(c)
+      //   }
+      // })
+      this.camionsSurMap.forEach(c=>{
+        if(this.idCamionsFiltre.includes(c.id))
+          this.camionsFiltre.push(c);
+        else if(this.idCamionsItinersFar.includes(c.id))
+          this.camionsItinersFar.push(c)
+        else
+          this.camionsFree.push(c)
+      })
+      this.camionsFree.forEach(c=>{
+        if(
+            //iti.dateDrop==it.datePick &&
+            this.calculateDistance(c.latitude, c.longtitude, this.itiner.originLat, this.itiner.originLong)<radius
+          ){
+            console.log('CamionFree Unite: '+c.unite) 
+            this.camionsFreeClose.push(c)
+          }
+          else 
+            this.camionsFreeFar.push(c)
+      })
+      //console.log('itinersFitre.length: '+itinersFitre.length)
+      console.log('idCamionsFiltre.length: '+this.idCamionsFiltre.length)
+      console.log('idCamionsFiltre: '+this.idCamionsFiltre.toString())
+
+      console.log('camionsFiltre.length: '+this.camionsFiltre.length)
+      console.log('camionsItinersFar.length: '+this.camionsItinersFar.length)
+      console.log('camionsFreeClose.length: '+this.camionsFreeClose.length)
+      console.log('camionsFreeFar.length: '+this.camionsFreeFar.length)
+    }
+    
+    //return this.camionsSurMap; //camionsFiltre
+  }
+
   print(cmpId){
-    let envoy = document.getElementById('toprint').innerHTML;
+    //let envoy = document.getElementById('toprint').innerHTML;
     //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
     //console.log(envoy)
     const printContent = document.getElementById(cmpId);

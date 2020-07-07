@@ -536,7 +536,7 @@ export class AppComponent implements OnInit{
             //console.log('siteAddress : '+siteAddress)
             sessionStorage.setItem('temporary', 'no') // to control we aren't in session
             this.varsGlobal.session='no'  // to control we are in session  
-            this.router.navigate(['/']);
+            this.router.navigate(['/camions-list']); // enter into camions-itineraires first
             //window.open(stringsd[0]+'://'+siteAddress, '_self');
           }
           //*/
@@ -724,26 +724,39 @@ export class AppComponent implements OnInit{
   trans:boolean=false;
   ressource:boolean=false;
   suivi:boolean=false;
+  camsItiners=true;
+  onCamsItiners(){
+    this.camsItiners=true;
+    this.remor=  false;
+    this.trans=false;
+    this.ressource=false;
+    this.suivi=false;
+  }
   onRemor(){
+    this.camsItiners=false;
     this.remor=true;
     this.trans=false;
     this.ressource=false;
     this.suivi=false;
   }
   onTrans(){
+    this.camsItiners=false;
+    this.camsItiners=false;
     this.remor=false;
     this.trans=true;
     this.ressource=false;
     this.suivi=false;
   }
   onRessource(){
+    this.camsItiners=false;
     this.remor=false;
     this.trans=false;
     this.ressource=true;
     this.suivi=false;
   }
   onSuivi(){
-    this.remor=true;
+    this.camsItiners=false;
+    this.remor=false;
     this.trans=false;
     this.ressource=false;
     this.suivi=true;

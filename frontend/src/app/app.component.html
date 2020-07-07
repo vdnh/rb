@@ -206,16 +206,34 @@
               <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
               <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
               <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
-              <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">Camions/Itineraires</button> 
-              <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">Remorquage</button> 
-              <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Remorquage</button> 
-              <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">Transport</button> 
-              <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>
+              <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                <strong *ngIf="camsItiners">Camions/Itineraires</strong>
+                <span *ngIf="!camsItiners">Camions/Itineraires</span> 
+              </button> 
+              <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
+                <strong *ngIf="remor">Remorquage</strong>
+                <span *ngIf="!remor">Remorquage</span> 
+              </button> 
+              <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <strong *ngIf="remor">Remorquage</strong>
+                <span *ngIf="!remor">Remorquage</span> 
+              </button> 
+              <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
+                <strong *ngIf="trans">Transport</strong>
+                <span *ngIf="!trans">Transport</span> 
+              </button> 
+              <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <strong *ngIf="trans">Transport</strong>
+                <span *ngIf="!trans">Transport</span> 
+              </button>
               <button routerLink="/" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"  (click)="onRessource()">
                 <span *ngIf="!ressource">Ressource</span>
                 <strong *ngIf="ressource">Ressource</strong>
               </button> 
-              <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">Suivi Rapide</button>
+              <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
+                <strong *ngIf="suivi">Suivi Rapide</strong>
+                <span *ngIf="!suivi">Suivi Rapide</span> 
+              </button>
               <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>  -->
               <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> -->
               <!-- <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button> -->
