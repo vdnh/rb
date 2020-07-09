@@ -56,6 +56,14 @@ public class Itineraire  implements Serializable{
     private Float dispoReste=0.00f;
     private Float radiusSearch; // radius for search truck in km
     
+    private String dPick;
+    private String mPick;
+    private String yPick;
+
+    private String dDrop;
+    private String mDrop;
+    private String yDrop;
+            
     private Float horstax=0.00f;
     private Float tps=0.00f;
     private Float tvq=0.00f;

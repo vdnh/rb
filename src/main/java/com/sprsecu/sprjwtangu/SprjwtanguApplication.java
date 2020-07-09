@@ -245,7 +245,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                             });
                         });
                     }
-                    Thread.sleep(120000);  // 1000*60*5 = 300000 ms - 5 minutes -- 120000 ms - 2 minutes
+                    Thread.sleep(120150);  // 1000*60*5 = 300000 ms - 5 minutes -- 120000 ms - 2 minutes  - here we exces 150ns for sure every time
                 } catch (Exception e) {
                     System.err.println("Error occurred:" + e);
                 }

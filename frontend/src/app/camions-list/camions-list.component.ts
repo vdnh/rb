@@ -48,6 +48,8 @@ export class CamionsListComponent implements OnInit {
   reps:Array<Repere>=[];
 
   //* for map flotte truck
+  subscriptionCSM : Subscription;
+  //* for Itineraires and Reperes
   subscription : Subscription;
   //transporter:Transporter=new Transporter();
   camionMap:Camion=new Camion();
@@ -66,7 +68,7 @@ export class CamionsListComponent implements OnInit {
   camionsOutOperation: Camion[];
 
   today=new Date();
-  todaySuite = new Date(this.itiner.datePick);
+  todaySuite = new Date();
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
@@ -79,6 +81,8 @@ export class CamionsListComponent implements OnInit {
   }
 
   ngOnInit() {
+    //this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    //this.itiner.dateDrop.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     this.camionsSurMap=[];
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
@@ -113,8 +117,8 @@ export class CamionsListComponent implements OnInit {
     else{
       this.camionsSurMap=[];// to empty this list
       this.carteText='Fermer la carte'    
-      var numbers = timer(2000);
-      numbers.subscribe(x =>{
+      var numbers = timer(2000);  // define the finding camions after 2000ms - 2 secondes
+      //numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
             if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
@@ -195,23 +199,105 @@ export class CamionsListComponent implements OnInit {
               this.markers.push(marker)
             }  
           })
-          const source = interval(60000);
-          this.subscription=source.subscribe(val=>{
+          
+          const intervalIsCs = interval(20000);  // we refresh the Camions/Itineraires each 20 seconde - 20000ms
+          this.subscription=intervalIsCs.subscribe(val=>{
             //get list itineraires
             this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
               if(data!=null) this.itiners=data
+              //get list reperes
+              this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+                if(data!=null) this.reps=data
+                this.makeCIsLList(); // make the lists itiniers follow each camion
+              }, err=>{console.log(err)})
             },err=>{console.log(err)})
-            //get list reperes
-            this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
-              if(data!=null) this.reps=data
-            }, err=>{console.log(err)})
-            this.getLocalisation()
           })
+          
+          const intervalCSM = interval(120200); //intervel for refresh camions on the map
+          this.subscriptionCSM=intervalCSM.subscribe(val=>{
+            //this.getLocalisation()
+            //this.onPress(); // replace this.getLocalisation() 
+            this.onRefresh(); // replace this.getLocalisation() 
+          })
+
           this.makeCIsLList(); // make the lists itiniers follow each camion
         }, err=>{
           console.log();
         })
-      })      
+      //})      
+    }
+    //this.router.navigate(["/map-flotte", this.id]);
+  }
+
+  onRefresh(){
+    //this.carte=-this.carte;
+    if(this.carte==-1){
+      //this.camionsSurMap=[];// to empty this list
+      this.carteText='Reperer sur la carte'
+      this.subscription.unsubscribe();
+    }
+    else{
+      this.camionsSurMap=[];// to empty this list
+      this.carteText='Fermer la carte'    
+        this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+          data.forEach(camion=>{
+            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+              camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+              this.camionsSurMap.push(camion)
+          })
+          // let mapProp = {
+          //   center: new google.maps.LatLng(45.568806, -73.918333),
+          //   zoom: 15,
+          //   mapTypeId: google.maps.MapTypeId.ROADMAP
+          // };
+          // this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          this.markers.forEach(marker=>{
+            marker.setMap(null);
+            marker=null;
+          })
+          this.markers = [];
+          this.camionsSurMap.forEach(camion=>{
+            if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
+            //console.log("camion.id : "+ camion.id)
+            if(camion.uniteMonitor!=null && camion.monitor!=null){
+              //this.marker.setMap(null);
+              let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
+              let marker = new google.maps.Marker({
+                position: location1,
+                map: this.map,
+                icon: {
+                 // url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                  scale:5,
+                  rotation:camion.direction,
+                  fillOpacity: 1,
+                  fillColor: "#7FFF00", //"#FFFFFF"
+                  strokeWeight: 2,
+                  strokeColor: "#008088", //"#FFFFFF",//"red",
+                },
+                title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
+                label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+              });
+              this.infoWindow = new google.maps.InfoWindow;
+              marker.addListener('click', (event)=>{
+                var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
+                  '<table border="1">' +
+                  this.prepareText(camion)+
+                  '</table>'+'<br>'
+                  ' </p></div>'
+                this.infoWindow.setContent(contentString);
+                this.infoWindow.setPosition(event.latLng);
+                this.infoWindow.open(this.map);
+              })
+              this.markers.push(marker)
+            }  
+          })
+          //this.makeCIsLList(); // make the lists itiniers follow each camion
+        }, err=>{
+          console.log();
+        })
+      //})      
     }
     //this.router.navigate(["/map-flotte", this.id]);
   }
@@ -294,10 +380,40 @@ export class CamionsListComponent implements OnInit {
   }
 
   pickDateChange(event){
-    this.itiner.dateDrop = this.todaySuite = this.itiner.datePick = event.target.value // new Date(event.target.value);
+    let tempString:string[] = event.target.value.toString().split('-');
+    this.itiner.yPick=tempString[0]
+    this.itiner.mPick=tempString[1]
+    this.itiner.dPick=tempString[2]
+    this.itiner.datePick=new Date();
+    
+    this.itiner.datePick.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
+    this.todaySuite = this.itiner.datePick
+    if(this.itiner.dateDrop<this.todaySuite) 
+      {
+        this.itiner.dateDrop=new Date();
+        this.itiner.dateDrop=this.todaySuite
+      }
+    this.filterCamion();
+    //console.log('event.target.value.toString(): '+ event.target.value.toString()) 
+    // console.log('this.itiner.datePick.toString(): '+this.itiner.datePick.toString())
+    // console.log('this.itiner.dPick: '+this.itiner.dPick)
+    // console.log('this.itiner.mPick: '+this.itiner.mPick)
+    // console.log('this.itiner.yPick: '+this.itiner.yPick)
+    // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
   }
-  dropDateChange(event){
-    this.itiner.dateDrop =event.target.value
+  dropDateChange(ev){
+    let tempString:string[] = ev.target.value.toString().split('-');
+    this.itiner.yDrop=tempString[0]
+    this.itiner.mDrop=tempString[1]
+    this.itiner.dDrop=tempString[2]
+    this.itiner.dateDrop=new Date();
+    this.itiner.dateDrop.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
+    //console.log('event.target.value.toString(): '+ event.target.value.toString()) 
+    // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
+    // console.log('this.itiner.dDrop: '+this.itiner.dDrop)
+    // console.log('this.itiner.mDrop: '+this.itiner.mDrop)
+    // console.log('this.itiner.yDrop: '+this.itiner.yDrop)
+    // console.log('this.itiner.datePick.toString(): '+this.itiner.datePick.toString())
   }
   onChange(){
     this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
@@ -327,40 +443,47 @@ export class CamionsListComponent implements OnInit {
     this.makeCIsLList()
   }
   onAjouter(){
-    //console.log('this.itiner.camionAttribue: '+this.itiner.camionAttribue)
-    //let it=this.itiner
+    // console.log('this.itiner.dPick: '+this.itiner.dPick)
+    // console.log('this.itiner.mPick: '+this.itiner.mPick)
+    // console.log('this.itiner.yPick: '+this.itiner.yPick)
+    // console.log('this.itiner.dDrop: '+this.itiner.dDrop)
+    // console.log('this.itiner.mDrop: '+this.itiner.mDrop)
+    // console.log('this.itiner.yDrop: '+this.itiner.yDrop)
+    // console.log('this.itiner.datePick.toString(): '+this.itiner.datePick.toString())
+    // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
     this.itiner.idTransporter=this.transporter.id;
     this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
       //this.itiner=data
       this.itiners.push(data) // put this itinaire to the list of transporter
       this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
-      this.itiner=new Itineraire()
+      this.onClearMap();
     }, err=>{console.log(err)})
     //this.itiners.push(it)
     // this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
     // this.itiner=new Itineraire()
     //this.drawOrigin()
     
-    if(this.originCircle){
-      this.originCircle.setMap(null)
-    }
-    if(this.destCircle1)(
-      this.destCircle1.setMap(null)
-    )
-    if(this.flightPath){
-      this.flightPath.setMap(null)
-    }
-    this.latLngOrigin=null
-    this.latLngDestination=null
-    this.flightPath=null
-    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
-      this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
-    })
+    // if(this.originCircle){
+    //   this.originCircle.setMap(null)
+    // }
+    // if(this.destCircle1)(
+    //   this.destCircle1.setMap(null)
+    // )
+    // if(this.flightPath){
+    //   this.flightPath.setMap(null)
+    // }
+    // this.latLngOrigin=null
+    // this.latLngDestination=null
+    // this.flightPath=null
+    // this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+    //   this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+    // })
     
   }
 
   camionTemp:Camion; // this is camion temporaire for list itineraires 
   findCamionById(id:number){
+    this.camionTemp=new Camion();
     //let c: Camion;
     this.camionTemp= this.camionsSurMap.find(x=>x.id===id)
     // this.infoWindow.close();
@@ -609,9 +732,13 @@ export class CamionsListComponent implements OnInit {
   }
   
   onClearMap(){
-
+    this.itineraire=false; // to hide all fields itineraire
     this.itiner = new Itineraire();
-    
+    this.today=this.todaySuite=new Date();
+    // this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    // this.itiner.dateDrop.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    // this.itiner.datePick=this.itiner.dateDrop
+
     this.infoWindow.close();
     this.map.setZoom(9)
     
@@ -630,6 +757,7 @@ export class CamionsListComponent implements OnInit {
 
     this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+      this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
     })
 
     //get list itineraires
@@ -641,6 +769,7 @@ export class CamionsListComponent implements OnInit {
       if(data!=null) this.reps=data
     }, err=>{console.log(err)})
     //this.getLocalisation()
+    
   }
 
   // latLngOrigin= new google.maps.LatLng(0,0);   //:any
@@ -1075,6 +1204,7 @@ export class CamionsListComponent implements OnInit {
 
   idCamionsFiltre=[];
   idCamionsItinersFar=[];
+  idCamionsItinersPasDerange=[];
   camionsFiltre:Array<Camion>=[];
   camionsItinersFar:Array<Camion>=[];
   camionsFree:Array<Camion>=[];
@@ -1097,11 +1227,15 @@ export class CamionsListComponent implements OnInit {
       this.camionsFreeFar=[];
       
       itinersTemp.forEach(iti=>{
+        // console.log('this.itiner.datePick.getTime(): '+new Date(this.itiner.datePick).getTime())
+        // console.log('iti.dateDrop.getTime(): '+new Date(iti.dateDrop).getTime())
         if(
             //iti.dateDrop==it.datePick &&
-            this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<radius
+            this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<radius &&
+            (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
+            (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000) // 86400000
           ){
-            console.log('Itineraire destination: '+iti.destination) 
+            //console.log('Itineraire destination: '+iti.destination) 
             //itinersFitre.push(iti)
             // let c = this.camionsSurMap.find(c=>{c.id==iti.idCamion})
             // if(c!=null){
@@ -1111,6 +1245,16 @@ export class CamionsListComponent implements OnInit {
             if(!this.idCamionsFiltre.includes(iti.idCamion))
               {
                 this.idCamionsFiltre.push(iti.idCamion)
+              }
+          }
+          else if(
+            (new Date(iti.datePick).getTime() - new Date(this.itiner.datePick).getTime())<=0 &&
+            (new Date(iti.dateDrop).getTime() - new Date(this.itiner.datePick).getTime())>=0
+          ){
+              //this.idCamionsItinersPasDerange
+              if(!this.idCamionsItinersPasDerange.includes(iti.idCamion))
+              {
+                this.idCamionsItinersPasDerange.push(iti.idCamion)
               }
           }
           else
@@ -1135,6 +1279,9 @@ export class CamionsListComponent implements OnInit {
           this.camionsFiltre.push(c);
         else if(this.idCamionsItinersFar.includes(c.id))
           this.camionsItinersFar.push(c)
+        
+        else if(this.idCamionsItinersPasDerange.includes(c.id))
+          this.camionsFree.push(c)
         else
           this.camionsFree.push(c)
       })
@@ -1143,20 +1290,20 @@ export class CamionsListComponent implements OnInit {
             //iti.dateDrop==it.datePick &&
             this.calculateDistance(c.latitude, c.longtitude, this.itiner.originLat, this.itiner.originLong)<radius
           ){
-            console.log('CamionFree Unite: '+c.unite) 
+            //console.log('CamionFree Unite: '+c.unite) 
             this.camionsFreeClose.push(c)
           }
           else 
             this.camionsFreeFar.push(c)
       })
       //console.log('itinersFitre.length: '+itinersFitre.length)
-      console.log('idCamionsFiltre.length: '+this.idCamionsFiltre.length)
-      console.log('idCamionsFiltre: '+this.idCamionsFiltre.toString())
+      // console.log('idCamionsFiltre.length: '+this.idCamionsFiltre.length)
+      // console.log('idCamionsFiltre: '+this.idCamionsFiltre.toString())
 
-      console.log('camionsFiltre.length: '+this.camionsFiltre.length)
-      console.log('camionsItinersFar.length: '+this.camionsItinersFar.length)
-      console.log('camionsFreeClose.length: '+this.camionsFreeClose.length)
-      console.log('camionsFreeFar.length: '+this.camionsFreeFar.length)
+      // console.log('camionsFiltre.length: '+this.camionsFiltre.length)
+      // console.log('camionsItinersFar.length: '+this.camionsItinersFar.length)
+      // console.log('camionsFreeClose.length: '+this.camionsFreeClose.length)
+      // console.log('camionsFreeFar.length: '+this.camionsFreeFar.length)
     }
     
     //return this.camionsSurMap; //camionsFiltre

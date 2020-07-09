@@ -5,8 +5,8 @@ export class Itineraire{
     origin:string="";
     destination="";
     
-    datePick=new Date();
-    dateDrop=new Date();
+    datePick:Date=new Date(); //=new Date().setUTCFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() );
+    dateDrop:Date=new Date(); //=new Date().setUTCFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() );
     longueur:number;
     camionAttribue="";
     
@@ -27,6 +27,14 @@ export class Itineraire{
     dispoReste:number;
     radiusSearch:number; // par defaut rayon recherche : 50 km
     
+    dPick=""; // new Date().getDate().toString() //this.datePick.getDate()
+    mPick=""; // new Date().getMonth().toString()
+    yPick=""; // new Date().getFullYear().toString()
+
+    dDrop=""; // new Date().getDate().toString()
+    mDrop=""; // new Date().getMonth().toString()
+    yDrop=""; // new Date().getFullYear().toString()
+
     horstax=0.00;
     tps=0.00;
     tvq=0.00;

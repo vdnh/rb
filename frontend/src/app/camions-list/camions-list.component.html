@@ -174,13 +174,13 @@
                     </datalist>
                 </td>
                 
-                <td style="width: 20%;">
-                    <!-- <label>Date Pick</label> -->
+                <!-- <td style="width: 20%;">
                     <input type="date" placeholder="Pick date" [ngModel]="itiner.datePick  | date: 'yyyy-MM-dd'" 
                     name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
-                    <!-- <input type="date" [ngModel]="remorquage.dateReserve | date: 'yyyy-MM-dd'"
-                            name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}"
-                                class="form-control" (change)="dateChange($event)"/> -->
+                </td> -->
+                <td style="width: 20%;">
+                    <input type="date" placeholder="Pick date" [ngModel]="itiner.datePick | date: 'yyyy-MM-dd'" 
+                    name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
                 </td>
 
                 <!-- <td colspan="2">
@@ -193,14 +193,14 @@
 
                 <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
                 <td style="width: 15%;">
-                    <input type="text" placeholder="Longueur(')" [(ngModel)]="itiner.longueur" class="form-control">
+                    <input type="text" placeholder="Longueur(')" [(ngModel)]="itiner.longueur" class="form-control" (change)="filterCamion()">
                 </td>
                 <!-- <td style="width: 10%;"><button class="btn btn-link" (click)="onAjouter()"
                         [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
                     >Ajouter</button>
                 </td> -->
                 <td style="width: 10%;">
-                    <input type="number" [(ngModel)]="itiner.radiusSearch" placeholder="Rayon(50km)" (change)="filterCamion()">
+                    <input type="number" [(ngModel)]="itiner.radiusSearch" placeholder="Rayon(50km)" class="form-control" (change)="filterCamion()">
                 </td>
                 <td style="width: 10%;">
                     <!-- <button class="btn btn-link" 
@@ -405,8 +405,10 @@
 
                 <td *ngIf="it.idCamion!=null" style="width: 35%;">{{findCamionById(it.idCamion)}}
                     <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link">
+                        <span *ngIf="(camionTemp.foreignName!=null || camionTemp.foreignName.length==0)">
+                            {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
+                        </span>
                         <span *ngIf="camionTemp.foreignName.length>0">{{camionTemp.foreignName}}</span>
-                        <span *ngIf="camionTemp.foreignName.length==0">{{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}</span>
                     </button>
                 </td>
                 <td *ngIf="it.idCamion==null">&nbsp;</td>
