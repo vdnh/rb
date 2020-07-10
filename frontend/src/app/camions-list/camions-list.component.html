@@ -164,7 +164,7 @@
             <!-- <tr><td colspan="7">Ajouter Itineraire</td></tr> -->
             <tr></tr>
             <tr>
-                <td style="width: 45%;">
+                <td style="width: 40%;">
                     <!-- <label>Endroit Pick</label> -->
                     <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
                     (focus)="onFocusOrigin()" class="form-control" list="defaultTemplates">
@@ -178,7 +178,7 @@
                     <input type="date" placeholder="Pick date" [ngModel]="itiner.datePick  | date: 'yyyy-MM-dd'" 
                     name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
                 </td> -->
-                <td style="width: 20%;">
+                <td style="width: 18%;">
                     <input type="date" placeholder="Pick date" [ngModel]="itiner.datePick | date: 'yyyy-MM-dd'" 
                     name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
                 </td>
@@ -192,17 +192,17 @@
                 </td> -->
 
                 <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
-                <td style="width: 15%;">
-                    <input type="text" placeholder="Longueur(')" [(ngModel)]="itiner.longueur" class="form-control" (change)="filterCamion()">
+                <td style="width: 16%;">
+                    <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="Long" [(ngModel)]="itiner.longueur" (change)="filterCamion()">'
                 </td>
                 <!-- <td style="width: 10%;"><button class="btn btn-link" (click)="onAjouter()"
                         [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
                     >Ajouter</button>
                 </td> -->
-                <td style="width: 10%;">
-                    <input type="number" [(ngModel)]="itiner.radiusSearch" placeholder="Rayon(50km)" class="form-control" (change)="filterCamion()">
+                <td style="width: 18%;">
+                    <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" placeholder="Rayon" (change)="filterCamion()">km
                 </td>
-                <td style="width: 10%;">
+                <td style="width: 8%;">
                     <!-- <button class="btn btn-link" 
                         (click)="itiner.longueur=null; itiner.origin=''; originChange(); 
                         itiner.destination=''; destinationChange();">Reset
@@ -212,7 +212,7 @@
 
             </tr>
             <tr>
-                <td style="width: 45%;" >
+                <td style="width: 40%;" >
                     <!-- <label>Endroit Drop</label> -->
                     <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
                     (focus)="onFocusDestination()" st class="form-control" list="defaultTemplates01">
@@ -221,18 +221,21 @@
                         <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
-                <td style="width: 20%;">
+                <td style="width: 18%;">
                     <!-- <label>Date Drop</label> -->
                     <input type="date" placeholder="Drop date" [ngModel]="itiner.dateDrop | date: 'yyyy-MM-dd'" 
                     name="dateDrop" min="{{todaySuite | date: 'yyyy-MM-dd'}}" class="form-control" (change)="dropDateChange($event)">
                 </td>
-                <td style="width: 25%;">
+                <td *ngIf="itiner.camionAttribue.length<=0" colspan="2" style="width: 34%;">
+                    <input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="UniteCamion">
+                </td>
+                <td *ngIf="itiner.camionAttribue.length>0" style="width: 24%;">
                     <input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="UniteCamion">
                 </td>
                 <td *ngIf="itiner.camionAttribue.length>0" style="width: 10%;">
-                    <input type="number" [(ngModel)]="itiner.dispoReste" placeholder="dispoReste(')">
+                    <input style="width: 11ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.dispoReste" placeholder="LongReste">'
                 </td>
-                <td style="width: 10%;">
+                <td style="width: 8%;" id="truck">
                     <button class="btn btn-link" (click)="onAjouter()"
                     [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
                         >Ajouter</button>
@@ -404,12 +407,14 @@
                 </td>
 
                 <td *ngIf="it.idCamion!=null" style="width: 35%;">{{findCamionById(it.idCamion)}}
-                    <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link">
-                        <span *ngIf="(camionTemp.foreignName!=null || camionTemp.foreignName.length==0)">
-                            {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
-                        </span>
-                        <span *ngIf="camionTemp.foreignName.length>0">{{camionTemp.foreignName}}</span>
-                    </button>
+                    <!-- <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link"> -->
+                        <a href="#truck" (click)="onClickCamionId(it.idCamion)">
+                            <span *ngIf="(camionTemp.foreignName==null || camionTemp.foreignName.length==0)">
+                                {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
+                            </span>
+                            <span *ngIf="camionTemp.foreignName.length>0">{{camionTemp.foreignName}}</span>
+                        </a>
+                    <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null">&nbsp;</td>
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Annuler</button></td>

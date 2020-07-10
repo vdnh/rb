@@ -408,6 +408,7 @@ export class CamionsListComponent implements OnInit {
     this.itiner.dDrop=tempString[2]
     this.itiner.dateDrop=new Date();
     this.itiner.dateDrop.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
+    this.filterCamion();
     //console.log('event.target.value.toString(): '+ event.target.value.toString()) 
     // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
     // console.log('this.itiner.dDrop: '+this.itiner.dDrop)
@@ -1202,70 +1203,100 @@ export class CamionsListComponent implements OnInit {
     //return c.location;
   }
 
-  idCamionsFiltre=[];
-  idCamionsItinersFar=[];
-  idCamionsItinersPasDerange=[];
-  camionsFiltre:Array<Camion>=[];
-  camionsItinersFar:Array<Camion>=[];
-  camionsFree:Array<Camion>=[];
-  camionsFreeClose:Array<Camion>=[];
-  camionsFreeFar:Array<Camion>=[];
+  itinersTemp: Array<Itineraire> = [];
+  idCamionsFiltre=[]; // idCamions trouves correspondent parfaitment
+  idCamionsItinersFar=[]; // idCamions avec endroit drop loin
+  idCamionsItinersPasDerange=[]; //  idCamions avec itineraires mais sera libre
+  camionsFiltre:Array<Camion>=[]; // camions correspondent parfaitment
+  camionsItinersFar:Array<Camion>=[]; // camions avec endroit drop loin
+  camionsFree:Array<Camion>=[]; // camions libres
+  camionsFreeClose:Array<Camion>=[]; // camions libres et a cote
+  camionsFreeFar:Array<Camion>=[]; // camions libres mais loins
   //filtre camions selon itinearie
   filterCamion(){
     if(this.originFound && this.destFound){
-      let itinersTemp = this.itiners;
+      //var itinersTemp: Array<Itineraire> = [];
+      this.itinersTemp= this.itiners;
       //let itinersFitre:Array<Itineraire>=[];
       // get radius search - by defaut 50km - 50000m
       let radius = (this.itiner.radiusSearch>0?(this.itiner.radiusSearch*1000):50000)
       this.itiner.radiusSearch=radius/1000
       
       this.idCamionsFiltre=[];
+      this.idCamionsItinersFar=[]; // idCamions avec endroit drop loin
+      this.idCamionsItinersPasDerange=[]; //  idCamions avec itineraires mais sera libre
       this.camionsFiltre=[]
       this.camionsItinersFar=[]
       this.camionsFree=[];
       this.camionsFreeClose=[];
       this.camionsFreeFar=[];
       
-      itinersTemp.forEach(iti=>{
+      console.log('itinersTemp.length begining: '+this.itinersTemp.length)
+      console.log('this.itiners.length begining: '+this.itiners.length)
+      
+      this.itinersTemp.forEach(iti=>{
         // console.log('this.itiner.datePick.getTime(): '+new Date(this.itiner.datePick).getTime())
         // console.log('iti.dateDrop.getTime(): '+new Date(iti.dateDrop).getTime())
         if(
-            //iti.dateDrop==it.datePick &&
-            this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<radius &&
-            (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
-            (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000) // 86400000
-          ){
-            //console.log('Itineraire destination: '+iti.destination) 
-            //itinersFitre.push(iti)
-            // let c = this.camionsSurMap.find(c=>{c.id==iti.idCamion})
-            // if(c!=null){
-            //   console.log('unite: '+c.unite) 
-            //   this.camionsFiltre.push(c)
-            // }
-            if(!this.idCamionsFiltre.includes(iti.idCamion))
+          this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<=radius &&
+          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
+          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000) // 86400000
+        ){
+          if(!this.idCamionsFiltre.includes(iti.idCamion))
+            {
+              console.log('iti.idCamion - match: '+iti.idCamion)
+              this.idCamionsFiltre.push(iti.idCamion) // to find truck match
+              //itinersTemp=
+              this.itinersTemp.splice(this.itinersTemp.indexOf(iti),1)
+            }
+        }
+      })
+      console.log('itinersTemp.length after match: '+this.itinersTemp.length)
+      console.log('this.itiners.length after match: '+this.itiners.length)
+      this.itinersTemp.forEach(iti=>{
+        if(
+          (this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)>radius &&
+          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
+          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000)) // 86400000
+          ||
+          (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.dateDrop).getTime()<new Date(this.itiner.dateDrop).getTime())
+          ||
+          (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.datePick).getTime()<new Date(this.itiner.dateDrop).getTime())
+          ||
+          (new Date(this.itiner.datePick).getTime()>new Date(iti.datePick).getTime() && new Date(iti.dateDrop).getTime()>new Date(this.itiner.dateDrop).getTime())
+        ){
+          if(!this.idCamionsItinersFar.includes(iti.idCamion))
               {
-                this.idCamionsFiltre.push(iti.idCamion)
+                console.log('iti.idCamion - busy: '+iti.idCamion)
+                this.idCamionsItinersFar.push(iti.idCamion)  // to find truck busy
+                //itinersTemp=
+                this.itinersTemp.splice(this.itinersTemp.indexOf(iti), 1)
               }
-          }
-          else if(
+        }
+      })
+      console.log('itinersTemp.length after busy: '+this.itinersTemp.length)
+      console.log('this.itiners.length after busy: '+this.itiners.length)
+      /*//
+      await itinersTemp.forEach(iti=>{  
+        if(
             (new Date(iti.datePick).getTime() - new Date(this.itiner.datePick).getTime())<=0 &&
             (new Date(iti.dateDrop).getTime() - new Date(this.itiner.datePick).getTime())>=0
           ){
-              //this.idCamionsItinersPasDerange
               if(!this.idCamionsItinersPasDerange.includes(iti.idCamion))
               {
-                this.idCamionsItinersPasDerange.push(iti.idCamion)
+                this.idCamionsItinersPasDerange.push(iti.idCamion)  // to find truck will be free
               }
           }
-          else
-            {
-              //this.idCamionsItinersFar
-              if(!this.idCamionsItinersFar.includes(iti.idCamion))
-              {
-                this.idCamionsItinersFar.push(iti.idCamion)
-              }
-            }
+        // else
+        //   {
+        //     //this.idCamionsItinersFar
+        //     if(!this.idCamionsItinersFar.includes(iti.idCamion))
+        //     {
+        //       this.idCamionsItinersFar.push(iti.idCamion)
+        //     }
+        //   }
       })
+      //*/
       // this.idCamionsFiltre.forEach(id=>{
       //   //if(rq.fini) this.listRqsFini.push(rq)
       //   let c = this.camionsSurMap.find(camion=>{camion.id==id})
