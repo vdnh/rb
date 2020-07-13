@@ -3,11 +3,11 @@
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
-    <button (click)="itineraire=true; camionsList=false; repere=false;" class="btn btn-link">        
+    <button (click)="itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
     </button>
-    <button (click)="itineraire=false; camionsList=false; repere=true;" class="btn btn-link">        
+    <button (click)="itineraire=false; camionsList=false; repere=true; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!repere">Points de repere</span>
         <strong *ngIf="repere">Points de repere</strong>
     </button>
@@ -86,7 +86,7 @@
     <div *ngIf="camionsList" id="toprint" class="col-md-7 col-lg-7">
         <table border="1">
             <tr>
-                <th style="width: 30%;"><h5><strong>Unite</strong></h5></th> 
+                <th style="width: 30%;"><h5><strong>Unite avec GPS</strong></h5></th> 
                 <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th>
                 <th style="width: 40%;"><h5><strong>Itineraires</strong></h5></th>
                 
@@ -156,6 +156,76 @@
                 </td>
                 
                 <!-- <td>520 Guindon, St Eustach, QC</td> -->
+            </tr>
+        </table>
+        <table border="1">
+            <tr>
+                <th style="width: 30%;"><h5><strong>Unite sans GPS</strong></h5></th> 
+                <!-- <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th> -->
+                <th style="width: 40%;"><h5><strong>Itineraires</strong></h5></th>
+                
+            </tr>
+
+            <tr *ngFor="let c of camionsNoGPS">
+                <td style="width: 30%;">
+                    <button (click)="onClickCamion(c)" class="btn btn-link">
+                        <span *ngIf="c.foreignName.length>0">{{c.foreignName}}</span>
+                        <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                    </button>
+                </td>
+                <!-- <td style="width: 30%;">
+                    <span>{{c.localName.length>0 ? c.localName : c.location}}</span>
+                    <span *ngIf="c.speed>0"> <br>
+                        <img [src]="imgArrow" [style.transform]="orientation(c)">
+                         {{c.speed}} km/h
+                    </span>
+                </td> -->
+                <td style="width: 40%;">
+                    
+                    <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive">
+                        <tr *ngFor="let iti of camionItinersFind(c.id)" (click)="onModify(iti)">
+
+                                <p>
+                                        <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+
+                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                </p>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table border="1">
+            <tr>
+                <th style="width: 30%;"><h5><strong>Trailers</strong></h5></th> 
+                <!-- <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th>
+                <th style="width: 40%;"><h5><strong>Itineraires</strong></h5></th> -->
+                
+            </tr>
+            <tr *ngFor="let c of remorques">
+                <td style="width: 30%;">
+                    <button (click)="onClickCamion(c)" class="btn btn-link">
+                        <span *ngIf="c.foreignName.length>0">{{c.foreignName}}</span>
+                        <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                    </button>
+                </td>
+                <!-- <td style="width: 30%;">
+                    <span>{{c.localName.length>0 ? c.localName : c.location}}</span>
+                    <span *ngIf="c.speed>0"> <br>
+                        <img [src]="imgArrow" [style.transform]="orientation(c)">
+                         {{c.speed}} km/h
+                    </span>
+                </td>
+                <td style="width: 40%;">
+                    <table *ngIf="camionItinersFind(c.id).length>0" class="table-responsive">
+                        <tr *ngFor="let iti of camionItinersFind(c.id)" (click)="onModify(iti)">
+                                <p>
+                                        <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                </p>
+                        </tr>
+                    </table>
+                </td> -->
             </tr>
         </table>
     </div>
@@ -378,6 +448,33 @@
                     <td style="width: 25%;">{{c.localName.length>0 ? c.localName : c.location}}</td>                    
                 </tr>
             </ng-container>
+            <ng-container *ngIf="itiner.origin.length>4 && itiner.destination.length>4">
+                <tr *ngFor="let c of camionsNoGPS">
+                    <!-- camionsNonFiltre"> -->
+                    <td style="width: 20%;">
+                        <button (click)="onSelectCamion(c)" class="btn btn-link">
+                            <!-- <span *ngIf="c.foreignName.length>0">{{c.foreignName}}</span>
+                            <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span> -->
+                            <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                        </button>
+                    </td>
+                    <td style="color: black; background-color:dimgrey; width: 15%;">
+                        Sans GPS
+                    </td>
+
+                    <td style="width: 40%;">
+                        <ng-container  *ngIf="camionItinersFind(c.id).length>0">
+                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            
+                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                
+                            </p>
+                        </ng-container>
+                    </td>
+                    <!-- <td style="width: 25%;">{{c.localName.length>0 ? c.localName : c.location}}</td>                     -->
+                </tr>
+            </ng-container>
         </table>
 
         <div><br></div>
@@ -421,14 +518,95 @@
             </tr>
         </table>
     </div>
-    <div class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
+
+    <div [hidden]="detailCamion" class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
         <h5 style="margin-top: 0px;">
             <span>(Actualiser automatiquement toutes les 2 minutes) </span>
             <span><button class="btn btn-link" (click)="onClearMap()"> Reset</button></span>
         </h5>           
         <div #gmap style="width:100%;height:650px" ></div>
     </div>
+
+    <div id="dtc" *ngIf="detailCamion" class="col-md-5 col-lg-5" style="margin-top: 0px;">
+        <table class="table table-striped table-sm table-responsive" border="1">
+            <tr>
+              <th>
+                  Unite <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
+                  <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+
+              </th>
+              <td colspan="3" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+                <!-- <a href="{{camion.imgUrl}}" target="_blank"> -->
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
+                <!-- </a> -->
+              </td>
+              <!-- <th>
+                <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
+                <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+              </th> -->
+            </tr>
+            <!-- <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
+            </tr> -->
+            <tr>
+                <th colspan="2">
+                    <label for="imgcamion">Prendre Image &nbsp;&nbsp;</label>
+                    <input name="imgcamion" type="file" title="Joindre camion image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                </th>    
+            </tr>
+            <tr><p></p></tr>
+            <tr>
+                <th colspan="2"><p>Longueur deck haut <input type="number"></p> </th>
+                <!-- <td><input type="number"></td> -->
+            </tr>
+            <tr>
+                <th colspan="2"><p>Longueur deck bas <input type="number"></p> </th>
+                <!-- <td><input type="number"></td> -->
+            </tr>
+            <tr>
+                <th colspan="2"><p>Hauteur de la Plateforme <input type="number"></p> </th>
+                <!-- <td><input type="number"></td> -->
+            </tr>
+            <tr>
+                <th colspan="2"><p>Capacite de charge <input type="number"></p> </th>
+                <!-- <td><input type="number"></td> -->
+            </tr>
+            <tr>
+                <!-- <th>Rampe</th>
+                <td><input type="text"></td> -->
+                <th colspan="2">
+                    <p>
+                        Rampe&nbsp;<input type="checkbox" [(ngModel)]="camion.rampe" />&nbsp;&nbsp;
+                    
+                        Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="camion.loadLeveler" />&nbsp;&nbsp;
+                        
+                        Inclinaison du derrier&nbsp;<input type="checkbox" [(ngModel)]="camion.backTilt" />
+                    </p>
+                    
+                    
+                </th>
+            </tr>
+            <!-- <tr>
+                <th>Load Leveler</th>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <th>Inclinaison du derriere</th>
+                <td><input type="text"></td>
+            </tr> -->
+            <tr>
+                <td colspan="2">
+                    <button (click)="saveCamion()">Enregistrer</button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button (click)="closecamion()">Fermer</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
 </div>
+
+
 
 <!-- <div *ngIf="camionsList && carte!=1" id="toprint" >
     <table border="1">

@@ -188,8 +188,13 @@ const appRoutes:Routes=[
     CamionsListComponent,
     //MapComponent,
   ],
+  // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]
   imports: [
-    BrowserModule, RouterModule.forRoot(appRoutes), FormsModule, HttpClientModule, BrowserModule, ReactiveFormsModule,
+    BrowserModule, 
+    RouterModule.forRoot(appRoutes, { anchorScrolling: 'enabled'}), 
+    FormsModule, HttpClientModule, 
+    BrowserModule, 
+    ReactiveFormsModule,
     SignaturePadModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',

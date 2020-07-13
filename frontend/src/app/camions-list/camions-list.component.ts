@@ -27,6 +27,7 @@ import { GeolocationService } from 'src/services/geolocation.service';
 import { Repere } from 'src/model/model.repere';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { ReperesService } from 'src/services/reperes.service';
+import { ViewportScroller } from '@angular/common';
 
 
 @Component({
@@ -52,8 +53,12 @@ export class CamionsListComponent implements OnInit {
   //* for Itineraires and Reperes
   subscription : Subscription;
   //transporter:Transporter=new Transporter();
+  detailCamion=false;
+  camion:Camion=new Camion(); // camion to modify detail 
   camionMap:Camion=new Camion();
   camionsSurMap:Array<Camion>=[]; //new Array<Camion>();
+  camionsNoGPS:Array<Camion>;  // list of camions no-gps
+  remorques:Array<Camion>;  // list of trailers
   //idCamionMap:number=108;  // test wit Hino of SOS
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
@@ -75,7 +80,8 @@ export class CamionsListComponent implements OnInit {
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
     public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
     private geolocation : GeolocationService,
-    private itinerairesService:ItinerairesService, private reperesService:ReperesService){    
+    private itinerairesService:ItinerairesService, private reperesService:ReperesService,
+    private viewportScroller: ViewportScroller){    
     //this.id=activatedRoute.snapshot.params['id'];
     //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
@@ -116,26 +122,26 @@ export class CamionsListComponent implements OnInit {
     }
     else{
       this.camionsSurMap=[];// to empty this list
+      this.camionsNoGPS=[];// to empty this list
+      this.remorques=[];// to empty this list
       this.carteText='Fermer la carte'    
       var numbers = timer(2000);  // define the finding camions after 2000ms - 2 secondes
       //numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
             if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-              camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-              // this.geocoding.geocode(new google.maps.LatLng(              
-              //   camion.latitude,
-              //   camion.longtitude
-              // ))
-              // .forEach(
-              //   (results: google.maps.GeocoderResult[]) => {
-              //     console.log(results[0].formatted_address);
-              //   }
-              // ).then(()=>{
-              //   this.camionsSurMap.push(camion)
-                
-              // })
-              this.camionsSurMap.push(camion)
+              camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            {
+              if(!camion.uniteMonitor.includes('no-gps'))
+                this.camionsSurMap.push(camion)
+              else 
+                // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+                this.camionsNoGPS.push(camion)
+            }
+            else 
+              if(camion.status) 
+                this.remorques.push(camion)  // Camions in service without GPS are trailers
           })
           let mapProp = {
             center: new google.maps.LatLng(45.568806, -73.918333),
@@ -496,7 +502,7 @@ export class CamionsListComponent implements OnInit {
     // this.infoWindow.open(this.map);//*/
     //return c;
   }
-  onClickCamionId(id:number){
+  onClickCamionId(id:number){  // for see it on the map
     let c: Camion;
     c= this.camionsSurMap.find(x=>x.id===id)
     this.infoWindow.close();
@@ -507,91 +513,7 @@ export class CamionsListComponent implements OnInit {
     this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
     this.infoWindow.open(this.map);//*/
   }
-  onClickCamion(c:Camion){
-    this.infoWindow.close();
-    this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow = new google.maps.InfoWindow;
-    let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
-    this.infoWindow.setContent(contentString);
-    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow.open(this.map);//*/
-    // let placePresent :string;
-    //this.placePresent(c, placePresent)
-    // this.geocoding.geocode(new google.maps.LatLng(              
-    //   c.latitude,
-    //   c.longtitude
-    // ))
-    // .forEach(
-    //   (results: google.maps.GeocoderResult[]) => {
-    //     placePresent=results[0].formatted_address;
-    //     // console.log('results[0].formatted_address : '+results[0].formatted_address)
-    //     // console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-    //     // console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-    //     // console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-    //     // console.log('results[0].geometry : '+results[0].geometry.location)
-    //   }
-    // )
-    // .then(()=>{
-    //   //console.log('Place present dans pP(): '+placePresent)
-    //   let contentString:string= ('Unite '+c.unite+' - '+'A: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-    //   this.infoWindow.setContent(contentString);
-    //   this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    //   this.infoWindow.open(this.map);//*/
-    // })
-    // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
-    // this.infoWindow = new google.maps.InfoWindow;
-    // var contentString:string='Unite '+c.unite+' - '+'Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-    // this.infoWindow.setContent(contentString);
-    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    // this.infoWindow.open(this.map);//*/      
-  }
-  
 
-  // pP(c:Camion, place:string){
-  //   return this.geocoding.geocode(new google.maps.LatLng(              
-  //     c.latitude,
-  //     c.longtitude
-  //   ))
-  //   .forEach(
-  //     (results: google.maps.GeocoderResult[]) => {
-  //       place=results[0].formatted_address;
-  //       //console.log('results[0].formatted_address : '+results[0].formatted_address)
-  //       //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-  //       //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-  //       //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-  //       //console.log('results[0].geometry : '+results[0].geometry.location)
-  //       //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-  //       //console.log('results[0].place_id : '+results[0].place_id)
-  //       //console.log('results[0].types : '+results[0].types)
-  //     }
-  //   ).then(()=>{
-  //     console.log('Place present dans pP(): '+place)
-  //   })
-  //   // console.log('Place present : '+placePresent)
-  //   // return placePresent
-  // }
-
-  // placePresent(c:Camion, place:string){
-  //   this.geocoding.geocode(new google.maps.LatLng(              
-  //     c.latitude,
-  //     c.longtitude
-  //   ))
-  //   .forEach(
-  //     (results: google.maps.GeocoderResult[]) => {
-  //       place=results[0].formatted_address;
-  //       //console.log('results[0].formatted_address : '+results[0].formatted_address)
-  //       //console.log('results[0].address_components.long_name : '+results[0].address_components[0].long_name)
-  //       //console.log('results[0].address_components.short_name : '+results[0].address_components[0].short_name)
-  //       //console.log('results[0].address_components.types : '+results[0].address_components[0].types)
-  //       //console.log('results[0].geometry : '+results[0].geometry.location)
-  //       //console.log('results[0].postcode_localities : '+results[0].postcode_localities.values)
-  //       //console.log('results[0].place_id : '+results[0].place_id)
-  //       //console.log('results[0].types : '+results[0].types)
-  //     }
-  //   )
-  //   // console.log('Place present : '+placePresent)
-  //   // return placePresent
-  // }
   
   // adresse de point de repere
   latLngAddress:google.maps.LatLng =null;
@@ -1030,38 +952,17 @@ export class CamionsListComponent implements OnInit {
   onSelectCamion(c:Camion){
     this.itiner.idCamion=c.id
     this.itiner.camionAttribue= c.foreignName.length>0 ? c.foreignName : (c.unite + ' - ' + c.marque +'  ' +c.modele)//(c.unite + ' - ' + c.marque +'  ' +c.modele);
-    this.infoWindow.close();
-    this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow = new google.maps.InfoWindow;
-    //let placePresent :string;
-    //this.placePresent(c, placePresent)
-    // this.geocoding.geocode(new google.maps.LatLng(              
-    //   c.latitude,
-    //   c.longtitude
-    // ))
-    // .forEach(
-    //   (results: google.maps.GeocoderResult[]) => {
-    //     placePresent=results[0].formatted_address;
-    //   }
-    // ).then(()=>{
-      //console.log('Place present dans pP(): '+placePresent)
-      let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
-      //let contentString:string= ('Unite '+c.unite+' - '+'A: '+ (c.localName.length>0 ? c.localName : c.location));//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-      this.infoWindow.setContent(contentString);
-      this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-      this.infoWindow.open(this.map);//*/
-    //})
-    // this.pP(c, placePresent).then(()=>{
-    //   let contentString:string= ('Unite '+c.unite+' - '+'PositionActuelle: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-    //   this.infoWindow.setContent(contentString);
-    //   this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    //   this.infoWindow.open(this.map);//*/      
-    // })
+    // this.gotoTop();
+    this.gotoAnchorID('truck');
+    // this.infoWindow.close();
+    // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow = new google.maps.InfoWindow;
     
-    // let contentString:string= ('Unite '+c.unite+' - '+'PositionActuelle: '+ placePresent);//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
+    // let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    // //let contentString:string= ('Unite '+c.unite+' - '+'A: '+ (c.localName.length>0 ? c.localName : c.location));//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
     // this.infoWindow.setContent(contentString);
     // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    // this.infoWindow.open(this.map);//*/      
+    // this.infoWindow.open(this.map);//*/
   }
 
   
@@ -1070,6 +971,12 @@ export class CamionsListComponent implements OnInit {
     this.cIsLList=new Array<CamionItinersList>();
     let cIsL : CamionItinersList;
     this.camionsSurMap.forEach(c=>{
+      cIsL= new CamionItinersList();
+      cIsL.camionId=c.id
+      cIsL.itiners= this.camionItiners(c.id)
+      this.cIsLList.push(cIsL)
+    })
+    this.camionsNoGPS.forEach(c=>{
       cIsL= new CamionItinersList();
       cIsL.camionId=c.id
       cIsL.itiners= this.camionItiners(c.id)
@@ -1216,128 +1123,175 @@ export class CamionsListComponent implements OnInit {
   filterCamion(){
     if(this.originFound && this.destFound){
       //var itinersTemp: Array<Itineraire> = [];
-      this.itinersTemp= this.itiners;
-      //let itinersFitre:Array<Itineraire>=[];
-      // get radius search - by defaut 50km - 50000m
-      let radius = (this.itiner.radiusSearch>0?(this.itiner.radiusSearch*1000):50000)
-      this.itiner.radiusSearch=radius/1000
-      
-      this.idCamionsFiltre=[];
-      this.idCamionsItinersFar=[]; // idCamions avec endroit drop loin
-      this.idCamionsItinersPasDerange=[]; //  idCamions avec itineraires mais sera libre
-      this.camionsFiltre=[]
-      this.camionsItinersFar=[]
-      this.camionsFree=[];
-      this.camionsFreeClose=[];
-      this.camionsFreeFar=[];
-      
-      console.log('itinersTemp.length begining: '+this.itinersTemp.length)
-      console.log('this.itiners.length begining: '+this.itiners.length)
-      
-      this.itinersTemp.forEach(iti=>{
-        // console.log('this.itiner.datePick.getTime(): '+new Date(this.itiner.datePick).getTime())
-        // console.log('iti.dateDrop.getTime(): '+new Date(iti.dateDrop).getTime())
-        if(
-          this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<=radius &&
-          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
-          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000) // 86400000
-        ){
-          if(!this.idCamionsFiltre.includes(iti.idCamion))
-            {
-              console.log('iti.idCamion - match: '+iti.idCamion)
-              this.idCamionsFiltre.push(iti.idCamion) // to find truck match
-              //itinersTemp=
-              this.itinersTemp.splice(this.itinersTemp.indexOf(iti),1)
+      // this.itinersTemp= this.itiners;
+      this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+        if(data!=null) {
+          this.itinersTemp=data
+          //let itinersFitre:Array<Itineraire>=[];
+          // get radius search - by defaut 50km - 50000m
+          let radius = (this.itiner.radiusSearch>0?(this.itiner.radiusSearch*1000):50000)
+          this.itiner.radiusSearch=radius/1000
+          
+          this.idCamionsFiltre=[];
+          this.idCamionsItinersFar=[]; // idCamions avec endroit drop loin
+          this.idCamionsItinersPasDerange=[]; //  idCamions avec itineraires mais sera libre
+          this.camionsFiltre=[]
+          this.camionsItinersFar=[]
+          this.camionsFree=[];
+          this.camionsFreeClose=[];
+          this.camionsFreeFar=[];
+          
+          console.log('itinersTemp.length begining: '+this.itinersTemp.length)
+          console.log('this.itiners.length begining: '+this.itiners.length)
+          
+          this.itinersTemp.forEach(iti=>{
+            // console.log('this.itiner.datePick.getTime(): '+new Date(this.itiner.datePick).getTime())
+            // console.log('iti.dateDrop.getTime(): '+new Date(iti.dateDrop).getTime())
+            if(
+              this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)<=radius &&
+              (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
+              (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000) // 86400000
+            ){
+              if(!this.idCamionsFiltre.includes(iti.idCamion))
+                {
+                  console.log('iti.idCamion - match: '+iti.idCamion)
+                  this.idCamionsFiltre.push(iti.idCamion) // to find truck match
+                  //itinersTemp=
+                  this.itinersTemp.splice(this.itinersTemp.indexOf(iti),1)
+                }
             }
-        }
-      })
-      console.log('itinersTemp.length after match: '+this.itinersTemp.length)
-      console.log('this.itiners.length after match: '+this.itiners.length)
-      this.itinersTemp.forEach(iti=>{
-        if(
-          (this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)>radius &&
-          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
-          (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000)) // 86400000
-          ||
-          (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.dateDrop).getTime()<new Date(this.itiner.dateDrop).getTime())
-          ||
-          (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.datePick).getTime()<new Date(this.itiner.dateDrop).getTime())
-          ||
-          (new Date(this.itiner.datePick).getTime()>new Date(iti.datePick).getTime() && new Date(iti.dateDrop).getTime()>new Date(this.itiner.dateDrop).getTime())
-        ){
-          if(!this.idCamionsItinersFar.includes(iti.idCamion))
-              {
-                console.log('iti.idCamion - busy: '+iti.idCamion)
-                this.idCamionsItinersFar.push(iti.idCamion)  // to find truck busy
-                //itinersTemp=
-                this.itinersTemp.splice(this.itinersTemp.indexOf(iti), 1)
+          })
+          console.log('itinersTemp.length after match: '+this.itinersTemp.length)
+          console.log('this.itiners.length after match: '+this.itiners.length)
+          this.itinersTemp.forEach(iti=>{
+            if(
+              (this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)>radius &&
+              (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())>=0 &&
+              (new Date(this.itiner.datePick).getTime() - new Date(iti.dateDrop).getTime())<=(24*60*60*1000)) // 86400000
+              ||
+              (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.dateDrop).getTime()<new Date(this.itiner.dateDrop).getTime())
+              ||
+              (new Date(this.itiner.datePick).getTime()<new Date(iti.dateDrop).getTime() && new Date(iti.datePick).getTime()<new Date(this.itiner.dateDrop).getTime())
+              ||
+              (new Date(this.itiner.datePick).getTime()>new Date(iti.datePick).getTime() && new Date(iti.dateDrop).getTime()>new Date(this.itiner.dateDrop).getTime())
+            ){
+              if(!this.idCamionsItinersFar.includes(iti.idCamion))
+                  {
+                    console.log('iti.idCamion - busy: '+iti.idCamion)
+                    this.idCamionsItinersFar.push(iti.idCamion)  // to find truck busy
+                    //itinersTemp=
+                    this.itinersTemp.splice(this.itinersTemp.indexOf(iti), 1)
+                  }
+            }
+          })
+          console.log('itinersTemp.length after busy: '+this.itinersTemp.length)
+          console.log('this.itiners.length after busy: '+this.itiners.length)
+          /*//
+          await itinersTemp.forEach(iti=>{  
+            if(
+                (new Date(iti.datePick).getTime() - new Date(this.itiner.datePick).getTime())<=0 &&
+                (new Date(iti.dateDrop).getTime() - new Date(this.itiner.datePick).getTime())>=0
+              ){
+                  if(!this.idCamionsItinersPasDerange.includes(iti.idCamion))
+                  {
+                    this.idCamionsItinersPasDerange.push(iti.idCamion)  // to find truck will be free
+                  }
               }
-        }
-      })
-      console.log('itinersTemp.length after busy: '+this.itinersTemp.length)
-      console.log('this.itiners.length after busy: '+this.itiners.length)
-      /*//
-      await itinersTemp.forEach(iti=>{  
-        if(
-            (new Date(iti.datePick).getTime() - new Date(this.itiner.datePick).getTime())<=0 &&
-            (new Date(iti.dateDrop).getTime() - new Date(this.itiner.datePick).getTime())>=0
-          ){
-              if(!this.idCamionsItinersPasDerange.includes(iti.idCamion))
-              {
-                this.idCamionsItinersPasDerange.push(iti.idCamion)  // to find truck will be free
+            // else
+            //   {
+            //     //this.idCamionsItinersFar
+            //     if(!this.idCamionsItinersFar.includes(iti.idCamion))
+            //     {
+            //       this.idCamionsItinersFar.push(iti.idCamion)
+            //     }
+            //   }
+          })
+          //*/
+          // this.idCamionsFiltre.forEach(id=>{
+          //   //if(rq.fini) this.listRqsFini.push(rq)
+          //   let c = this.camionsSurMap.find(camion=>{camion.id==id})
+          //   if(c!=null){
+          //     console.log('unite: '+c.unite) 
+          //     this.camionsFiltre.push(c)
+          //   }
+          // })
+          this.camionsSurMap.forEach(c=>{
+            if(this.idCamionsFiltre.includes(c.id))
+              this.camionsFiltre.push(c);
+            else if(this.idCamionsItinersFar.includes(c.id))
+              this.camionsItinersFar.push(c)
+            
+            else if(this.idCamionsItinersPasDerange.includes(c.id))
+              this.camionsFree.push(c)
+            else
+              this.camionsFree.push(c)
+          })
+          this.camionsFree.forEach(c=>{
+            if(
+                //iti.dateDrop==it.datePick &&
+                this.calculateDistance(c.latitude, c.longtitude, this.itiner.originLat, this.itiner.originLong)<radius
+              ){
+                //console.log('CamionFree Unite: '+c.unite) 
+                this.camionsFreeClose.push(c)
               }
-          }
-        // else
-        //   {
-        //     //this.idCamionsItinersFar
-        //     if(!this.idCamionsItinersFar.includes(iti.idCamion))
-        //     {
-        //       this.idCamionsItinersFar.push(iti.idCamion)
-        //     }
-        //   }
-      })
-      //*/
-      // this.idCamionsFiltre.forEach(id=>{
-      //   //if(rq.fini) this.listRqsFini.push(rq)
-      //   let c = this.camionsSurMap.find(camion=>{camion.id==id})
-      //   if(c!=null){
-      //     console.log('unite: '+c.unite) 
-      //     this.camionsFiltre.push(c)
-      //   }
-      // })
-      this.camionsSurMap.forEach(c=>{
-        if(this.idCamionsFiltre.includes(c.id))
-          this.camionsFiltre.push(c);
-        else if(this.idCamionsItinersFar.includes(c.id))
-          this.camionsItinersFar.push(c)
-        
-        else if(this.idCamionsItinersPasDerange.includes(c.id))
-          this.camionsFree.push(c)
-        else
-          this.camionsFree.push(c)
-      })
-      this.camionsFree.forEach(c=>{
-        if(
-            //iti.dateDrop==it.datePick &&
-            this.calculateDistance(c.latitude, c.longtitude, this.itiner.originLat, this.itiner.originLong)<radius
-          ){
-            //console.log('CamionFree Unite: '+c.unite) 
-            this.camionsFreeClose.push(c)
-          }
-          else 
-            this.camionsFreeFar.push(c)
-      })
-      //console.log('itinersFitre.length: '+itinersFitre.length)
-      // console.log('idCamionsFiltre.length: '+this.idCamionsFiltre.length)
-      // console.log('idCamionsFiltre: '+this.idCamionsFiltre.toString())
+              else 
+                this.camionsFreeFar.push(c)
+          })
+          //console.log('itinersFitre.length: '+itinersFitre.length)
+          // console.log('idCamionsFiltre.length: '+this.idCamionsFiltre.length)
+          // console.log('idCamionsFiltre: '+this.idCamionsFiltre.toString())
 
-      // console.log('camionsFiltre.length: '+this.camionsFiltre.length)
-      // console.log('camionsItinersFar.length: '+this.camionsItinersFar.length)
-      // console.log('camionsFreeClose.length: '+this.camionsFreeClose.length)
-      // console.log('camionsFreeFar.length: '+this.camionsFreeFar.length)
+          // console.log('camionsFiltre.length: '+this.camionsFiltre.length)
+          // console.log('camionsItinersFar.length: '+this.camionsItinersFar.length)
+          // console.log('camionsFreeClose.length: '+this.camionsFreeClose.length)
+          // console.log('camionsFreeFar.length: '+this.camionsFreeFar.length)
+        }
+      },err=>{console.log(err)})
+      
     }
     
     //return this.camionsSurMap; //camionsFiltre
+  }
+  
+  onFileUpLoad(event){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.camion.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.camion.imgUrl='';
+  }
+
+  public gotoAnchorID(elementId: string): void { 
+      this.viewportScroller.scrollToAnchor(elementId);
+  }
+
+  onClickCamion(c:Camion){ // for see the detail of Camion
+    this.detailCamion=true;
+    this.camion=c;
+    // this.gotoTop();
+    this.gotoAnchorID('dtc');
+    // this.infoWindow.close();
+    // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow = new google.maps.InfoWindow;
+    // let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/
+    
+  }
+
+  saveCamion(){
+    this.camionsService.saveCamions(this.camion).subscribe(async (data:Camion)=>{
+      alert("C'est enregistre.")
+    }, err=>{
+      console.log(err);
+    });
+  }
+
+  closecamion(){
+    this.detailCamion=false;
   }
 
   print(cmpId){
@@ -1356,6 +1310,22 @@ export class CamionsListComponent implements OnInit {
     WindowPrt.close();
   }
 
+  
+  gotoTop() {
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+  }
+  
+  gotoBottom() {
+    window.scroll({ 
+      top: document.documentElement.scrollHeight, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+  }
 }
 
 export class CamionItinersList{

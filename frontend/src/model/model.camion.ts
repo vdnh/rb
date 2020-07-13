@@ -61,10 +61,18 @@ export class Camion{
     idTransporter:number=0;
 
     // Available volume (pouce/inch - libre)
-    longueur:number;
+    //longueur:number;
     largeur:number;
-    hauteur:number;
-    poids:number;
+    //hauteur:number;
+    //poids:number;
+
+    longueur:number; // par defaul est longueur desk bas - en pied
+    hauteur:number; // par defaul est Hauteur de la plateforme - en pouce
+    poids:number;    // par defaul est Capacite de charge - en lbs
+    longueurTop:number; // par defaul est longueur desk haut - en pied
+    rampe:boolean=false; // Rampe
+    loadLeveler:boolean=false; // Load Leveler
+    backTilt:boolean=false; // Inclinaison du derriere
     
     // Camions' location and name of location
     location:string=""; // address in AVL

@@ -96,10 +96,15 @@ public class Camion implements Serializable{
     private Long idTransporter;
     
     // Available volume (pouce/inch - libre)
-    private Float longueur;
     private Float largeur;
-    private Float hauteur;
-    private Float poids;
+    
+    private Float longueur; // par defaul est longueur desk bas - en pied
+    private Float hauteur; // par defaul est Hauteur de la plateforme - en pouce
+    private Float poids;    // par defaul est Capacite de charge - en lbs
+    private Float longueurTop; // par defaul est longueur desk haut - en pied
+    private boolean rampe; // Rampe
+    private boolean loadLeveler; // Load Leveler
+    private boolean backTilt; // Inclinaison du derriere
     
     // Camions' Photo 
     private String imgUrl="";
