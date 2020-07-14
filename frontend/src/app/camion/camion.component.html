@@ -22,27 +22,43 @@
     </div>
 
     <div>
-      <button class="btn btn-link" (click)="onInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
-      <button class="btn btn-link" (click)="onFiche()">Fiche Technique</button>&nbsp;&nbsp;&nbsp;
-      <button class="btn btn-link" (click)="onDefinirEnt()">Entretiens a Definir</button>
+      <button class="btn btn-link" (click)="onInfos()">
+        <strong *ngIf="modeInfos">Infos</strong>
+        <span *ngIf="!modeInfos">Infos</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onFiche()">
+        <strong *ngIf="modeFiche">Fiche Technique</strong>
+        <span *ngIf="!modeFiche">Fiche Technique</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onDefinirEnt()">
+        <strong *ngIf="modeDefinirEnt">Entretiens a Definir</strong>
+        <span *ngIf="!modeDefinirEnt">Entretiens a Definir</span> 
+      </button>
       <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
-      <button class="btn btn-link" (click)="onBonDeTravail()">Entretien-BonDeTravail</button>
-      <button class="btn btn-link" (click)="onListReparation()">Historique & Print</button>
-      <button class="btn btn-link" (click)="onListGarantie()">List Garantie</button>
+      <button class="btn btn-link" (click)="onBonDeTravail()">        
+        <strong *ngIf="modeBonDeTravail">Entretien-BonDeTravail</strong>
+        <span *ngIf="!modeBonDeTravail">Entretien-BonDeTravail</span> 
+      </button>
+      <button class="btn btn-link" (click)="onListReparation()">
+        <strong *ngIf="modeListReparation">Historique & Print</strong>
+        <span *ngIf="!modeListReparation">Historique & Print</span> 
+      </button>
+      <button class="btn btn-link" (click)="onListGarantie()">        
+        <strong *ngIf="modeListGarantie">List Garantie</strong>
+        <span *ngIf="!modeListGarantie">List Garantie</span> 
+      </button>
     </div>    
-    <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
+    <!-- <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
     <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>
     <div *ngIf="modeDefinirEnt==1"><h3>Entretiens a definir</h3></div>
-    <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div>
-    <div *ngIf="modeBonDeTravail==1"><h3>BonDeTravail {{bonDeTravail.id}}</h3></div>
-    <div *ngIf="modeListReparation==1">
+    <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div> -->
+    <div *ngIf="modeBonDeTravail==1"><h4>BonDeTravail {{bonDeTravail.id}}</h4></div>
+    <!-- <div *ngIf="modeListReparation==1">
       <h3>
         List Reparation 
       </h3>
-      <!--h3 *ngIf="modeBonhist==1"> de {{bonDeTravailHistoire.technicien}} le {{bonDeTravailHistoire.date}}</h3-->
-      <!--button class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button-->
     </div>
-    <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div>
+    <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div> -->
 
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
@@ -579,8 +595,17 @@
         </table> 
         <!--/div-->  <!--test div toprint-->
         <table *ngIf="modeListReparation==1 && modeBonhist==1">
-          <td><button id="noprint" class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button></td>
-          <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td>
+          <!-- <td><button id="noprint" class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button></td>
+          <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td> -->
+          <td>
+            <!-- <div> -->
+              <select type="text" [(ngModel)]="bonDeTravailHistoire">
+                <option *ngFor="let b of bonDeTravails" [ngValue]="b">
+                  {{b.id+ ' - ' +b.technicien+ ' - ' +b.sousTotal+' - '+b.date}}
+                </option>
+              </select>
+          <!-- </div> -->
+          </td>
         </table>
         <div id="toprint">
         <!--Review BonDeTravail - begin-->

@@ -535,8 +535,10 @@ export class AppComponent implements OnInit{
             //let siteAddress=stringsd[1].split('/')[0]
             //console.log('siteAddress : '+siteAddress)
             sessionStorage.setItem('temporary', 'no') // to control we aren't in session
-            this.varsGlobal.session='no'  // to control we are in session  
-            this.router.navigate(['/camions-list']); // enter into camions-itineraires first
+            this.varsGlobal.session='no'  // to control we are in session 
+            //*ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+            if(!(this.userId.length>0))
+              this.router.navigate(['/camions-list']); // enter into camions-itineraires first
             //window.open(stringsd[0]+'://'+siteAddress, '_self');
           }
           //*/

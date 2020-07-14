@@ -32,9 +32,18 @@
     </div>
     <div *ngIf="mode==1">
     <h3>
-        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>Coordonnees</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onCamions()">Liste de Camions</button>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="onTableau()">Tableau d'Entretiens</button>
+        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>
+            <strong *ngIf="modeCoordonnes">Coordonnees</strong>
+            <span *ngIf="!modeCoordonnes">Coordonnees</span> 
+        </button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onCamions()">
+            <strong *ngIf="modeCamions">Liste de Camions</strong>
+            <span *ngIf="!modeCamions">Liste de Camions</span> 
+        </button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onTableau()">
+            <strong *ngIf="modeTableau">Tableau d'Entretiens</strong>
+            <span *ngIf="!modeTableau">Tableau d'Entretiens</span> 
+        </button>
     </h3>
     </div>
     <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
@@ -44,12 +53,25 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCoordonnes==1" >
             <tr>
-                <button class="btn btn-link" (click)="onCoorInfos()">Infos</button>&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-link" (click)="onCoorAddAdresse()">Add Adresse</button>&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-link" (click)="onCoorAddContact()">Add Contact</button>             
-                <button class="btn btn-link" (click)="onCoorAddChauffeur()">Add Chauffeur</button>             
+                <button class="btn btn-link" (click)="onCoorInfos()">                    
+                    <strong *ngIf="coorInfos">Infos</strong>
+                    <span *ngIf="!coorInfos">Infos</span> 
+                </button>&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCoorAddAdresse()">
+                    <strong *ngIf="coorAddAdresse">Add Adresse</strong>
+                    <span *ngIf="!coorAddAdresse">Add Adresse</span> 
+                </button>&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCoorAddContact()">                    
+                    <strong *ngIf="coorAddContact">Add Contact</strong>
+                    <span *ngIf="!coorAddContact">Add Contact</span> 
+                </button>             
+                <button class="btn btn-link" (click)="onCoorAddChauffeur()">
+                    <strong *ngIf="coorAddChauffeur">Add Chauffeur</strong>
+                    <span *ngIf="!coorAddChauffeur">Add Chauffeur</span> 
+                </button>             
             </tr>
-            <div *ngIf="coorInfos==1">Coordonnee Infos 
+            <div *ngIf="coorInfos==1">
+                <!-- Coordonnee Infos  -->
             <tr>
                 <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><th>EmailTechnique</th>
             </tr>
@@ -111,7 +133,8 @@
                 <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Delete</button></td>
             </tr>    
         </div>
-            <div *ngIf="coorAddAdresse==1">Add Adresse
+            <div *ngIf="coorAddAdresse==1">
+                <!-- Add Adresse -->
             <tr>
                 <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
             </tr>
@@ -125,7 +148,8 @@
                 <td><button class="btn btn-link" (click)="addAdresse()">Add</button></td>
             </tr>  
             </div>                                  
-            <div *ngIf="coorAddContact==1">Add Contact
+            <div *ngIf="coorAddContact==1">
+                <!-- Add Contact -->
               <tr>
                 <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
               </tr>
@@ -141,7 +165,8 @@
                 <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
               </tr>   
             </div>
-            <div *ngIf="coorAddChauffeur==1">Add Chauffeur
+            <div *ngIf="coorAddChauffeur==1">
+                <!-- Add Chauffeur -->
                 <tr>
                     <th>Nom</th><th>CellPhone</th><th>Courriel</th>
                 </tr>
@@ -156,8 +181,14 @@
         
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
             <tr>
-                <button class="btn btn-link" (click)="onCamList()">Camions</button>&nbsp;&nbsp;
-                <button class="btn btn-link" (click)="onCamAdd()">Add Camion</button>
+                <button class="btn btn-link" (click)="onCamList()">
+                    <strong *ngIf="camList">Camions</strong>
+                    <span *ngIf="!camList">Camions</span> 
+                </button>&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCamAdd()">
+                    <strong *ngIf="camAdd">Add Camion</strong>
+                    <span *ngIf="!camAdd">Add Camion</span> 
+                </button>
             </tr>
             <div *ngIf="camList==1">   
             <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->

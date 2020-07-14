@@ -150,7 +150,7 @@ export class CamionsListComponent implements OnInit {
           };
           this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
           this.camionsSurMap.forEach(camion=>{
-            if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
+            if(camion.localName==null || camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
             //console.log("camion.id : "+ camion.id)
             if(camion.uniteMonitor!=null && camion.monitor!=null){
               //this.marker.setMap(null);
@@ -169,15 +169,15 @@ export class CamionsListComponent implements OnInit {
                   strokeWeight: 2,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
-                title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
-                label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
+                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
               });
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
                 //var contentString:string='unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
                 //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
                 //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
-                var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
+                var contentString:string='<div><p> '+ ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
                   // '<tr>'+
                   //   '<td>Itineraire</td>'+
@@ -263,7 +263,7 @@ export class CamionsListComponent implements OnInit {
           })
           this.markers = [];
           this.camionsSurMap.forEach(camion=>{
-            if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
+            if(camion.localName==null||camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
             //console.log("camion.id : "+ camion.id)
             if(camion.uniteMonitor!=null && camion.monitor!=null){
               //this.marker.setMap(null);
@@ -282,12 +282,12 @@ export class CamionsListComponent implements OnInit {
                   strokeWeight: 2,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
-                title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
-                label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
+                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
               });
               this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{
-                var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
+                var contentString:string='<div><p> '+ ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
                   this.prepareText(camion)+
                   '</table>'+'<br>'
@@ -436,8 +436,14 @@ export class CamionsListComponent implements OnInit {
     // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow.open(this.map);//*/      
   }
+  onChangeCamionCapacity(){
+
+  }
   camionItinersFind(idCamion){
-    return this.cIsLList.find(res=>res.camionId==idCamion).itiners
+    let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
+    if(cIsL!=null)
+      return cIsL.itiners
+    else return null
   }
   deleteRepere(r:Repere){
     this.reperesService.deleteRepere(r.id).subscribe(data=>{}, err=>console.log(err))
@@ -655,7 +661,7 @@ export class CamionsListComponent implements OnInit {
   }
   
   onClearMap(){
-    this.itineraire=false; // to hide all fields itineraire
+    //this.itineraire=false; // to hide all fields itineraire
     this.itiner = new Itineraire();
     this.today=this.todaySuite=new Date();
     // this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -680,7 +686,7 @@ export class CamionsListComponent implements OnInit {
 
     this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
-      this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
+      //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
     })
 
     //get list itineraires
@@ -1015,7 +1021,7 @@ export class CamionsListComponent implements OnInit {
       this.markers = [];
       //*/
       this.camionsSurMap.forEach(camion=>{
-        if(camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into localname
+        if(camion.localName==null||camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into localname
         //console.log("camion.id : "+ camion.id)
         if(camion.uniteMonitor!=null && camion.monitor!=null){
           let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
@@ -1034,14 +1040,14 @@ export class CamionsListComponent implements OnInit {
               strokeWeight: 2,
               strokeColor: "#008000", //"#FFFFFF""red",
             },
-            label: {text:(camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange",},
-            title: (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele)), //camion.unite,
+            label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange",},
+            title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), //camion.unite,
           });
           this.infoWindow = new google.maps.InfoWindow;
           marker.addListener('click', (event)=>{
             //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
             //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
-            var contentString:string='<div><p> '+ (camion.foreignName.length>0 ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
+            var contentString:string='<div><p> '+ ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
                   '<table border="1">' +
                   // '<tr>'+
                   //   '<td>Itineraire</td>'+
@@ -1289,7 +1295,11 @@ export class CamionsListComponent implements OnInit {
       console.log(err);
     });
   }
-
+  
+  onChangeImage(){
+    this.camion.imgUrl=""
+  }
+  
   closecamion(){
     this.detailCamion=false;
   }
