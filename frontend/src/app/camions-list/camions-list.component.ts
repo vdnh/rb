@@ -54,6 +54,7 @@ export class CamionsListComponent implements OnInit {
   subscription : Subscription;
   //transporter:Transporter=new Transporter();
   detailCamion=false;
+  camionCarrier:Camion=new Camion(); // camion which carry the trailer - just for trailer
   camion:Camion=new Camion(); // camion to modify detail 
   camionMap:Camion=new Camion();
   camionsSurMap:Array<Camion>=[]; //new Array<Camion>();
@@ -149,6 +150,27 @@ export class CamionsListComponent implements OnInit {
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          this.map.addListener('click', (event)=>{
+            if(this.repere){
+              this.latLngAddress= new google.maps.LatLng(
+                this.rep.originLat = event.latLng.lat(),
+                this.rep.originLong = event.latLng.lng()
+              )
+              this.geocoding.geocode(new google.maps.LatLng(              
+                this.rep.originLat,
+                this.rep.originLong
+              ))
+              .forEach(
+                (results: google.maps.GeocoderResult[]) => {
+                  this.rep.address=results[0].formatted_address;
+                }
+              ).then(()=>{
+                // this.addressChange()
+                this.drawAddress();
+              })     
+              
+            }
+          })
           this.camionsSurMap.forEach(camion=>{
             if(camion.localName==null || camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into
             //console.log("camion.id : "+ camion.id)
@@ -436,9 +458,7 @@ export class CamionsListComponent implements OnInit {
     // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow.open(this.map);//*/      
   }
-  onChangeCamionCapacity(){
-
-  }
+  
   camionItinersFind(idCamion){
     let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
     if(cIsL!=null)
@@ -576,8 +596,8 @@ export class CamionsListComponent implements OnInit {
           strokeWeight: 2,
           strokeColor: "#008088", //"#FFFFFF",//"red",
         },
-        title: this.rep.nom,
-        label: {text:this.rep.nom, color:"orange"},
+        title: ((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : ''),
+        label: {text:((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : ''), color:"orange"},
       });
       //marker.setMap(this.map)
       this.map.setCenter(new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
@@ -625,8 +645,8 @@ export class CamionsListComponent implements OnInit {
           strokeWeight: 2,
           strokeColor: "#008088", //"#FFFFFF",//"red",
         },
-        title: r.nom,
-        label: {text:r.nom, color:"orange"},
+        title: ((r.nom!=null && r.nom.length>0) ? r.nom : ''),// r.nom,
+        label: {text:((r.nom!=null && r.nom.length>0) ? r.nom : ''), color:"orange"},
       });
       //marker.setMap(this.map)
       this.map.setCenter(this.latLngAddress)// new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
@@ -1278,6 +1298,14 @@ export class CamionsListComponent implements OnInit {
     this.camion=c;
     // this.gotoTop();
     this.gotoAnchorID('dtc');
+    console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
+    // if(this.camion.idCarrier!=undefined){
+      this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
+      if(this.camionCarrier==undefined){
+        this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
+      // }
+    }
+    //console.log('this.camionCarrier.id (dans onClickCamion()): '+this.camionCarrier.id)
     // this.infoWindow.close();
     // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow = new google.maps.InfoWindow;
@@ -1295,7 +1323,25 @@ export class CamionsListComponent implements OnInit {
       console.log(err);
     });
   }
-  
+
+  onChangeCarrier(){
+    this.camion.idCarrier=this.camionCarrier.id;
+  }
+
+  onChangeCamionCapacity(){
+    // if(this.remorques.includes(this.camion)){
+    //   this.remorques.find(x=>{x.id==this.camion.id})
+    // }
+    console.log('this.camion.idCarrier (dans onchangecamioncapacity()): '+this.camion.idCarrier)
+    // if(this.camion.idCarrier!=undefined){
+      this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
+      if(this.camionCarrier==null){
+        this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
+      // }
+    }
+    //console.log('this.camionCarrier.id (dans onchangecamioncapacity()): '+this.camionCarrier.id)
+  }
+
   onChangeImage(){
     this.camion.imgUrl=""
   }
@@ -1341,4 +1387,9 @@ export class CamionsListComponent implements OnInit {
 export class CamionItinersList{
   camionId:number
   itiners:Array<Itineraire>
+}
+
+export class CarrierTrailer{
+  carrier:Camion
+  trailer:Camion
 }

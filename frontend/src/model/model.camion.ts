@@ -81,5 +81,7 @@ export class Camion{
     // camions' photo
     imgUrl="";
     foreignName=""; // name at GPS Supplier
+    
+    idCarrier:number; // id of truck carrying - just for trailer who need a carrier
 
 }
