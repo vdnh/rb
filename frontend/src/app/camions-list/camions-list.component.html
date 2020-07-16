@@ -108,9 +108,16 @@
             <tr *ngFor="let c of camionsSurMap">
                 <td style="width: 30%;">
                     <button (click)="onClickCamion(c)" class="btn btn-link">
-                        <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
-                        <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</strong>
+                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</strong>
                     </button>
+                    <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
+                        {{findRemorque(c.idCarrier)}}
+                        <br><button class="btn btn-link" (click)="onClickCamion(trailerTemp)">
+                            {{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}
+                        </button>
+                    </small>
+                        
                     <!-- <span *ngIf="c.idCarrier!=null"><br>Trailer: c.trailer</span> -->
                 </td>
                 <td style="width: 30%;">
@@ -173,9 +180,15 @@
             <tr *ngFor="let c of camionsNoGPS">
                 <td style="width: 30%;">
                     <button (click)="onClickCamion(c)" class="btn btn-link">
-                        <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
-                        <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</strong>
+                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</strong>
                     </button>
+                    <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
+                        {{findRemorque(c.idCarrier)}}
+                        <br><button class="btn btn-link" (click)="onClickCamion(trailerTemp)">
+                            {{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}
+                        </button>
+                    </small>
                 </td>
                 <!-- <td style="width: 30%;">
                     <span>{{c.localName.length>0 ? c.localName : c.location}}</span>
@@ -201,7 +214,8 @@
         </table>
         <table *ngIf="remorques!=null" border="1">
             <tr>
-                <th style="width: 30%;"><h5><strong>Trailers</strong></h5></th> 
+                <th style="width: 30%;"><h5><strong>Trailer</strong></h5></th> 
+                <th style="width: 30%;"><h5><strong>Attache</strong></h5></th> 
                 <!-- <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th>
                 <th style="width: 40%;"><h5><strong>Itineraires</strong></h5></th> -->
                 
@@ -212,6 +226,21 @@
                         <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
                         <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                     </button>
+                </td>
+                <td style="width: 30%;" *ngIf="c.idCarrier==null||c.idCarrier==0">&nbsp;</td>
+                <td style="width: 30%;" *ngIf="c.idCarrier!=null&&c.idCarrier>0">{{findCamionWithGPS(c.idCarrier)}} 
+                    {{findCamionNoGPS(c.idCarrier)}}
+                    <span *ngIf="camionWithGPSTemp!=null">
+                        <button (click)="onClickCamion(camionWithGPSTemp)" class="btn btn-link">
+                            <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{camionWithGPSTemp.foreignName}}</strong>
+                            <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{camionWithGPSTemp.unite + ' - ' + camionWithGPSTemp.marque +'  ' +camionWithGPSTemp.modele}}</strong>
+                        </button>    
+                    </span>
+                    <span *ngIf="camionNoGPSTemp!=null">
+                        <button (click)="onClickCamion(camionNoGPSTemp)" class="btn btn-link">
+                            <strong>{{camionNoGPSTemp.unite + ' - ' + camionNoGPSTemp.marque +'  ' +camionNoGPSTemp.modele}}</strong>
+                        </button>
+                    </span>
                 </td>
                 <!-- <td style="width: 30%;">
                     <span>{{c.localName.length>0 ? c.localName : c.location}}</span>
@@ -623,33 +652,14 @@
             </tr>
             <tr *ngIf="remorques.includes(camion)">
                 <td>
-                    Carrier
+                    Carrier: <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
+                                {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
+                            </span>
                 </td>
-                <td>
-                    <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
-                        <optgroup label="Unites avec GPS">
-                            <option *ngFor="let c of camionsSurMap" [ngValue]="c">
-                                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
-                            </option>
-                        </optgroup>
-                        <optgroup label="Unites sans GPS">
-                            <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
-                                {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
-                            </option>
-                        </optgroup>
-                        <!-- <optgroup label="Trailers">
-                            <option *ngFor="let c of remorques" [ngValue]="c">
-                                {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
-                            </option>
-                        </optgroup> -->
-                    </select>
-                </td>
-            </tr>
-            <tr *ngIf="camionsSurMap.includes(camion)||camionsNoGPS.includes(camion)">
-                <td>
-                    Trailer
-                </td>
-                <td>
+                <!-- <td *ngIf="camion.idCarrier!=null&&camion.idCarrier>0"> -->
+                    <!-- {{findCamionWithGPS(id)}}
+                    {{findCamionNoGPS(id)}} -->
+                    <!-- {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}} -->
                     <!-- <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
                         <optgroup label="Unites avec GPS">
                             <option *ngFor="let c of camionsSurMap" [ngValue]="c">
@@ -661,8 +671,33 @@
                                 {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
                             </option>
                         </optgroup>
-                    
                     </select> -->
+                <!-- </td> -->
+            </tr>
+            <tr *ngIf="camionsSurMap.includes(camion)||camionsNoGPS.includes(camion)">
+                <th>
+                    Trailer
+                </th>
+                <td>
+                    <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
+                        <!-- <optgroup label="Unites avec GPS">
+                            <option *ngFor="let c of camionsSurMap" [ngValue]="c">
+                                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
+                            </option>
+                        </optgroup>
+                        <optgroup label="Unites sans GPS">
+                            <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
+                                {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
+                            </option>
+                        </optgroup> -->
+                        <!-- <optgroup label="Trailers"> -->
+                            <option [ngValue]="null">Non Trailer</option>
+                            <option *ngFor="let c of remorques" [ngValue]="c">
+                                {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
+                            </option>
+                        <!-- </optgroup> -->
+                    
+                    </select>
                 </td>
             </tr>
             <!-- <tr>

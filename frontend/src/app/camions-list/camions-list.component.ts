@@ -1293,18 +1293,23 @@ export class CamionsListComponent implements OnInit {
       this.viewportScroller.scrollToAnchor(elementId);
   }
 
+  camionBeforeChange:Camion=new Camion(); // to keep the origin camion before change some thing
   onClickCamion(c:Camion){ // for see the detail of Camion
-    this.detailCamion=true;
-    this.camion=c;
+    this.detailCamion=true;// to change the view map to view detail camion
+    this.camionBeforeChange=c;
+    this.camion=c; // to keep the origin camion before change some thing
     // this.gotoTop();
     this.gotoAnchorID('dtc');
-    console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
+    //console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
     // if(this.camion.idCarrier!=undefined){
       this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
       if(this.camionCarrier==undefined){
         this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
-      // }
-    }
+      }
+      if(this.camionCarrier==undefined){
+        this.camionCarrier=this.remorques.find(x=>(x.id==this.camion.idCarrier))
+      }
+    //}
     //console.log('this.camionCarrier.id (dans onClickCamion()): '+this.camionCarrier.id)
     // this.infoWindow.close();
     // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
@@ -1317,28 +1322,95 @@ export class CamionsListComponent implements OnInit {
   }
 
   saveCamion(){
-    this.camionsService.saveCamions(this.camion).subscribe(async (data:Camion)=>{
-      alert("C'est enregistre.")
-    }, err=>{
-      console.log(err);
-    });
+    //the first delete the join between camion et trailer and then save change camion
+    if(this.camionBeforeChange.idCarrier!=null&&this.camionBeforeChange.idCarrier>0){
+      //this.findRemorque(this.camionBeforeChange.idCarrier) // find trailer - trailerTemp
+      let trailerTemp = this.remorques.find(x=>(x.id==this.camionBeforeChange.idCarrier))
+      if(trailerTemp!=null) {
+        trailerTemp.idCarrier=null
+        this.camionsService.saveCamions(trailerTemp).subscribe((data:Camion)=>{
+          // this.trailerTemp=null;
+          console.log('Delete liasion')
+          this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
+            console.log('Save Camion')
+            if(this.camionCarrier!=null){
+              this.camionCarrier.idCarrier=this.camion.id
+              this.camionsService.saveCamions(this.camionCarrier).subscribe((d:Camion)=>{
+                console.log('Save Trailer')
+              }
+              ,err=>(console.log(err)))
+            }            
+            alert("C'est enregistre.")
+          }, err=>{
+            console.log(err);
+          });
+        },
+        err=>{console.log(err)})
+      }
+    }
+    // In the case have no liason, just save change camion
+    else{
+      this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
+        console.log('Save Camion')
+        if(this.camionCarrier!=null){
+          this.camionsService.saveCamions(this.camionCarrier).subscribe((d:Camion)=>{
+            console.log('Save Trailer')
+          }
+          ,err=>(console.log(err)))
+        }
+        alert("C'est enregistre.")
+      }, err=>{
+        console.log(err);
+      });
+    }
   }
 
   onChangeCarrier(){
-    this.camion.idCarrier=this.camionCarrier.id;
+    if(this.camionCarrier!=null){
+      if(this.camionCarrier.idCarrier==null || this.camionCarrier.idCarrier<=0)
+      {
+        this.camion.idCarrier=this.camionCarrier.id;
+        this.camionCarrier.idCarrier=this.camion.id;
+      }
+      else 
+        {
+          alert('Cette Unite est occupe. Veuillez choisir un autre!')
+          this.camionCarrier=null //new Camion();
+      }
+    }
+    else{
+      let temp=this.camionBeforeChange.idCarrier
+      this.camion.idCarrier=null;
+      this.camionBeforeChange.idCarrier=temp
+    }
+    
   }
-
+  trailerTemp:Camion;
+  findRemorque(id){
+    this.trailerTemp=this.remorques.find(x=>(x.id==id))
+  }
+  camionWithGPSTemp:Camion;
+  findCamionWithGPS(id){
+    this.camionWithGPSTemp=this.camionsSurMap.find(x=>(x.id==id))
+  }
+  camionNoGPSTemp:Camion;
+  findCamionNoGPS(id){
+    this.camionNoGPSTemp=this.camionsNoGPS.find(x=>(x.id==id))
+  }
   onChangeCamionCapacity(){
     // if(this.remorques.includes(this.camion)){
     //   this.remorques.find(x=>{x.id==this.camion.id})
     // }
+    this.camionBeforeChange=this.camion; // to keep the origin camion before change some thing
     console.log('this.camion.idCarrier (dans onchangecamioncapacity()): '+this.camion.idCarrier)
     // if(this.camion.idCarrier!=undefined){
       this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
       if(this.camionCarrier==null){
         this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
-      // }
-    }
+      }
+      if(this.camionCarrier==undefined){
+        this.camionCarrier=this.remorques.find(x=>(x.id==this.camion.idCarrier))
+      }
     //console.log('this.camionCarrier.id (dans onchangecamioncapacity()): '+this.camionCarrier.id)
   }
 
