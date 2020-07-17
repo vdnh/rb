@@ -1294,10 +1294,12 @@ export class CamionsListComponent implements OnInit {
   }
 
   camionBeforeChange:Camion=new Camion(); // to keep the origin camion before change some thing
+  idCarrierBeforeChange:number;
   onClickCamion(c:Camion){ // for see the detail of Camion
     this.detailCamion=true;// to change the view map to view detail camion
-    this.camionBeforeChange=c;
-    this.camion=c; // to keep the origin camion before change some thing
+    this.camionBeforeChange=c;  // to keep the origin camion before change some thing
+    this.camion=c;
+    if(c.idCarrier!=null&&c.idCarrier>0) this.idCarrierBeforeChange=c.idCarrier
     // this.gotoTop();
     this.gotoAnchorID('dtc');
     //console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
@@ -1323,9 +1325,9 @@ export class CamionsListComponent implements OnInit {
 
   saveCamion(){
     //the first delete the join between camion et trailer and then save change camion
-    if(this.camionBeforeChange.idCarrier!=null&&this.camionBeforeChange.idCarrier>0){
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
       //this.findRemorque(this.camionBeforeChange.idCarrier) // find trailer - trailerTemp
-      let trailerTemp = this.remorques.find(x=>(x.id==this.camionBeforeChange.idCarrier))
+      let trailerTemp = this.remorques.find(x=>(x.id==this.idCarrierBeforeChange))
       if(trailerTemp!=null) {
         trailerTemp.idCarrier=null
         this.camionsService.saveCamions(trailerTemp).subscribe((data:Camion)=>{
@@ -1379,9 +1381,9 @@ export class CamionsListComponent implements OnInit {
       }
     }
     else{
-      let temp=this.camionBeforeChange.idCarrier
+      // let temp=this.camionBeforeChange.idCarrier
       this.camion.idCarrier=null;
-      this.camionBeforeChange.idCarrier=temp
+      // this.camionBeforeChange.idCarrier=temp
     }
     
   }
@@ -1402,6 +1404,7 @@ export class CamionsListComponent implements OnInit {
     //   this.remorques.find(x=>{x.id==this.camion.id})
     // }
     this.camionBeforeChange=this.camion; // to keep the origin camion before change some thing
+    if(this.camion.idCarrier!=null&&this.camion.idCarrier>0) this.idCarrierBeforeChange=this.camion.idCarrier
     console.log('this.camion.idCarrier (dans onchangecamioncapacity()): '+this.camion.idCarrier)
     // if(this.camion.idCarrier!=undefined){
       this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
