@@ -353,6 +353,30 @@ export class CamionComponent implements OnInit {
     }  
   }
 
+  async onHistoireDetaillerOnList(bon:BonDeTravail){ // new up date to view all history on list
+    this.bonDeTravail=bon;
+    this.bonDeTravailHistoire=bon;
+    // if(bon.fini==true){
+    this.modeBonhist=1;
+    await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
+      this.reparationsHistoire=data;
+    }, err=>{
+      console.log(err)
+    })
+    //}
+    // else 
+    // {
+    //   this.modeBonhist=0;
+    //   this.onBonDeTravail()
+    //   await this.reparationsService.reparationDeBon(bon.id).subscribe((data:Array<Reparation>)=>{
+    //     this.reparations=data;
+    //     //this.reparationsHistoire=data;
+    //   }, err=>{
+    //     console.log(err)
+    //   })
+    // }  
+  }
+
   async onGarantieDetailler(idBon:number){
     //this.bonDeTravailHistoire=
     await this.bonDeTravailsService.getDetailBonDeTravail(idBon).subscribe((data:BonDeTravail)=>{

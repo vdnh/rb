@@ -1294,12 +1294,17 @@ export class CamionsListComponent implements OnInit {
   }
 
   camionBeforeChange:Camion=new Camion(); // to keep the origin camion before change some thing
-  idCarrierBeforeChange:number;
+  idCarrierBeforeChange:number;// to help keep the idCarrier or this.camion
+  idTemp: number; // to help keep the idCarrier of trailer
   onClickCamion(c:Camion){ // for see the detail of Camion
     this.detailCamion=true;// to change the view map to view detail camion
     this.camionBeforeChange=c;  // to keep the origin camion before change some thing
     this.camion=c;
-    if(c.idCarrier!=null&&c.idCarrier>0) this.idCarrierBeforeChange=c.idCarrier
+    this.idTemp=null;
+    if(c.idCarrier!=null&&c.idCarrier>0) {
+      this.idCarrierBeforeChange=c.idCarrier
+      //this.idTemp=c.id; //the idCarrier of trailer
+    }
     // this.gotoTop();
     this.gotoAnchorID('dtc');
     //console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
@@ -1368,11 +1373,23 @@ export class CamionsListComponent implements OnInit {
   }
 
   onChangeCarrier(){
+    // find the idcarrier of trailer and set it to null
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    }
+    if(this.idTemp!=null&&this.idTemp>0){
+      this.remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
+      this.idTemp=null;
+    }
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    }
     if(this.camionCarrier!=null){
       if(this.camionCarrier.idCarrier==null || this.camionCarrier.idCarrier<=0)
       {
         this.camion.idCarrier=this.camionCarrier.id;
         this.camionCarrier.idCarrier=this.camion.id;
+        this.idTemp=this.camionCarrier.id;// to kepp this.camionCarrier.id
       }
       else 
         {
@@ -1383,6 +1400,8 @@ export class CamionsListComponent implements OnInit {
     else{
       // let temp=this.camionBeforeChange.idCarrier
       this.camion.idCarrier=null;
+      this.idTemp=null;
+      //this.camionCarrier.idCarrier=null;
       // this.camionBeforeChange.idCarrier=temp
     }
     
@@ -1403,8 +1422,13 @@ export class CamionsListComponent implements OnInit {
     // if(this.remorques.includes(this.camion)){
     //   this.remorques.find(x=>{x.id==this.camion.id})
     // }
+    this.idTemp=null;
     this.camionBeforeChange=this.camion; // to keep the origin camion before change some thing
-    if(this.camion.idCarrier!=null&&this.camion.idCarrier>0) this.idCarrierBeforeChange=this.camion.idCarrier
+    if(this.camion.idCarrier!=null&&this.camion.idCarrier>0) 
+    {
+      this.idCarrierBeforeChange=this.camion.idCarrier
+      //this.idTemp=this.camion.id; //the idCarrier of trailer
+    }
     console.log('this.camion.idCarrier (dans onchangecamioncapacity()): '+this.camion.idCarrier)
     // if(this.camion.idCarrier!=undefined){
       this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
@@ -1421,7 +1445,24 @@ export class CamionsListComponent implements OnInit {
     this.camion.imgUrl=""
   }
   
-  closecamion(){
+  async closecamion(){
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    }
+    if(this.idTemp!=null&&this.idTemp>0){
+      this.remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
+      this.idTemp=null;
+    }
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    }
+    this.camionBeforeChange=null;
+    this.camionCarrier=null;
+    this.camion.idCarrier=null;
+    //this.idTemp=null;
+    this.idCarrierBeforeChange=null;
+    this.camion=null;
+    await this.onRefresh();
     this.detailCamion=false;
   }
 

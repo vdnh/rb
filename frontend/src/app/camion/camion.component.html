@@ -597,9 +597,9 @@
         <table *ngIf="modeListReparation==1 && modeBonhist==1">
           <!-- <td><button id="noprint" class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button></td>
           <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td> -->
-          <td>
+          <th>
             <!-- <div> -->
-              <select type="text" [(ngModel)]="bonDeTravailHistoire">
+              Liste Reparations &nbsp;<select type="text" [(ngModel)]="bonDeTravailHistoire">
                 <option *ngFor="let b of bonDeTravails" [ngValue]="b">
                   {{'#Bon: '+b.id+ ' - ' + 
                   ((b.fini)?"Fini":'Ouvert')+ ' - ' +
@@ -609,7 +609,7 @@
                 </option>
               </select>
           <!-- </div> -->
-          </td>
+          </th>
         </table>
         <div id="toprint">
         <!--Review BonDeTravail - begin-->
@@ -738,10 +738,11 @@
             <td>{{bon.date}}</td>
             <td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td>
             <td>
-              <textarea class="form-control" readonly type="text" rows="2" cols="50">{{bon.remarque}}</textarea>
+              <textarea class="form-control" readonly type="text" rows="1" cols="40">{{bon.remarque}}</textarea>
             </td>
             <td><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>
-            <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td>
+            <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td> -->
+            <td><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detailler</button></td>
           </tr>
         </table>
         <div class="row" *ngIf="modeListGarantie==1">

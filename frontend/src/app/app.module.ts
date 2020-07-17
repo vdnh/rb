@@ -81,6 +81,7 @@ import { SuiviRapideComponent } from './suivi-rapide/suivi-rapide.component';
 import { CamionsListComponent } from './camions-list/camions-list.component';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { ReperesService } from 'src/services/reperes.service';
+import { TransporterConfirmComponent } from './transporter-confirm/transporter-confirm.component';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -135,6 +136,7 @@ const appRoutes:Routes=[
   {path: 'chauffeurs', component: ChauffeursComponent},
   {path: 'suivi-rapide', component:SuiviRapideComponent},
   {path: 'camions-list', component:CamionsListComponent},
+  {path: 'transporter-confirm', component:TransporterConfirmComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -186,6 +188,7 @@ const appRoutes:Routes=[
     DetailShipperParticulierComponent,
     SuiviRapideComponent,
     CamionsListComponent,
+    TransporterConfirmComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]
