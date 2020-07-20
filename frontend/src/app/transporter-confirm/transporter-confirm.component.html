@@ -1,62 +1,79 @@
 <div><button (click)="print('toprint')" class="btn btn-link">Print</button></div>
-<div id="toprint">
-    <h4><span>CONFIRMATION DU TRANSPORTEUR</span></h4>
+<div id="toprint" hidden>
+        <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
+        <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
+    <!-- <h4 style="margin-left: 3cm;"><span>CONFIRMATION DU TRANSPORTEUR</span> 
+        <span style="margin-left: 5cm;">SP {{formNumero}}</span>
+        <br><small>CARRIER CONFIRMATION</small>
+    </h4> -->
+    <h4 style="margin-left: 1cm;"><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
+        <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span>
+        <!-- <br><small>CARRIER CONFIRMATION</small> -->
+    </h4>
+    <!-- <h6 style="margin-left: 3cm;"><span>CARRIER CONFIRMATION</span></h6> -->
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>
-        <th>
-            <span>SOS PRESTIGE</span>
-            <span><br>9299-9101</span>
-            <span><br>520 Rue Guindon</span>
-            <span><br>Saint-Eustache (Qc)</span>
-            <span><br>J7R-5B4</span>
-        </th>
-        <th>
-            <span>NOM de la compagnie</span>
+        <td><span>SOS PRESTIGE</span>
+            <br><span>9299-9101</span>
+            <br><span>520 Rue Guindon</span>
+            <br><span>Saint-Eustache (Qc)</span>
+            <br><span>J7R-5B4</span>
+            <br><span>{{selfTel}}</span>
+        </td>
+        <td><span>Transporteur/Carrier : {{comName}}</span>
             <br>
-            <span><br>Contact : </span>
-            <span><br>Adresse : </span>
-            <span><br>Ville : </span>
-            <span><br></span>
-        </th>
+            <br><span>Contact : {{comContact}}</span>
+            <br><span>Adresse : {{comAddress}}</span>
+            <br><span>Ville : {{comVille}}</span>
+            <br><span>Tel : {{comTel}}</span>
+            <br><span></span>
+        </td>
       </tr>
       <tr>
-        <th>
+        <td>
             <span>PICK UP</span>
-            <span><br>FROM : </span>
-            <span><br>Nom de la compagnie : </span>
+            <span><br>FROM : {{pickFrom}}</span>
+            <span><br>Nom de la compagnie : {{pickName}}</span>
             <span><br></span>
-            <span><br>Adresse</span>
-            <span><br>Ville :</span>
-            <span><br>Code postal :</span>
-        </th>
-        <th>
-            <span>SHIP</span>
-            <span><br>TO : </span>
-            <span><br>Nom de la compagnie : </span>
+            <span><br>Adresse : {{pickAddress}}</span>
+            <span><br>Ville : {{pickVille}}</span>
+            <span><br>Code postal : {{pickCodePostal}}</span>
+        </td>
+        <td>
+            <span>DELIVER</span>
+            <span><br>TO : {{shipTo}}</span>
+            <span><br>Nom de la compagnie : {{shipName}}</span>
             <span><br></span>
-            <span><br>Adresse</span>
-            <span><br>Ville :</span>
-            <span><br>Code postal :</span>
-        </th>
+            <span><br>Adresse : {{shipAddress}}</span>
+            <span><br>Ville : {{shipVille}}</span>
+            <span><br>Code postal : {{shipCodePostal}}</span>
+        </td>
       </tr>
       <tr>
-        <th colspan="2">
+        <td colspan="2" style="text-align: left;">
             <table>
                 <tr>
-                    <th style="width: 12cm;">DESCRIPTION : </th>
-                    <th style="width: 7cm;">Montant $</th>
+                    <td style="width: 12cm;">DESCRIPTION : </td>
+                    <td style="width: 7cm;">Montant ${{formMontant}}</td>
                 </tr>
             </table>
-            <p style="height: 3cm;">&nbsp;</p>
-        </th>
-        <!-- <th>Montant $ </th> -->
+            <p style="text-align: left;">
+                <!-- &nbsp;{{formDescription}} -->
+                <textarea rows="4" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formDescription}}</textarea>
+            </p>
+            <span>NOTES : </span>
+            <p>
+                <textarea rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formNotes}}
+                </textarea>
+            </p>
+        </td>
       </tr>
       <tr>
           <td colspan="2">
-              <strong style="font-style: italic;"><u>Contact : Marc-André</u></strong><strong style="font-style: italic;"> 450-974-9111</strong>
+              <strong style="font-style: italic;"><u>Contact : Marc-André / Steven</u></strong><strong style="font-style: italic;">&nbsp; 450-974-9111</strong>
               <br>
-              <br><span>PICK UP : </span>
-              <br><span>DROP : </span>
+              <br><span>PICK UP : {{formPickUp}}</span>
+              <br><span>DROP : {{formDrop}}</span>
               <br>
               <br><span>
                 SVP indiquer le nom et prénom en lettres carrées de la personne qui signe le bon de livraison
@@ -66,19 +83,147 @@
               </span>
               <br>
               <br><span>
+                Please send POD and Invoice to : sosprestige@gmail.com
+              </span>
+              <br>
+              <br><span>
                 SVP signer cette confirmation et nous l'envoyer au : sosprestige@gmail.com
               </span>
               <br>
               <br>
+              <!-- <br> -->
+              <!-- <br>
+              <br> -->
+              <span style="font-style: italic;"><u>Signature :</u></span>
+              <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <span style="width: 50%;">&nbsp;&nbsp;&nbsp;</span> -->
+              <span style="font-style: italic;"><u style="margin-left: 8cm;">Date :</u></span>
+              <br><br><br><br><br>
+              <!-- <br><br><br> -->
+          </td>
+      </tr>
+      <!-- <tr>
+        <td>
+            <textarea type="text" rows="7" cols="40" [(ngModel)]="message02" readonly></textarea>
+        </td>
+        <td>
+            <textarea>{{message02}}</textarea>
+        </td>
+      </tr>
+      <tr>
+          <td>{{message02}}</td>
+          <td>{{message02}}</td>
+      </tr> -->
+    </table>
+    <h5 style="float: right;"><br>{{selfNIR}}</h5>
+  </div>
+  <div id="noprint">
+    <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
+    <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
+    
+    <h5><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
+        <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span>
+        <!-- <br><small>CARRIER CONFIRMATION</small> -->
+    </h5>
+    <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
+      <tr>
+        <td><span>SOS PRESTIGE</span>
+            <br><span>9299-9101</span>
+            <br><span>520 Rue Guindon</span>
+            <br><span>Saint-Eustache (Qc)</span>
+            <br><span>J7R-5B4</span>
+            <br><span>450-974-9111</span>
+        </td>
+        <td><span>Transporteur/Carrier : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comName"></span>
+            <br>
+            <br><span>Contact : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comContact"></span>
+            <br><span>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comAddress"></span>
+            <br><span>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comVille"></span>
+            <br><span></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <span>PICK UP</span>
+            <span><br>FROM : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickFrom"></span>
+            <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickName"></span>
+            <span><br></span>
+            <span><br>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickAddress"></span>
+            <span><br>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickVille"></span>
+            <span><br>Code postal : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickCodePostal"></span>
+        </td>
+        <td>
+            <span>DELIVER</span>
+            <span><br>TO : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipTo"></span>
+            <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipName"></span>
+            <span><br></span>
+            <span><br>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipAddress"></span>
+            <span><br>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipVille"></span>
+            <span><br>Code postal : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipCodePostal"></span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+            <table>
+                <tr>
+                    <td style="width: 12cm;">
+                        <span>
+                            DESCRIPTION : 
+                        </span>
+                    </td>
+                    <td style="width: 7cm;">
+                        <span>
+                            Montant $ <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formMontant">
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <p style="height: 3cm;">&nbsp;
+                <textarea name="" id="" cols="100" rows="4" [(ngModel)]="formDescription"
+                    style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">
+                </textarea>
+            </p>
+            <span>NOTES : </span>
+            <p style="height: 3cm;">&nbsp;
+                <textarea name="" id="" cols="100" rows="3" [(ngModel)]="formNotes"
+                    style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">
+                </textarea>
+            </p>
+        </td>
+      </tr>
+      <tr>
+          <td colspan="2">
+              <strong style="font-style: italic;"><u>Contact : Marc-André / Steven</u></strong><strong style="font-style: italic;">&nbsp; 450-974-9111</strong>
+              <br>
+              <br><span>PICK UP : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formPickUp"></span>
+              <br><span>DROP : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formDrop"></span>
+              <br>
+              <br><span>
+                SVP indiquer le nom et prénom en lettres carrées de la personne qui signe le bon de livraison
+              </span>
+              <br><span>
+                SVP envoyer votre facture et copie lisible de Bon de livraison à sosprestige@gmail.com
+              </span>
+              <br><span>
+                Please send POD and Invoice to : sosprestige@gmail.com
+              </span>
+              <br>
+              <br><span>
+                SVP signer cette confirmation et nous l'envoyer au : sosprestige@gmail.com
+              </span>
+              <!-- <br>
+              <br> -->
               <br>
               <br>
               <br>
               <span style="font-style: italic;"><u>Signature :</u></span>
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span style="width: 50%;">&nbsp;&nbsp;&nbsp;</span>
-              <span style="font-style: italic;"><u>Date :</u></span>
-              <br><br>
+              <span style="font-style: italic;"><u style="margin-left: 8cm;">Date :</u></span>
+              <br><br><br><br><br>
+              <!-- <br><br><br> -->
           </td>
       </tr>
     </table>
+    <h5><br>{{selfNIR}}</h5>
   </div>
