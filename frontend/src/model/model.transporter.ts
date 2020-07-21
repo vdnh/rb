@@ -8,4 +8,5 @@ export class Transporter{
     fax:string="";
     photo:string="";
     emailTechnic:string="";
+    lastNumber:number; // to keep the last number of confirmation
 }

@@ -1,4 +1,3 @@
-<div><button (click)="print('toprint')" class="btn btn-link">Print</button></div>
 <div id="toprint" hidden>
         <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
         <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
@@ -7,7 +6,8 @@
         <br><small>CARRIER CONFIRMATION</small>
     </h4> -->
     <h4 style="margin-left: 1cm;"><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
-        <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span>
+        <!-- <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span> -->
+        <span style="margin-left: 1cm;">SP {{formNumero}}</span>
         <!-- <br><small>CARRIER CONFIRMATION</small> -->
     </h4>
     <!-- <h6 style="margin-left: 3cm;"><span>CARRIER CONFIRMATION</span></h6> -->
@@ -31,7 +31,7 @@
       </tr>
       <tr>
         <td>
-            <span>PICK UP</span>
+            <span>PICK UP &nbsp;</span><span>&nbsp;{{datePick | date : 'dd-MMM-yyyy'}}</span>
             <span><br>FROM : {{pickFrom}}</span>
             <span><br>Nom de la compagnie : {{pickName}}</span>
             <span><br></span>
@@ -40,7 +40,7 @@
             <span><br>Code postal : {{pickCodePostal}}</span>
         </td>
         <td>
-            <span>DELIVER</span>
+            <span>DELIVER &nbsp;</span><span>&nbsp;{{dateDrop | date : 'dd-MMM-yyyy'}}</span>
             <span><br>TO : {{shipTo}}</span>
             <span><br>Nom de la compagnie : {{shipName}}</span>
             <span><br></span>
@@ -54,16 +54,16 @@
             <table>
                 <tr>
                     <td style="width: 12cm;">DESCRIPTION : </td>
-                    <td style="width: 7cm;">Montant ${{formMontant}}</td>
+                    <td style="width: 7cm;">MONTANT/RATE ${{formMontant}}</td>
                 </tr>
             </table>
             <p style="text-align: left;">
                 <!-- &nbsp;{{formDescription}} -->
-                <textarea rows="4" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formDescription}}</textarea>
+                <textarea cols="100" rows="4" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formDescription}}</textarea>
             </p>
             <span>NOTES : </span>
             <p>
-                <textarea rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formNotes}}
+                <textarea cols="100" rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formNotes}}
                 </textarea>
             </p>
         </td>
@@ -119,6 +119,7 @@
   </div>
   <div id="noprint">
     <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
+    <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 12cm;">Print</button>
     <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
     
     <h5><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
@@ -144,7 +145,10 @@
       </tr>
       <tr>
         <td>
-            <span>PICK UP</span>
+            <span>PICK UP &nbsp; </span><span>&nbsp; - Date &nbsp; </span>
+            <input type="date" [ngModel]="datePick | date: 'yyyy-MM-dd'"
+            name="datePick" (change)="datePickChange($event)" 
+            style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;"/>
             <span><br>FROM : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickFrom"></span>
             <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickName"></span>
             <span><br></span>
@@ -153,7 +157,10 @@
             <span><br>Code postal : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickCodePostal"></span>
         </td>
         <td>
-            <span>DELIVER</span>
+            <span>DELIVER &nbsp; </span><span>&nbsp; - Date &nbsp; </span>
+            <input type="date" [ngModel]="dateDrop | date: 'yyyy-MM-dd'"
+            name="dateDrop" (change)="dateDropChange($event)" 
+            style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;"/>
             <span><br>TO : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipTo"></span>
             <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipName"></span>
             <span><br></span>
@@ -173,18 +180,18 @@
                     </td>
                     <td style="width: 7cm;">
                         <span>
-                            Montant $ <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formMontant">
+                            MONTANT/RATE $ <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formMontant">
                         </span>
                     </td>
                 </tr>
             </table>
-            <p style="height: 3cm;">&nbsp;
+            <p>&nbsp;
                 <textarea name="" id="" cols="100" rows="4" [(ngModel)]="formDescription"
                     style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">
                 </textarea>
             </p>
             <span>NOTES : </span>
-            <p style="height: 3cm;">&nbsp;
+            <p>&nbsp;
                 <textarea name="" id="" cols="100" rows="3" [(ngModel)]="formNotes"
                     style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">
                 </textarea>
@@ -204,6 +211,7 @@
               <br><span>
                 SVP envoyer votre facture et copie lisible de Bon de livraison à sosprestige@gmail.com
               </span>
+              <br>
               <br><span>
                 Please send POD and Invoice to : sosprestige@gmail.com
               </span>
