@@ -84,6 +84,24 @@
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="transporter.emailTechnic" /></td>
             </tr>
+            <!-- Logo -->
+            <tr>
+                <th>
+                    <span>Logo &nbsp; </span>
+                </th>
+                <td colspan="3" *ngIf="transporter.photo!=null && transporter.photo.length>0" style="border: 2px dotted gray">
+                    <img [src]="transporter.photo" alt="logo_image" class="img-responsive" width="300px">
+                </td>
+              </tr>
+            <tr>
+                <th colspan="2" *ngIf="transporter.photo!=null && transporter.photo.length>0">
+                    <button (click)="onChangeImage()">Changer Logo</button>
+                </th>
+                <th colspan="2" *ngIf="transporter.photo==null || transporter.photo.length==0">
+                    <label for="imglogo">Prendre Logo &nbsp;&nbsp;</label>
+                    <input name="imglogo" type="file" title="Joindre image logo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                </th>    
+            </tr>
             <tr><td colspan="2"><strong>Adresses</strong></td></tr>
             <tr>
                 <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>

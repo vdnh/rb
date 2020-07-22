@@ -14,7 +14,7 @@ export class TransporterConfirmComponent implements OnInit {
   constructor(public transportersService:TransportersService,) { }
 
   selfName=""
-  selfNId=""
+  selfNId="9299-9101"
   selfNIR="NIR  R-1091728"
   selfAddress=""
   selfVille=""
@@ -47,11 +47,16 @@ export class TransporterConfirmComponent implements OnInit {
   formPickUp=''
   formDrop=''
   formNotes=''
+  formContact='Marc-André / Steven'
+  formTel=''
+  formEmail=''
 
   ngOnInit() {
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
       this.imgLogoUrl=this.transporter.photo
+      this.formTel=this.transporter.tel
+      this.formEmail=this.transporter.email
     }, err=>{console.log(err)})
     // let selectedFile : File=new File(["logoSOSPrestige"],"assets/images/logoSOSPrestige.jpg", {type:'image/jpg',});
     // if(selectedFile){
@@ -78,11 +83,11 @@ export class TransporterConfirmComponent implements OnInit {
   }
   
   print(cmpId){
-    if(this.selfNId.length==0){
+    if(this.formNumero.length==0){
       this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
         this.transporter=data;
         this.transporter.lastNumber=this.transporter.lastNumber+1
-        this.selfNId=this.transporter.lastNumber.toString()
+        this.formNumero=this.transporter.lastNumber.toString()
         this.transportersService.saveTransporters(this.transporter).subscribe(dt=>{
           const printContent = document.getElementById(cmpId);     
           const WindowPrt = window.open();

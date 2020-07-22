@@ -976,4 +976,18 @@ export class DetailTransporterComponent implements OnInit {
     });//*/
     this.gotoDetailCamion(entretien.idCamion)
   }
+
+  onFileUpLoad(event){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.transporter.photo=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.transporter.photo='';
+  }
+  onChangeImage(){
+    this.transporter.photo=""
+  }
+
 }

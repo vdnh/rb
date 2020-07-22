@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,7 +35,7 @@ import { ViewportScroller } from '@angular/common';
   templateUrl: './camions-list.component.html',
   styleUrls: ['./camions-list.component.css']
 })
-export class CamionsListComponent implements OnInit {
+export class CamionsListComponent implements OnInit, OnDestroy {
   
   imgArrow = "assets/images/arrow.png";
   
@@ -85,6 +85,12 @@ export class CamionsListComponent implements OnInit {
     private viewportScroller: ViewportScroller){    
     //this.id=activatedRoute.snapshot.params['id'];
     //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
+  }
+  ngOnDestroy(): void {
+    // throw new Error("Method not implemented.");
+    console.log('this.subscription.unsubscribe();')
+    this.subscription.unsubscribe();
+    this.subscriptionCSM.unsubscribe();
   }
 
   ngOnInit() {
@@ -266,12 +272,27 @@ export class CamionsListComponent implements OnInit {
     }
     else{
       this.camionsSurMap=[];// to empty this list
+      this.camionsNoGPS=[];// to empty this list
+      this.remorques=[];// to empty this list
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
+            // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+            //   camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            //   this.camionsSurMap.push(camion)
             if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-              camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-              this.camionsSurMap.push(camion)
+              camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            {
+              if(!camion.uniteMonitor.includes('no-gps'))
+                this.camionsSurMap.push(camion)
+              else 
+                // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+                this.camionsNoGPS.push(camion)
+            }
+            else 
+              if(camion.status) 
+                this.remorques.push(camion)  // Camions in service without GPS are trailers          
           })
           // let mapProp = {
           //   center: new google.maps.LatLng(45.568806, -73.918333),
@@ -1498,6 +1519,13 @@ export class CamionsListComponent implements OnInit {
       behavior: 'smooth' 
     });
   }
+  
+  // @HostListener('window:beforeunload', ['$event'])
+  //   beforeUnload(event:any){
+  //     console.log('this.subscription.unsubscribe();')
+  //     this.subscription.unsubscribe();
+  //     this.subscriptionCSM.unsubscribe();
+  //   }
 }
 
 export class CamionItinersList{

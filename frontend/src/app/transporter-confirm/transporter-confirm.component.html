@@ -1,5 +1,5 @@
 <div id="toprint" hidden>
-        <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
+        <img [src]="imgLogoUrl" alt="SOS Prestige" height="50"/>
         <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
     <!-- <h4 style="margin-left: 3cm;"><span>CONFIRMATION DU TRANSPORTEUR</span> 
         <span style="margin-left: 5cm;">SP {{formNumero}}</span>
@@ -54,7 +54,7 @@
             <table>
                 <tr>
                     <td style="width: 12cm;">DESCRIPTION : </td>
-                    <td style="width: 7cm;">MONTANT/RATE ${{formMontant}}</td>
+                    <td style="width: 7cm;"><strong>MONTANT/RATE :  ${{formMontant}}</strong></td>
                 </tr>
             </table>
             <p style="text-align: left;">
@@ -70,7 +70,7 @@
       </tr>
       <tr>
           <td colspan="2">
-              <strong style="font-style: italic;"><u>Contact : Marc-André / Steven</u></strong><strong style="font-style: italic;">&nbsp; 450-974-9111</strong>
+              <strong style="font-style: italic;"><u>Contact : {{formContact}}</u></strong><strong style="font-style: italic;">&nbsp; {{formTel}}</strong>
               <br>
               <br><span>PICK UP : {{formPickUp}}</span>
               <br><span>DROP : {{formDrop}}</span>
@@ -79,15 +79,15 @@
                 SVP indiquer le nom et prénom en lettres carrées de la personne qui signe le bon de livraison
               </span>
               <br><span>
-                SVP envoyer votre facture et copie lisible de Bon de livraison à sosprestige@gmail.com
+                SVP envoyer votre facture et copie lisible de Bon de livraison à {{formEmail}}
               </span>
               <br>
               <br><span>
-                Please send POD and Invoice to : sosprestige@gmail.com
+                Please send POD and Invoice to : {{formEmail}}
               </span>
               <br>
               <br><span>
-                SVP signer cette confirmation et nous l'envoyer au : sosprestige@gmail.com
+                SVP signer cette confirmation et nous l'envoyer au : {{formEmail}}
               </span>
               <br>
               <br>
@@ -118,12 +118,13 @@
     <h5 style="float: right;"><br>{{selfNIR}}</h5>
   </div>
   <div id="noprint">
-    <img [src]="imgLogoUrl" alt="SOS Prestige" width="150"/>
+    <img [src]="imgLogoUrl" alt="SOS Prestige" height="50"/>
     <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 12cm;">Print</button>
     <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
     
     <h5><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
-        <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span>
+        <span style="margin-left: 1cm;">SP {{formNumero}}</span>
+        <!-- <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span> -->
         <!-- <br><small>CARRIER CONFIRMATION</small> -->
     </h5>
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
@@ -140,6 +141,7 @@
             <br><span>Contact : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comContact"></span>
             <br><span>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comAddress"></span>
             <br><span>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comVille"></span>
+            <br><span>Tel : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comTel"></span>
             <br><span></span>
         </td>
       </tr>
@@ -180,7 +182,7 @@
                     </td>
                     <td style="width: 7cm;">
                         <span>
-                            MONTANT/RATE $ <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formMontant">
+                            MONTANT/RATE : $ <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formMontant">
                         </span>
                     </td>
                 </tr>
@@ -200,7 +202,7 @@
       </tr>
       <tr>
           <td colspan="2">
-              <strong style="font-style: italic;"><u>Contact : Marc-André / Steven</u></strong><strong style="font-style: italic;">&nbsp; 450-974-9111</strong>
+              <strong style="font-style: italic;"><u>Contact : {{formContact}}</u></strong><strong style="font-style: italic;">&nbsp; {{formTel}}</strong>
               <br>
               <br><span>PICK UP : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formPickUp"></span>
               <br><span>DROP : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="formDrop"></span>
@@ -209,15 +211,15 @@
                 SVP indiquer le nom et prénom en lettres carrées de la personne qui signe le bon de livraison
               </span>
               <br><span>
-                SVP envoyer votre facture et copie lisible de Bon de livraison à sosprestige@gmail.com
+                SVP envoyer votre facture et copie lisible de Bon de livraison à {{formEmail}}
               </span>
               <br>
               <br><span>
-                Please send POD and Invoice to : sosprestige@gmail.com
+                Please send POD and Invoice to : {{formEmail}}
               </span>
               <br>
               <br><span>
-                SVP signer cette confirmation et nous l'envoyer au : sosprestige@gmail.com
+                SVP signer cette confirmation et nous l'envoyer au : {{formEmail}}
               </span>
               <!-- <br>
               <br> -->
