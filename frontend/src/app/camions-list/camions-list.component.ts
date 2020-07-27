@@ -59,6 +59,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   camionMap:Camion=new Camion();
   camionsSurMap:Array<Camion>=[]; //new Array<Camion>();
   camionsNoGPS:Array<Camion>;  // list of camions no-gps
+  camionsGPSAndNoGPS:Array<Camion>;  // list of camions no-gps and gps
   remorques:Array<Camion>;  // list of trailers
   //idCamionMap:number=108;  // test wit Hino of SOS
   @ViewChild('gmap') gmapElement: any;
@@ -130,6 +131,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     else{
       this.camionsSurMap=[];// to empty this list
       this.camionsNoGPS=[];// to empty this list
+      this.camionsGPSAndNoGPS=[];// to empty this list
       this.remorques=[];// to empty this list
       this.carteText='Fermer la carte'    
       var numbers = timer(2000);  // define the finding camions after 2000ms - 2 secondes
@@ -140,11 +142,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
               camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
             {
               if(!camion.uniteMonitor.includes('no-gps'))
+              {
                 this.camionsSurMap.push(camion)
+                this.camionsGPSAndNoGPS.push(camion)
+              }
               else 
                 // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
                 // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+              {
                 this.camionsNoGPS.push(camion)
+                this.camionsGPSAndNoGPS.push(camion)
+              }
             }
             else 
               if(camion.status) 
@@ -273,10 +281,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     else{
       this.camionsSurMap=[];// to empty this list
       this.camionsNoGPS=[];// to empty this list
+      this.camionsGPSAndNoGPS=[];// to empty this list
       this.remorques=[];// to empty this list
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           data.forEach(camion=>{
+
+            this.camion= new Camion(); //null;
             // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
             //   camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
             //   this.camionsSurMap.push(camion)
@@ -284,11 +295,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
               camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
             {
               if(!camion.uniteMonitor.includes('no-gps'))
+              {
                 this.camionsSurMap.push(camion)
+                this.camionsGPSAndNoGPS.push(camion)
+              }
               else 
                 // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
                 // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-                this.camionsNoGPS.push(camion)
+                {
+                  this.camionsNoGPS.push(camion)
+                  this.camionsGPSAndNoGPS.push(camion)
+                }
             }
             else 
               if(camion.status) 
@@ -535,11 +552,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     
   }
 
-  camionTemp:Camion; // this is camion temporaire for list itineraires 
+  camionTemp:Camion=new Camion(); // this is camion temporaire for list itineraires 
   findCamionById(id:number){
-    this.camionTemp=new Camion();
+    //this.camionTemp=new Camion();
     //let c: Camion;
-    this.camionTemp= this.camionsSurMap.find(x=>x.id===id)
+    this.camionTemp= this.camionsGPSAndNoGPS.find(x=>x.id===id)
     // this.infoWindow.close();
     // this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
     // this.infoWindow = new google.maps.InfoWindow;
@@ -998,7 +1015,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
   onSelectCamion(c:Camion){
     this.itiner.idCamion=c.id
-    this.itiner.camionAttribue= c.foreignName.length>0 ? c.foreignName : (c.unite + ' - ' + c.marque +'  ' +c.modele)//(c.unite + ' - ' + c.marque +'  ' +c.modele);
+    this.itiner.camionAttribue= (c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite + ' - ' + c.marque +'  ' +c.modele)//(c.unite + ' - ' + c.marque +'  ' +c.modele);
+    let trailer=this.remorques.find(x=>(x.id==c.idCarrier))
+    if(trailer!=null){
+      this.itiner.dispoReste = trailer.longueur+trailer.longueurTop-this.itiner.longueur
+    }
     // this.gotoTop();
     this.gotoAnchorID('truck');
     // this.infoWindow.close();

@@ -12,7 +12,8 @@
         <span *ngIf="!repere">Points de repere</span>
         <strong *ngIf="repere">Points de repere</strong>
     </button>
-    <button (click)="print('toprint')" class="btn btn-link">Print</button> -->
+    <button (click)="print('toprint')" class="btn btn-link">Print</button> 
+-->
     <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button>
 <!-- -->
     <!-- <button class="btn btn-link" (click)="onClearMap()">Reset</button> -->
@@ -307,16 +308,14 @@
                 </td> -->
 
                 <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
-                <td style="width: 16%;">
-                    <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="Long" [(ngModel)]="itiner.longueur" (change)="filterCamion()">ft
+                <td style="width: 34%;">
+                    <span>Longueur:&nbsp; </span><input style="width: 8ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="" [(ngModel)]="itiner.longueur" (change)="filterCamion()">ft
                 </td>
                 <!-- <td style="width: 10%;"><button class="btn btn-link" (click)="onAjouter()"
                         [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
                     >Ajouter</button>
                 </td> -->
-                <td style="width: 18%;">
-                    <input style="width: 8ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" placeholder="Rayon" (change)="filterCamion()">km
-                </td>
+                
                 <td style="width: 8%;">
                     <!-- <button class="btn btn-link" 
                         (click)="itiner.longueur=null; itiner.origin=''; originChange(); 
@@ -341,20 +340,28 @@
                     <input type="date" placeholder="Drop date" [ngModel]="itiner.dateDrop | date: 'yyyy-MM-dd'" 
                     name="dateDrop" min="{{todaySuite | date: 'yyyy-MM-dd'}}" class="form-control" (change)="dropDateChange($event)">
                 </td>
-                <td *ngIf="itiner.camionAttribue.length<=0" colspan="2" style="width: 34%;">
+                
+                
+                <td style="width: 42%;">
+                    <span>Rayon Recherche:&nbsp; </span><input style="width: 8ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()"><span>km</span> 
+                </td>
+            </tr>
+            <tr>
+                <td *ngIf="itiner.camionAttribue.length<=0" colspan="2" style="width: 40%;">
                     <input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="UniteCamion">
                 </td>
-                <td *ngIf="itiner.camionAttribue.length>0" style="width: 24%;">
+                <td *ngIf="itiner.camionAttribue.length>0" style="width: 30%;">
                     <input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="UniteCamion">
                 </td>
-                <td *ngIf="itiner.camionAttribue.length>0" style="width: 10%;">
-                    <input style="width: 11ch; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.dispoReste" placeholder="LongReste">ft
+                <td *ngIf="itiner.camionAttribue.length>0" style="width: 30%;">
+                    <span>LongReste:&nbsp; </span><input style="width: 11ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.dispoReste" placeholder=""><span>ft</span>
                 </td>
                 <td style="width: 8%;" id="truck">
                     <button class="btn btn-link" (click)="onAjouter()"
                     [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
                         >Ajouter</button>
                 </td>
+                <td style="width: 32%;">&nbsp;</td>
             </tr>
         </table>
 
@@ -381,9 +388,9 @@
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
                             <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
-                        <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
+                        <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
                             {{findRemorque(c.idCarrier)}}
-                              <br>  {{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}
+                              <br> <span>{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
                         </small>
                     </td>
                     
@@ -422,6 +429,10 @@
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
                             <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
+                        <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                            {{findRemorque(c.idCarrier)}}
+                              <br> <span>{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                        </small>
                     </td>
                     
                     <td style="color: black; background-color:greenyellow; width: 15%;">
@@ -450,6 +461,10 @@
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
                             <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
+                        <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                            {{findRemorque(c.idCarrier)}}
+                              <br> <span>{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                        </small>
                     </td>
                     <td style="color: black; background-color:goldenrod; width: 15%;">
                         Loin - Libre
@@ -479,6 +494,10 @@
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
                             <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
+                        <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                            {{findRemorque(c.idCarrier)}}
+                              <br> <span>{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                        </small>
                     </td>
                     <td style="color: black; background-color:red; width: 15%;">
                         Occupe
@@ -506,6 +525,10 @@
                             <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span> -->
                             <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
+                        <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                            {{findRemorque(c.idCarrier)}}
+                              <br> <span>{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                        </small>
                     </td>
                     <td style="color: black; background-color:dimgrey; width: 15%;">
                         Sans GPS
@@ -554,7 +577,7 @@
 
                 <td *ngIf="it.idCamion!=null" style="width: 35%;">{{findCamionById(it.idCamion)}}
                     <!-- <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link"> -->
-                        <button class="btn btn-link" (click)="onClickCamionId(it.idCamion)">
+                        <button *ngIf="camionTemp!=null" class="btn btn-link" (click)="onClickCamionId(it.idCamion)">
                             <span *ngIf="(camionTemp.foreignName==null || camionTemp.foreignName.length==0)">
                                 {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
                             </span>
@@ -563,6 +586,7 @@
                     <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null">&nbsp;</td>
+                <td  style="width: 10%;"><button (click)="itinerFini(it)" class="btn btn-link">Fini</button></td>
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Annuler</button></td>
             </tr>
         </table>
@@ -661,6 +685,10 @@
                         Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="camion.loadLeveler" />&nbsp;&nbsp;&nbsp;
                         
                         Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="camion.backTilt" />
+                    </p>
+                    <p>
+                        Hors Service&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />&nbsp;&nbsp;&nbsp;
+                        Camion de Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />&nbsp;&nbsp;&nbsp;                        
                     </p>
                     
                     

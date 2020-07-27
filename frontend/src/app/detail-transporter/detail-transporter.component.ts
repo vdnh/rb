@@ -68,6 +68,7 @@ export class DetailTransporterComponent implements OnInit {
   addadresse:Adresse=new Adresse(); // to add more adresse
   servicesOffre:ServicesOffre=new ServicesOffre();
   camions:Array<Camion>;
+  camionsBroker:Array<Camion>; // all brokers' camion 
   camionsInOperation:Array<Camion>; // all camion in service
   camionsOutOperation:Array<Camion>; // all camion out service or antecedent
   addcamion:Camion=new Camion(); // to add more camion
@@ -162,23 +163,29 @@ export class DetailTransporterComponent implements OnInit {
       //     return -1;
       //   return 0;
       // })
-      this.camionsInOperation = await this.camions.filter(camion=>camion.status==true) //this.filterCamionInOperation()
-      this.camionsOutOperation = await this.camions.filter(camion=>camion.status==false) //this.filterCamionOutOperation()
-      this.camionsInOperation.forEach(async (obj) => {
-        await this.autreEntretiensService.autreEntretienDeCamion(obj.id).subscribe((data: Array<AutreEntretien>) => {
+      this.camionsInOperation = await this.camions.filter(camion=>(!camion.broker && camion.status))
+        .sort((a,b)=>Number(a.unite)-Number(b.unite));
+      //this.filterCamionInOperation()
+      this.camionsOutOperation = await this.camions.filter(camion=>(!camion.broker && !camion.status)) //this.filterCamionOutOperation()
+      this.camionsBroker= await this.camions.filter(camion=>(camion.broker && camion.status))
+      await this.camionsInOperation.forEach(async (cam) => {
+        await this.autreEntretiensService.autreEntretienDeCamion(cam.id).subscribe((data: Array<AutreEntretien>) => {
           if (data != null) {
             let entsAutre: AutreEntretienList = new AutreEntretienList();
             entsAutre.entsList = data;
-            entsAutre.unite = obj.unite;
-            entsAutre.odometre = obj.odometre;
+            entsAutre.unite = cam.unite;
+            entsAutre.odometre = cam.odometre;
             if (entsAutre.entsList.length != 0)
               this.arrayArrayEnts.push(entsAutre);
+              this.arrayArrayEnts.sort((a,b)=>Number(a.unite)-Number(b.unite));
           }
         }, err => {
           console.log(err);
         });
+        // this.arrayArrayEnts.sort((a,b)=>Number(a.unite)-Number(b.unite));
       }, err => {
       }) //*/
+      // this.arrayArrayEnts= await this.arrayArrayEnts.sort((a,b)=>(Number(a.unite)-Number(b.unite)));
 //*/
     }, err=>{
       console.log();
@@ -303,7 +310,7 @@ export class DetailTransporterComponent implements OnInit {
     this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
       alert('Camion unite '+data.unite+' a ete ajoute.')
       this.camions.push(data) // refresh list camions
-      this.camionsInOperation.push(data)  // refresh list camionsInOperation
+      if(!data.broker) this.camionsInOperation.push(data)  // refresh list camionsInOperation
       this.addcamion=data;
       this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
       this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;

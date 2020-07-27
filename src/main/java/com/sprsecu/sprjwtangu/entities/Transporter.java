@@ -36,7 +36,12 @@ public class Transporter {
     private String loginName;
     private String password;
     private String emailTechnic;  // email de personne s'ocuppe la technique
+    
     private Long lastNumber; // to keep the last number of confirmation
+    private String nir;  // license de circulation
+    private String nid;  // company number
+    private String expressContact; // if there are many names, separate with /
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

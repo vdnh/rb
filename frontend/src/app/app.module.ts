@@ -82,6 +82,7 @@ import { CamionsListComponent } from './camions-list/camions-list.component';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { ReperesService } from 'src/services/reperes.service';
 import { TransporterConfirmComponent } from './transporter-confirm/transporter-confirm.component';
+import { ConfirmTransportService } from 'src/services/confirmTransport.service';
 //import { InnerComponent } from './business-messages/InnerComponent';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
@@ -209,7 +210,7 @@ const appRoutes:Routes=[
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
     RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService,
-    ItinerairesService, ReperesService],
+    ItinerairesService, ReperesService, ConfirmTransportService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

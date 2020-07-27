@@ -39,5 +39,6 @@ export class Itineraire{
     tps=0.00;
     tvq=0.00;
     total=0.00;
-    
+    fini=false; //Itineraire finished, false by default
+    cancelled=false; //Itineraire cancelled, false by default
 }

@@ -68,5 +68,6 @@ public class Itineraire  implements Serializable{
     private Float tps=0.00f;
     private Float tvq=0.00f;
     private Float total=0.00f;
-    
+    private boolean fini; //Itineraire fini
+    private boolean cancelled; //Itineraire cancelled
 }

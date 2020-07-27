@@ -84,4 +84,7 @@ export class Camion{
     
     idCarrier:number; // id of truck carrying - just for trailer who need a carrier
 
+    broker=false; // Truck of broker, false by default
+    outService=false; // out of service for some reason, , false by default
+
 }

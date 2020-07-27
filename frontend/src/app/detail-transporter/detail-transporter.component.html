@@ -254,6 +254,28 @@
                 <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
                 <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsOutOperation)">Delete</button></td>
             </tr>            
+
+            <tr><th colspan="4">Camions Brokers</th></tr>
+            <tr *ngFor="let camion of camionsBroker" style="background-color: darkgray;">
+                <td>
+                    {{camion.unite}}
+                </td>
+                <td>
+                    {{camion.plaque}}            
+                </td>
+                <td>
+                    {{camion.marque}}
+                </td>
+                <td>
+                    {{camion.modele}}
+                </td>
+                <td colspan="2">
+                    {{camion.niv}}
+                </td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsOutOperation)">Delete</button></td>
+            </tr>
+
             </div>   
             <div *ngIf="camAdd==1">
             <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     

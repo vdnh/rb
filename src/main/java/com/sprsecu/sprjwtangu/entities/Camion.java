@@ -114,6 +114,8 @@ public class Camion implements Serializable{
     private String localName; // name in AVL
     
     private Long idCarrier; // id of truck carrying - just for trailer who need a carrier
+    private boolean broker=false; // Truck of broker, false by default
+    private boolean outService=false; // out of service for some reason, , false by default
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

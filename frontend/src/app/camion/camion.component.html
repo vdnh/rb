@@ -134,17 +134,20 @@
             </tr> -->
             <tr>              
               <td style="width: 10%;">
-                <label for="">En Exploitant</label>
-                <input class="form-control" type="checkbox" [(ngModel)]="camion.status" />
+                <!-- <label for="">En Exploitant</label> -->
+                En Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
               </td>
-              <td style="width: 10%;">
+              <td>
+                Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />
+              </td>
+              <!-- <td style="width: 10%;">
                 <label for="">Latitude</label>
                 <input class="form-control" type="number" [(ngModel)]="camion.latitude" />
               </td>
               <td style="width: 10%;">
                 <label for="">Longitude</label>
                 <input class="form-control" type="number" [(ngModel)]="camion.longtitude" />
-              </td>
+              </td> -->
               <!-- <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td> -->
             </tr>   
