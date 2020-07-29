@@ -3,7 +3,7 @@
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
-<!--
+<!--  -->
     <button (click)="itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
@@ -12,8 +12,8 @@
         <span *ngIf="!repere">Points de repere</span>
         <strong *ngIf="repere">Points de repere</strong>
     </button>
-    <button (click)="print('toprint')" class="btn btn-link">Print</button> 
--->
+    <!-- <button (click)="print('toprint')" class="btn btn-link">Print</button>  -->
+<!-- -->
     <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button>
 <!-- -->
     <!-- <button class="btn btn-link" (click)="onClearMap()">Reset</button> -->
@@ -272,6 +272,19 @@
                         </tr>
                     </table>
                 </td> -->
+            </tr>
+        </table>
+        <table *ngIf="camionsOutService!=null&&camionsOutService.length>0" border="1">
+            <tr>
+                <th>Unite Hors Service Temporaire</th>
+            </tr>
+            <tr *ngFor="let c of camionsOutService">
+                <td>
+                    <button (click)="onClickCamion(c)" class="btn btn-link">
+                        <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                        <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                    </button>
+                </td>
             </tr>
         </table>
     </div>
@@ -607,159 +620,160 @@
         <div #gmap style="width:100%;height:650px" ></div>
     </div>
 
-    <div id="dtc" *ngIf="detailCamion" class="col-md-5 col-lg-5" style="margin-top: 0px;">
+    <div id="dtc" *ngIf="detailCamion && detailCamionWindown" class="col-md-5 col-lg-5" style="margin-top: 0px;">
         <div>
             <select type="text" [(ngModel)]="camion" (ngModelChange)="onChangeCamionCapacity()">
                 <!--  (ngModelChange)="onChangeCamionCapacity()" -->
-                <optgroup label="Unites avec GPS">
+                <optgroup label="Unite avec GPS">
                     <option *ngFor="let c of camionsSurMap" [ngValue]="c">
                         {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
                     </option>
                 </optgroup>
-                <optgroup label="Unites sans GPS">
+                <optgroup label="Unite sans GPS">
                     <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
                         {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
                     </option>
                 </optgroup>
-                <optgroup label="Trailers">
+                <optgroup label="Trailer">
                     <option *ngFor="let c of remorques" [ngValue]="c">
                         <!-- {{"#"+c.unite}} -->
                         {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
                     </option>
                 </optgroup>
+                <optgroup label="Unite HorsService Temporaire">
+                    <option *ngFor="let c of camionsOutService" [ngValue]="c">
+                        <!-- {{"#"+c.unite}} -->
+                        <!-- {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}} -->
+                        {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' '+ c.marque +' ' +c.modele)}}
+                    </option>
+                </optgroup>
             </select>
         </div>
-        <table class="table table-striped table-sm table-responsive" border="1">
-            <tr>
-              <th>
-                  Unite <span *ngIf="camion.foreignName!=null && camion.foreignName.length>0">{{camion.foreignName}}</span>
-                  <span *ngIf="camion.foreignName==null || camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
-
-              </th>
-              <td colspan="3" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
-                <!-- <a href="{{camion.imgUrl}}" target="_blank"> -->
-                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
-                <!-- </a> -->
-              </td>
-              <!-- <th>
-                <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
-                <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
-              </th> -->
-            </tr>
-            <!-- <tr>
-              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
-            </tr> -->
-            <tr>
-                <th colspan="2" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0">
-                    <button (click)="onChangeImage()">Changer Image</button>
-                </th>
-                <th colspan="2" *ngIf="camion.imgUrl==null || camion.imgUrl.length==0">
-                    <label for="imgcamion">Prendre Image &nbsp;&nbsp;</label>
-                    <input name="imgcamion" type="file" title="Joindre camion image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
-                </th>    
-            </tr>
-            <tr><p></p></tr>
-            <tr>
-                <th colspan="2"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueurTop">&nbsp;ft</p> </th>
-                <!-- <td><input type="number"></td> -->
-            </tr>
-            <tr>
-                <th colspan="2"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueur">&nbsp;ft</p> </th>
-                <!-- <td><input type="number"></td> -->
-            </tr>
-            <tr>
-                <th colspan="2"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="camion.hauteur">&nbsp;po</p> </th>
-                <!-- <td><input type="number"></td> -->
-            </tr>
-            <tr>
-                <th colspan="2"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="camion.poids">&nbsp;lbs</p> </th>
-                <!-- <td><input type="number"></td> -->
-            </tr>
-            <tr>
-                <!-- <th>Rampe</th>
-                <td><input type="text"></td> -->
-                <th colspan="2">
-                    <p>
-                        Rampe&nbsp;<input type="checkbox" [(ngModel)]="camion.rampe" />&nbsp;&nbsp;&nbsp;
-                    
-                        Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="camion.loadLeveler" />&nbsp;&nbsp;&nbsp;
-                        
-                        Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="camion.backTilt" />
-                    </p>
-                    <p>
-                        Hors Service&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />&nbsp;&nbsp;&nbsp;
-                        Camion de Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />&nbsp;&nbsp;&nbsp;                        
-                    </p>
-                    
-                    
-                </th>
-            </tr>
-            <tr *ngIf="remorques.includes(camion)">
-                <td>
-                    Carrier: <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
-                                {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
-                            </span>
-                </td>
-                <!-- <td *ngIf="camion.idCarrier!=null&&camion.idCarrier>0"> -->
-                    <!-- {{findCamionWithGPS(id)}}
-                    {{findCamionNoGPS(id)}} -->
-                    <!-- {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}} -->
-                    <!-- <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
-                        <optgroup label="Unites avec GPS">
-                            <option *ngFor="let c of camionsSurMap" [ngValue]="c">
-                                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
-                            </option>
-                        </optgroup>
-                        <optgroup label="Unites sans GPS">
-                            <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
-                                {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
-                            </option>
-                        </optgroup>
-                    </select> -->
-                <!-- </td> -->
-            </tr>
-            <tr *ngIf="camionsSurMap.includes(camion)||camionsNoGPS.includes(camion)">
-                <!-- <th>
-                    Trailer
-                </th> -->
+        <div class="form-group">
+            <table class="table table-striped table-sm table-responsive" border="1">
+                <tr>
                 <th>
-                    Trailer: <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
-                        <!-- <optgroup label="Unites avec GPS">
-                            <option *ngFor="let c of camionsSurMap" [ngValue]="c">
-                                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
-                            </option>
-                        </optgroup>
-                        <optgroup label="Unites sans GPS">
-                            <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
-                                {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
-                            </option>
-                        </optgroup> -->
-                        <!-- <optgroup label="Trailers"> -->
-                            <option [ngValue]="null">Non Trailer</option>
-                            <option *ngFor="let c of remorques" [ngValue]="c">
-                                {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
-                            </option>
-                        <!-- </optgroup> -->
-                    
-                    </select>
+                    Unite <span *ngIf="camion.foreignName!=null && camion.foreignName.length>0">{{camion.foreignName}}</span>
+                    <span *ngIf="camion.foreignName==null || camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+
                 </th>
-            </tr>
-            <!-- <tr>
-                <th>Load Leveler</th>
-                <td><input type="text"></td>
-            </tr>
-            <tr>
-                <th>Inclinaison du derriere</th>
-                <td><input type="text"></td>
-            </tr> -->
-            <tr>
-                <td colspan="2">
-                    <button (click)="saveCamion()">Enregistrer</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button (click)="closecamion()">Fermer</button>
+                <td colspan="3" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+                    <!-- <a href="{{camion.imgUrl}}" target="_blank"> -->
+                    <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
+                    <!-- </a> -->
                 </td>
-            </tr>
-        </table>
+                <!-- <th>
+                    <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
+                    <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+                </th> -->
+                </tr>
+                <!-- <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
+                </tr> -->
+                <tr>
+                    <th colspan="2" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0">
+                        <button (click)="onChangeImage()">Changer Image</button>
+                    </th>
+                    <th colspan="2" *ngIf="camion.imgUrl==null || camion.imgUrl.length==0">
+                        <label for="imgcamion">Prendre Image &nbsp;&nbsp;</label>
+                        <input name="imgcamion" type="file" title="Joindre camion image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                    </th>    
+                </tr>
+                <tr><p></p></tr>
+                <tr>
+                    <th colspan="4"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueurTop">&nbsp;ft</p> </th>
+                    <!-- <td><input type="number"></td> -->
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueur">&nbsp;ft</p> </th>
+                    <!-- <td><input type="number"></td> -->
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="camion.hauteur">&nbsp;po</p> </th>
+                    <!-- <td><input type="number"></td> -->
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="camion.poids">&nbsp;lbs</p> </th>
+                    <!-- <td><input type="number"></td> -->
+                </tr>
+                <tr>
+                    <!-- <th>Rampe</th>
+                    <td><input type="text"></td> -->
+                    <th colspan="4">
+                        <p>
+                            Rampe&nbsp;<input type="checkbox" [(ngModel)]="camion.rampe" />&nbsp;&nbsp;&nbsp;
+                        
+                            Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="camion.loadLeveler" />&nbsp;&nbsp;&nbsp;
+                            
+                            Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="camion.backTilt" />
+                        </p>
+                        <p>
+                            Hors Service&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" (change)="onSetOutService()" />&nbsp;&nbsp;&nbsp;
+                            Unite de Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />&nbsp;&nbsp;&nbsp;                        
+                        </p>
+                        
+                        
+                    </th>
+                </tr>
+                <!-- <tr *ngIf="remorques.includes(camion)">
+                    <td colspan="4">
+                        Carrier: <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
+                                    {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
+                                </span>
+                    </td>
+                </tr>
+                <tr *ngIf="camionsSurMap.includes(camion)||camionsNoGPS.includes(camion)">
+                    <th colspan="4">
+                        Trailer: <select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
+                                <option [ngValue]="null">Non Trailer</option>
+                                <option *ngFor="let c of remorques" [ngValue]="c">
+                                    {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
+                                </option>                    
+                        </select>
+                    </th>
+                </tr>
+                <tr *ngIf="camionsOutService.includes(camion)">
+                    <td colspan="4">
+                        Attache avec : <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
+                                    {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
+                                </span>
+                    </td>
+                </tr> -->
+
+                <tr>
+                    <td colspan="4" *ngIf="remorques.includes(camion)">
+                        Carrier: <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
+                                    {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
+                                </span>
+                    </td>
+
+                    <th colspan="4" *ngIf="camionsSurMap.includes(camion)||camionsNoGPS.includes(camion)">
+                        Trailer: <span *ngIf="camionCarrier==null">Non Trailer</span><span *ngIf="camionCarrier!=null">{{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}</span> 
+                        <br><select type="text" [(ngModel)]="camionCarrier" (ngModelChange)="onChangeCarrier()">
+                                <option [ngValue]="null">Non Trailer</option>
+                                <option *ngFor="let c of remorques" [ngValue]="c">
+                                    {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}}
+                                </option>                    
+                        </select>
+                    </th>
+                    
+                    <th colspan="4" *ngIf="camionsOutService.includes(camion)">
+                        Attache avec : <span *ngIf="camion.idCarrier!=null&&camion.idCarrier>0">
+                                    {{"#"+camionCarrier.unite + ' - ' + camionCarrier.marque +'  ' +camionCarrier.modele}}
+                                </span>
+                    </th>
+                </tr>
+
+
+                <tr>
+                    <td colspan="4">
+                        <button (click)="saveCamion()">Enregistrer</button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button (click)="closecamion()">Fermer</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     
 </div>

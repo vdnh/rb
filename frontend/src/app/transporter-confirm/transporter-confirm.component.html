@@ -123,10 +123,11 @@
     <h5 style="float: right;"><br>{{selfnir}}</h5>
   </div>
   <div id="noprint">
-    <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 3cm;">Print</button>
+    <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 1cm;">Print</button>
     <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button style="margin-left: 1cm;" (click)="newForm()" class="btn btn-primary">Nouveau</button>
-    <strong style="margin-left: 2cm;">Liste Confirmations &nbsp;</strong> 
+    <button *ngIf="confirmTransport.id>0" style="margin-left: 1cm;" (click)="copyForm()" class="btn btn-primary">Copy</button>
+    <strong style="margin-left: 1cm;">Liste Confirmations &nbsp;</strong> 
     <select type="text" [(ngModel)]="confirmTransport" (ngModelChange)="confirmFound(confirmTransport)">
         <option *ngFor="let c of listConfirm" [ngValue]="c">
           {{

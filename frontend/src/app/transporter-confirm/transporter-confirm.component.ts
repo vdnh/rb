@@ -103,6 +103,11 @@ export class TransporterConfirmComponent implements OnInit {
     this.dateDrop =event.target.value
   }
   
+  copyForm(){
+    this.formNumero=''
+    this.confirmTransport=new ConfirmTransport(); //.id=null;  
+  }
+
   newForm(){
     this.confirmTransport = new ConfirmTransport();
 

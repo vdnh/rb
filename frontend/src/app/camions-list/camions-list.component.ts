@@ -54,13 +54,23 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   subscription : Subscription;
   //transporter:Transporter=new Transporter();
   detailCamion=false;
-  camionCarrier:Camion=new Camion(); // camion which carry the trailer - just for trailer
-  camion:Camion=new Camion(); // camion to modify detail 
+  camionCarrier:Camion; //=new Camion(); // camion which carry the trailer - just for trailer
+  camion:Camion; //=new Camion(); // camion to modify detail 
   camionMap:Camion=new Camion();
-  camionsSurMap:Array<Camion>=[]; //new Array<Camion>();
-  camionsNoGPS:Array<Camion>;  // list of camions no-gps
-  camionsGPSAndNoGPS:Array<Camion>;  // list of camions no-gps and gps
-  remorques:Array<Camion>;  // list of trailers
+  camionsSurMap:Camion[]//Array<Camion>=[]; //new Array<Camion>();
+  camionsNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps
+  camionsGPSAndNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps and gps
+  camionsOutService:Camion[]//Array<Camion>;  // list of camions out of service temporary
+  remorques:Camion[]//Array<Camion>;  // list of trailers
+  
+  camions: Camion[];
+  _camions: Camion[];
+
+  _camionsSurMap:Camion[]//Array<Camion>=[]; //new Array<Camion>();
+  _camionsNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps
+  _camionsGPSAndNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps and gps
+  _camionsOutService:Camion[]//Array<Camion>;  // list of camions out of service temporary
+  _remorques:Camion[]//Array<Camion>;  // list of trailers
   //idCamionMap:number=108;  // test wit Hino of SOS
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
@@ -70,9 +80,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
   infoWindow: google.maps.InfoWindow;
   transporter: Transporter;
-  camions: Camion[];
-  camionsInOperation: Camion[];
-  camionsOutOperation: Camion[];
+  
+  // camionsInOperation: Camion[];
+  // camionsOutOperation: Camion[];
 
   today=new Date();
   todaySuite = new Date();
@@ -133,30 +143,55 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.camionsNoGPS=[];// to empty this list
       this.camionsGPSAndNoGPS=[];// to empty this list
       this.remorques=[];// to empty this list
+      this.camionsOutService=[];
+
+      this._camionsSurMap=[];// to empty this list
+      this._camionsNoGPS=[];// to empty this list
+      this._camionsGPSAndNoGPS=[];// to empty this list
+      this._remorques=[];// to empty this list
+      this._camionsOutService=[];
+
       this.carteText='Fermer la carte'    
-      var numbers = timer(2000);  // define the finding camions after 2000ms - 2 secondes
-      //numbers.subscribe(x =>{
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+          this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
           data.forEach(camion=>{
-            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-              camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-            {
-              if(!camion.uniteMonitor.includes('no-gps'))
+            if(camion.outService){ // find all unites outService te,porary
+              this.camionsOutService.push(camion)
+
+              this._camionsOutService.push(camion)
+            }
+            else{ // the rest is all unite in service normally
+              if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
               {
-                this.camionsSurMap.push(camion)
-                this.camionsGPSAndNoGPS.push(camion)
+                if(!camion.uniteMonitor.includes('no-gps'))
+                {
+                  this.camionsSurMap.push(camion)
+                  this.camionsGPSAndNoGPS.push(camion)
+
+                  this._camionsSurMap.push(camion)
+                  this._camionsGPSAndNoGPS.push(camion)
+                }
+                else 
+                  // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                  // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+                {
+                  this.camionsNoGPS.push(camion)
+                  this.camionsGPSAndNoGPS.push(camion)
+
+                  this._camionsNoGPS.push(camion)
+                  this._camionsGPSAndNoGPS.push(camion)
+                }
               }
               else 
-                // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-                // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-              {
-                this.camionsNoGPS.push(camion)
-                this.camionsGPSAndNoGPS.push(camion)
-              }
+                if(camion.status) 
+                  {
+                    this.remorques.push(camion)  // Camions in service without GPS are trailers
+
+                    this._remorques.push(camion)
+                  }
+
             }
-            else 
-              if(camion.status) 
-                this.remorques.push(camion)  // Camions in service without GPS are trailers
           })
           let mapProp = {
             center: new google.maps.LatLng(45.568806, -73.918333),
@@ -244,15 +279,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           
           const intervalIsCs = interval(20000);  // we refresh the Camions/Itineraires each 20 seconde - 20000ms
           this.subscription=intervalIsCs.subscribe(val=>{
-            //get list itineraires
-            this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-              if(data!=null) this.itiners=data
-              //get list reperes
-              this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
-                if(data!=null) this.reps=data
-                this.makeCIsLList(); // make the lists itiniers follow each camion
-              }, err=>{console.log(err)})
-            },err=>{console.log(err)})
+            if(!this.detailCamion){// We refresh just in mode show map
+              //get list itineraires
+              this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+                if(data!=null) this.itiners=data
+                //get list reperes
+                this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+                  if(data!=null) this.reps=data
+                  this.makeCIsLList(); // make the lists itiniers follow each camion
+                }, err=>{console.log(err)})
+              },err=>{console.log(err)})
+            }
           })
           
           const intervalCSM = interval(120200); //intervel for refresh camions on the map
@@ -272,46 +309,96 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
 
   onRefresh(){
-    //this.carte=-this.carte;
-    if(this.carte==-1){
+    if(this.detailCamion){
       //this.camionsSurMap=[];// to empty this list
-      this.carteText='Reperer sur la carte'
-      this.subscription.unsubscribe();
+      //this.carteText='Reperer sur la carte'
+      //this.subscription.unsubscribe();
+      console.log('this.detailCamion est true, on fait rien!!!')
     }
     else{
+      let tempCamion:Camion=this.camion;
+      
       this.camionsSurMap=[];// to empty this list
       this.camionsNoGPS=[];// to empty this list
       this.camionsGPSAndNoGPS=[];// to empty this list
       this.remorques=[];// to empty this list
+      this.camionsOutService=[];
+
+      this._camionsSurMap=[];// to empty this list
+      this._camionsNoGPS=[];// to empty this list
+      this._camionsGPSAndNoGPS=[];// to empty this list
+      this._remorques=[];// to empty this list
+      this._camionsOutService=[];
+
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+          // let tempCamion:Camion=this.camion;
+          //this.detailCamion=false // close detail camion, to refresh            
+          // this.camionCarrier=null;
+          // this.camion=null;
+          this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
           data.forEach(camion=>{
-
-            this.camion= new Camion(); //null;
+            // this.camion= new Camion(); //null;  // keep the same camion for DetailCamion
             // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
             //   camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
             //   this.camionsSurMap.push(camion)
-            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-              camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-            {
-              if(!camion.uniteMonitor.includes('no-gps'))
+            if(camion.outService){ // find all unites outService te,porary
+              this.camionsOutService.push(camion)
+              this._camionsOutService.push(camion)
+            }
+            else{ // the rest is all unite in service normally
+              if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
               {
-                this.camionsSurMap.push(camion)
-                this.camionsGPSAndNoGPS.push(camion)
+                if(!camion.uniteMonitor.includes('no-gps'))
+                {
+                  this.camionsSurMap.push(camion)
+                  this.camionsGPSAndNoGPS.push(camion)
+
+                  this._camionsSurMap.push(camion)
+                  this._camionsGPSAndNoGPS.push(camion)
+                }
+                else 
+                  // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+                  // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+                  {
+                    this.camionsNoGPS.push(camion)
+                    this.camionsGPSAndNoGPS.push(camion)
+
+                    this._camionsNoGPS.push(camion)
+                    this._camionsGPSAndNoGPS.push(camion)
+                  }
               }
               else 
-                // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-                // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-                {
-                  this.camionsNoGPS.push(camion)
-                  this.camionsGPSAndNoGPS.push(camion)
-                }
+                if(camion.status) 
+                  {
+                    this.remorques.push(camion)  // Camions in service without GPS are trailers          
+                    
+                    this._remorques.push(camion)
+                  }
             }
-            else 
-              if(camion.status) 
-                this.remorques.push(camion)  // Camions in service without GPS are trailers          
+            // if(this.detailCamion){ // if we are in the detailCamion, refresh this function to show camion carrier/trailer
+            //   this.detailCamion=false // close detail camion, to refresh
+            //   this.onChangeCamionCapacity()// run that to refresh the carrier / trailer then detailcamion will be true
+            //   console.log('this.onChangeCamionCapacity() after refresh list camion')
+            // }
           })
-          // let mapProp = {
+          if(this.detailCamion){ // if we are in the detailCamion, refresh this function to show camion carrier/trailer
+            // let tempCamion:Camion=this.camion;
+            // this.detailCamion=false // close detail camion, to refresh            
+            // this.camionCarrier=null;
+            //this.camion=tempCamion; //null;
+            // this.onClickCamion(tempCamion)
+            // let temp=document.getElementById('dtc')
+            //this.onChangeCamionCapacity()// run that to refresh the carrier / trailer then detailcamion will be true
+            // console.log('this.onChangeCamionCapacity() after refresh list camion')
+            console.log('this.onChangeCamion() after refresh list camion')
+            console.log('this.camion.unite: '+this.camion.unite)
+            if(this.camionCarrier!=null) console.log('this.camionCarrier.unite: '+this.camionCarrier.unite)
+            
+          }
+          else{
+            // let mapProp = {
           //   center: new google.maps.LatLng(45.568806, -73.918333),
           //   zoom: 15,
           //   mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -360,6 +447,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             }  
           })
           //this.makeCIsLList(); // make the lists itiniers follow each camion
+          }
+          
         }, err=>{
           console.log();
         })
@@ -1069,6 +1158,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   getLocalisation(){
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
       let camionsSurMap:Array<Camion>=new Array<Camion>();
+      data.sort((a,b)=>Number(a.unite)-Number(b.unite));
       data.forEach(camion=>{
         if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
         (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
@@ -1339,25 +1429,92 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   idCarrierBeforeChange:number;// to help keep the idCarrier or this.camion
   idTemp: number; // to help keep the idCarrier of trailer
   onClickCamion(c:Camion){ // for see the detail of Camion
-    this.detailCamion=true;// to change the view map to view detail camion
-    this.camionBeforeChange=c;  // to keep the origin camion before change some thing
-    this.camion=c;
+    //
+    this.detailCamionWindown=false;
+    this.camionsSurMap=[];// to empty this list
+    this.camionsNoGPS=[];// to empty this list
+    this.camionsGPSAndNoGPS=[];// to empty this list
+    this.remorques=[];// to empty this list
+    this.camionsOutService=[];
+
+    this._camionsSurMap=[];// to empty this list
+    this._camionsNoGPS=[];// to empty this list
+    this._camionsGPSAndNoGPS=[];// to empty this list
+    this._remorques=[];// to empty this list
+    this._camionsOutService=[];
+    this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+      this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+      data.forEach(camion=>{
+        if(camion.outService){ // find all unites outService te,porary
+          this.camionsOutService.push(camion)
+
+          this._camionsOutService.push(camion)
+        }
+        else{ // the rest is all unite in service normally
+          if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+            camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+          {
+            if(!camion.uniteMonitor.includes('no-gps'))
+            {
+              this.camionsSurMap.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsSurMap.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+            else 
+              // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+              // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            {
+              this.camionsNoGPS.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsNoGPS.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+          }
+          else 
+            if(camion.status) 
+              {
+                this.remorques.push(camion)  // Camions in service without GPS are trailers
+
+                this._remorques.push(camion)
+              }
+
+        }
+      })
+      //
+      this.camionBeforeChange=c;  // to keep the origin camion before change some thing
+    // this.camion=c;
+    this.camion=this.camions.find(x=>(x.id==c.id))
     this.idTemp=null;
     if(c.idCarrier!=null&&c.idCarrier>0) {
       this.idCarrierBeforeChange=c.idCarrier
       //this.idTemp=c.id; //the idCarrier of trailer
     }
+    this.detailCamionWindown=true;// to change the view map to view detail camion
+    this.detailCamion=true;// to change the view map to view detail camion
     // this.gotoTop();
     this.gotoAnchorID('dtc');
     //console.log('this.camion.idCarrier (dans onclickcamion()): '+this.camion.idCarrier)
     // if(this.camion.idCarrier!=undefined){
-      this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
+      this.camionCarrier=this._camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
       if(this.camionCarrier==undefined){
-        this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
+        this.camionCarrier=this._camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
       }
       if(this.camionCarrier==undefined){
-        this.camionCarrier=this.remorques.find(x=>(x.id==this.camion.idCarrier))
+        this.camionCarrier=this._remorques.find(x=>(x.id==this.camion.idCarrier))
       }
+      if(this.camionCarrier==undefined){
+        this.camionCarrier=this._camionsOutService.find(x=>(x.id==this.camion.idCarrier))
+      }
+      //
+    }, err=>{
+      console.log();
+    })
+    //
+    // this.detailCamion=true;// to change the view map to view detail camion
+    
     //}
     //console.log('this.camionCarrier.id (dans onClickCamion()): '+this.camionCarrier.id)
     // this.infoWindow.close();
@@ -1369,12 +1526,33 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.infoWindow.open(this.map);//*/
     
   }
-
+  
+  detailCamionWindown=true;
+  onSetOutService(){
+    let temp=this.camion
+    if(temp.outService&&temp.idCarrier!=null&&temp.idCarrier>0){
+      //this.camion=null;
+      // this.detailCamionWindown=false
+      // alert('SVP, Liberez Trailer/Carrier attache avant de le mettre hors service! ')
+      // this.detailCamionWindown=true
+      temp.outService=false; //!temp.outService;
+      // this.camion.outService=
+      //this._camionsSurMap.find(x=>(x.id==temp.id)).outService=false
+      // this.remorques.find(x=>(x.id==temp.id))
+      // this.camion.outService=false;
+      alert('SVP, Liberez Trailer/Carrier attache avant de le mettre hors service! ')
+      this.onClickCamion(temp)
+      // this.camion=temp;
+      console.log('this.camion.outService: '+this.camion.outService)
+      
+      // this.camion.outService=false;
+    }
+  }
   saveCamion(){
     //the first delete the join between camion et trailer and then save change camion
     if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
       //this.findRemorque(this.camionBeforeChange.idCarrier) // find trailer - trailerTemp
-      let trailerTemp = this.remorques.find(x=>(x.id==this.idCarrierBeforeChange))
+      let trailerTemp = this._remorques.find(x=>(x.id==this.idCarrierBeforeChange))
       if(trailerTemp!=null) {
         trailerTemp.idCarrier=null
         this.camionsService.saveCamions(trailerTemp).subscribe((data:Camion)=>{
@@ -1390,6 +1568,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
               ,err=>(console.log(err)))
             }            
             alert("C'est enregistre.")
+            this.closecamion(); // close detailCamion after modifying somthing to refresh all
           }, err=>{
             console.log(err);
           });
@@ -1408,6 +1587,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           ,err=>(console.log(err)))
         }
         alert("C'est enregistre.")
+        this.closecamion();
       }, err=>{
         console.log(err);
       });
@@ -1415,16 +1595,72 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
 
   onChangeCarrier(){
-    // find the idcarrier of trailer and set it to null
+    /*//
+    //
+    this.detailCamionWindown=false;
+    this.camionsSurMap=[];// to empty this list
+    this.camionsNoGPS=[];// to empty this list
+    this.camionsGPSAndNoGPS=[];// to empty this list
+    this.remorques=[];// to empty this list
+    this.camionsOutService=[];
+
+    this._camionsSurMap=[];// to empty this list
+    this._camionsNoGPS=[];// to empty this list
+    this._camionsGPSAndNoGPS=[];// to empty this list
+    this._remorques=[];// to empty this list
+    this._camionsOutService=[];
+    this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+      this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+      data.forEach(camion=>{
+        if(camion.outService){ // find all unites outService te,porary
+          this.camionsOutService.push(camion)
+
+          this._camionsOutService.push(camion)
+        }
+        else{ // the rest is all unite in service normally
+          if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+            camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+          {
+            if(!camion.uniteMonitor.includes('no-gps'))
+            {
+              this.camionsSurMap.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsSurMap.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+            else 
+              // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+              // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            {
+              this.camionsNoGPS.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsNoGPS.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+          }
+          else 
+            if(camion.status) 
+              {
+                this.remorques.push(camion)  // Camions in service without GPS are trailers
+
+                this._remorques.push(camion)
+              }
+
+        }
+      })
+      // add here your code //*/
+      // find the idcarrier of trailer and set it to null
     if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     if(this.idTemp!=null&&this.idTemp>0){
-      this.remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
       this.idTemp=null;
     }
     if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     if(this.camionCarrier!=null){
       if(this.camionCarrier.idCarrier==null || this.camionCarrier.idCarrier<=0)
@@ -1446,8 +1682,14 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       //this.camionCarrier.idCarrier=null;
       // this.camionBeforeChange.idCarrier=temp
     }
-    
+    this.detailCamionWindown=true;
+      /*// end here eyour code
+    }, err=>{
+      console.log();
+    })
+    //*/  
   }
+  
   trailerTemp:Camion;
   findRemorque(id){
     this.trailerTemp=this.remorques.find(x=>(x.id==id))
@@ -1460,27 +1702,90 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   findCamionNoGPS(id){
     this.camionNoGPSTemp=this.camionsNoGPS.find(x=>(x.id==id))
   }
+
   onChangeCamionCapacity(){
-    // if(this.remorques.includes(this.camion)){
-    //   this.remorques.find(x=>{x.id==this.camion.id})
-    // }
-    this.idTemp=null;
+    this.onClickCamion(this.camion)
+    /*//
+    //
+    this.detailCamionWindown=false;
+    this.camionsSurMap=[];// to empty this list
+    this.camionsNoGPS=[];// to empty this list
+    this.camionsGPSAndNoGPS=[];// to empty this list
+    this.remorques=[];// to empty this list
+    this.camionsOutService=[];
+
+    this._camionsSurMap=[];// to empty this list
+    this._camionsNoGPS=[];// to empty this list
+    this._camionsGPSAndNoGPS=[];// to empty this list
+    this._remorques=[];// to empty this list
+    this._camionsOutService=[];
+    this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+      this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+      data.forEach(camion=>{
+        if(camion.outService){ // find all unites outService te,porary
+          this.camionsOutService.push(camion)
+
+          this._camionsOutService.push(camion)
+        }
+        else{ // the rest is all unite in service normally
+          if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+            camion.monitor.length!=0))// && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+          {
+            if(!camion.uniteMonitor.includes('no-gps'))
+            {
+              this.camionsSurMap.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsSurMap.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+            else 
+              // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+              // camion.monitor.length!=0) && (camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+            {
+              this.camionsNoGPS.push(camion)
+              this.camionsGPSAndNoGPS.push(camion)
+
+              this._camionsNoGPS.push(camion)
+              this._camionsGPSAndNoGPS.push(camion)
+            }
+          }
+          else 
+            if(camion.status) 
+              {
+                this.remorques.push(camion)  // Camions in service without GPS are trailers
+
+                this._remorques.push(camion)
+              }
+
+        }
+      })
+      // add here your code 
+      this.idTemp=null;
     this.camionBeforeChange=this.camion; // to keep the origin camion before change some thing
     if(this.camion.idCarrier!=null&&this.camion.idCarrier>0) 
     {
       this.idCarrierBeforeChange=this.camion.idCarrier
-      //this.idTemp=this.camion.id; //the idCarrier of trailer
+    
     }
-    console.log('this.camion.idCarrier (dans onchangecamioncapacity()): '+this.camion.idCarrier)
-    // if(this.camion.idCarrier!=undefined){
-      this.camionCarrier=this.camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
+    
+      this.camionCarrier=this._camionsSurMap.find(x=>(x.id==this.camion.idCarrier))
       if(this.camionCarrier==null){
-        this.camionCarrier=this.camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
+        this.camionCarrier=this._camionsNoGPS.find(x=>(x.id==this.camion.idCarrier))
       }
       if(this.camionCarrier==undefined){
-        this.camionCarrier=this.remorques.find(x=>(x.id==this.camion.idCarrier))
+        this.camionCarrier=this._remorques.find(x=>(x.id==this.camion.idCarrier))
       }
-    //console.log('this.camionCarrier.id (dans onchangecamioncapacity()): '+this.camionCarrier.id)
+      if(this.camionCarrier==undefined){
+        this.camionCarrier=this._camionsOutService.find(x=>(x.id==this.camion.idCarrier))
+      }
+      this.detailCamion=true // reconfirm to show the detail camion
+      this.detailCamionWindown=true;
+      // end here eyour code
+    }, err=>{
+      console.log();
+    })
+    //*/
   }
 
   onChangeImage(){
@@ -1489,14 +1794,14 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   
   async closecamion(){
     if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     if(this.idTemp!=null&&this.idTemp>0){
-      this.remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
       this.idTemp=null;
     }
     if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this.remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     this.camionBeforeChange=null;
     this.camionCarrier=null;
@@ -1504,8 +1809,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     //this.idTemp=null;
     this.idCarrierBeforeChange=null;
     this.camion=null;
-    await this.onRefresh();
+    // await this.onRefresh();
     this.detailCamion=false;
+    this.onRefresh();
   }
 
   print(cmpId){
