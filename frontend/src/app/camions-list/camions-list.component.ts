@@ -45,6 +45,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
   itiner:Itineraire=new Itineraire();
   itiners:Array<Itineraire>=[];
+  itinersFinis:Array<Itineraire>=[];
+  itinersCancels:Array<Itineraire>=[];
   rep:Repere=new Repere();
   reps:Array<Repere>=[];
 
@@ -113,7 +115,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
      
       // get list itineraires
       await this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-        if(data!=null) this.itiners=data
+        if(data!=null) {
+          this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
+          this.itinersFinis=data.filter(x=>x.fini==true)
+          this.itinersCancels=data.filter(x=>x.cancelled==true)          
+        }
       },err=>{console.log(err)})
       
       //get list reperes
@@ -282,7 +288,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             if(!this.detailCamion){// We refresh just in mode show map
               //get list itineraires
               this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-                if(data!=null) this.itiners=data
+                if(data!=null) {
+                  this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
+                  this.itinersFinis=data.filter(x=>x.fini==true)
+                  this.itinersCancels=data.filter(x=>x.cancelled==true)          
+                }
                 //get list reperes
                 this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
                   if(data!=null) this.reps=data
@@ -602,7 +612,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.itiners.splice(this.itiners.indexOf(it),1)
     this.makeCIsLList()
   }
-  onAjouter(){
+  onAjouter(){ // add fItineraire
     // console.log('this.itiner.dPick: '+this.itiner.dPick)
     // console.log('this.itiner.mPick: '+this.itiner.mPick)
     // console.log('this.itiner.yPick: '+this.itiner.yPick)
@@ -611,13 +621,28 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // console.log('this.itiner.yDrop: '+this.itiner.yDrop)
     // console.log('this.itiner.datePick.toString(): '+this.itiner.datePick.toString())
     // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
-    this.itiner.idTransporter=this.transporter.id;
-    this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
-      //this.itiner=data
-      this.itiners.push(data) // put this itinaire to the list of transporter
-      this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
-      this.onClearMap();
-    }, err=>{console.log(err)})
+    if(this.itiner.id==null||this.itiner.id==0){ // add new itineraire
+      this.itiner.idTransporter=this.transporter.id;
+      this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
+        //this.itiner=data
+        this.itiners.push(data) // put this itinaire to the list of transporter
+        //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+        this.makeCIsLList() // make CamionItinerairesList replace for the line above
+        this.onClearMap();
+      }, err=>{console.log(err)})
+    }
+    else{ // modify one itineraire
+      this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
+        this.itiners.forEach(x=>{
+          if(x.id==data.id) x=data
+        })
+        // this.itiners.push(data) // put this itinaire to the list of transporter
+        //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+        this.makeCIsLList() // make CamionItinerairesList replace for the line above
+        this.onClearMap();
+      }, err=>{console.log(err)})
+    }
+    
     //this.itiners.push(it)
     // this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
     // this.itiner=new Itineraire()
@@ -667,26 +692,45 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.infoWindow.open(this.map);//*/
   }
 
-  
+  // name of point repere
+  nameChange(){
+    if(this.latLngAddress!=null){
+      let label = this.markerAdsress.getLabel(); // google.maps.ReadonlyMarkerLabel
+      label.color='orange'
+      label.text=(this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : this.rep.address
+      this.markerAdsress.setLabel(label)
+      this.markerAdsress.setTitle(this.rep.nom)
+    }
+  }
   // adresse de point de repere
   latLngAddress:google.maps.LatLng =null;
   async addressChange(){
-    this.latLngAddress=null
-    await this.geocoding.codeAddress(this.rep.address).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-        if(results[0].geometry.location.lat()>0){
-          this.latLngAddress= new google.maps.LatLng(
-            this.rep.originLat= results[0].geometry.location.lat(),
-            this.rep.originLong= results[0].geometry.location.lng()                            
-          )
-        }
-        else
-          {
-            alert("Ne pas pouvoir localiser de cette adresse.")
+    if(this.rep.address!=null&&this.rep.address.length>2){
+      this.latLngAddress=null
+      await this.geocoding.codeAddress(this.rep.address).forEach(
+        (results: google.maps.GeocoderResult[]) => {
+          if(results[0].geometry.location.lat()>0){
+            this.latLngAddress= new google.maps.LatLng(
+              this.rep.originLat= results[0].geometry.location.lat(),
+              this.rep.originLong= results[0].geometry.location.lng()                            
+            )
           }
-    }).then(()=>{
+          else
+            {
+              alert("Ne pas pouvoir localiser de cette adresse.")
+            }
+      }).then(()=>{
+        this.drawAddress();
+      });
+    }
+    else{
+      this.latLngAddress=null;
       this.drawAddress();
-    });
+      this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+        this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+        //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
+      })
+    }
   }
   radiusChange(){
     this.drawAddress();
@@ -723,8 +767,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           strokeWeight: 2,
           strokeColor: "#008088", //"#FFFFFF",//"red",
         },
-        title: ((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : ''),
-        label: {text:((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : ''), color:"orange"},
+        title: ((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : this.rep.address),
+        label: {text:((this.rep.nom!=null && this.rep.nom.length>0) ? this.rep.nom : this.rep.address), color:"orange"},
       });
       //marker.setMap(this.map)
       this.map.setCenter(new google.maps.LatLng(this.latLngAddress.lat(), this.latLngAddress.lng()));
@@ -810,6 +854,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   onClearMap(){
     //this.itineraire=false; // to hide all fields itineraire
     this.itiner = new Itineraire();
+    this.rep = new Repere();
     this.today=this.todaySuite=new Date();
     // this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     // this.itiner.dateDrop.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -838,7 +883,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
     //get list itineraires
     this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-      if(data!=null) this.itiners=data
+      if(data!=null) {
+        this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
+        this.itinersFinis=data.filter(x=>x.fini==true)
+        this.itinersCancels=data.filter(x=>x.cancelled==true)          
+      }
     },err=>{console.log(err)})
     //get list reperes
     this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
@@ -1096,12 +1145,42 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.drawAddress();
   }
   onModify(it:Itineraire){
-    //this.itiner=it;
+    if(this.itineraire==true){
+      this.itiner=it;
+      this.originFound = this.destFound = true;
+      this.filterCamion();
+      this.gotoAnchorID('truck'); // goto the table of detail Itineraire
+    }
     this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
     this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
     this.drawOrigin();
     this.drawDest();
   }
+
+  itinerFini(it: Itineraire){
+    it.fini=true;
+    this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
+      this.itinersFinis.push(data)
+      this.itiners.splice(this.itiners.indexOf(data))
+    },err=>{console.log(err)})
+  }
+
+  itinerCancel(it: Itineraire){
+    it.cancelled=true;
+    this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
+      this.itinersCancels.push(data)
+      this.itiners.splice(this.itiners.indexOf(data))
+    },err=>{console.log(err)})
+  }
+
+  itinerResumes(it: Itineraire){
+    it.cancelled=false;
+    this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
+      this.itiners.push(data)
+      this.itinersCancels.splice(this.itiners.indexOf(data))
+    },err=>{console.log(err)})
+  }
+
   onSelectCamion(c:Camion){
     this.itiner.idCamion=c.id
     this.itiner.camionAttribue= (c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite + ' - ' + c.marque +'  ' +c.modele)//(c.unite + ' - ' + c.marque +'  ' +c.modele);
