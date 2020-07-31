@@ -46,6 +46,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   itiner:Itineraire=new Itineraire();
   itiners:Array<Itineraire>=[];
   itinersFinis:Array<Itineraire>=[];
+  itinersArchives:Array<Itineraire>=[];
   itinersCancels:Array<Itineraire>=[];
   rep:Repere=new Repere();
   reps:Array<Repere>=[];
@@ -113,12 +114,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
      
-      // get list itineraires
+      // get list itineraires and then sort ithem
       await this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
         if(data!=null) {
-          this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
-          this.itinersFinis=data.filter(x=>x.fini==true)
-          this.itinersCancels=data.filter(x=>x.cancelled==true)          
+          this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+            (a,b)=>(a.id-b.id)).sort(
+              (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+          this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
+            (b,a)=>(a.id-b.id)).sort(
+              (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+          this.itinersArchives=data.filter(x=>(x.fini==true&&x.archive==true)).sort(
+            (b,a)=>(a.id-b.id)).sort(
+              (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+          this.itinersCancels=data.filter(x=>x.cancelled==true).sort(
+            (b,a)=>(a.id-b.id))          
         }
       },err=>{console.log(err)})
       
@@ -286,12 +295,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           const intervalIsCs = interval(20000);  // we refresh the Camions/Itineraires each 20 seconde - 20000ms
           this.subscription=intervalIsCs.subscribe(val=>{
             if(!this.detailCamion){// We refresh just in mode show map
-              //get list itineraires
+              //get list itineraires and then sort ithem
               this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
                 if(data!=null) {
-                  this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
-                  this.itinersFinis=data.filter(x=>x.fini==true)
-                  this.itinersCancels=data.filter(x=>x.cancelled==true)          
+                  this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+                    (a,b)=>(a.id-b.id)).sort(
+                      (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+                  this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
+                    (b,a)=>(a.id-b.id)).sort(
+                      (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+                  this.itinersArchives=data.filter(x=>(x.fini==true&&x.archive==true)).sort(
+                    (b,a)=>(a.id-b.id)).sort(
+                      (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+                  this.itinersCancels=data.filter(x=>x.cancelled==true).sort(
+                    (b,a)=>(a.id-b.id))          
                 }
                 //get list reperes
                 this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
@@ -881,12 +898,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
     })
 
-    //get list itineraires
+    //get list itineraires and then sort ithem
     this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
       if(data!=null) {
-        this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false))
-        this.itinersFinis=data.filter(x=>x.fini==true)
-        this.itinersCancels=data.filter(x=>x.cancelled==true)          
+        this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+          (a,b)=>(a.id-b.id)).sort(
+            (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+        this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
+          (b,a)=>(a.id-b.id)).sort(
+            (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+        this.itinersArchives=data.filter(x=>(x.fini==true&&x.archive==true)).sort(
+          (b,a)=>(a.id-b.id)).sort(
+            (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
+        this.itinersCancels=data.filter(x=>x.cancelled==true).sort(
+          (b,a)=>(a.id-b.id))          
       }
     },err=>{console.log(err)})
     //get list reperes
@@ -1160,24 +1185,32 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   itinerFini(it: Itineraire){
     it.fini=true;
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
-      this.itinersFinis.push(data)
-      this.itiners.splice(this.itiners.indexOf(data))
+      this.itinersFinis.push(it)
+      this.itiners.splice(this.itiners.indexOf(it))
+    },err=>{console.log(err)})
+  }
+
+  itinerArchive(it: Itineraire){
+    it.archive=true;
+    this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
+      this.itinersArchives.push(it)
+      this.itinersFinis.splice(this.itinersFinis.indexOf(it))
     },err=>{console.log(err)})
   }
 
   itinerCancel(it: Itineraire){
     it.cancelled=true;
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
-      this.itinersCancels.push(data)
-      this.itiners.splice(this.itiners.indexOf(data))
+      this.itinersCancels.push(it)
+      this.itiners.splice(this.itiners.indexOf(it))
     },err=>{console.log(err)})
   }
 
   itinerResumes(it: Itineraire){
     it.cancelled=false;
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
-      this.itiners.push(data)
-      this.itinersCancels.splice(this.itiners.indexOf(data))
+      this.itiners.push(it)
+      this.itinersCancels.splice(this.itiners.indexOf(it))
     },err=>{console.log(err)})
   }
 
@@ -1187,7 +1220,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     let trailer=this.remorques.find(x=>(x.id==c.idCarrier))
     if(trailer!=null){
       this.itiner.dispoReste = trailer.longueur+trailer.longueurTop-this.itiner.longueur
+      // console.log("this.itiner.dispoReste by trailer: " + this.itiner.dispoReste + " ft")
     }
+    else{
+      this.itiner.dispoReste = c.longueur+c.longueurTop-this.itiner.longueur
+      // console.log("this.itiner.dispoReste by camion self: " + this.itiner.dispoReste + " ft")
+    }
+    if(this.itiner.dispoReste<0){this.itiner.dispoReste=null;}
     // this.gotoTop();
     this.gotoAnchorID('truck');
     // this.infoWindow.close();
@@ -1201,7 +1240,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.infoWindow.open(this.map);//*/
   }
 
-  
+  calculeDispoReste(){
+    if(this.itiner.idCamion>0){
+      let camion=this.camions.find(x=>(x.id==this.itiner.idCamion))
+      let trailer=this.remorques.find(x=>(x.id==camion.idCarrier))
+      if(trailer!=null){
+        this.itiner.dispoReste = trailer.longueur+trailer.longueurTop-this.itiner.longueur
+      }
+      else{
+        this.itiner.dispoReste = camion.longueur+camion.longueurTop-this.itiner.longueur
+      }
+      if(this.itiner.dispoReste<0){this.itiner.dispoReste=null;}
+    }
+  }
+
   cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
   makeCIsLList(){
     this.cIsLList=new Array<CamionItinersList>();
@@ -1378,8 +1430,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           this.camionsFreeClose=[];
           this.camionsFreeFar=[];
           
-          console.log('itinersTemp.length begining: '+this.itinersTemp.length)
-          console.log('this.itiners.length begining: '+this.itiners.length)
+          // console.log('itinersTemp.length begining: '+this.itinersTemp.length)
+          // console.log('this.itiners.length begining: '+this.itiners.length)
           
           this.itinersTemp.forEach(iti=>{
             // console.log('this.itiner.datePick.getTime(): '+new Date(this.itiner.datePick).getTime())
@@ -1391,15 +1443,15 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             ){
               if(!this.idCamionsFiltre.includes(iti.idCamion))
                 {
-                  console.log('iti.idCamion - match: '+iti.idCamion)
+                  // console.log('iti.idCamion - match: '+iti.idCamion)
                   this.idCamionsFiltre.push(iti.idCamion) // to find truck match
                   //itinersTemp=
                   this.itinersTemp.splice(this.itinersTemp.indexOf(iti),1)
                 }
             }
           })
-          console.log('itinersTemp.length after match: '+this.itinersTemp.length)
-          console.log('this.itiners.length after match: '+this.itiners.length)
+          // console.log('itinersTemp.length after match: '+this.itinersTemp.length)
+          // console.log('this.itiners.length after match: '+this.itiners.length)
           this.itinersTemp.forEach(iti=>{
             if(
               (this.calculateDistance(iti.destLat, iti.destLong, this.itiner.originLat, this.itiner.originLong)>radius &&
@@ -1414,15 +1466,15 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             ){
               if(!this.idCamionsItinersFar.includes(iti.idCamion))
                   {
-                    console.log('iti.idCamion - busy: '+iti.idCamion)
+                    // console.log('iti.idCamion - busy: '+iti.idCamion)
                     this.idCamionsItinersFar.push(iti.idCamion)  // to find truck busy
                     //itinersTemp=
                     this.itinersTemp.splice(this.itinersTemp.indexOf(iti), 1)
                   }
             }
           })
-          console.log('itinersTemp.length after busy: '+this.itinersTemp.length)
-          console.log('this.itiners.length after busy: '+this.itiners.length)
+          // console.log('itinersTemp.length after busy: '+this.itinersTemp.length)
+          // console.log('this.itiners.length after busy: '+this.itiners.length)
           /*//
           await itinersTemp.forEach(iti=>{  
             if(
