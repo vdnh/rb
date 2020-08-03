@@ -1,20 +1,24 @@
 <div>
-    <button (click)="camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
+    <button (click)="modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
 <!--  -->
-    <button (click)="itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+    <button (click)="modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
     </button>
-    <button (click)="itineraire=false; camionsList=false; repere=true; detailCamion=false" class="btn btn-link">        
+    <button (click)="modeConfirm=false;itineraire=false; camionsList=false; repere=true; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!repere">Points de repere</span>
         <strong *ngIf="repere">Points de repere</strong>
     </button>
     <!-- <button (click)="print('toprint')" class="btn btn-link">Print</button>  -->
 <!-- -->
-    <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button>
+    <!-- <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button> -->
+    <button (click)="modeConfirm=true;itineraire=false; camionsList=false; repere=false; detailCamion=false" class="btn btn-link"><a href="#CONFIRM">
+        <span *ngIf="!modeConfirm">ConfirmationTransporteur</span>
+        <strong *ngIf="modeConfirm">ConfirmationTransporteur</strong>
+    </a></button>
 <!-- -->
     <!-- <button class="btn btn-link" (click)="onClearMap()">Reset</button> -->
 </div>
@@ -24,6 +28,7 @@
 </div> -->
 <!-- <div class="row" *ngIf="carte==1 && camionsList"> -->
 <div class="row">
+    <app-transporter-confirm id="CONFIRM" *ngIf="modeConfirm==true">Loading ...</app-transporter-confirm>
     <div *ngIf="repere" id="toprint" class="col-md-7 col-lg-7">
         <table border="1">
             <tr>
@@ -285,6 +290,107 @@
                     </button>
                 </td>
             </tr>
+        </table>
+        <table border="1">
+            <tr><br></tr>
+            <tr>
+                <th colspan="2">
+                    <strong *ngIf="!addUnite"><button class="btn btn-link" (click)="addCamionButtion()"><h5>Ajouter Unite</h5></button></strong>
+                    <strong *ngIf="addUnite"><button class="btn btn-link" (click)="addCamionButtion()"><h5>Annuler / Ne pas ajouter</h5></button></strong>
+                </th>
+            </tr>     
+            <ng-container *ngIf="addUnite">
+                <tr>
+                    <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th>
+                </tr>    
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.unite" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.plaque" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.modele" /></td>                    
+                </tr>    
+                <tr>
+                    <th colspan="2">N.I.V</th>
+                    <th>UniteMonitor</th>
+                    <th>Monitor</th>
+                </tr>
+                <tr>
+                    <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.uniteMonitor" [disabled]="!addcamion.gps"/></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addcamion.monitor" [disabled]="!addcamion.gps"/></td>
+                </tr>
+                <tr>
+                    <th>Longueur deck haut</th>
+                    <th>Longueur deck bas</th>
+                    <th>Hauteur Plateforme</th>
+                    <th>Capacite de charge</th>
+                </tr>
+                <tr>
+                    <th><input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueurTop">&nbsp;ft</th>
+                    <th><input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueur">&nbsp;ft</th>
+                    <th><input type="number" style="width: 8ch;" [(ngModel)]="addcamion.hauteur">&nbsp;po</th>
+                    <th><input type="number" style="width: 10ch;" [(ngModel)]="addcamion.poids">&nbsp;lbs</th>
+                </tr>
+                <tr>
+                    <th colspan="3">
+                        <p>
+                            Rampe&nbsp;<input type="checkbox" [(ngModel)]="addcamion.rampe" />&nbsp;&nbsp;&nbsp;
+                        
+                            Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="addcamion.loadLeveler" />&nbsp;&nbsp;&nbsp;
+                            
+                            Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="addcamion.backTilt" />
+                        </p>
+                        <p>
+                            GPS&nbsp;<input type="checkbox" [(ngModel)]="addcamion.gps" />&nbsp;&nbsp;&nbsp;
+                            Trailer&nbsp;<input type="checkbox" [(ngModel)]="addcamion.trailer" />&nbsp;&nbsp;&nbsp;                        
+                            Broker&nbsp;<input type="checkbox" [(ngModel)]="addcamion.broker" />&nbsp;&nbsp;&nbsp;                        
+                        </p>
+                    </th>
+                    <td><button class="btn btn-link" (click)="addCamion()">Ajouter</button></td>
+                </tr>
+                <!-- <tr>
+                    <th colspan="4"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueurTop">&nbsp;ft</p> </th>
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueur">&nbsp;ft</p> </th>
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.hauteur">&nbsp;po</p> </th>
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="addcamion.poids">&nbsp;lbs</p> </th>
+                </tr>
+                <tr>
+                    <th colspan="4">
+                        <p>
+                            Rampe&nbsp;<input type="checkbox" [(ngModel)]="addcamion.rampe" />&nbsp;&nbsp;&nbsp;
+                        
+                            Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="addcamion.loadLeveler" />&nbsp;&nbsp;&nbsp;
+                            
+                            Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="addcamion.backTilt" />
+                        </p>
+                        <p>
+                            Trailer&nbsp;<input type="checkbox" [(ngModel)]="addcamion.trailer" />&nbsp;&nbsp;&nbsp;                        
+                            Unite de Broker&nbsp;<input type="checkbox" [(ngModel)]="addcamion.broker" />&nbsp;&nbsp;&nbsp;                        
+                        </p>
+                    </th>
+                </tr> -->
+                <tr>
+                    <td colspan="4" *ngIf="addcamion.imgUrl!=null && addcamion.imgUrl.length>0" style="border: 2px dotted gray">
+                        <img [src]="addcamion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2" *ngIf="addcamion.imgUrl!=null && addcamion.imgUrl.length>0">
+                        <button (click)="addcamion.imgUrl=''">Changer Image</button>
+                    </th>
+                    <th colspan="2" *ngIf="addcamion.imgUrl==null || addcamion.imgUrl.length==0">
+                        <label for="imgaddcamion">Prendre Image &nbsp;&nbsp;</label>
+                        <input name="imgaddcamion" type="file" title="Joindre camion image " (change)="onFileUpLoadNewUnite($event)" accept="image/x-png,image/gif,image/jpeg">
+                    </th>    
+                </tr>
+                <tr><p></p></tr>
+            </ng-container>
         </table>
     </div>
     <div *ngIf="itineraire" id="toprint" class="col-md-7 col-lg-7">
@@ -701,7 +807,7 @@
         </table>
     </div>
 
-    <div [hidden]="detailCamion" class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
+    <div [hidden]="detailCamion || modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
         <h5 style="margin-top: 0px;">
             <span>(Actualiser automatiquement toutes les 2 minutes) </span>
             <span><button class="btn btn-link" (click)="onClearMap()"> Reset</button></span>
@@ -716,7 +822,7 @@
         <div #gmap style="width:100%;height:650px" ></div>
     </div>
 
-    <div id="dtc" *ngIf="detailCamion && detailCamionWindown" class="col-md-5 col-lg-5" style="margin-top: 0px;">
+    <div id="dtc" *ngIf="detailCamion && detailCamionWindown && !modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;">
         <div>
             <select type="text" [(ngModel)]="camion" (ngModelChange)="onChangeCamionCapacity()">
                 <!--  (ngModelChange)="onChangeCamionCapacity()" -->
@@ -778,23 +884,23 @@
                 <tr><p></p></tr>
                 <tr>
                     <th colspan="4"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueurTop">&nbsp;ft</p> </th>
-                    <!-- <td><input type="number"></td> -->
                 </tr>
                 <tr>
                     <th colspan="4"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="camion.longueur">&nbsp;ft</p> </th>
-                    <!-- <td><input type="number"></td> -->
                 </tr>
                 <tr>
                     <th colspan="4"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="camion.hauteur">&nbsp;po</p> </th>
-                    <!-- <td><input type="number"></td> -->
                 </tr>
                 <tr>
                     <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="camion.poids">&nbsp;lbs</p> </th>
-                    <!-- <td><input type="number"></td> -->
                 </tr>
                 <tr>
-                    <!-- <th>Rampe</th>
-                    <td><input type="text"></td> -->
+                    <th colspan="4"><p>UniteMonitor <input type="text" style="width: 15ch;" [(ngModel)]="camion.uniteMonitor" [disabled]="!camion.gps"></p> </th>
+                </tr>
+                <tr>
+                    <th colspan="4"><p>Monitor <input type="text" style="width: 15ch;" [(ngModel)]="camion.monitor" [disabled]="!camion.gps"></p> </th>
+                </tr>
+                <tr>
                     <th colspan="4">
                         <p>
                             Rampe&nbsp;<input type="checkbox" [(ngModel)]="camion.rampe" />&nbsp;&nbsp;&nbsp;
@@ -804,8 +910,10 @@
                             Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="camion.backTilt" />
                         </p>
                         <p>
-                            Hors Service&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" (change)="onSetOutService()" />&nbsp;&nbsp;&nbsp;
-                            Unite de Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />&nbsp;&nbsp;&nbsp;                        
+                            HorsService&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" (change)="onSetOutService()" />&nbsp;&nbsp;
+                            GPS&nbsp;<input type="checkbox" [(ngModel)]="camion.gps" />&nbsp;&nbsp;
+                            Trailer&nbsp;<input type="checkbox" [(ngModel)]="camion.trailer" />&nbsp;&nbsp;
+                            Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />&nbsp;&nbsp;
                         </p>
                         
                         

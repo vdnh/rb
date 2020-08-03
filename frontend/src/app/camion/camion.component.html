@@ -103,7 +103,7 @@
             <tr>
               <td><input class="form-control" type="date" [(ngModel)]="camion.inspect6m" /></td>
             </tr>  
-            <tr><th colspan="8">Volume Disponible (en pieds et lbs) </th></tr>
+            <!-- <tr><th colspan="8">Volume Disponible (en pieds et lbs) </th></tr>
             <tr>
               <th>Longueur</th><th>Largeur</th><th>Hauteur</th><th>Poids</th>
             </tr>
@@ -112,7 +112,19 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.largeur" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.hauteur" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.poids" /></td>
-            </tr>
+            </tr> -->
+            <tr><th colspan="8">Status </th></tr>
+            <tr>              
+              <td style="width: 10%;">
+                En Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
+              </td>
+              <td>
+                Trailer&nbsp;<input type="checkbox" [(ngModel)]="camion.trailer" />
+              </td>
+              <td>
+                Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />
+              </td>
+            </tr>   
             <tr>
               <th>
                 Photo
@@ -127,30 +139,6 @@
                 </a>
               </td>
             </tr>
-
-            <tr><th colspan="8">Status </th></tr>
-            <!-- <tr>
-              <th>En Exploitant</th><th>Latitude</th><th>Longitude</th>
-            </tr> -->
-            <tr>              
-              <td style="width: 10%;">
-                <!-- <label for="">En Exploitant</label> -->
-                En Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
-              </td>
-              <td>
-                Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />
-              </td>
-              <!-- <td style="width: 10%;">
-                <label for="">Latitude</label>
-                <input class="form-control" type="number" [(ngModel)]="camion.latitude" />
-              </td>
-              <td style="width: 10%;">
-                <label for="">Longitude</label>
-                <input class="form-control" type="number" [(ngModel)]="camion.longtitude" />
-              </td> -->
-              <!-- <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
-              <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td> -->
-            </tr>   
         </table>
         <!-- <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">     -->
         <table border="1" *ngIf="modeFiche==1">      

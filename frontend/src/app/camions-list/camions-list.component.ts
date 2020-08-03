@@ -28,6 +28,8 @@ import { Repere } from 'src/model/model.repere';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { ReperesService } from 'src/services/reperes.service';
 import { ViewportScroller } from '@angular/common';
+import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
+import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 
 
 @Component({
@@ -42,6 +44,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   itineraire:boolean=false;
   camionsList:boolean=true; // par default, on voit la liste de camions
   repere:boolean=false;
+  modeConfirm=false;
 
   itiner:Itineraire=new Itineraire();
   itiners:Array<Itineraire>=[];
@@ -60,6 +63,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   camionCarrier:Camion; //=new Camion(); // camion which carry the trailer - just for trailer
   camion:Camion; //=new Camion(); // camion to modify detail 
   camionMap:Camion=new Camion();
+  addcamion:Camion=new Camion(); // to add a new camion
+  addUnite=false; // to hide/show tab add unite
+  fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
+  fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
   camionsSurMap:Camion[]//Array<Camion>=[]; //new Array<Camion>();
   camionsNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps
   camionsGPSAndNoGPS:Camion[]//Array<Camion>;  // list of camions no-gps and gps
@@ -96,7 +103,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
-    private viewportScroller: ViewportScroller){    
+    private viewportScroller: ViewportScroller,){    
     //this.id=activatedRoute.snapshot.params['id'];
     //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
@@ -214,6 +221,26 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          
+          // begin right click
+          this.map.addListener('rightclick', (event)=>{
+            var contentString:string=''
+            this.camionsSurMap.forEach(camion=>{
+              contentString = contentString + 
+              ' <div><p> <button class="btn btn-link" (click)="onClickCamionId('+camion.id+')" placeholder="Camion Unite : '+camion.unite+'">'+ 
+                ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+
+                " </button><br>" +
+                '<table border="1">' +
+                this.prepareText(camion)+
+                '</table>'+'<br>'
+              ' </p></div>'
+            })
+            this.infoWindow.setContent(contentString);
+            this.infoWindow.setPosition(event.latLng);
+            this.infoWindow.open(this.map);//*/
+          })
+          //end right click
+
           this.map.addListener('click', (event)=>{
             if(this.repere){
               this.latLngAddress= new google.maps.LatLng(
@@ -1210,7 +1237,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     it.cancelled=false;
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itiners.push(it)
-      this.itinersCancels.splice(this.itiners.indexOf(it))
+      this.itinersCancels.splice(this.itinersCancels.indexOf(it))
     },err=>{console.log(err)})
   }
 
@@ -1550,6 +1577,16 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       reader.readAsDataURL(selectedFile)
     }
     else this.camion.imgUrl='';
+  }
+
+  onFileUpLoadNewUnite(event){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.addcamion.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.addcamion.imgUrl='';
   }
 
   public gotoAnchorID(elementId: string): void { 
@@ -1943,6 +1980,42 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // await this.onRefresh();
     this.detailCamion=false;
     this.onRefresh();
+  }
+
+  addCamionButtion(){
+    this.addcamion=new Camion();
+    this.addUnite=!this.addUnite;
+  }
+
+  addCamion(){
+    if(this.addcamion.unite!=null && this.addcamion.unite.length>0){
+      this.addcamion.idTransporter=this.transporter.id;
+      this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+        this.addcamion=new Camion();
+        this.fichePhysiqueEntretien.idCamion=data.id;
+        this.fichePhysiqueEntretienCont.idCamion=data.id;
+        this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
+          // console.log('fiche1 ok ' +  data.idCamion)
+          this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+            // console.log('fiche2 ok ' +  data.idCamion) 
+            alert("Unite a ete bien ajoute.")
+            // this.addcamion=new Camion();
+            this.addUnite=false
+            this.onRefresh()
+          }, err=>{
+            console.log(err)
+          });
+        }, err=>{
+          console.log(err)
+        });
+      }, err=>{
+        console.log(err)
+      })//*/
+    }
+    else{
+      alert('Vous devez remplir des infos de cette unite.')
+    }
+    
   }
 
   print(cmpId){

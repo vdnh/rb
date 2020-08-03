@@ -116,6 +116,8 @@ public class Camion implements Serializable{
     private Long idCarrier; // id of truck carrying - just for trailer who need a carrier
     private boolean broker=false; // Truck of broker, false by default
     private boolean outService=false; // out of service for some reason, , false by default
+    private boolean trailer=false; // Truck or trailer
+    private boolean gps=false; // gps or no, by default is no
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

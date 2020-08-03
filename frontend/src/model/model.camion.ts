@@ -1,8 +1,8 @@
 export class Camion{
     id:number=0;
     unite:string="";
-    uniteMonitor:string="";
-    monitor:string="";
+    uniteMonitor:string="no-gps";
+    monitor:string="avltrack";
     plaque:string="";
     marque:string=""; // camionfermee, flatbed, ...
     niv:string=""; // numero identificatrion vehicule (numero serie)
@@ -85,6 +85,8 @@ export class Camion{
     idCarrier:number; // id of truck carrying - just for trailer who need a carrier
 
     broker=false; // Truck of broker, false by default
-    outService=false; // out of service for some reason, , false by default
+    outService=false; // out of service for some reason, false by default
+    trailer=false; // Truck or trailer
+    gps=false; // gps or no, by default is no
 
 }
