@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Demande } from 'src/model/model.demande';
 import { Voyage } from 'src/model/model.voyage';
 import { VoyagesService } from 'src/services/voyages.service';
-import { LatLngLiteral } from '@agm/core';
+// import { LatLngLiteral } from '@agm/core';
 
 @Component({
   selector: 'app-list-demande-de-chaque',
@@ -235,4 +235,8 @@ export class ListDemandeDeChaqueComponent implements OnInit {
     })
   }//*/
 
+}
+export interface LatLngLiteral{
+  lat:number,
+  lng:number
 }

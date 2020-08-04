@@ -8,7 +8,7 @@ import { ContactsService } from 'src/services/contacts.service';
 import { AdressesService } from 'src/services/adresses.service';
 import { VoyagesService } from 'src/services/voyages.service';
 import { TransportersService } from 'src/services/transporters.service';
-import { LatLngLiteral } from '@agm/core';
+// import { LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { Demande } from 'src/model/model.demande';
@@ -1015,4 +1015,8 @@ interface marker {
 interface Center{
   lat:number;
   lng:number;
+}
+export interface LatLngLiteral{
+  lat:number,
+  lng:number
 }

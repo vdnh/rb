@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PageVoyage } from 'src/model/model.pageVoyage';
 import { VoyagesService } from 'src/services/voyages.service';
 import { Voyage } from 'src/model/model.voyage';
-import { LatLngLiteral } from '@agm/core';
+// import { LatLngLiteral } from '@agm/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { DemandesService } from 'src/services/demandes.service';
 import { Demande } from 'src/model/model.demande';
@@ -472,4 +472,8 @@ export class ListVoyageComponent implements OnInit {
   }
 
 
+}
+export interface LatLngLiteral{
+  lat:number,
+  lng:number
 }

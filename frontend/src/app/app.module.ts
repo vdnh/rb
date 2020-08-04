@@ -88,6 +88,7 @@ import { ConfirmTransportService } from 'src/services/confirmTransport.service';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -200,10 +201,11 @@ const appRoutes:Routes=[
     BrowserModule, 
     ReactiveFormsModule,
     SignaturePadModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
-      libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
-    }),
+    ContextMenuModule.forRoot(),
+    // AgmCoreModule.forRoot({
+    //   apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
+    //   libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
+    // }),
   ],
   providers: [DatePipe, AuthenticationService, ContactsService, ChauffeursService, TransportersService, 
     ShippersService, ShipperParticuliersService, AdressesService, CamionsService, FichePhysiquesService, FichePhysiqueContsService,

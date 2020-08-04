@@ -14,7 +14,7 @@ import { GeocodingService } from 'src/services/geocoding.service';
 import { } from 'googlemaps';
 import { Voyage } from 'src/model/model.voyage';
 import { VoyagesService } from 'src/services/voyages.service';
-import { LatLngLiteral } from '@agm/core';
+// import { LatLngLiteral } from '@agm/core';
 import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
 import * as myGlobals from 'src/services/globals'; //<==== to use variables from globals.ts
@@ -912,4 +912,8 @@ onContact(){
       behavior: 'smooth' 
     });
   }
+}
+export interface LatLngLiteral{
+  lat:number,
+  lng:number
 }

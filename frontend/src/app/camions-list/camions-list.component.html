@@ -1,23 +1,32 @@
-<div>
-    <p>
+<!-- <div> -->
+    <!-- <p>
         Right click on someone's name:
     </p>
     <ul>
         <li *ngFor="let item of items" [contextMenu]="basicMenu" [contextMenuSubject]="item">{{item?.name}}</li>
-    </ul>
+    </ul> -->
+    <!-- <ul>
+        <li [contextMenu]="basicMenu" contextMenuSubject="'TestOfHung'">Test Of Hung</li>
+    </ul> -->
+    
     <context-menu>
-        <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
-            <button>
+        <!-- <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
             Say hi!
-            </button>
         </ng-template>
         <ng-template contextMenuItem divider="true"></ng-template>
         <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
             Bye, {{item?.name}}
+        </ng-template> -->
+        <!-- <ng-template *ngFor="let it of items" contextMenuItem (execute)="showMessage('Hi, ...'+it.otherProperty)">
+            Liste - {{it.name}}
+        </ng-template> -->
+        <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem 
+                            (execute)="onClickCamionId(camion.id)">
+            {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}
         </ng-template>
 
     </context-menu>
-</div>
+<!-- </div> -->
 <div>
     <button (click)="modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
         <span *ngIf="!camionsList">Camions</span>
@@ -839,7 +848,7 @@
                 </option>
             </select>
         </div>      
-        <div #gmap style="width:100%;height:650px" ></div>
+        <div #gmap style="width:100%;height:650px" [contextMenu]="basicMenu"></div>
     </div>
 
     <div id="dtc" *ngIf="detailCamion && detailCamionWindown && !modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;">

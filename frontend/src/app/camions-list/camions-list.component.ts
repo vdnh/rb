@@ -105,7 +105,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     console.log(message);
   }
 
-  public items = [
+  items = [
     { name: 'John', otherProperty: 'Foo' },
     { name: 'Joe', otherProperty: 'Bar' }
   ];
@@ -234,25 +234,6 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-          
-          // begin right click
-          this.map.addListener('rightclick', (event)=>{
-            var contentString:string=''
-            this.camionsSurMap.forEach(camion=>{
-              contentString = contentString + 
-              ' <div><p> <button class="btn btn-link" (click)="onClickCamionId('+camion.id+')" placeholder="Camion Unite : '+camion.unite+'">'+ 
-                ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+
-                " </button><br>" +
-                '<table border="1">' +
-                this.prepareText(camion)+
-                '</table>'+'<br>'
-              ' </p></div>'
-            })
-            this.infoWindow.setContent(contentString);
-            this.infoWindow.setPosition(event.latLng);
-            this.infoWindow.open(this.map);//*/
-          })
-          //end right click
 
           this.map.addListener('click', (event)=>{
             if(this.repere){
