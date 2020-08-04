@@ -1,3 +1,4 @@
+import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
@@ -96,6 +97,18 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
   today=new Date();
   todaySuite = new Date();
+
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
+  showMessage(message: any) {
+    alert(message);
+    console.log(message);
+  }
+
+  public items = [
+    { name: 'John', otherProperty: 'Foo' },
+    { name: 'Joe', otherProperty: 'Bar' }
+  ];
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,

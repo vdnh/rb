@@ -1,4 +1,24 @@
 <div>
+    <p>
+        Right click on someone's name:
+    </p>
+    <ul>
+        <li *ngFor="let item of items" [contextMenu]="basicMenu" [contextMenuSubject]="item">{{item?.name}}</li>
+    </ul>
+    <context-menu>
+        <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
+            <button>
+            Say hi!
+            </button>
+        </ng-template>
+        <ng-template contextMenuItem divider="true"></ng-template>
+        <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
+            Bye, {{item?.name}}
+        </ng-template>
+
+    </context-menu>
+</div>
+<div>
     <button (click)="modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
