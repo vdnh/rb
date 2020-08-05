@@ -148,9 +148,9 @@
                     </button>
                     <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
                         {{findRemorque(c.idCarrier)}}
-                        <br><button class="btn btn-link" (click)="onClickCamion(trailerTemp)" *ngIf="trailerTemp!=null">
+                        <br><span *ngIf="trailerTemp!=null">
                             {{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}
-                        </button>
+                        </span>
                     </small>
                         
                     <!-- <span *ngIf="c.idCarrier!=null"><br>Trailer: c.trailer</span> -->
@@ -220,9 +220,9 @@
                     </button>
                     <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
                         {{findRemorque(c.idCarrier)}}
-                        <br><button class="btn btn-link" (click)="onClickCamion(trailerTemp)" *ngIf="trailerTemp!=null">
+                        <br><span *ngIf="trailerTemp!=null">
                             {{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}
-                        </button>
+                        </span>
                     </small>
                 </td>
                 <!-- <td style="width: 30%;">
@@ -265,13 +265,13 @@
                 <td style="width: 30%;">
                     &nbsp;<small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
                         {{findCamionWithGPS(c.idCarrier)}} {{findCamionNoGPS(c.idCarrier)}}
-                        <button *ngIf="camionWithGPSTemp!=null" (click)="onClickCamion(camionWithGPSTemp)" class="btn btn-link">
+                        <span *ngIf="camionWithGPSTemp!=null">
                             <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{camionWithGPSTemp.foreignName}}</strong>
                             <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{camionWithGPSTemp.unite + ' - ' + camionWithGPSTemp.marque +'  ' +camionWithGPSTemp.modele}}</strong>
-                        </button>
-                        <button *ngIf="camionNoGPSTemp!=null" (click)="onClickCamion(camionNoGPSTemp)" class="btn btn-link">
+                        </span>
+                        <span *ngIf="camionNoGPSTemp!=null">
                             <strong>{{camionNoGPSTemp.unite + ' - ' + camionNoGPSTemp.marque +'  ' +camionNoGPSTemp.modele}}</strong>
-                        </button>
+                        </span>
                     </small>
                 </td>
                 <!-- <td style="width: 30%;" *ngIf="c.idCarrier!=null&&c.idCarrier>0">{{findCamionWithGPS(c.idCarrier)}} 

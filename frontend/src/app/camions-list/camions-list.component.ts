@@ -190,7 +190,52 @@ export class CamionsListComponent implements OnInit, OnDestroy {
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
           data.forEach(camion=>{
-            if(camion.outService){ // find all unites outService te,porary
+            // this is find all trucks actuals
+            if(camion.status){ 
+              // find all unites outService temporary
+              if(camion.outService){ 
+                this.camionsOutService.push(camion)
+                this._camionsOutService.push(camion)
+              }
+              // the rest is all unite in service normally
+              else{ 
+                // find trailers / remorques
+                if(camion.trailer) 
+                {
+                  this.remorques.push(camion)
+
+                  this._remorques.push(camion)
+                }
+                // find all trucks
+                else{
+                  // find trucks with gps
+                  if(camion.gps)
+                  {
+                    this.camionsSurMap.push(camion)
+                    this.camionsGPSAndNoGPS.push(camion)
+
+                    this._camionsSurMap.push(camion)
+                    this._camionsGPSAndNoGPS.push(camion)
+                  }
+                  // find trucks without gps
+                  if(!camion.gps)
+                  {
+                    this.camionsNoGPS.push(camion)
+                    this.camionsGPSAndNoGPS.push(camion)
+
+                    this._camionsNoGPS.push(camion)
+                    this._camionsGPSAndNoGPS.push(camion)
+                  }
+                }                
+              }
+            }
+            else{
+              // this is the list for antecedent trucks
+              // perhelp for futur we us it
+            }
+
+            /*//begin the find trucks - old methode
+            if(camion.outService){ // find all unites outService temporary
               this.camionsOutService.push(camion)
 
               this._camionsOutService.push(camion)
@@ -227,6 +272,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   }
 
             }
+            //end the find trucks - old methode //*/
           })
           let mapProp = {
             center: new google.maps.LatLng(45.568806, -73.918333),
@@ -386,6 +432,50 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           // this.camion=null;
           this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
           data.forEach(camion=>{
+            // this is find all trucks actuals
+            if(camion.status){ 
+              // find all unites outService temporary
+              if(camion.outService){ 
+                this.camionsOutService.push(camion)
+                this._camionsOutService.push(camion)
+              }
+              // the rest is all unite in service normally
+              else{ 
+                // find trailers / remorques
+                if(camion.trailer) 
+                {
+                  this.remorques.push(camion)
+
+                  this._remorques.push(camion)
+                }
+                // find all trucks
+                else{
+                  // find trucks with gps
+                  if(camion.gps)
+                  {
+                    this.camionsSurMap.push(camion)
+                    this.camionsGPSAndNoGPS.push(camion)
+
+                    this._camionsSurMap.push(camion)
+                    this._camionsGPSAndNoGPS.push(camion)
+                  }
+                  // find trucks without gps
+                  if(!camion.gps)
+                  {
+                    this.camionsNoGPS.push(camion)
+                    this.camionsGPSAndNoGPS.push(camion)
+
+                    this._camionsNoGPS.push(camion)
+                    this._camionsGPSAndNoGPS.push(camion)
+                  }
+                }                
+              }
+            }
+            else{
+              // this is the list for antecedent trucks
+              // perhelp for futur we us it
+            }
+            /* begin find trucks - old method
             // this.camion= new Camion(); //null;  // keep the same camion for DetailCamion
             // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
             //   camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
@@ -430,6 +520,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             //   this.onChangeCamionCapacity()// run that to refresh the carrier / trailer then detailcamion will be true
             //   console.log('this.onChangeCamionCapacity() after refresh list camion')
             // }
+            // end find trucks - old method //*/
           })
           if(this.detailCamion){ // if we are in the detailCamion, refresh this function to show camion carrier/trailer
             // let tempCamion:Camion=this.camion;
@@ -1307,82 +1398,6 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     }
     return cIs
   }
-  getLocalisation(){
-    this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
-      let camionsSurMap:Array<Camion>=new Array<Camion>();
-      data.sort((a,b)=>Number(a.unite)-Number(b.unite));
-      data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
-        (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-          camionsSurMap.push(camion)
-      })
-      this.camionsSurMap=camionsSurMap;
-      //* demarsk the list of trucks
-      this.markers.forEach(marker=>{
-        marker.setMap(null);
-        marker=null;
-      })
-      this.markers = [];
-      //*/
-      this.camionsSurMap.forEach(camion=>{
-        if(camion.localName==null||camion.localName.length==0) this.belongingRepere(camion); //set repere si exist into localname
-        //console.log("camion.id : "+ camion.id)
-        if(camion.uniteMonitor!=null && camion.monitor!=null){
-          let location1 = new google.maps.LatLng(camion.latitude, camion.longtitude);          
-          let marker = new google.maps.Marker({
-            position: location1,
-            map: this.map,
-            icon: {
-              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-              //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
-              //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-              // green-dot.png yellow-dot.png blue-dot.png
-              scale:5,
-              rotation:camion.direction,
-              fillOpacity: 1,
-              fillColor: "#7FFF00", //"#FFFFFF"
-              strokeWeight: 2,
-              strokeColor: "#008000", //"#FFFFFF""red",
-            },
-            label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange",},
-            title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), //camion.unite,
-          });
-          this.infoWindow = new google.maps.InfoWindow;
-          marker.addListener('click', (event)=>{
-            //var contentString:string='Montreal, Quebec - Alma, Quebec. Disponible : 25"';//'unite : '+ camion.unite + '  -  Vitesse : ' + camion.speed;
-            //var contentString:string='<div><p> '+ 'Unite '+camion.unite+" <br>" +
-            var contentString:string='<div><p> '+ ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))+" <br>" +
-                  '<table border="1">' +
-                  // '<tr>'+
-                  //   '<td>Itineraire</td>'+
-                  //   '<td>PickDate</td>'+ 
-                  //   "<td>DropDate</td>"+
-                  //   '<td>Occup</td>'+
-                  //   '<td>Dispo </td>'+
-                  // '</tr>'+
-                  this.prepareText(camion)+
-                  '</table>'+'<br>'
-                  ' </p></div>'
-            // if(camion.stopDuration>0)
-            //   contentString='unite : '+ camion.unite + '  -  Arrete depuis : ' + this.showStopDuration(camion.stopDuration)//camion.stopDuration +' minutes.';
-            // Replace the info window's content and position.
-            this.infoWindow.setContent(contentString);
-            this.infoWindow.setPosition(event.latLng);
-            this.infoWindow.open(this.map);//*/
-          })
-          /*marker.setIcon({
-            url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
-            scale:0.1,
-            rotation:camion.direction,
-            fillColor:'red',
-          })//*/
-          this.markers.push(marker);
-        }  
-      })
-    }, err=>{
-      console.log();
-    })
-  }
   
   //this is to check whe we need compare between 2 functions calculate the distance
   calculateDistanceWithGoogle(point1:google.maps.LatLng, point2:google.maps.LatLng) { // must pass by Google Maps
@@ -1607,6 +1622,50 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
       this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
       data.forEach(camion=>{
+        // this is find all trucks actuals
+        if(camion.status){ 
+          // find all unites outService temporary
+          if(camion.outService){ 
+            this.camionsOutService.push(camion)
+            this._camionsOutService.push(camion)
+          }
+          // the rest is all unite in service normally
+          else{ 
+            // find trailers / remorques
+            if(camion.trailer) 
+            {
+              this.remorques.push(camion)
+
+              this._remorques.push(camion)
+            }
+            // find all trucks
+            else{
+              // find trucks with gps
+              if(camion.gps)
+              {
+                this.camionsSurMap.push(camion)
+                this.camionsGPSAndNoGPS.push(camion)
+
+                this._camionsSurMap.push(camion)
+                this._camionsGPSAndNoGPS.push(camion)
+              }
+              // find trucks without gps
+              if(!camion.gps)
+              {
+                this.camionsNoGPS.push(camion)
+                this.camionsGPSAndNoGPS.push(camion)
+
+                this._camionsNoGPS.push(camion)
+                this._camionsGPSAndNoGPS.push(camion)
+              }
+            }                
+          }
+        }
+        else{
+          // this is the list for antecedent trucks
+          // perhelp for futur we us it
+        }
+        /* begin find trucks - old method
         if(camion.outService){ // find all unites outService te,porary
           this.camionsOutService.push(camion)
 
@@ -1644,6 +1703,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
               }
 
         }
+        // end find trucks - old method //*/
       })
       //
       this.camionBeforeChange=c;  // to keep the origin camion before change some thing
@@ -1737,6 +1797,12 @@ export class CamionsListComponent implements OnInit, OnDestroy {
         },
         err=>{console.log(err)})
       }
+      else{
+        this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
+          alert("C'est enregistre.")
+          this.closecamion(); // close detailCamion after modifying somthing to refresh all
+        }, err=>{console.log(err)})
+      }
     }
     // In the case have no liason, just save change camion
     else{
@@ -1814,16 +1880,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       })
       // add here your code //*/
       // find the idcarrier of trailer and set it to null
-    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0&&
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange))!=undefined){
       this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     if(this.idTemp!=null&&this.idTemp>0){
       this._remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
       this.idTemp=null;
     }
-    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
-    }
+    // if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+    //   this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    // }
     if(this.camionCarrier!=null){
       if(this.camionCarrier.idCarrier==null || this.camionCarrier.idCarrier<=0)
       {
@@ -1955,16 +2022,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
   
   async closecamion(){
-    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0&&
+      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange))!=undefined){
       this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
     }
     if(this.idTemp!=null&&this.idTemp>0){
       this._remorques.find(x=>(x.id==this.idTemp)).idCarrier=null
       this.idTemp=null;
     }
-    if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
-      this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
-    }
+    // if(this.idCarrierBeforeChange!=null&&this.idCarrierBeforeChange>0){
+    //   this._remorques.find(x=>(x.id==this.idCarrierBeforeChange)).idCarrier=null
+    // }
     this.camionBeforeChange=null;
     this.camionCarrier=null;
     this.camion.idCarrier=null;
