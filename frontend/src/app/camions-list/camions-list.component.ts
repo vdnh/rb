@@ -1,3 +1,4 @@
+import {MatMenuTrigger} from '@angular/material';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
@@ -18,7 +19,7 @@ import { FichePhysiqueContsService } from 'src/services/fichePhysiqueConts.servi
 //import { AutreEntretien } from 'src/model/model.autreEntretien';
 import { AutreEntretiensService } from 'src/services/autreEntretiens.service';
 //import { AutreEntretienList } from 'src/model/model.autreEntretienList';
-import { Subscription, timer, interval } from 'rxjs';
+import { Subscription, timer, interval, from } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Itineraire } from 'src/model/model.itineraire';
@@ -98,6 +99,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   today=new Date();
   todaySuite = new Date();
 
+  @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
+
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
   showMessage(message: any) {
@@ -110,6 +113,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     { name: 'Joe', otherProperty: 'Bar' }
   ];
 
+  numbersArray:any;
+  
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
@@ -117,8 +122,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
     private viewportScroller: ViewportScroller,){    
-    //this.id=activatedRoute.snapshot.params['id'];
-    //this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
+    this.numbersArray=Array(100).map((x,i)=>i)
+    // this.numbersArray=Array(5).fill(4)
   }
   ngOnDestroy(): void {
     // throw new Error("Method not implemented.");

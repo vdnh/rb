@@ -1,3 +1,18 @@
+<mat-list>
+    <mat-list-item>
+        <span>test right click</span>
+    </mat-list-item>
+</mat-list>
+<div [matMenuTriggerFor]="contextMenu">
+
+</div>
+<mat-menu #contextMenu="matMenu">
+    <ng-template *ngFor="let camion of camionsSurMap">
+        <button mat-menu-item (click)="onClickCamionId(camion.id)">
+            {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}    
+        </button>    
+    </ng-template>
+</mat-menu>
 <!-- <div> -->
     <!-- <p>
         Right click on someone's name:
@@ -20,10 +35,36 @@
         <!-- <ng-template *ngFor="let it of items" contextMenuItem (execute)="showMessage('Hi, ...'+it.otherProperty)">
             Liste - {{it.name}}
         </ng-template> -->
-        <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem 
+        <!-- <div  style="overflow-y: scroll;"> -->
+            <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem 
                             (execute)="onClickCamionId(camion.id)">
-            {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}
-        </ng-template>
+                <!-- <button class="btn btn-link" (click)="onClickCamionId(camion.id)"> -->
+                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}
+                <!-- </button> -->
+                <!-- <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
+                <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button> -->
+            </ng-template>
+            <!-- [subMenu]="saySubMenu" -->
+            <!-- <context-menu #saySubMenu> -->
+                <!-- <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem>
+                    <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
+                    <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
+                </ng-template>    
+                 -->
+                <!-- <ng-template *ngFor="let iti of camionItinersFind(camion.id)" 
+                    contextMenuItem (execute)="onModify(iti)">
+                        <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                        <br>
+                </ng-template> -->
+            <!-- </context-menu> -->
+            <!-- <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem>
+            <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
+            <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
+            </ng-template> -->
+            
+        <!-- </div> -->
+        
 
     </context-menu>
 <!-- </div> -->

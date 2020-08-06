@@ -41,7 +41,7 @@ import { ListVoyageComponent } from './list-voyage/list-voyage.component';
 import { DetailVoyageComponent } from './detail-voyage/detail-voyage.component';
 import { CreerVoyageComponent } from './creer-voyage/creer-voyage.component';
 import { ListDemandeDeChaqueComponent } from './list-demande-de-chaque/list-demande-de-chaque.component'
-import { AgmCoreModule } from '@agm/core';
+// import { AgmCoreModule } from '@agm/core';
 //import { from } from 'rxjs';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { BankClientComponent } from './bank-client/bank-client.component';
@@ -89,6 +89,7 @@ import { ConfirmTransportService } from 'src/services/confirmTransport.service';
 //import { MapComponent } from './map/map.component';
 //import { LogoutComponent } from './logout/logout.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -201,7 +202,11 @@ const appRoutes:Routes=[
     BrowserModule, 
     ReactiveFormsModule,
     SignaturePadModule,
-    ContextMenuModule.forRoot(),
+    ContextMenuModule.forRoot({
+      autoFocus:true,
+      // useBootstrap4:true,
+    }),
+    BrowserAnimationsModule,
     // AgmCoreModule.forRoot({
     //   apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
     //   libraries: ['places', 'drawing', 'geometry','fr', 'QC'],
