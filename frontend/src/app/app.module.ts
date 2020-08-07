@@ -90,6 +90,8 @@ import { ConfirmTransportService } from 'src/services/confirmTransport.service';
 //import { LogoutComponent } from './logout/logout.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -207,6 +209,8 @@ const appRoutes:Routes=[
       // useBootstrap4:true,
     }),
     BrowserAnimationsModule,
+    MatListModule,
+    MatMenuModule,
     // AgmCoreModule.forRoot({
     //   apiKey: 'AIzaSyC9PnuRk42kbCPMOvsfHpn40r5SoyN38zI',
     //   libraries: ['places', 'drawing', 'geometry','fr', 'QC'],

@@ -1,4 +1,4 @@
-import {MatMenuTrigger} from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
@@ -47,6 +47,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   camionsList:boolean=true; // par default, on voit la liste de camions
   repere:boolean=false;
   modeConfirm=false;
+  modeProfil=false;
 
   itiner:Itineraire=new Itineraire();
   itiners:Array<Itineraire>=[];
@@ -100,6 +101,34 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   todaySuite = new Date();
 
   @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
+  contextMenuPosition = { x: '0px', y: '0px' };
+
+  onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.contextMenu.menuData = { 'item': "test" };
+    this.contextMenu.menu.focusFirstItem('mouse');
+    this.contextMenu.openMenu();
+  }
+
+  onContextMenuTest(event: MouseEvent) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    // this.contextMenu.menuData = { 'item': item };
+    this.contextMenu.menu.focusFirstItem('mouse');
+    this.contextMenu.openMenu();
+  }
+
+  onContextMenuAction1() {
+    alert(`Click on Action 1 for`);
+  }
+
+  onContextMenuAction2() {
+    alert(`Click on Action 2 for`);
+  }
+
 
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
@@ -819,11 +848,12 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     c= this.camionsSurMap.find(x=>x.id===id)
     this.infoWindow.close();
     this.map.setCenter(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow = new google.maps.InfoWindow;
-    let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
-    this.infoWindow.setContent(contentString);
-    this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
-    this.infoWindow.open(this.map);//*/
+    this.map.setZoom(15)
+    // this.infoWindow = new google.maps.InfoWindow;
+    // let contentString:string= (c.foreignName.length>0 ? c.foreignName : (c.unite+c.type+c.modele));
+    // this.infoWindow.setContent(contentString);
+    // this.infoWindow.setPosition(new google.maps.LatLng(c.latitude, c.longtitude));
+    // this.infoWindow.open(this.map);//*/
   }
 
   // name of point repere
@@ -1293,6 +1323,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.filterCamion();
       this.gotoAnchorID('truck'); // goto the table of detail Itineraire
     }
+    this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
+    this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
+    this.drawOrigin();
+    this.drawDest();
+  }
+
+  onGoingToItineraire(it:Itineraire){
     this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
     this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
     this.drawOrigin();
@@ -2083,6 +2120,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       alert('Vous devez remplir des infos de cette unite.')
     }
     
+  }
+
+  modifyProfil(){
+    //this.router.navigate(['/detail-transporter/'+ this.transporter.id], {skipLocationChange: true});
+    this.modeProfil=true;
   }
 
   print(cmpId){

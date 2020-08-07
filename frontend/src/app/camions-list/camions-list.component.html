@@ -1,18 +1,53 @@
+<!-- <p>Right-click on the items below to show the context menu:</p>
 <mat-list>
-    <mat-list-item>
-        <span>test right click</span>
-    </mat-list-item>
-</mat-list>
-<div [matMenuTriggerFor]="contextMenu">
-
+	<mat-list-item  (contextmenu)="onContextMenu($event)">
+		<span>Hung</span>
+	</mat-list-item>
+</mat-list> -->
+<div style="visibility: hidden; position: fixed; width: auto;"
+    [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y"
+    [matMenuTriggerFor]="contextMenu">
 </div>
 <mat-menu #contextMenu="matMenu">
-    <ng-template *ngFor="let camion of camionsSurMap">
-        <button mat-menu-item (click)="onClickCamionId(camion.id)">
-            {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}    
-        </button>    
+	<!-- <ng-template matMenuContent>
+		<button mat-menu-item (click)="onContextMenuAction1()">Action 1</button>
+		<button mat-menu-item (click)="onContextMenuAction2()">Action 2</button>
+    </ng-template> -->
+    <ng-template matMenuContent>
+        <!--  mat-menu-item -->
+        <small *ngFor="let camion of camionsSurMap">
+            <strong mat-menu-item class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
+                {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}                
+            </strong>
+            <small *ngIf="camion.speed>0" (click)="onClickCamionId(camion.id)"><img [src]="imgArrow" [style.transform]="orientation(camion)">{{camion.speed}} km/h &nbsp;</small>
+            <small *ngIf="camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Emplacement:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
+            <!-- <li>
+                {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}
+                <br><img [src]="imgArrow" [style.transform]="orientation(camion)"> {{camion.speed}} km/h
+            </li> -->
+            <li *ngFor="let iti of camionItinersFind(camion.id)" (click)="onModify(iti)">
+                <strong>Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+            </li>
+            <!-- <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button>
+            <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button> -->
+        </small>
+        <small><button class="btn btn-link" (click)="onClearMap()">ClearMap</button></small>
     </ng-template>
 </mat-menu>
+
+<!-- <mat-list>
+	<mat-list-item (contextmenu)="onContextMenuTest($event);">
+		<span>Test of Hung</span>
+	</mat-list-item>
+</mat-list> -->
+<!-- <div (contextmenu)="onContextMenuTest($event);">
+    <h4>hi every one</h4>
+    <p>145698
+        1423687
+    </p>
+</div> -->
 <!-- <div> -->
     <!-- <p>
         Right click on someone's name:
@@ -69,26 +104,27 @@
     </context-menu>
 <!-- </div> -->
 <div>
-    <button (click)="modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
+    <button (click)="modeProfil=false;modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
 <!--  -->
-    <button (click)="modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+    <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
     </button>
-    <button (click)="modeConfirm=false;itineraire=false; camionsList=false; repere=true; detailCamion=false" class="btn btn-link">        
+    <button (click)="modeProfil=false;modeConfirm=false;itineraire=false; camionsList=false; repere=true; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!repere">Points de repere</span>
         <strong *ngIf="repere">Points de repere</strong>
     </button>
     <!-- <button (click)="print('toprint')" class="btn btn-link">Print</button>  -->
 <!-- -->
     <!-- <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button> -->
-    <button (click)="modeConfirm=true;itineraire=false; camionsList=false; repere=false; detailCamion=false" class="btn btn-link"><a href="#CONFIRM">
+    <button (click)="modeProfil=false;modeConfirm=true;itineraire=false; camionsList=false; repere=false; detailCamion=false" class="btn btn-link"><a href="#CONFIRM">
         <span *ngIf="!modeConfirm">ConfirmationTransporteur</span>
         <strong *ngIf="modeConfirm">ConfirmationTransporteur</strong>
     </a></button>
+    <button *ngIf="modeConfirm" class="btn btn-link" (click)="modeProfil=true">NotreProfil</button>
 <!-- -->
     <!-- <button class="btn btn-link" (click)="onClearMap()">Reset</button> -->
 </div>
@@ -99,6 +135,7 @@
 <!-- <div class="row" *ngIf="carte==1 && camionsList"> -->
 <div class="row">
     <app-transporter-confirm id="CONFIRM" *ngIf="modeConfirm==true">Loading ...</app-transporter-confirm>
+    <app-detail-transoprter id="PROFIL" *ngIf="modeProfil&&modeConfirm">Loading ...</app-detail-transoprter>
     <div *ngIf="repere" id="toprint" class="col-md-7 col-lg-7">
         <table border="1">
             <tr>
@@ -765,7 +802,7 @@
                 <td (click)="onModify(it)" style="width: 15%;">{{it.dateDrop | date: 'dd-MM-yyyy'}}</td> 
                 <td (click)="onModify(it)" style="width: 8%;">{{it.longueur}}</td>  -->
 
-                <td (click)="onModify(it)" style="width: 40%">
+                <td style="width: 40%" (click)="onGoingToItineraire(it)">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{it.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
                         <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{it.dateDrop | date: 'dd-MM-yyyy'}}  
@@ -783,8 +820,10 @@
                     <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null" style="width: 35%;">&nbsp;</td>
-                <td  style="width: 10%;"><button (click)="itinerFini(it)" class="btn btn-link">Finir</button></td>
-                <td  style="width: 10%;"><button (click)="itinerCancel(it)" class="btn btn-link">Annuler</button></td>
+                <!-- <td  style="width: 5%;"><button (click)="itinerFini(it)" class="btn btn-link">Finir</button></td> -->
+                <td colspan="2" style="width: 20%; font-size: small;">
+                    <button (click)="itinerFini(it)" class="btn btn-link">Finir</button> <button (click)="onModify(it)" class="btn btn-link">Modifier</button> <button (click)="itinerCancel(it)" class="btn btn-link">Annuler</button>
+                </td>
             </tr>
             <tr><br></tr>
             <tr>
@@ -889,7 +928,8 @@
                 </option>
             </select>
         </div>      
-        <div #gmap style="width:100%;height:650px" [contextMenu]="basicMenu"></div>
+        <div #gmap style="width:100%;height:650px" (contextmenu)="onContextMenuTest($event);"></div>
+        <!-- <div #gmap style="width:100%;height:650px" [contextMenu]="basicMenu"></div> -->
     </div>
 
     <div id="dtc" *ngIf="detailCamion && detailCamionWindown && !modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;">

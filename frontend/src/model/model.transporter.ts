@@ -12,4 +12,7 @@ export class Transporter{
     nir:string="";  // license de circulation
     nid:string="";  // company number
     expressContact:string='' // if there are many names, separate with /
+    address:string="";
+    ville:string="";
+    codePostal:string="";
 }

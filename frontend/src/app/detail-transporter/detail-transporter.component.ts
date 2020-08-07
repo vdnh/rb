@@ -30,6 +30,7 @@ import { reduce } from 'rxjs/operators';
 export class DetailTransporterComponent implements OnInit {
   //* for map flotte truck
   subscription : Subscription;
+  subscriptionRefresh:Subscription;
   //transporter:Transporter=new Transporter();
   camionMap:Camion=new Camion();
   camionsSurMap:Array<Camion>=new Array<Camion>();
@@ -156,16 +157,12 @@ export class DetailTransporterComponent implements OnInit {
         return 0;
       });
       this.camions= data
-      // this.camions.sort((a,b)=>{
-      //   if(a.id>b.id)
-      //     return 1;
-      //   if(a.id<b.id)
-      //     return -1;
-      //   return 0;
-      // })
+
+      this.camionsSurMap = await this.camions.filter(camion=>(camion.gps && camion.status))
+        .sort((a,b)=>Number(a.unite)-Number(b.unite));
       this.camionsInOperation = await this.camions.filter(camion=>(!camion.broker && camion.status))
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
-      //this.filterCamionInOperation()
+
       this.camionsOutOperation = await this.camions.filter(camion=>(!camion.broker && !camion.status)) //this.filterCamionOutOperation()
       this.camionsBroker= await this.camions.filter(camion=>(camion.broker && camion.status))
       await this.camionsInOperation.forEach(async (cam) => {
@@ -190,6 +187,10 @@ export class DetailTransporterComponent implements OnInit {
     }, err=>{
       console.log();
     });
+    
+    // refresh list camions every 2 minutes
+    const source = interval(60000);
+    this.subscriptionRefresh=source.subscribe(val=>{this.refreshListCamions()})
   }
   
   filterCamionInOperation(){ // find all camions in service
@@ -373,12 +374,13 @@ export class DetailTransporterComponent implements OnInit {
       this.carteText='Fermer la carte'    
       var numbers = timer(2000);
       numbers.subscribe(x =>{
-        this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-          data.forEach(camion=>{
-            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
-              camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-              this.camionsSurMap.push(camion)
-          })
+        // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+        //   data.forEach(camion=>{
+        //     // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && 
+        //     //   camion.monitor.length!=0) && (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+        //     if(camion.status && camion.gps)
+        //       this.camionsSurMap.push(camion)
+        //   })
           let mapProp = {
             center: new google.maps.LatLng(45.568806, -73.918333),
             zoom: 15,
@@ -426,9 +428,9 @@ export class DetailTransporterComponent implements OnInit {
           })
           const source = interval(60000);
           this.subscription=source.subscribe(val=>{this.getLocalisation()})
-        }, err=>{
-          console.log();
-        })
+        // }, err=>{
+        //   console.log();
+        // })
       })      
     }
     //this.router.navigate(["/map-flotte", this.id]);
@@ -437,15 +439,58 @@ export class DetailTransporterComponent implements OnInit {
     console.log("You see camion : " + this.camionMap.unite)
     this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
   }
+
+  refreshListCamions(){
+    this.arrayArrayEnts=[]
+    this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+      data.sort((a,b)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      });
+      this.camions= data
+      this.camionsSurMap = await this.camions.filter(camion=>(camion.gps && camion.status))
+        .sort((a,b)=>Number(a.unite)-Number(b.unite));
+      this.camionsInOperation = await this.camions.filter(camion=>(!camion.broker && camion.status))
+        .sort((a,b)=>Number(a.unite)-Number(b.unite));
+      this.camionsOutOperation = await this.camions.filter(camion=>(!camion.broker && !camion.status)) //this.filterCamionOutOperation()
+      this.camionsBroker= await this.camions.filter(camion=>(camion.broker && camion.status))
+      await this.camionsInOperation.forEach(async (cam) => {
+        await this.autreEntretiensService.autreEntretienDeCamion(cam.id).subscribe((data: Array<AutreEntretien>) => {
+          if (data != null) {
+            let entsAutre: AutreEntretienList = new AutreEntretienList();
+            entsAutre.entsList = data;
+            entsAutre.unite = cam.unite;
+            entsAutre.odometre = cam.odometre;
+            if (entsAutre.entsList.length != 0)
+              this.arrayArrayEnts.push(entsAutre);
+              this.arrayArrayEnts.sort((a,b)=>Number(a.unite)-Number(b.unite));
+          }
+        }, err => {
+          console.log(err);
+        });
+        // this.arrayArrayEnts.sort((a,b)=>Number(a.unite)-Number(b.unite));
+      }, err => {
+      }) //*/
+      // this.arrayArrayEnts= await this.arrayArrayEnts.sort((a,b)=>(Number(a.unite)-Number(b.unite)));
+//*/
+    }, err=>{
+      console.log();
+    });
+  }
+
   getLocalisation(){
-    this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-      let camionsSurMap:Array<Camion>=new Array<Camion>();
-      data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
-        (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
-          camionsSurMap.push(camion)
-      })
-      this.camionsSurMap=camionsSurMap;
+    // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
+      // let camionsSurMap:Array<Camion>=new Array<Camion>();
+      // data.forEach(camion=>{
+      //   // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0) && 
+      //   // (!camion.uniteMonitor.includes('no-gps'))) // !camion.uniteMonitor.includes('no-gps') - means : there isn't GPS
+      //   if(camion.status && camion.gps)
+      //     camionsSurMap.push(camion)
+      // })
+      // this.camionsSurMap=camionsSurMap;
       //* demarsk the list of trucks
       this.markers.forEach(marker=>{
         marker.setMap(null);
@@ -491,10 +536,11 @@ export class DetailTransporterComponent implements OnInit {
           this.markers.push(marker);
         }  
       })
-    }, err=>{
-      console.log();
-    })
+    // }, err=>{
+    //   console.log();
+    // })
   }
+
   // to show the stop duration in day-hours-minute
   showStopDuration(stopDuration:number){
     let duration='';

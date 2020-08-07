@@ -41,6 +41,9 @@ public class Transporter {
     private String nir;  // license de circulation
     private String nid;  // company number
     private String expressContact; // if there are many names, separate with /
+    private String address;
+    private String ville;
+    private String codePostal;
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
