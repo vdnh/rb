@@ -13,12 +13,19 @@
     <!-- <h6 style="margin-left: 3cm;"><span>CARRIER CONFIRMATION</span></h6> -->
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>
-        <td><span>SOS PRESTIGE</span>
+        <!-- <td><span>SOS PRESTIGE</span>
             <br><span>9299-9101 Quebec Inc</span>
             <br><span>520 Rue Guindon</span>
             <br><span>Saint-Eustache (Qc)</span>
             <br><span>J7R 5B4</span>
             <br><span>{{selfTel}}</span>
+        </td> -->
+        <td><span>{{selfName}}</span>
+          <br><span>{{selfnid}}</span>
+          <br><span>{{selfAddress}}</span>
+          <br><span>{{selfVille}}</span>
+          <br><span>{{selfCodePostal}}</span>
+          <br><span>{{selfTel}}</span>
         </td>
         <td><span>Transporteur/Carrier : {{comName}}</span>
             <br>
@@ -120,7 +127,7 @@
           <td>{{message02}}</td>
       </tr> -->
     </table>
-    <h5 style="float: right;"><br>{{selfnir}}</h5>
+    <h5 style="float: left;"><br>{{urlPresent}}</h5> <h5 style="float: right;"><br>{{selfnir}}</h5>
   </div>
   <div id="noprint">
     <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 1cm;">Print</button>
@@ -151,12 +158,19 @@
     </h5>
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>
-        <td><span>SOS PRESTIGE</span>
+        <!-- <td><span>SOS PRESTIGE</span>
             <br><span>9299-9101 Quebec Inc</span>
             <br><span>520 Rue Guindon</span>
             <br><span>Saint-Eustache (Qc)</span>
             <br><span>J7R 5B4</span>
             <br><span>450-974-9111</span>
+        </td> -->
+        <td><span>{{selfName}}</span>
+          <br><span>{{selfnid}}</span>
+          <br><span>{{selfAddress}}</span>
+          <br><span>{{selfVille}}</span>
+          <br><span>{{selfCodePostal}}</span>
+          <br><span>{{selfTel}}</span>
         </td>
         <td><span>Transporteur/Carrier : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comName"></span>
             <br>

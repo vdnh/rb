@@ -84,8 +84,11 @@ export class DetailTransporterComponent implements OnInit {
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer){    
-    this.id=activatedRoute.snapshot.params['id'];
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer)
+  {  
+    if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
+      this.id = Number(localStorage.getItem('idTransporter'))
+    else this.id=activatedRoute.snapshot.params['id'];
     this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
 
@@ -198,6 +201,15 @@ export class DetailTransporterComponent implements OnInit {
   }
   filterCamionOutOperation(){ // find all camions out service
     return this.camions.filter(camion=>camion.status==false)
+  }
+
+  // just for the dispatch modify profil of transporter (just save the change of transporter)
+  modifiyTransporter(){
+    this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
+      alert('Profil enregistre.');
+    }, err=>{
+      console.log(err);
+    });
   }
 
   saveTransporter(){

@@ -21,7 +21,7 @@
                 {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}                
             </strong>
             <small *ngIf="camion.speed>0" (click)="onClickCamionId(camion.id)"><img [src]="imgArrow" [style.transform]="orientation(camion)">{{camion.speed}} km/h &nbsp;</small>
-            <small *ngIf="camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Emplacement:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
+            <small *ngIf="camion.location!=null && camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Emplacement:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
             <!-- <li>
                 {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}
                 <br><img [src]="imgArrow" [style.transform]="orientation(camion)"> {{camion.speed}} km/h
@@ -121,10 +121,15 @@
 <!-- -->
     <!-- <button routerLink="/transporter-confirm" class="btn btn-link">ConfirmationTransporteur</button> -->
     <button (click)="modeProfil=false;modeConfirm=true;itineraire=false; camionsList=false; repere=false; detailCamion=false" class="btn btn-link"><a href="#CONFIRM">
-        <span *ngIf="!modeConfirm">ConfirmationTransporteur</span>
-        <strong *ngIf="modeConfirm">ConfirmationTransporteur</strong>
+        <span *ngIf="!modeConfirm || modeProfil">ConfirmationTransporteur</span>
+        <strong *ngIf="modeConfirm&&!modeProfil">ConfirmationTransporteur</strong>
     </a></button>
-    <button *ngIf="modeConfirm" class="btn btn-link" (click)="modeProfil=true">NotreProfil</button>
+    <button *ngIf="modeConfirm" class="btn btn-link" 
+        (click)="modeProfil=true;modeConfirm=true;itineraire=false; camionsList=false; repere=false; detailCamion=false">
+        <span *ngIf="!modeProfil">NotreProfil</span>
+        <strong *ngIf="modeProfil">NotreProfil</strong>
+        
+    </button>
 <!-- -->
     <!-- <button class="btn btn-link" (click)="onClearMap()">Reset</button> -->
 </div>
@@ -134,8 +139,8 @@
 </div> -->
 <!-- <div class="row" *ngIf="carte==1 && camionsList"> -->
 <div class="row">
-    <app-transporter-confirm id="CONFIRM" *ngIf="modeConfirm==true">Loading ...</app-transporter-confirm>
-    <app-detail-transoprter id="PROFIL" *ngIf="modeProfil&&modeConfirm">Loading ...</app-detail-transoprter>
+    <app-transporter-confirm id="CONFIRM" *ngIf="modeConfirm && !modeProfil">Loading ...</app-transporter-confirm>
+    <app-detail-transoprter id="PROFIL" *ngIf="modeConfirm && modeProfil">Loading ...</app-detail-transoprter>
     <div *ngIf="repere" id="toprint" class="col-md-7 col-lg-7">
         <table border="1">
             <tr>

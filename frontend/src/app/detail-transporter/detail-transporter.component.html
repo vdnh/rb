@@ -460,11 +460,52 @@
     <div class="panel panel-primary" *ngIf="mode==4">
         <div class="panel-body">
             <table>
-                <tr><th><h4>Ajouter du Chauffeur</h4></th></tr> 
+                <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
-                    <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                    <th>Nom</th><th>NID</th><th>NIR</th>
+                    <td rowspan="6"><button (click)="modifiyTransporter()">Enregistrer Profil</button></td>
                 </tr>
                 <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nid" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nir" /></td>                    
+                </tr>
+                <tr>
+                    <th>Address</th><th>Ville</th><th>CodePostal</th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.address" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.ville" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.codePostal" /></td>
+                    
+                </tr>
+                <tr>
+                    <th>Contacts Express</th><th>Tel</th><th>Email</th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.expressContact" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                </tr>
+                <tr>
+                    <!-- <th>
+                        <span>Logo &nbsp; </span>
+                    </th> -->
+                    <td colspan="3" *ngIf="transporter.photo!=null && transporter.photo.length>0" style="border: 2px dotted gray">
+                        <img [src]="transporter.photo" alt="logo_image" class="img-responsive" width="300px">
+                    </td>
+                </tr>
+                <tr>
+                    <th *ngIf="transporter.photo!=null && transporter.photo.length>0">
+                        <button (click)="onChangeImage()">Changer Logo</button>
+                    </th>
+                    <th colspan="2" *ngIf="transporter.photo==null || transporter.photo.length==0">
+                        <label for="imglogo">Prendre Logo &nbsp;&nbsp;</label>
+                        <input name="imglogo" type="file" title="Joindre image logo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                    </th>    
+                </tr>
+                <!-- <tr><td rowspan="6"><button class="btn btn-link" (click)="modifiyTransporter()">Enregistrer Profil</button></td></tr> -->
+                <!-- <tr>
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.email" /></td>
@@ -477,7 +518,7 @@
                     <td><input class="form-control" type="text" [(ngModel)]="chauffeur.email" /></td>
                     <td><button class="btn btn-link" (click)="modifyChauffeur(chauffeur)">Modifier</button></td>
                     <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Supprimer</button></td>
-                </tr>
+                </tr> -->
             </table>
         </div>
     </div>

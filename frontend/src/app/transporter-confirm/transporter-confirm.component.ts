@@ -21,13 +21,13 @@ export class TransporterConfirmComponent implements OnInit {
 
   idTransporter:number;
   selfName=""
-  selfnid="9299-9101 Quebec Inc"
-  selfnir="NIR  R-1091728"
+  selfnid=""  //"9299-9101 Quebec Inc"
+  selfnir=""  //"NIR  R-1091728"
   selfAddress=""
   selfVille=""
   selfCodePostal=""
-  selfTel="450-974-9111"
-  selfContact='' // if there are many names, separate with /
+  selfTel=""  //"450-974-9111"
+  //selfContact='' // if there are many names, separate with /
   datePick:Date=new Date();
   dateDrop:Date=new Date();
 
@@ -55,13 +55,14 @@ export class TransporterConfirmComponent implements OnInit {
   formPickUp=''
   formDrop=''
   formNotes=''
-  formContact='Marc-André / Steven'
+  formContact=""  //'Marc-André / Steven'
   formTel=''
   formEmail=''
 
   listConfirm: Array<ConfirmTransport> = [];
-
+  urlPresent:string; // path url
   ngOnInit() {
+    this.urlPresent=location.href // get url present
     this.confirmTransport=new ConfirmTransport();
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
@@ -69,6 +70,19 @@ export class TransporterConfirmComponent implements OnInit {
       this.imgLogoUrl=this.transporter.photo
       this.formTel=this.transporter.tel
       this.formEmail=this.transporter.email
+      
+      //continue for self infos - each transporter 
+      this.selfName=this.transporter.nom
+      this.selfnid=this.transporter.nid //"9299-9101 Quebec Inc"
+      this.selfnir=this.transporter.nir //"NIR  R-1091728"
+      this.selfAddress=this.transporter.address
+      this.selfVille=this.transporter.ville
+      this.selfCodePostal=this.transporter.codePostal
+      this.selfTel=this.transporter.tel //"450-974-9111"
+      // this.selfContact=
+      this.formContact=this.transporter.expressContact // if there are many names, separate with /
+      //
+
       this.confirmTransportService.confirmTransportsDeTransporter(data.id).subscribe((dt:Array<ConfirmTransport>)=>{
         this.listConfirm=dt.sort((b,a)=>Number(a.formNumero)-Number(b.formNumero));
         // console.log("this.listConfirm.length : "+this.listConfirm.length)
@@ -106,19 +120,28 @@ export class TransporterConfirmComponent implements OnInit {
   copyForm(){
     this.formNumero=''
     this.confirmTransport=new ConfirmTransport(); //.id=null;  
+    this.confirmTransport.formContact=this.formContact=this.transporter.expressContact
+    this.confirmTransport.formTel=this.formTel=this.transporter.tel
+    this.confirmTransport.formEmail=this.formEmail=this.transporter.email
+    this.confirmTransport.selfnir=this.selfnir=this.transporter.nir
+    this.confirmTransport.selfName=this.selfName=this.transporter.nom
+    this.confirmTransport.selfnid=this.selfnid=this.transporter.nid
+    this.confirmTransport.selfAddress=this.selfAddress=this.transporter.address
+    this.confirmTransport.selfVille=this.selfVille=this.transporter.ville
+    this.confirmTransport.selfCodePostal=this.selfCodePostal=this.transporter.codePostal
   }
 
   newForm(){
     this.confirmTransport = new ConfirmTransport();
 
-    this.selfName=""
-    this.selfnid="9299-9101 Quebec Inc"
-    this.selfnir="NIR  R-1091728"
-    this.selfAddress=""
-    this.selfVille=""
-    this.selfCodePostal=""
-    this.selfTel="450-974-9111"
-    this.selfContact='' // if there are many names, separate with /
+    // this.selfName=""
+    // this.selfnid="9299-9101 Quebec Inc"
+    // this.selfnir="NIR  R-1091728"
+    // this.selfAddress=""
+    // this.selfVille=""
+    // this.selfCodePostal=""
+    // this.selfTel="450-974-9111"
+    // this.selfContact='' // if there are many names, separate with /
     this.datePick=new Date();
     this.dateDrop=new Date();
 
@@ -146,11 +169,33 @@ export class TransporterConfirmComponent implements OnInit {
     this.formPickUp=''
     this.formDrop=''
     this.formNotes=''
-    this.formContact='Marc-André / Steven'
+    // this.formContact='Marc-André / Steven'
+
+    //continue for self infos - each transporter 
+    this.selfName=this.transporter.nom
+    this.selfnid=this.transporter.nid //"9299-9101 Quebec Inc"
+    this.selfnir=this.transporter.nir //"NIR  R-1091728"
+    this.selfAddress=this.transporter.address
+    this.selfVille=this.transporter.ville
+    this.selfCodePostal=this.transporter.codePostal
+    this.selfTel=this.transporter.tel //"450-974-9111"
+    // this.selfContact=
+    this.formContact=this.transporter.expressContact // if there are many names, separate with /
+    //
+    this.confirmTransport=new ConfirmTransport(); //.id=null;  
+    this.confirmTransport.formContact=this.formContact=this.transporter.expressContact
+    this.confirmTransport.formTel=this.formTel=this.transporter.tel
+    this.confirmTransport.formEmail=this.formEmail=this.transporter.email
+    this.confirmTransport.selfnir=this.selfnir=this.transporter.nir
+    this.confirmTransport.selfName=this.selfName=this.transporter.nom
+    this.confirmTransport.selfnid=this.selfnid=this.transporter.nid
+    this.confirmTransport.selfAddress=this.selfAddress=this.transporter.address
+    this.confirmTransport.selfVille=this.selfVille=this.transporter.ville
+    this.confirmTransport.selfCodePostal=this.selfCodePostal=this.transporter.codePostal
     //this.formTel=''
     //this.formEmail=''
   }
-  
+  // clone the form in progress to print or save
   cloneConfirmTransport(ct:ConfirmTransport){
     ct.comAddress=this.comAddress
     ct.comContact=this.comContact
@@ -159,7 +204,7 @@ export class TransporterConfirmComponent implements OnInit {
     ct.comVille=this.comVille
     ct.dateDrop=this.dateDrop
     ct.datePick=this.datePick
-    ct.formContact=this.formContact
+    // ct.formContact=this.formContact
     ct.formDescription=this.formDescription
     ct.formDrop=this.formDrop
     ct.formEmail=this.formEmail
@@ -186,6 +231,77 @@ export class TransporterConfirmComponent implements OnInit {
     ct.shipName=this.shipName
     ct.shipTo=this.shipTo
     ct.shipVille=this.shipVille
+    //continue for self infos - each transporter 
+    ct.selfName=this.transporter.nom
+    ct.selfnid=this.transporter.nid //"9299-9101 Quebec Inc"
+    ct.selfnir=this.transporter.nir //"NIR  R-1091728"
+    ct.selfAddress=this.transporter.address
+    ct.selfVille=this.transporter.ville
+    ct.selfCodePostal=this.transporter.codePostal
+    ct.selfTel=this.transporter.tel //"450-974-9111"
+    // check formContact
+    if(this.formContact==null || this.formContact.length==0)
+      {
+        this.formContact=this.transporter.expressContact // if there are many names, separate with /
+      }
+    ct.formContact=this.formContact
+    //
+    // check formTel
+    if(this.formTel==null || this.formTel.length==0)
+      {
+        this.formTel=this.transporter.tel // if there are many names, separate with /
+      }
+    ct.formTel=this.formTel
+    //
+    // check formEmail
+    if(this.formEmail==null || this.formEmail.length==0)
+      {
+        this.formEmail=this.transporter.email // if there are many names, separate with /
+      }
+    ct.formEmail=this.formEmail
+    //
+    // check NIR
+    if(this.selfnir==null || this.selfnir.length==0)
+      {
+        this.selfnir=this.transporter.nir // if there are many names, separate with /
+      }
+    ct.selfnir=this.selfnir
+    //
+    // check NID
+    if(this.selfnid==null || this.selfnid.length==0)
+      {
+        this.selfnid=this.transporter.nid // if there are many names, separate with /
+      }
+    ct.selfnid=this.selfnid
+    //
+    // check Name
+    if(this.selfName==null || this.selfName.length==0)
+      {
+        this.selfName=this.transporter.nom // if there are many names, separate with /
+      }
+    ct.selfName=this.selfName
+    //
+    // check address
+    if(this.selfAddress==null || this.selfAddress.length==0)
+      {
+        this.selfAddress=this.transporter.address // if there are many names, separate with /
+      }
+    ct.selfAddress=this.selfAddress
+    //
+    // check ville
+    if(this.selfVille==null || this.selfVille.length==0)
+      {
+        this.selfVille=this.transporter.ville // if there are many names, separate with /
+      }
+    ct.selfVille=this.selfVille
+    //
+    // check codepostal
+    if(this.selfCodePostal==null || this.selfCodePostal.length==0)
+      {
+        this.selfCodePostal=this.transporter.codePostal // if there are many names, separate with /
+      }
+    ct.selfCodePostal=this.selfCodePostal
+    //
   }
 
   confirmFound(ct:ConfirmTransport){
@@ -223,6 +339,15 @@ export class TransporterConfirmComponent implements OnInit {
     this.shipName=ct.shipName
     this.shipTo=ct.shipTo
     this.shipVille=ct.shipVille
+    //continue for self infos - each transporter 
+    this.selfName=this.transporter.nom
+    this.selfnid=this.transporter.nid //"9299-9101 Quebec Inc"
+    this.selfnir=this.transporter.nir //"NIR  R-1091728"
+    this.selfAddress=this.transporter.address
+    this.selfVille=this.transporter.ville
+    this.selfCodePostal=this.transporter.codePostal
+    this.selfTel=this.transporter.tel //"450-974-9111"
+    //
   }
 
   print(cmpId){
@@ -256,9 +381,19 @@ export class TransporterConfirmComponent implements OnInit {
     else{
       const printContent = document.getElementById(cmpId);
       const WindowPrt = window.open();
-      // WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+      //alert('window.location.href : '+ window.location.href)
+      //WindowPrt.location=window.location
+      //WindowPrt.location.href=window.location.href
+      //WindowPrt.document.location.href=window.location.href
+      WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
       WindowPrt.document.write(printContent.innerHTML);
+      // WindowPrt.document.write('<div class="footer">'+
+      //   '<h3>foooter</h3>'+
+      //   '</div>'
+      // );
       WindowPrt.document.close();
+      // alert('WindowPrt.location.href : '+ WindowPrt.location.href)
+      // alert('WindowPrt.document.location.href : '+ WindowPrt.document.location.href)
       WindowPrt.focus();
       WindowPrt.print();
       WindowPrt.close();

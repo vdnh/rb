@@ -2,12 +2,12 @@ export class ConfirmTransport{
     id : number;
     // infos of transporter
     selfName="";
-    selfnid="9299-9101 Quebec Inc";
-    selfnir="NIR  R-1091728";
+    selfnid=""  //"9299-9101 Quebec Inc";
+    selfnir=""  //"NIR  R-1091728";
     selfAddress="";
     selfVille="";
     selfCodePostal="";
-    selfTel="450-974-9111";
+    selfTel=""    //"450-974-9111";
     // selfContact='' // if there are many names, separate with /
     idTransporter : number;
     // carrier Infos
@@ -40,7 +40,7 @@ export class ConfirmTransport{
     formPickUp='';
     formDrop='';
     formNotes='';
-    formContact='Marc-André / Steven'; // if there are many names, separate with /, express-contact of transporter
+    formContact=""  //'Marc-André / Steven'; // if there are many names, separate with /, express-contact of transporter
     formTel='';
     formEmail='';
 }
