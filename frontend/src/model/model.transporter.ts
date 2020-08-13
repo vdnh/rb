@@ -15,4 +15,5 @@ export class Transporter{
     address:string="";
     ville:string="";
     codePostal:string="";
+    initial:string="";  // example SP, LG, ... in capital
 }

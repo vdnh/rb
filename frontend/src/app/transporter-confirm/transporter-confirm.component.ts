@@ -385,7 +385,7 @@ export class TransporterConfirmComponent implements OnInit {
       //WindowPrt.location=window.location
       //WindowPrt.location.href=window.location.href
       //WindowPrt.document.location.href=window.location.href
-      WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+      // WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
       WindowPrt.document.write(printContent.innerHTML);
       // WindowPrt.document.write('<div class="footer">'+
       //   '<h3>foooter</h3>'+

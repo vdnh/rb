@@ -44,6 +44,7 @@ public class Transporter {
     private String address;
     private String ville;
     private String codePostal;
+    private String initial;  // example SP, LG, ... in capital
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

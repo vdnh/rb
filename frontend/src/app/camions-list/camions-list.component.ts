@@ -200,6 +200,46 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
   //myWindow: any;
 
+  sortItinersByDatePick(itiners:Array<Itineraire>){
+    // alert("Hi sortItinersByDatePick");
+    //*//
+    itiners.sort((a,b)=>{
+      if(a.id>b.id)
+        return 1;
+      if(a.id<b.id)
+        return -1;
+      if(new Date(a.datePick).getTime()>new Date(b.datePick).getTime())
+        return 1;
+      if(new Date(a.datePick).getTime()<new Date(b.datePick).getTime())
+        return -1;
+      return 0;
+    })
+    //*/
+    // itiners.sort((a,b)=>(a.id-b.id)).sort(
+    //     (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // // id asc - datePick asc
+  }
+  
+  sortItinersByUnite(itiners:Array<Itineraire>){
+    // alert("Hi sortItinersByUnite");
+    //*//
+    itiners.sort((a, b)=>{
+      if(Number(this.camionsGPSAndNoGPS.find(x=>x.id===a.idCamion).unite)>Number(this.camionsGPSAndNoGPS.find(x=>x.id===b.idCamion).unite))
+        return 1;
+      if(Number(this.camionsGPSAndNoGPS.find(x=>x.id===a.idCamion).unite)<Number(this.camionsGPSAndNoGPS.find(x=>x.id===b.idCamion).unite))
+        return -1;
+      return 0;
+    })
+    // localStorage.setItem('sortItinersByUnite', '1')
+    //*/
+
+    // itiners.sort((a,b)=>(
+    //       Number(this.camionsGPSAndNoGPS.find(x=>x.id===a.idCamion).unite)- 
+    //       Number(this.camionsGPSAndNoGPS.find(x=>x.id===b.idCamion).unite)
+    //     )
+    //   ).sort(
+    //       (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())
+    //     ) // number unite asc - datePick asc
+  }
   onPress(){
     //this.carte=-this.carte;
     if(this.carte==-1){
@@ -410,6 +450,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                       (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
                   this.itinersCancels=data.filter(x=>x.cancelled==true).sort(
                     (b,a)=>(a.id-b.id))          
+                
+                  // if(localStorage.getItem('sortItinersByUnite')!=null&&localStorage.getItem('sortItinersByUnite').includes('1'))
+                  //   this.sortItinersByUnite(this.itiners)
                 }
                 //get list reperes
                 this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
@@ -771,9 +814,12 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.rep=new Repere()
   }
   deleteItiner(it:Itineraire){
-    this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{}, err=>{console.log(err)})
-    this.itiners.splice(this.itiners.indexOf(it),1)
-    this.makeCIsLList()
+    this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{
+      this.makeCIsLList() // make CamionItinerairesList replace for the line above
+      this.onClearMap();
+    }, err=>{console.log(err)})
+    // this.itiners.splice(this.itiners.indexOf(it),1)
+    // this.makeCIsLList()
   }
   onAjouter(){ // add fItineraire
     // console.log('this.itiner.dPick: '+this.itiner.dPick)
@@ -1341,6 +1387,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itinersFinis.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
+      this.makeCIsLList()
     },err=>{console.log(err)})
   }
 
@@ -1357,6 +1404,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itinersCancels.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
+      this.makeCIsLList()
     },err=>{console.log(err)})
   }
 
@@ -1365,6 +1413,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itiners.push(it)
       this.itinersCancels.splice(this.itinersCancels.indexOf(it))
+      this.makeCIsLList();
     },err=>{console.log(err)})
   }
 

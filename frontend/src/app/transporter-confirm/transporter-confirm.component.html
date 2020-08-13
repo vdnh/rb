@@ -7,7 +7,7 @@
     </h4> -->
     <h4 style="margin-left: 1cm;"><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
         <!-- <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span> -->
-        <span style="margin-left: 1cm;">SP {{formNumero}}</span>
+        <span style="margin-left: 1cm;">{{transporter.initial}} {{formNumero}}</span>
         <!-- <br><small>CARRIER CONFIRMATION</small> -->
     </h4>
     <!-- <h6 style="margin-left: 3cm;"><span>CARRIER CONFIRMATION</span></h6> -->
@@ -66,11 +66,11 @@
             </table>
             <p style="text-align: left;">
                 <!-- &nbsp;{{formDescription}} -->
-                <textarea cols="100" rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formDescription}}</textarea>
+                <textarea cols="100" rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">{{formDescription}}</textarea>
             </p>
             <span>NOTES : </span>
             <p>
-                <textarea cols="100" rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{formNotes}}
+                <textarea cols="100" rows="3" readonly style="text-align: left; border: none; border-width: 0; box-shadow:none;  background-color: transparent;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">{{formNotes}}
                 </textarea>
             </p>
         </td>
@@ -130,7 +130,8 @@
     <h5 style="float: left;"><br>{{urlPresent}}</h5> <h5 style="float: right;"><br>{{selfnir}}</h5>
   </div>
   <div id="noprint">
-    <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 1cm;">Print</button>
+    <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 1cm;"
+      [disabled]="comName==null||comName.length==0">Print</button>
     <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button style="margin-left: 1cm;" (click)="newForm()" class="btn btn-primary">Nouveau</button>
     <button *ngIf="confirmTransport.id>0" style="margin-left: 1cm;" (click)="copyForm()" class="btn btn-primary">Copy</button>
@@ -138,7 +139,7 @@
     <select type="text" [(ngModel)]="confirmTransport" (ngModelChange)="confirmFound(confirmTransport)">
         <option *ngFor="let c of listConfirm" [ngValue]="c">
           {{
-            '#SP: '+c.formNumero+ ' - ' + 'Carrier: '+c.comName
+            '#'+transporter.initial+' '+c.formNumero+ ' - ' + 'Carrier: '+c.comName
           }}
         </option>
         <!--  + ' - ' + 
@@ -151,11 +152,11 @@
     
     <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
     
-    <h5><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
-        <span style="margin-left: 1cm;">SP {{formNumero}}</span>
+    <h4><span>CONFIRMATION DU TRANSPORTEUR / CARRIER CONFIRMATION</span>
+        <span style="margin-left: 1cm;">{{transporter.initial}} {{formNumero}}</span>
         <!-- <span style="margin-left: 1cm;">SP <input type="text" style="width: 8ch;border: none; border-width: 0; box-shadow:none;  background-color: transparent;" [(ngModel)]="formNumero"></span> -->
         <!-- <br><small>CARRIER CONFIRMATION</small> -->
-    </h5>
+    </h4>
     <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
       <tr>
         <!-- <td><span>SOS PRESTIGE</span>

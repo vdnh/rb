@@ -11,6 +11,10 @@
     padding-bottom: 0px !important;
   }
   
+  .mat-menu-panel.myContextMenu{
+      width: 600px;
+      height: 600px;
+  }
   .mat-menu-item{
     line-height:35px;
     height:35px;

@@ -9,7 +9,7 @@
     [style.top]="contextMenuPosition.y"
     [matMenuTriggerFor]="contextMenu">
 </div>
-<mat-menu #contextMenu="matMenu">
+<mat-menu #contextMenu="matMenu" class="myContextMenu">
 	<!-- <ng-template matMenuContent>
 		<button mat-menu-item (click)="onContextMenuAction1()">Action 1</button>
 		<button mat-menu-item (click)="onContextMenuAction2()">Action 2</button>
@@ -26,9 +26,11 @@
                 {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}
                 <br><img [src]="imgArrow" [style.transform]="orientation(camion)"> {{camion.speed}} km/h
             </li> -->
-            <li *ngFor="let iti of camionItinersFind(camion.id)" (click)="onModify(iti)">
-                <strong>Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+            <li *ngFor="let iti of camionItinersFind(camion.id)" >
+                <!-- (click)="onModify(iti)" -->
+                <strong>Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                 <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
             </li>
             <!-- <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button>
             <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button> -->
@@ -263,6 +265,7 @@
                                 <!-- <tr> -->
                                     <!-- <td> -->
                                         <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
                                     <!-- </td> -->
                                 </p>
                                 <!-- <tr>
@@ -324,6 +327,7 @@
                                         <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
                                         <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
                                 </p>
                         </tr>
                     </table>
@@ -793,10 +797,11 @@
             <tr>
                 <th style="width: 5%;"></th>
                 <th style="width: 40;">Itineraire</th> 
+                <!--   (click)="sortItinersByDatePick(itiners)" -->
                 <!-- <th>Pick</th> 
                 <th>Drop</th> 
                 <th>Longueur</th>  -->
-                <th style="width: 35%;">Unite</th>
+                <th style="width: 35%;" (click)="sortItinersByUnite(itiners)">Unite</th>
             </tr>
             <tr *ngIf="itiners==null||itiners.length==0"><th colspan="5">Il n'y a aucun itineraire actuellement.</th></tr>
             <tr *ngFor="let it of itiners; let i = index">
