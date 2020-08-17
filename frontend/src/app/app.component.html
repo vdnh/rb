@@ -13,14 +13,14 @@
         <div  class="col-sm-12 col-md-12 col-lg-12">
           <div *ngIf="modeSignUp==0">
             <div *ngIf="usernameLogin.length>1">
-              <h6 class="noprint" style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+              <h5 class="noprint" style="text-decoration-line: underline;">Session : {{usernameLogin.toUpperCase()}} 
                 <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
-              </h6>
-              <h6 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
+              </h5>
+              <h5 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
                 {{transporter.nom}}
                 <span> <br> Tel: {{transporter.tel}}</span>
                 <span><br> Email: {{transporter.email}}</span>
-              </h6>
+              </h5>
             </div>
 
             <div class="panel panel-primary" *ngIf="role=='' || !eligible">

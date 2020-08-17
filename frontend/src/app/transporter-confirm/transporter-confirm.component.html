@@ -1,5 +1,5 @@
 <div id="toprint" hidden>
-        <img [src]="imgLogoUrl" alt="SOS Prestige" height="50"/>
+        <img *ngIf="imgLogoUrl!=null&&imgLogoUrl.length>0" [src]="imgLogoUrl" alt="imgLogo" height="50"/>
         <!-- <img src="assets/images/logoSOSPrestige.jpg" alt="SOS Prestige" width="150"/> -->
     <!-- <h4 style="margin-left: 3cm;"><span>CONFIRMATION DU TRANSPORTEUR</span> 
         <span style="margin-left: 5cm;">SP {{formNumero}}</span>

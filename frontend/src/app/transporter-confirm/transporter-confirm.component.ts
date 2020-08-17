@@ -11,7 +11,7 @@ import { ConfirmTransport } from 'src/model/model.confirmTransport';
 })
 export class TransporterConfirmComponent implements OnInit {
   confirmTransport:ConfirmTransport;
-  transporter: Transporter;
+  transporter: Transporter=new Transporter();
   imgLogoUrl: string;
 
   constructor(public transportersService:TransportersService,

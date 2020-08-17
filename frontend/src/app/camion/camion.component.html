@@ -64,7 +64,7 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
-              <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
             </tr>
             <tr>
               <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
@@ -485,7 +485,7 @@
             <th>Entreposage : <input type="checkbox" [(ngModel)]="bonDeTravail.entreposage"></th>
           </tr>                              
           <tr>
-              <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
           </tr>
           <tr>
               <td><input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/></td>
@@ -620,14 +620,14 @@
         <!--Review BonDeTravail - begin-->
         <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
-            <th><h4>BonDeTravail : {{bonDeTravailHistoire.id}}&nbsp;</h4></th>
+            <th><h4>#Bon : {{bonDeTravailHistoire.id}}&nbsp;</h4></th>
             <th>Technicien : {{bonDeTravailHistoire.technicien}} &nbsp;</th>
             <th>Date : {{bonDeTravailHistoire.date}}</th>            
           </tr> 
         </table>
         <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
           <tr>
-            <th>Type de reparation : </th>    
+            <th>TypeDeReparation: </th>    
             <td *ngIf="bonDeTravailHistoire.mecanique">Mecanique</td>
             <td *ngIf="bonDeTravailHistoire.carrosserie">Carrosserie</td>
             <td *ngIf="bonDeTravailHistoire.piece">&nbsp;Piece</td>
@@ -642,7 +642,7 @@
         </table>
         <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
           <tr>
-            <th>Numero Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+            <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
           </tr>
           <tr>
             <td>{{camion.unite}}</td>
@@ -743,7 +743,8 @@
             <td>{{bon.date}}</td>
             <td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td>
             <td>
-              <textarea class="form-control" readonly type="text" rows="1" cols="40">{{bon.remarque}}</textarea>
+              <textarea class="form-control" readonly type="text" rows="1" cols="40"
+              style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea>
             </td>
             <td><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>
             <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td> -->
