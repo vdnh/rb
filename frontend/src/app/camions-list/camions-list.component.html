@@ -434,7 +434,7 @@
                 </tr>    
                 <tr>
                     <th colspan="2">N.I.V</th>
-                    <th>UniteMonitor</th>
+                    <th>#GPS</th>
                     <th>Monitor</th>
                 </tr>
                 <tr>
@@ -981,29 +981,30 @@
         <div class="form-group">
             <table class="table table-striped table-sm table-responsive" border="1">
                 <tr>
-                <th>
-                    Unite <span *ngIf="camion.foreignName!=null && camion.foreignName.length>0">{{camion.foreignName}}</span>
-                    <span *ngIf="camion.foreignName==null || camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
-
-                </th>
-                <td colspan="3" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
-                    <!-- <a href="{{camion.imgUrl}}" target="_blank"> -->
-                    <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
-                    <!-- </a> -->
-                </td>
-                <!-- <th>
-                    <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
-                    <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
-                </th> -->
+                    <th colspan="4">
+                        #<span *ngIf="camion.foreignName!=null && camion.foreignName.length>0">{{camion.foreignName}}</span>
+                        <span *ngIf="camion.foreignName==null || camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+                    </th>
+                </tr>
+                <tr *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0">
+                    <td colspan="4" style="border: 2px dotted gray">
+                        <!-- <a href="{{camion.imgUrl}}" target="_blank"> -->
+                        <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
+                        <!-- </a> -->
+                    </td>
+                    <!-- <th>
+                        <span *ngIf="camion.foreignName.length>0">{{camion.foreignName}}</span>
+                        <span *ngIf="camion.foreignName.length==0">{{camion.unite + ' - ' + camion.marque +'  ' +camion.modele}}</span>
+                    </th> -->
                 </tr>
                 <!-- <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
                 </tr> -->
                 <tr>
-                    <th colspan="2" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0">
+                    <th colspan="4" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0">
                         <button (click)="onChangeImage()">Changer Image</button>
                     </th>
-                    <th colspan="2" *ngIf="camion.imgUrl==null || camion.imgUrl.length==0">
+                    <th colspan="4" *ngIf="camion.imgUrl==null || camion.imgUrl.length==0">
                         <label for="imgcamion">Prendre Image &nbsp;&nbsp;</label>
                         <input name="imgcamion" type="file" title="Joindre camion image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
                     </th>    
@@ -1021,11 +1022,18 @@
                 <tr>
                     <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="camion.poids">&nbsp;lbs</p> </th>
                 </tr>
+                
                 <tr>
-                    <th colspan="4"><p>UniteMonitor <input type="text" style="width: 15ch;" [(ngModel)]="camion.uniteMonitor" [disabled]="!camion.gps"></p> </th>
+                    <th colspan="2">Marque <input type="text" style="width: 15ch;" [(ngModel)]="camion.marque"> </th>
+                    <th colspan="2">Modele <input type="text" style="width: 15ch;" [(ngModel)]="camion.modele"> </th>
+                </tr>
+                <tr>                    
+                    <th colspan="2">N.I.V <input type="text" style="width: 22ch; font-size: small;" [(ngModel)]="camion.niv"> </th>
+                    <th colspan="2">Plaque <input type="text" style="width: 15ch;" [(ngModel)]="camion.plaque"> </th>
                 </tr>
                 <tr>
-                    <th colspan="4"><p>Monitor <input type="text" style="width: 15ch;" [(ngModel)]="camion.monitor" [disabled]="!camion.gps"></p> </th>
+                    <th colspan="2">#GPS <input type="text" style="width: 10ch;" [(ngModel)]="camion.uniteMonitor" [disabled]="!camion.gps"></th>
+                    <th colspan="2">Monitor <input type="text" style="width: 15ch;" [(ngModel)]="camion.monitor" [disabled]="!camion.gps"></th>
                 </tr>
                 <tr>
                     <th colspan="4">
