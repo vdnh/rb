@@ -110,49 +110,7 @@
         <li [contextMenu]="basicMenu" contextMenuSubject="'TestOfHung'">Test Of Hung</li>
     </ul> -->
     
-    <context-menu>
-        <!-- <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.item.name)">
-            Say hi!
-        </ng-template>
-        <ng-template contextMenuItem divider="true"></ng-template>
-        <ng-template contextMenuItem let-item (execute)="showMessage($event.item.name + ' said: ' + $event.item.otherProperty)">
-            Bye, {{item?.name}}
-        </ng-template> -->
-        <!-- <ng-template *ngFor="let it of items" contextMenuItem (execute)="showMessage('Hi, ...'+it.otherProperty)">
-            Liste - {{it.name}}
-        </ng-template> -->
-        <!-- <div  style="overflow-y: scroll;"> -->
-            <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem 
-                            (execute)="onClickCamionId(camion.id)">
-                <!-- <button class="btn btn-link" (click)="onClickCamionId(camion.id)"> -->
-                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}
-                <!-- </button> -->
-                <!-- <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
-                <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button> -->
-            </ng-template>
-            <!-- [subMenu]="saySubMenu" -->
-            <!-- <context-menu #saySubMenu> -->
-                <!-- <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem>
-                    <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
-                    <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
-                </ng-template>    
-                 -->
-                <!-- <ng-template *ngFor="let iti of camionItinersFind(camion.id)" 
-                    contextMenuItem (execute)="onModify(iti)">
-                        <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
-                        <br>
-                </ng-template> -->
-            <!-- </context-menu> -->
-            <!-- <ng-template *ngFor="let camion of camionsSurMap" contextMenuItem>
-            <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
-            <br> <button class="btn btn-link" (click)="showMessage('hi '+camion.unite)">showMessage</button>
-            </ng-template> -->
-            
-        <!-- </div> -->
-        
-
-    </context-menu>
+    
 <!-- </div> -->
 <div>
     <button (click)="modeProfil=false;modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">

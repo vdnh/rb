@@ -1,5 +1,5 @@
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ContextMenuComponent } from 'ngx-contextmenu';
+// import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Transporter } from '../../model/model.transporter';
 import { TransportersService } from '../../services/transporters.service';
@@ -157,19 +157,19 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
 
 
-  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+  // @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
-  showMessage(message: any) {
-    alert(message);
-    console.log(message);
-  }
+  // showMessage(message: any) {
+  //   alert(message);
+  //   console.log(message);
+  // }
 
-  items = [
-    { name: 'John', otherProperty: 'Foo' },
-    { name: 'Joe', otherProperty: 'Bar' }
-  ];
+  // items = [
+  //   { name: 'John', otherProperty: 'Foo' },
+  //   { name: 'Joe', otherProperty: 'Bar' }
+  // ];
 
-  numbersArray:any;
+  // numbersArray:any;
   
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
@@ -178,7 +178,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
     private viewportScroller: ViewportScroller,){    
-    this.numbersArray=Array(100).map((x,i)=>i)
+    // this.numbersArray=Array(100).map((x,i)=>i)
     // this.numbersArray=Array(5).fill(4)
   }
   ngOnDestroy(): void {
