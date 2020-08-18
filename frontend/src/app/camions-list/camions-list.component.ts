@@ -115,19 +115,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.contextMenu.openMenu();
   }
 
-  onContextMenuTest(event: MouseEvent) {
-    if(this.camionClicked==null){
+  onContextMenuRightClick(event: MouseEvent) {
+    this.camionClicked=null;
+    // if(this.camionClicked==null){
       event.preventDefault();
       this.contextMenuPosition.x = event.clientX + 'px';
       this.contextMenuPosition.y = event.clientY + 'px';
       // this.contextMenu.menuData = { 'item': item };
       this.contextMenu.menu.focusFirstItem('mouse');
       this.contextMenu.openMenu();
-    }
+    // }
   }
 
   onContextMenuAllTrucksClick(event:MouseEvent) {
-    if(!this.repere){ //this.camionClicked==null && 
+    if(this.camionClicked!=null && !this.repere){ //
       this.contextMenuPosition.x = event.clientX + 'px';
       this.contextMenuPosition.y = event.clientY + 'px';
       this.contextMenu.menu.focusFirstItem('mouse');
@@ -493,7 +494,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     }
     //this.router.navigate(["/map-flotte", this.id]);
   }
-  
+
   // subscribe01 : Subscription;
   // refreshCamionsSurMap(){
   //   this.subscribe01.unsubscribe();
