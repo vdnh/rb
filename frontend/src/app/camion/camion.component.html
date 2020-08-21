@@ -604,7 +604,7 @@
           <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td> -->
           <th>
             <!-- <div> -->
-              Liste Reparations &nbsp;<select type="text" [(ngModel)]="bonDeTravailHistoire">
+              Liste Reparations &nbsp;<select type="text" [(ngModel)]="bonDeTravailHistoire" (ngModelChange)="onHistoireDetaillerOnList(bonDeTravailHistoire)">
                 <option *ngFor="let b of bonDeTravails" [ngValue]="b">
                   {{'#Bon: '+b.id+ ' - ' + 
                   ((b.fini)?"Fini":'Ouvert')+ ' - ' +
