@@ -1082,12 +1082,23 @@ async showMap() {
       if(localStorage.getItem('tonken')!=null){
         this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
           this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-            alert("Un sms a ete envoye.")  
+            if(this.varsGlobal.language.includes('Francais')){
+              alert("Un sms a ete envoye.")  
+            }
+            if(this.varsGlobal.language.includes('English')){
+              alert("An sms has been sent.")  
+            }
               this.em.emailDest= myGlobals.emailPrincipal; //"ventesosprestige@gmail.com";//this.remorquage.emailIntervenant
               //this.em.titre="Demande Express : " + this.remorquage.timeCall 
               this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
               this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-                alert("Un courriel a ete envoye aussi.")
+                if(this.varsGlobal.language.includes('Francais')){
+                  alert("Un courriel a ete envoye aussi.")  
+                }
+                if(this.varsGlobal.language.includes('English')){
+                  alert("An email was also sent.")  
+                }
+                
                 //this.answer=null;
                 this.remorquage=new Remorquage();
                 //localStorage.clear();  //  erase localstorage after sent sms and email
@@ -1109,14 +1120,23 @@ async showMap() {
           this.authService.saveTonken(jwtToken);
           this.remorquagesService.saveRemorquages(this.remorquage).subscribe((data:Remorquage)=>{
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Le sms a ete envoye a SOS Prestige.")  
+              if(this.varsGlobal.language.includes('Francais')){
+                alert("Le sms a ete envoye.")
+              }
+              if(this.varsGlobal.language.includes('English')){
+                alert("A sms has been sent.")
+              } 
                 this.em.emailDest= myGlobals.emailPrincipal;//this.remorquage.emailIntervenant
                 //this.em.titre="Demande Express : " + this.remorquage.timeCall 
                 this.em.content='<div><p> '+document.getElementById('toprint').innerHTML + " </p></div>"    
                 this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-                  alert("Le courriel a ete envoye a SOS Prestige, aussi.")
-
                   
+                  if(this.varsGlobal.language.includes('Francais')){
+                    alert("Le courriel a ete envoye, aussi.")
+                  }
+                  if(this.varsGlobal.language.includes('English')){
+                    alert("An email was also sent.")
+                  }
                 this.varsGlobal.userLogs.entreprise='Remorquage Express';
                 this.varsGlobal.userLogs.usernameLogin=this.remorquage.telClient2em  // this is email
                 this.varsGlobal.userLogs.role=this.remorquage.telClient

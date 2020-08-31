@@ -1,43 +1,128 @@
-<!--p></p-->
-<div class="header" style="margin: 0px"> 
-  <h3 style="font-weight: bold; margin: 0px;" class="noprint">  
-    <strong> CTS - Complete Transport Solution </strong> 
-    <!-- <small style="float: right;margin-right: 20px;">Language</small> -->
-  </h3>    
-</div>
-<div class="container; bg" style="margin-left: 20px; margin-right: 20px; margin-top: 0px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
-  <div *ngIf="mode==2" class="noprint">
-    <!-- <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3>  -->
-    <br> <br> <h3>Wrong domain name.</h3> 
+<div *ngIf="varsGlobal.language.includes('Francais')">
+  <div class="header" style="margin: 0px"> 
+    <h3 style="font-weight: bold; margin: 0px;" class="noprint">  
+      <strong> CTS - Complete Transport Solution </strong> 
+      <small style="float: right;margin-right: 20px;">
+        <span>en cours de développement &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()">
+          <option *ngFor="let lg of varsGlobal.languages" [ngValue]="lg">{{lg}}</option>
+        </select>
+      </small>
+    </h3>    
   </div>
-  <!--div class="row" *ngIf="mode!=2">
-    <div class="col-sm-12 col-lg-12 col-md-12"-->
-      <div class="row" *ngIf="mode!=2" style="background-color: hsl(180, 51%, 92%);"> 
-        <div  class="col-sm-12 col-md-12 col-lg-12">
-          <div *ngIf="modeSignUp==0">
-            <div *ngIf="usernameLogin.length>1">
-              <h5 class="noprint" style="text-decoration-line: underline;">Session : {{usernameLogin.toUpperCase()}} 
-                <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
-              </h5>
-              <h5 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
-                {{transporter.nom}}
-                <span> <br> Tel: {{transporter.tel}}</span>
-                <span><br> Email: {{transporter.email}}</span>
-              </h5>
-            </div>
-
-            <div class="panel panel-primary" *ngIf="role=='' || !eligible">
-
-              <div class="row">
-                <div class="col-sm-12 col-md-6 col-lg-6">
+  <div class="container; bg" style="margin-left: 20px; margin-right: 20px; margin-top: 0px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
+    <div *ngIf="mode==2" class="noprint">
+      <!-- <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3>  -->
+      <br> <br> <h3>Wrong domain name.</h3> 
+    </div>
+    <!--div class="row" *ngIf="mode!=2">
+      <div class="col-sm-12 col-lg-12 col-md-12"-->
+        <div class="row" *ngIf="mode!=2" style="background-color: hsl(180, 51%, 92%);"> 
+          <div  class="col-sm-12 col-md-12 col-lg-12">
+            <div *ngIf="modeSignUp==0">
+              <div *ngIf="usernameLogin.length>1">
+                <h5 class="noprint" style="text-decoration-line: underline;">Session : {{usernameLogin.toUpperCase()}} 
+                  <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                </h5>
+                <h5 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
+                  {{transporter.nom}}
+                  <span> <br> Tel: {{transporter.tel}}</span>
+                  <span><br> Email: {{transporter.email}}</span>
+                </h5>
+              </div>
+  
+              <div class="panel panel-primary" *ngIf="role=='' || !eligible">
+  
+                <div class="row">
+                  <div class="col-sm-12 col-md-6 col-lg-6">
+                    <div class="alert alert-danger" *ngIf="mode==1">
+                        <strong>Identification erronee ...</strong>
+                    </div>
+                  </div>
+                </div>  
+  
+                <div class="row">
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                    <div class="panel-body"> <h4>
+                      <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
+                        <div class="form-group">
+                            <label class="control-label">Members' Login</label>
+                            <input type="text" name="username" ngModel="" class="form-control" 
+                            placeholder="username" style="width: 25ch" required/>
+                        </div>
+                        <div class="form-group">
+                          <input type="password" name="password" ngModel="" class="form-control" 
+                          placeholder="password" style="width: 25ch" required/>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-link">Login</button>
+                          <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
+                        </div>
+                      </form> </h4>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
+                    <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
+                    <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                    <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Transport</h4></a></button>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                    <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Suivi Rapide</h4></a></button>
+                  </div>
+                  <div class="col-sm-12 col-md-4 col-lg-4">
+                    <marquee behavior="scroll" direction="up" scrollamount="5">
+                      <h4><strong>
+                        Plus Camions - Plus Loads - Plus Affaires <br><br>
+                        Simplification des Operations <br><br>
+                      </strong></h4>
+                      <h5><strong>
+                          Rapide, Facile et Sécurisé <br><br>
+                          Localiser les camions et les frets <br><br>
+                          Augmenter les affaires <br><br>
+                          Suivre en temps réel <br><br>
+                          Moteur de recherche de transporteur <br><br>
+                          Rendre votre entreprise visible sur le web <br><br>
+                          Automatiser la gestion votre flotte
+                      </strong></h5>
+                      <!-- <img src="/assets/images/sosprestige.png" alt="ImageSOSPrestige"> -->
+                    </marquee>
+                  </div>
+                </div>
+                
+                
+                <p style="background-color: whitesmoke;">
+                  <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+                  <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span>
+                  <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
+                  
+                </p>
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                      <!-- [style.background]="'url(/assets/images/bkgrd01.png)'" -->
+                    <!--h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
+                    <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6-->
+                    <marquee behavior="scroll" direction="right" scrollamount="5">
+                      <h4><strong> <br>
+                        Plus Camions - Plus Loads - Plus Affaires &nbsp;- &nbsp;Simplification des Operations.&nbsp;&nbsp;&nbsp;&nbsp; 
+                        <!-- &nbsp;Plus Camions - Plus Loads - Simplifier des Operations. -->
+                      </strong></h4>
+                    </marquee>
+                    <marquee behavior="scroll" direction="right" scrollamount="5">
+                      <h5><strong><br>
+                        Un outil essentiel pour Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers.
+                        <br>
+                      </strong></h5>
+                    </marquee>
+                  </div>
+                </div>
+                  
+                <!-- <br>
+                <div class="col-md-5 col-md-offset-1">
                   <div class="alert alert-danger" *ngIf="mode==1">
                       <strong>Identification erronee ...</strong>
                   </div>
                 </div>
-              </div>  
-
-              <div class="row">
-                <div class="col-sm-12 col-md-3 col-lg-3">
+                <div class="col-md-5 col-md-offset-1">
                   <div class="panel-body"> <h4>
                     <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
                       <div class="form-group">
@@ -56,278 +141,539 @@
                     </form> </h4>
                   </div>
                 </div>
-                <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
-                  <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
-                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
-                    <span>&nbsp;&nbsp;&nbsp;</span>
-                  <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Transport</h4></a></button>
-                    <span>&nbsp;&nbsp;&nbsp;</span>
-                  <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Suivi Rapide</h4></a></button>
-                </div>
-                <div class="col-sm-12 col-md-4 col-lg-4">
-                  <marquee behavior="scroll" direction="up" scrollamount="5">
-                    <h4><strong>
-                      Plus Camions - Plus Loads - Plus Affaires <br><br>
-                      Simplification des Operations <br><br>
-                    </strong></h4>
-                    <h5><strong>
-                        Rapide, Facile et Sécurisé <br><br>
-                        Localiser les camions et les frets <br><br>
-                        Augmenter les affaires <br><br>
-                        Suivre en temps réel <br><br>
-                        Moteur de recherche de transporteur <br><br>
-                        Rendre votre entreprise visible sur le web <br><br>
-                        Automatiser la gestion votre flotte
-                    </strong></h5>
-                    <!-- <img src="/assets/images/sosprestige.png" alt="ImageSOSPrestige"> -->
-                  </marquee>
-                </div>
+                <div>
+                  <h5> <strong>Simplifier des operations de Transport.</strong></h5>
+                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+                </div> -->
               </div>
-              
-              
-              <p style="background-color: whitesmoke;">
-                <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
-                <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span>
-                <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
+              <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button class="btn btn-link" (click)="onShipper()">Gerer Compte</button>   
+                <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
+                <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
+                <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
+                <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+                <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button>
+                <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>      
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button routerLink="/" class="btn btn-link" (click)="soumission=true; gererCompte=false">
+                  <strong *ngIf="soumission">Soumission</strong>
+                  <span *ngIf="!soumission">Soumission</span>
+                </button>
+                <button class="btn btn-link"  (click)="onTransporter()">
+                  <strong *ngIf="gererCompte">Gerer Compte</strong>
+                  <span *ngIf="!gererCompte">Gerer Compte</span>
+                </button>     
+                <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
+                <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
+                <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="soumission && role=='TRANSPORTER'" style="margin-left: 10pt;">
+                <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
+                <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
+                <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>     
+                <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+                <!-- <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button> -->     
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <!-- <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>      -->
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='MANAGER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
+                <button routerLink="/transporters" class="btn btn-link">Transporters</button>         
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='ADMIN'">     
+                <button routerLink="/suivi-rapide" class="btn btn-link">Suvi Rapide</button>
+                <button routerLink="/bank-client" class="btn btn-link">Publicite</button>
+                <button routerLink="/shippers" class="btn btn-link">ClientPros</button> 
+                <button routerLink="/transporters" class="btn btn-link">Transporters</button> 
+                <button routerLink="/appUsers" class="btn btn-link">AppUsers</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="row; noprint" *ngIf="role=='DISPATCH'">     
+                <!--div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
+                  <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+                    <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                  </h6>
+                </div-->
                 
-              </p>
-              <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <!-- [style.background]="'url(/assets/images/bkgrd01.png)'" -->
-                  <!--h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
-                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6-->
-                  <marquee behavior="scroll" direction="right" scrollamount="5">
-                    <h4><strong> <br>
-                      Plus Camions - Plus Loads - Plus Affaires &nbsp;- &nbsp;Simplification des Operations.&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <!-- &nbsp;Plus Camions - Plus Loads - Simplifier des Operations. -->
-                    </strong></h4>
-                  </marquee>
-                  <marquee behavior="scroll" direction="right" scrollamount="5">
-                    <h5><strong><br>
-                      Un outil essentiel pour Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers.
-                      <br>
-                    </strong></h5>
-                  </marquee>
-                </div>
-              </div>
+                <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
+                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
+                <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
+                <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                  <strong *ngIf="camsItiners">Camions/Itineraires</strong>
+                  <span *ngIf="!camsItiners">Camions/Itineraires</span> 
+                </button> 
+                <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
+                  <strong *ngIf="remor">Remorquage</strong>
+                  <span *ngIf="!remor">Remorquage</span> 
+                </button> 
+                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  <strong *ngIf="remor">Remorquage</strong>
+                  <span *ngIf="!remor">Remorquage</span> 
+                </button> 
+                <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
+                  <strong *ngIf="trans">Transport</strong>
+                  <span *ngIf="!trans">Transport</span> 
+                </button> 
+                <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  <strong *ngIf="trans">Transport</strong>
+                  <span *ngIf="!trans">Transport</span> 
+                </button>
+                <button routerLink="/" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"  (click)="onRessource()">
+                  <span *ngIf="!ressource">Ressource</span>
+                  <strong *ngIf="ressource">Ressource</strong>
+                </button> 
+                <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
+                  <strong *ngIf="suivi">Suivi Rapide</strong>
+                  <span *ngIf="!suivi">Suivi Rapide</span> 
+                </button>
+                <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>  -->
+                <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> -->
+                <!-- <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button> -->
+                <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
+                <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
                 
-              <!-- <br>
-              <div class="col-md-5 col-md-offset-1">
-                <div class="alert alert-danger" *ngIf="mode==1">
-                    <strong>Identification erronee ...</strong>
-                </div>
+                <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
+                  <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
+                  <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
+                <!-- </div> -->
               </div>
-              <div class="col-md-5 col-md-offset-1">
-                <div class="panel-body"> <h4>
-                  <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
-                    <div class="form-group">
-                        <label class="control-label">Members' Login</label>
-                        <input type="text" name="username" ngModel="" class="form-control" 
-                        placeholder="username" style="width: 25ch" required/>
-                    </div>
-                    <div class="form-group">
-                      <input type="password" name="password" ngModel="" class="form-control" 
-                      placeholder="password" style="width: 25ch" required/>
-                    </div>
-                    <div class="form-group">
-                      <button type="submit" class="btn btn-link">Login</button>
-                      <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
-                    </div>
-                  </form> </h4>
-                </div>
-              </div>
-              <div>
-                <h5> <strong>Simplifier des operations de Transport.</strong></h5>
-                <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
-              </div> -->
+              <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>
-            <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
-              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
-              <button class="btn btn-link" (click)="onShipper()">Gerer Compte</button>   
-              <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
-              <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
-              <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
-              <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
-              <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button>
-              <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
-              <button (click)="logout()" class="btn btn-link">Logout</button>
-              <br>      
+            <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
+              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajout Client</button> 
+              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Clients</button> 
+              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Chauffeurs</button>
             </div>
-            <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
-              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
-              <button routerLink="/" class="btn btn-link" (click)="soumission=true; gererCompte=false">
-                <strong *ngIf="soumission">Soumission</strong>
-                <span *ngIf="!soumission">Soumission</span>
-              </button>
-              <button class="btn btn-link"  (click)="onTransporter()">
-                <strong *ngIf="gererCompte">Gerer Compte</strong>
-                <span *ngIf="!gererCompte">Gerer Compte</span>
-              </button>     
-              <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
-              <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
-              <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
-              <button (click)="logout()" class="btn btn-link">Logout</button>
-              <br>
-            </div>
-            <div class="panel panel-primary" *ngIf="soumission && role=='TRANSPORTER'" style="margin-left: 10pt;">
-              <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
-              <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
-              <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>     
-              <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
-              <!-- <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button> -->     
-              <br>
-            </div>
-            <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
-              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
-              <!-- <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>      -->
-              <button (click)="logout()" class="btn btn-link">Logout</button>
-              <br>
-            </div>
-            <div class="panel panel-primary" *ngIf="role=='MANAGER'">     
-              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
-              <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
-              <button routerLink="/transporters" class="btn btn-link">Transporters</button>         
-              <button (click)="logout()" class="btn btn-link">Logout</button>
-              <br>
-            </div>
-            <div class="panel panel-primary" *ngIf="role=='ADMIN'">     
-              <button routerLink="/suivi-rapide" class="btn btn-link">Suvi Rapide</button>
-              <button routerLink="/bank-client" class="btn btn-link">Publicite</button>
-              <button routerLink="/shippers" class="btn btn-link">ClientPros</button> 
-              <button routerLink="/transporters" class="btn btn-link">Transporters</button> 
-              <button routerLink="/appUsers" class="btn btn-link">AppUsers</button>
-              <button (click)="logout()" class="btn btn-link">Logout</button>
-              <br>
-            </div>
-            <div class="row; noprint" *ngIf="role=='DISPATCH'">     
-              <!--div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
-                <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
-                  <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
-                </h6>
-              </div-->
-              
-              <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
-              <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
-              <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
-              <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
-                <strong *ngIf="camsItiners">Camions/Itineraires</strong>
-                <span *ngIf="!camsItiners">Camions/Itineraires</span> 
-              </button> 
-              <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
-                <strong *ngIf="remor">Remorquage</strong>
-                <span *ngIf="!remor">Remorquage</span> 
-              </button> 
-              <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
-                <strong *ngIf="remor">Remorquage</strong>
-                <span *ngIf="!remor">Remorquage</span> 
-              </button> 
-              <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
-                <strong *ngIf="trans">Transport</strong>
-                <span *ngIf="!trans">Transport</span> 
-              </button> 
-              <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
-                <strong *ngIf="trans">Transport</strong>
-                <span *ngIf="!trans">Transport</span> 
-              </button>
-              <button routerLink="/" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"  (click)="onRessource()">
-                <span *ngIf="!ressource">Ressource</span>
-                <strong *ngIf="ressource">Ressource</strong>
-              </button> 
-              <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
-                <strong *ngIf="suivi">Suivi Rapide</strong>
-                <span *ngIf="!suivi">Suivi Rapide</span> 
-              </button>
-              <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>  -->
-              <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> -->
-              <!-- <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button> -->
-              <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
-              <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
-              
-              <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
-                <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
-                <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
-              <!-- </div> -->
-            </div>
-            <!-- <hr style="border: 2px solid lightgray"/> -->
-          </div>
-          <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
-            <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajout Client</button> 
-            <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Clients</button> 
-            <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Chauffeurs</button>
-          </div>
-
-          <div *ngIf="role==''">
-            <!-- <div>
-              <h3 id="RMEX" style="font-weight: bold;">Services 24/7
-                <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h3>Routier</h3></a></button>
-                <span>-</span>
-                <button class="btn btn-link" (click)="modeExpress=2;"><h3>Transport</h3></button>
-              </h3>
-            </div> -->
-            <!-- <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
-            <h4 *ngIf="modeExpress==2">Transport Express - Coming soon ...</h4> -->
-            <!-- <app-suivi-rapide id="SURA" *ngIf="modeExpress==3">Loading ...</app-suivi-rapide> -->
-          </div>
-        </div>
-        <!--div class="col-md-4 col-sm-4 col-lg-4">
-          <div class="panel panel-primary" *ngIf="role==''">
-            <button (click)="signing()">{{textSign}}</button>
-          </div>
-          <p></p>
-          <div class="panel panel-primary" *ngIf="modeSignUp==1">
-            <label>Registrer en tant que : </label>
-            <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
-            <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
-          </div>
-        </div-->
-        <!--div class="col-md-4 col-sm-4 col-lg-4">
-          <div class="panel panel-primary" *ngIf="role==''">
-            <button (click)="demandeExpress()">{{textExpressSign}}</button>
-          </div>
-        </div-->
-        <!--div class="col-md-4 col-sm-4 col-lg-4" *ngIf="role==''">
-          <iframe width="500" height="250" class="e2e-iframe-trusted-src" src="https://www.sosprestige.com/">
-          </iframe>
-        </div-->
-      </div>
-    <!--/div>
-    <br>
-  </div-->
-  <router-outlet *ngIf="mode!=2"></router-outlet>
-  <!--br><br-->
-  <!--footer *ngIf="mode!=2"-->
   
-  <!--/footer-->
-  <!--/div-->
-</div>
-
-<div class="row; noprint" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
-  <span *ngIf="role=='DISPATCH' && (userId.length>0)">
-    <br>
-    <a (click)="alertComingSoon()" href="#">Enregistrez-vous ici</a>, vous pouvez consulter des disponibilités de tous Transporteurs.
-    <!-- <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button> -->
-    <br>
-  </span>
-  <br>
-</div>
-
-<div class="footer" *ngIf="mode!=2">
-  <div class="noprint">
-    <!-- <span>
-      SOS Prestige,&nbsp;
+            <div *ngIf="role==''">
+              <!-- <div>
+                <h3 id="RMEX" style="font-weight: bold;">Services 24/7
+                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h3>Routier</h3></a></button>
+                  <span>-</span>
+                  <button class="btn btn-link" (click)="modeExpress=2;"><h3>Transport</h3></button>
+                </h3>
+              </div> -->
+              <!-- <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+              <h4 *ngIf="modeExpress==2">Transport Express - Coming soon ...</h4> -->
+              <!-- <app-suivi-rapide id="SURA" *ngIf="modeExpress==3">Loading ...</app-suivi-rapide> -->
+            </div>
+          </div>
+          <!--div class="col-md-4 col-sm-4 col-lg-4">
+            <div class="panel panel-primary" *ngIf="role==''">
+              <button (click)="signing()">{{textSign}}</button>
+            </div>
+            <p></p>
+            <div class="panel panel-primary" *ngIf="modeSignUp==1">
+              <label>Registrer en tant que : </label>
+              <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
+              <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
+            </div>
+          </div-->
+          <!--div class="col-md-4 col-sm-4 col-lg-4">
+            <div class="panel panel-primary" *ngIf="role==''">
+              <button (click)="demandeExpress()">{{textExpressSign}}</button>
+            </div>
+          </div-->
+          <!--div class="col-md-4 col-sm-4 col-lg-4" *ngIf="role==''">
+            <iframe width="500" height="250" class="e2e-iframe-trusted-src" src="https://www.sosprestige.com/">
+            </iframe>
+          </div-->
+        </div>
+      <!--/div>
+      <br>
+    </div-->
+    <router-outlet *ngIf="mode!=2"></router-outlet>
+    <!--br><br-->
+    <!--footer *ngIf="mode!=2"-->
+    
+    <!--/footer-->
+    <!--/div-->
+  </div>
+  
+  <div class="row; noprint" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
+    <span *ngIf="role=='DISPATCH' && (userId.length>0)">
+      <br>
+      <a (click)="alertComingSoon()" href="#">Enregistrez-vous ici</a>, vous pouvez consulter des disponibilités de tous Transporteurs.
+      <!-- <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button> -->
+      <br>
     </span>
-    <span>
-      <a href="tel:+1-450-974-9111">450-974-9111,</a>
-        &nbsp;
-      <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
-    </span> -->
-    <span>CTS - Complete Transport Solution 2018-2020,   © Tous droits réservés.</span>
-    <!-- <span>
-      520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
-    </span> -->
-  <div>
-  <!--h6 style="font: bold"><strong><a href="tel:+1-450-974-9111">450-974-9111</a></strong>&nbsp;&nbsp;-&nbsp;&nbsp;<strong><a href="mailto:sosprestige@gmail.com"> sosprestige@gmail.com</a></strong></h6-->
-  <!--span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span-->
-    <!--/div>
-  </div-->
+    <br>
+  </div>
+  
+  <div class="footer" *ngIf="mode!=2">
+    <div class="noprint">
+      <!-- <span>
+        SOS Prestige,&nbsp;
+      </span>
+      <span>
+        <a href="tel:+1-450-974-9111">450-974-9111,</a>
+          &nbsp;
+        <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
+      </span> -->
+      <span>CTS - Complete Transport Solution 2018-2020,   © Tous droits réservés.</span>
+      <!-- <span>
+        520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
+      </span> -->
+    </div>
+    <!--h6 style="font: bold"><strong><a href="tel:+1-450-974-9111">450-974-9111</a></strong>&nbsp;&nbsp;-&nbsp;&nbsp;<strong><a href="mailto:sosprestige@gmail.com"> sosprestige@gmail.com</a></strong></h6-->
+    <!--span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span-->
+      <!--/div>
+    </div-->
+  </div>
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+  <div class="header" style="margin: 0px"> 
+    <h3 style="font-weight: bold; margin: 0px;" class="noprint">  
+      <strong> CTS - Complete Transport Solution </strong> 
+      <small style="float: right;margin-right: 20px;">
+        <span>in development &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()">
+          <option *ngFor="let lg of varsGlobal.languages" [ngValue]="lg">{{lg}}</option>
+        </select>
+      </small>
+    </h3>    
+  </div>
+  <div class="container; bg" style="margin-left: 20px; margin-right: 20px; margin-top: 0px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
+    <div *ngIf="mode==2" class="noprint">
+      <!-- <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3>  -->
+      <br> <br> <h3>Wrong domain name.</h3> 
+    </div>
+    <!--div class="row" *ngIf="mode!=2">
+      <div class="col-sm-12 col-lg-12 col-md-12"-->
+        <div class="row" *ngIf="mode!=2" style="background-color: hsl(180, 51%, 92%);"> 
+          <div  class="col-sm-12 col-md-12 col-lg-12">
+            <div *ngIf="modeSignUp==0">
+              <div *ngIf="usernameLogin.length>1">
+                <h5 class="noprint" style="text-decoration-line: underline;">Session : {{usernameLogin.toUpperCase()}} 
+                  <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                </h5>
+                <h5 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">
+                  {{transporter.nom}}
+                  <span> <br> Tel: {{transporter.tel}}</span>
+                  <span><br> Email: {{transporter.email}}</span>
+                </h5>
+              </div>
+  
+              <div class="panel panel-primary" *ngIf="role=='' || !eligible">
+  
+                <div class="row">
+                  <div class="col-sm-12 col-md-6 col-lg-6">
+                    <div class="alert alert-danger" *ngIf="mode==1">
+                        <strong>Identification erronee ...</strong>
+                    </div>
+                  </div>
+                </div>  
+  
+                <div class="row">
+                  <div class="col-sm-12 col-md-3 col-lg-3">
+                    <div class="panel-body"> <h4>
+                      <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
+                        <div class="form-group">
+                            <label class="control-label">Members' Login</label>
+                            <input type="text" name="username" ngModel="" class="form-control" 
+                            placeholder="username" style="width: 25ch" required/>
+                        </div>
+                        <div class="form-group">
+                          <input type="password" name="password" ngModel="" class="form-control" 
+                          placeholder="password" style="width: 25ch" required/>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-link">Login</button>
+                          <button type="reset" (click)="alertComingSoon()" class="btn btn-link">SignUp</button>
+                        </div>
+                      </form> </h4>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
+                    <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
+                    <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Towing</h4></a></button>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                    <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Freight</h4></a></button>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                    <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Track</h4></a></button>
+                  </div>
+                  <div class="col-sm-12 col-md-4 col-lg-4">
+                    <marquee behavior="scroll" direction="up" scrollamount="5">
+                      <h4><strong>
+                        More Trucks - More Loads - More Business <br><br>
+                        Simplify the Operations <br><br>
+                      </strong></h4>
+                      <h5><strong>
+                          Quick, Easy and Secure <br><br>
+                          Locate Trucks and Freights <br><br>
+                          Increase Business <br><br>
+                          Follow in Real Time <br><br>
+                          Search Engine <br><br>
+                          Make your business visible on the Web <br><br>
+                          Automate your fleet management
+                      </strong></h5>
+                      <!-- <img src="/assets/images/sosprestige.png" alt="ImageSOSPrestige"> -->
+                    </marquee>
+                  </div>
+                </div>
+                
+                
+                <p style="background-color: whitesmoke;">
+                  <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+                  <span id="TPEX" *ngIf="modeExpress==2">Freight Express - Coming soon ...</span>
+                  <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
+                  
+                </p>
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                      <!-- [style.background]="'url(/assets/images/bkgrd01.png)'" -->
+                    <!--h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
+                    <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6-->
+                    <marquee behavior="scroll" direction="right" scrollamount="5">
+                      <h4><strong> <br>
+                        More trucks - More Loads - More Business &nbsp;- &nbsp;Simplify the Operations.&nbsp;&nbsp;&nbsp;&nbsp; 
+                        <!-- &nbsp;Plus Camions - Plus Loads - Simplifier des Operations. -->
+                      </strong></h4>
+                    </marquee>
+                    <marquee behavior="scroll" direction="right" scrollamount="5">
+                      <h4><strong><br>
+                        An esential tool for Carriers - Brokers - Dispatchs - Technicians - Individuals
+                        <br>
+                      </strong></h4>
+                    </marquee>
+                  </div>
+                </div>
+                  
+                <!-- <br>
+                <div class="col-md-5 col-md-offset-1">
+                  <div class="alert alert-danger" *ngIf="mode==1">
+                      <strong>Identification erronee ...</strong>
+                  </div>
+                </div>
+                <div class="col-md-5 col-md-offset-1">
+                  <div class="panel-body"> <h4>
+                    <form #f="ngForm" (ngSubmit)="onLogin(f.value)">
+                      <div class="form-group">
+                          <label class="control-label">Members' Login</label>
+                          <input type="text" name="username" ngModel="" class="form-control" 
+                          placeholder="username" style="width: 25ch" required/>
+                      </div>
+                      <div class="form-group">
+                        <input type="password" name="password" ngModel="" class="form-control" 
+                        placeholder="password" style="width: 25ch" required/>
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-link">Login</button>
+                        <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
+                      </div>
+                    </form> </h4>
+                  </div>
+                </div>
+                <div>
+                  <h5> <strong>Simplifier des operations de Transport.</strong></h5>
+                  <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6>
+                </div> -->
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button class="btn btn-link" (click)="onShipper()">Account Management</button>   
+                <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
+                <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
+                <button routerLink="/list-voyage" class="btn btn-link">Equipments Potential</button>    
+                <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+                <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button>
+                <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>      
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='TRANSPORTER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button routerLink="/" class="btn btn-link" (click)="soumission=true; gererCompte=false">
+                  <strong *ngIf="soumission">Submission</strong>
+                  <span *ngIf="!soumission">Submission</span>
+                </button>
+                <button class="btn btn-link"  (click)="onTransporter()">
+                  <strong *ngIf="gererCompte">Account Management</strong>
+                  <span *ngIf="!gererCompte">Account Management</span>
+                </button>     
+                <!--button routerLink="/calcule-prix" class="btn btn-link">Poster Demande</button> 
+                <button routerLink="/list-demande-de-chaque/transporter" class="btn btn-link">Nos Demandes</button-->
+                <button class="btn btn-link"  (click)="switchRole()">SwitchRole</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="soumission && role=='TRANSPORTER'" style="margin-left: 10pt;">
+                <button routerLink="/creer-voyage" class="btn btn-link">Add Equipment</button>        
+                <button routerLink="/list-voyage" class="btn btn-link">Equipments</button>
+                <button routerLink="/list-demande" class="btn btn-link">Loads Potential</button>     
+                <button routerLink="/business-messages" class="btn btn-link">Messages ({{varsGlobal.nombreMessages}})</button>
+                <!-- <button class="btn btn-link"  (click)="refreshMessages()">RefreshMessages</button> -->     
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <!-- <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>      -->
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='MANAGER'">     
+                <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+                <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
+                <button routerLink="/transporters" class="btn btn-link">Transporters</button>         
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="panel panel-primary" *ngIf="role=='ADMIN'">     
+                <button routerLink="/suivi-rapide" class="btn btn-link">Track</button>
+                <button routerLink="/bank-client" class="btn btn-link">Advertising</button>
+                <button routerLink="/shippers" class="btn btn-link">ClientPros</button> 
+                <button routerLink="/transporters" class="btn btn-link">Transporters</button> 
+                <button routerLink="/appUsers" class="btn btn-link">AppUsers</button>
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>
+              </div>
+              <div class="row; noprint" *ngIf="role=='DISPATCH'">     
+                <!--div *ngIf="usernameLogin.length>1" class="col-md-4 col-sm-4 col-lg-4">
+                  <h6 style="text-decoration-line: underline">Session : {{usernameLogin.toUpperCase()}} 
+                    <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
+                  </h6>
+                </div-->
+                
+                <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
+                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
+                <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
+                <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                  <strong *ngIf="camsItiners">Units/Routes</strong>
+                  <span *ngIf="!camsItiners">Units/Routes</span> 
+                </button> 
+                <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
+                  <strong *ngIf="remor">Towing</strong>
+                  <span *ngIf="!remor">Towing</span> 
+                </button> 
+                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  <strong *ngIf="remor">Towing</strong>
+                  <span *ngIf="!remor">Towing</span> 
+                </button> 
+                <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
+                  <strong *ngIf="trans">Freight</strong>
+                  <span *ngIf="!trans">Freight</span> 
+                </button> 
+                <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  <strong *ngIf="trans">Freight</strong>
+                  <span *ngIf="!trans">Freight</span> 
+                </button>
+                <button routerLink="/" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"  (click)="onRessource()">
+                  <span *ngIf="!ressource">Resources</span>
+                  <strong *ngIf="ressource">Resources</strong>
+                </button> 
+                <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
+                  <strong *ngIf="suivi">Track</strong>
+                  <span *ngIf="!suivi">Track</span> 
+                </button>
+                <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button>  -->
+                <!-- <button routerLink="/coming-soon" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Transport</button> -->
+                <!-- <button routerLink="/appel-express" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Mission/Message-Express</button> -->
+                <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
+                <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
+                
+                <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
+                  <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
+                  <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
+                <!-- </div> -->
+              </div>
+              <!-- <hr style="border: 2px solid lightgray"/> -->
+            </div>
+            <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
+              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Add Client</button> 
+              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">List Clients</button> 
+              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Drivers</button>
+            </div>
+  
+            <div *ngIf="role==''">
+              <!-- <div>
+                <h3 id="RMEX" style="font-weight: bold;">Services 24/7
+                  <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h3>Routier</h3></a></button>
+                  <span>-</span>
+                  <button class="btn btn-link" (click)="modeExpress=2;"><h3>Transport</h3></button>
+                </h3>
+              </div> -->
+              <!-- <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
+              <h4 *ngIf="modeExpress==2">Transport Express - Coming soon ...</h4> -->
+              <!-- <app-suivi-rapide id="SURA" *ngIf="modeExpress==3">Loading ...</app-suivi-rapide> -->
+            </div>
+          </div>
+          <!--div class="col-md-4 col-sm-4 col-lg-4">
+            <div class="panel panel-primary" *ngIf="role==''">
+              <button (click)="signing()">{{textSign}}</button>
+            </div>
+            <p></p>
+            <div class="panel panel-primary" *ngIf="modeSignUp==1">
+              <label>Registrer en tant que : </label>
+              <button routerLink="/new-shipper" class="btn btn-link">Shipper</button> 
+              <button routerLink="/new-transporter" class="btn btn-link">Transporter</button>
+            </div>
+          </div-->
+          <!--div class="col-md-4 col-sm-4 col-lg-4">
+            <div class="panel panel-primary" *ngIf="role==''">
+              <button (click)="demandeExpress()">{{textExpressSign}}</button>
+            </div>
+          </div-->
+          <!--div class="col-md-4 col-sm-4 col-lg-4" *ngIf="role==''">
+            <iframe width="500" height="250" class="e2e-iframe-trusted-src" src="https://www.sosprestige.com/">
+            </iframe>
+          </div-->
+        </div>
+      <!--/div>
+      <br>
+    </div-->
+    <router-outlet *ngIf="mode!=2"></router-outlet>
+    <!--br><br-->
+    <!--footer *ngIf="mode!=2"-->
+    
+    <!--/footer-->
+    <!--/div-->
+  </div>
+  
+  <div class="row; noprint" style="margin-left: 5px; margin-right: 5px; background-color: hsl(180, 51%, 92%);">
+    <span *ngIf="role=='DISPATCH' && (userId.length>0)">
+      <br>
+      <a (click)="alertComingSoon()" href="#">SignUp</a>, you can check the Carriers' availabilities.
+      <!-- <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button> -->
+      <br>
+    </span>
+    <br>
+  </div>
+  
+  <div class="footer" *ngIf="mode!=2">
+    <div class="noprint">
+      <!-- <span>
+        SOS Prestige,&nbsp;
+      </span>
+      <span>
+        <a href="tel:+1-450-974-9111">450-974-9111,</a>
+          &nbsp;
+        <a href="mailto:sosprestige@gmail.com">sosprestige@gmail.com,&nbsp;</a>
+      </span> -->
+      <span>CTS - Complete Transport Solution 2018-2020,   © All Rights Reserved.</span>
+      <!-- <span>
+        520 rue Guindon, Saint-Eustache, QC J7R 5B4. © Tous droits réservés.
+      </span> -->
+    </div>
+    <!--h6 style="font: bold"><strong><a href="tel:+1-450-974-9111">450-974-9111</a></strong>&nbsp;&nbsp;-&nbsp;&nbsp;<strong><a href="mailto:sosprestige@gmail.com"> sosprestige@gmail.com</a></strong></h6-->
+    <!--span class="label label-primary">Author: CTS - Complete Transport Solution, © 2019 CTS.SOSPRESTIGE.COM, All Rights Reserved </span-->
+      <!--/div>
+    </div-->
+  </div>
 </div>

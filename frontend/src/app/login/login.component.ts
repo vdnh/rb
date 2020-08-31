@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Router } from '@angular/router';
-import { AppComponent } from '../app.component';
+// import { AppComponent } from '../app.component';
 import {Role} from '../../model/model.role';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { Message } from 'src/model/model.message';
 import { MessagesService } from 'src/services/messages.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 

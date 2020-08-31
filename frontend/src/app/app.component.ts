@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Role } from 'src/model/model.role';
 import { MessagesService } from 'src/services/messages.service';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { Message } from 'src/model/model.message';
 import {VarsGlobal} from 'src/services/VarsGlobal'
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UserLogsService } from 'src/services/userLogs.service';
@@ -70,6 +70,10 @@ export class AppComponent implements OnInit{
       })
   }
 
+  languageChange(){
+    localStorage.setItem('language', this.varsGlobal.language)
+  }
+
   private determineLocalIp() {
     window.rTCPeerConnection  = this.getRTCPeerConnection();
 
@@ -108,6 +112,9 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {    
     //await this.determineLocalIp();
+    if(localStorage.getItem('language')){
+      this.varsGlobal.language=localStorage.getItem('language')
+    }
     if(localStorage.getItem('role')) 
       this.role = localStorage.getItem('role')
     if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
@@ -634,6 +641,8 @@ export class AppComponent implements OnInit{
     }
     //this.varsGlobal.userLogs=new UserLogs();
     localStorage.clear();
+    localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
+    
     this.role="";
     
     this.usernameLogin='';

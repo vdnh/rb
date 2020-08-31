@@ -7,6 +7,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 //import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 
@@ -22,7 +23,8 @@ export class SuiviRapideComponent implements OnInit {
     private remorquageService: RemorquagesService,
     private authService:AuthenticationService,
     private fb:FormBuilder,
-    public transportersService:TransportersService,) 
+    public transportersService:TransportersService,
+    public varsGlobal:VarsGlobal) 
   {
     this.form = fb.group({
       username:'chauffeur',
@@ -42,12 +44,33 @@ export class SuiviRapideComponent implements OnInit {
     this.userId= localStorage.getItem('userId')
   }
   
+  translateTypeService(ts:string){ // leger->light, moyen->medium, lourd->heavy
+    if(ts.includes('Leger')){
+      return "Light"
+    }
+    if(ts.includes('Moyen')){
+      return "Medium"
+    }
+    if(ts.includes('Lourd')){
+      return "Heavy"
+    }
+  }
   textResult(sent:boolean, fini:boolean, driverNote:String){
-    if(driverNote.includes("!!Cancelled!!")) this.result = " annulee !!"
-    else {
-      if(!sent) this.result = " en attente.";
-      if(sent && !fini) this.result = " en cour.";
-      if(fini) this.result = " bien termine.";
+    if(this.varsGlobal.language.includes('Francais')){
+      if(driverNote.includes("!!Cancelled!!")) this.result = " annulee !!"
+      else {
+        if(!sent) this.result = " en attente.";
+        if(sent && !fini) this.result = " en cour.";
+        if(fini) this.result = " bien termine.";
+      }
+    }
+    if(this.varsGlobal.language.includes('English')){
+      if(driverNote.includes("!!Cancelled!!")) this.result = " Cancelled !!"
+      else {
+        if(!sent) this.result = " waiting.";
+        if(sent && !fini) this.result = " in progress.";
+        if(fini) this.result = " finished.";
+      }
     }
   }
   async onResearh(){
@@ -57,7 +80,12 @@ export class SuiviRapideComponent implements OnInit {
     this.transport = new Transport();
 
     if(this.numBon==undefined){
-      this.result="Veuillez entrer de #Bon"
+      if(this.varsGlobal.language.includes('Francais')){
+        this.result="Veuillez entrer de #Bon"
+      }
+      if(this.varsGlobal.language.includes('English')){
+        this.result="Please enter #Track"
+      }
       return;
     }
 
@@ -69,16 +97,31 @@ export class SuiviRapideComponent implements OnInit {
         // begin find #Bon - in case visitor
         this.remorquageService.getDetailRemorquage(this.numBon).subscribe((data:Remorquage)=>{
           this.textResult(data.sent, data.fini, data.driverNote)
-          this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+          if(this.varsGlobal.language.includes('Francais')){
+            this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+          }
+          if(this.varsGlobal.language.includes('English')){
+            this.result = "Towing #Num " +this.numBon+ ': ' + this.result + " Login for details."
+          }
           localStorage.clear()
         }, 
         err=>{
           this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
             this.textResult(data.sent, data.fini, data.driverNote)
-            this.result = "Transport #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+            if(this.varsGlobal.language.includes('Francais')){
+              this.result = "Transport #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+            }
+            if(this.varsGlobal.language.includes('English')){
+              this.result = "Freight #Num " +this.numBon+ ': ' + this.result + " Login for details."
+            }
             localStorage.clear()
           }, err=>{
-            this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+            if(this.varsGlobal.language.includes('Francais')){
+              this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+            }
+            if(this.varsGlobal.language.includes('English')){
+              this.result="#Num " +this.numBon+ " is invalid or does not exist."
+            }
             localStorage.clear()
           })
         })
@@ -94,7 +137,12 @@ export class SuiviRapideComponent implements OnInit {
       this.remorquageService.getDetailRemorquage(this.numBon).subscribe((data:Remorquage)=>{
         this.remorquage=data;
         this.textResult(data.sent, data.fini, data.driverNote)
-        this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+        if(this.varsGlobal.language.includes('Francais')){
+          this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+        }
+        if(this.varsGlobal.language.includes('English')){
+          this.result = "Towing #Num " +this.numBon+ ': ' + this.result
+        }
         this.transportersService.getDetailTransporter(data.idTransporter).subscribe((tr:Transporter)=>{
           this.transporter = tr;
         }, err=>{console.log(err)})
@@ -103,12 +151,22 @@ export class SuiviRapideComponent implements OnInit {
         this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
           this.transport=data;
           this.textResult(data.sent, data.fini, data.driverNote)
-          this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+          if(this.varsGlobal.language.includes('Francais')){
+            this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+          }
+          if(this.varsGlobal.language.includes('English')){
+            this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+          }
           this.transportersService.getDetailTransporter(data.idTransporter).subscribe((tr:Transporter)=>{
             this.transporter = tr;
           }, err=>{console.log(err)})
         }, err=>{
-          this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+          if(this.varsGlobal.language.includes('Francais')){
+            this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+          }
+          if(this.varsGlobal.language.includes('English')){
+            this.result="#Num " +this.numBon+ " is invalid or does not existe."
+          }
         })
       })
       return 
@@ -127,19 +185,43 @@ export class SuiviRapideComponent implements OnInit {
           if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
             this.remorquage=data;
             this.textResult(data.sent, data.fini, data.driverNote)
-            this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+            if(this.varsGlobal.language.includes('Francais')){
+              this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+            }
+            if(this.varsGlobal.language.includes('English')){
+              this.result = "Towing #Num " +this.numBon+ ': ' + this.result
+            }
           }
-          else 
-            this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+          else {
+            if(this.varsGlobal.language.includes('Francais')){
+              this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+            }
+            if(this.varsGlobal.language.includes('English')){
+              this.result="#Num " +this.numBon+ " don't belong to you."
+            }
+          }
+            
         }
         else{ // si c'est dispatch - parce userid est null (dispatch de Transporter)
           this.remorquage=data;
           this.textResult(data.sent, data.fini, data.driverNote)
-          this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+          if(this.varsGlobal.language.includes('Francais')){
+            this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+          }
+          if(this.varsGlobal.language.includes('English')){
+            this.result = "Towing #Num " +this.numBon+ ': ' + this.result
+          }
           //alert('this is a remorquage')
         }
       }
-      else this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+      else {
+        if(this.varsGlobal.language.includes('Francais')){
+          this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+        }
+        if(this.varsGlobal.language.includes('English')){
+          this.result="#Num " +this.numBon+ " don't belong to you"
+        }
+      }
       //   {
       //     this.remorquage=data
       //     alert('this is a remorquage')
@@ -155,22 +237,51 @@ export class SuiviRapideComponent implements OnInit {
             if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
               this.transport=data;
               this.textResult(data.sent, data.fini, data.driverNote)
-              this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+              if(this.varsGlobal.language.includes('Francais')){
+                this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+              }
+              if(this.varsGlobal.language.includes('English')){
+                this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+              }
               //alert('this is a transport')  
             }
-            else 
-            this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+            else{
+              if(this.varsGlobal.language.includes('Francais')){
+                this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+              }
+              if(this.varsGlobal.language.includes('English')){
+                this.result="#Num " +this.numBon+ " don't belong to you"
+              }
+            }
+            
           }
           else{ // si c'est dispatch - parce userid est null (dispatch de Transporter)
             this.transport=data;
             this.textResult(data.sent, data.fini, data.driverNote)
-            this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+            if(this.varsGlobal.language.includes('Francais')){
+              this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+            }
+            if(this.varsGlobal.language.includes('English')){
+              this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+            }
             //alert('this is a transport')
           }
         }
-        else this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+        else{ 
+          if(this.varsGlobal.language.includes('Francais')){
+            this.result="#Bon " +this.numBon+ " ne vous appartient pas"
+          }
+          if(this.varsGlobal.language.includes('English')){
+            this.result="#Num " +this.numBon+ " don't belong to you"
+          }
+        }
       }, err=>{
-        this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+        if(this.varsGlobal.language.includes('Francais')){
+          this.result="#Bon " +this.numBon+ " est invalide ou il n'existe pas."
+        }
+        if(this.varsGlobal.language.includes('English')){
+          this.result="#Num " +this.numBon+ " is invalid or does not existe."
+        }
       })
     })
 
