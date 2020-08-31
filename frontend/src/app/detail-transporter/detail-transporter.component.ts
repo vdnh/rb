@@ -152,6 +152,10 @@ export class DetailTransporterComponent implements OnInit {
           this.camionsSurMap.push(camion)
       })
       //*/
+      this.listNumberUnite=[] ;// empty the list number unite
+      data.forEach(camion=>{
+        this.listNumberUnite.push(camion.unite)
+      })
       data.sort((a,b)=>{
         if(a.id>b.id)
           return 1;
@@ -317,9 +321,46 @@ export class DetailTransporterComponent implements OnInit {
     });
   }  
 
+  listNumberUnite:Array<string>=[];// collection of list number unite
   addCamion(){
     this.addcamion.idTransporter=this.id;
-    //*
+    if(this.addcamion.unite!=null && this.addcamion.unite.length>0){
+      let exist=false; // this number unite doesn't exist yet
+      this.listNumberUnite.forEach(nu=>{
+        if(nu.includes(this.addcamion.unite)&&(nu.length==this.addcamion.unite.length))
+          {
+            alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
+            exist=true; // this Number unite exist already
+          }
+      })
+      if(!exist){
+        this.addcamion.idTransporter=this.transporter.id;
+        this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+          this.listNumberUnite.push(data.unite)
+          this.addcamion=new Camion();
+          this.camions.push(data) // refresh list camions
+          if(!data.broker) this.camionsInOperation.push(data)  // refresh list camionsInOperation
+          this.fichePhysiqueEntretien.idCamion=data.id;
+          this.fichePhysiqueEntretienCont.idCamion=data.id;
+          this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{             
+            this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{              
+              alert("Unite a ete bien ajoute.")              
+            }, err=>{
+              console.log(err)
+            });
+          }, err=>{
+            console.log(err)
+          });
+        }, err=>{
+          console.log(err)
+        })//*/
+      }
+    }
+    else{
+      alert('Vous devez remplir des infos de cette unite.')
+    }
+
+    /*
     this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
       alert('Camion unite '+data.unite+' a ete ajoute.')
       this.camions.push(data) // refresh list camions
@@ -327,11 +368,7 @@ export class DetailTransporterComponent implements OnInit {
       this.addcamion=data;
       this.fichePhysiqueEntretien.idCamion=this.addcamion.id;
       this.fichePhysiqueEntretienCont.idCamion=this.addcamion.id;
-      // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-      //   this.camions=data;
-      // }, err=>{
-      //   console.log();
-      // });
+     
       this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
         console.log('fiche1 ok ' +  data.idCamion)
         this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
@@ -455,6 +492,10 @@ export class DetailTransporterComponent implements OnInit {
   refreshListCamions(){
     this.arrayArrayEnts=[]
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+      this.listNumberUnite=[] ;// empty the list number unite
+      data.forEach(camion=>{
+        this.listNumberUnite.push(camion.unite)
+      })
       data.sort((a,b)=>{
         if(a.id>b.id)
           return 1;

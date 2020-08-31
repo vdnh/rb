@@ -44,6 +44,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   
   imgArrow = "assets/images/arrow.png";
   
+  listNumberUnite:Array<string>=[];// collection of list number unite
+  
   itineraire:boolean=false;
   camionsList:boolean=true; // par default, on voit la liste de camions
   repere:boolean=false;
@@ -295,7 +297,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
           this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+          this.listNumberUnite=[]; // empty the list number unite
           data.forEach(camion=>{
+            this.listNumberUnite.push(camion.unite)
             // this is find all trucks actuals
             if(camion.status){ 
               // find all unites outService temporary
@@ -449,6 +453,14 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             }  
           })
           
+          //begin show traffic layer
+          this.showTraffic()
+          setInterval(()=>{
+            this.showTrafficNull();
+            this.showTraffic()
+          },15000) // refresh traffic for 15 seconds
+          //end procedure show traffic layer
+
           const intervalIsCs = interval(20000);  // we refresh the Camions/Itineraires each 20 seconde - 20000ms
           this.subscription=intervalIsCs.subscribe(val=>{
             if(!this.detailCamion){// We refresh just in mode show map
@@ -493,6 +505,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       //})      
     }
     //this.router.navigate(["/map-flotte", this.id]);
+  }
+
+  trafficLayer = new google.maps.TrafficLayer();
+  showTraffic(){
+    this.trafficLayer = new google.maps.TrafficLayer();
+    this.trafficLayer.setMap(this.map);
+    //console.log('traffic set')
+  }
+  showTrafficNull(){
+    this.trafficLayer.setMap(null);
+    //console.log('trffic null')
   }
 
   // subscribe01 : Subscription;
@@ -577,7 +600,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           // this.camionCarrier=null;
           // this.camion=null;
           this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+          this.listNumberUnite=[] ; // empty list number unite
           data.forEach(camion=>{
+            this.listNumberUnite.push(camion.unite)
             // this is find all trucks actuals
             if(camion.status){ 
               // find all unites outService temporary
@@ -1783,7 +1808,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this._camionsOutService=[];
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
       this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
+      this.listNumberUnite=[] ;// empty the list number unite 
       data.forEach(camion=>{
+        this.listNumberUnite.push(camion.unite)
         // this is find all trucks actuals
         if(camion.status){ 
           // find all unites outService temporary
@@ -2213,28 +2240,39 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
   addCamion(){
     if(this.addcamion.unite!=null && this.addcamion.unite.length>0){
-      this.addcamion.idTransporter=this.transporter.id;
-      this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
-        this.addcamion=new Camion();
-        this.fichePhysiqueEntretien.idCamion=data.id;
-        this.fichePhysiqueEntretienCont.idCamion=data.id;
-        this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
-          // console.log('fiche1 ok ' +  data.idCamion)
-          this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
-            // console.log('fiche2 ok ' +  data.idCamion) 
-            alert("Unite a ete bien ajoute.")
-            // this.addcamion=new Camion();
-            this.addUnite=false
-            this.onRefresh()
+      let exist=false; // this number unite doesn't exist yet
+      this.listNumberUnite.forEach(nu=>{
+        if(nu.includes(this.addcamion.unite)&&(nu.length==this.addcamion.unite.length))
+          {
+            alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
+            exist=true; // this Number unite exist already
+          }
+      })
+      if(!exist){
+        this.addcamion.idTransporter=this.transporter.id;
+        this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
+          this.listNumberUnite.push(data.unite)
+          this.addcamion=new Camion();
+          this.fichePhysiqueEntretien.idCamion=data.id;
+          this.fichePhysiqueEntretienCont.idCamion=data.id;
+          this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{ 
+            // console.log('fiche1 ok ' +  data.idCamion)
+            this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+              // console.log('fiche2 ok ' +  data.idCamion) 
+              alert("Unite a ete bien ajoute.")
+              // this.addcamion=new Camion();
+              this.addUnite=false
+              this.onRefresh()
+            }, err=>{
+              console.log(err)
+            });
           }, err=>{
             console.log(err)
           });
         }, err=>{
           console.log(err)
-        });
-      }, err=>{
-        console.log(err)
-      })//*/
+        })//*/
+      }
     }
     else{
       alert('Vous devez remplir des infos de cette unite.')

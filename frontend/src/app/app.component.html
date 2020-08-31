@@ -1,8 +1,11 @@
 <!--p></p-->
-<div class="header"> 
-  <h3 style="font-weight: bold;" class="noprint">  <strong> CTS - Complete Transport Solution </strong> </h3>    
+<div class="header" style="margin: 0px"> 
+  <h3 style="font-weight: bold; margin: 0px;" class="noprint">  
+    <strong> CTS - Complete Transport Solution </strong> 
+    <!-- <small style="float: right;margin-right: 20px;">Language</small> -->
+  </h3>    
 </div>
-<div class="container; bg" style="margin-left: 25px; margin-right: 25px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
+<div class="container; bg" style="margin-left: 20px; margin-right: 20px; margin-top: 0px"><!-- [style.background]="'url(/assets/images/sosprestige.png)'"-->
   <div *ngIf="mode==2" class="noprint">
     <!-- <br> <br> <h3>Please check! Our site : cts.sosprestige.com</h3>  -->
     <br> <br> <h3>Wrong domain name.</h3> 
@@ -63,11 +66,11 @@
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-4">
                   <marquee behavior="scroll" direction="up" scrollamount="5">
-                    <h5><strong>
+                    <h4><strong>
                       Plus Camions - Plus Loads - Plus Affaires <br><br>
                       Simplification des Operations <br><br>
-                    </strong></h5>
-                    <h6><strong>
+                    </strong></h4>
+                    <h5><strong>
                         Rapide, Facile et Sécurisé <br><br>
                         Localiser les camions et les frets <br><br>
                         Augmenter les affaires <br><br>
@@ -75,7 +78,7 @@
                         Moteur de recherche de transporteur <br><br>
                         Rendre votre entreprise visible sur le web <br><br>
                         Automatiser la gestion votre flotte
-                    </strong></h6>
+                    </strong></h5>
                     <!-- <img src="/assets/images/sosprestige.png" alt="ImageSOSPrestige"> -->
                   </marquee>
                 </div>
@@ -94,16 +97,16 @@
                   <!--h5> <strong>Plus Camions - Plus Loads - Simplifier des Operations</strong></h5>
                   <h6> <strong>Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers</strong></h6-->
                   <marquee behavior="scroll" direction="right" scrollamount="5">
-                    <h5><strong> <br>
+                    <h4><strong> <br>
                       Plus Camions - Plus Loads - Plus Affaires &nbsp;- &nbsp;Simplification des Operations.&nbsp;&nbsp;&nbsp;&nbsp; 
                       <!-- &nbsp;Plus Camions - Plus Loads - Simplifier des Operations. -->
-                    </strong></h5>
+                    </strong></h4>
                   </marquee>
                   <marquee behavior="scroll" direction="right" scrollamount="5">
-                    <h6><strong><br>
+                    <h5><strong><br>
                       Un outil essentiel pour Transporters - Shippers - Dispatchs - Brokers - Techniciens - Particuliers.
                       <br>
-                    </strong></h6>
+                    </strong></h5>
                   </marquee>
                 </div>
               </div>
@@ -139,7 +142,7 @@
               </div> -->
             </div>
             <div class="panel panel-primary" *ngIf="role=='SHIPPER'">     
-              <button routerLink="/propos" class="btn btn-link">Propos</button>
+              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
               <button class="btn btn-link" (click)="onShipper()">Gerer Compte</button>   
               <button routerLink="/calcule-prix" class="btn btn-link">Add Load</button>
               <button routerLink="/list-demande-de-chaque/shipper" class="btn btn-link">Loads</button>
@@ -175,13 +178,13 @@
               <br>
             </div>
             <div class="panel panel-primary" *ngIf="role=='TECHNICIEN'">     
-              <button routerLink="/propos" class="btn btn-link">Propos</button>
-              <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>     
+              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
+              <!-- <button class="btn btn-link"  (click)="onTransporter()">Gestion Flotte</button>      -->
               <button (click)="logout()" class="btn btn-link">Logout</button>
               <br>
             </div>
             <div class="panel panel-primary" *ngIf="role=='MANAGER'">     
-              <button routerLink="/propos" class="btn btn-link">Propos</button>
+              <!-- <button routerLink="/propos" class="btn btn-link">Propos</button> -->
               <button routerLink="/shippers" class="btn btn-link">Shippers</button> 
               <button routerLink="/transporters" class="btn btn-link">Transporters</button>         
               <button (click)="logout()" class="btn btn-link">Logout</button>
