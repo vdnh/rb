@@ -118,8 +118,10 @@
             </tr> -->
             <tr><th colspan="8">Status </th></tr>
             <tr>              
-              <td style="width: 10%;">
-                En Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
+              <td style="width: 12%;">
+                Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Panne&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />
               </td>
               <td>
                 Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />

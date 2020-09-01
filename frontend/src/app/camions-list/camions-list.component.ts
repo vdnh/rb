@@ -33,6 +33,7 @@ import { ReperesService } from 'src/services/reperes.service';
 import { ViewportScroller } from '@angular/common';
 import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
 import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 
 @Component({
@@ -179,7 +180,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
-    private viewportScroller: ViewportScroller,){    
+    private viewportScroller: ViewportScroller,
+    public varsGlobal:VarsGlobal,
+    ){    
     // this.numbersArray=Array(100).map((x,i)=>i)
     // this.numbersArray=Array(5).fill(4)
   }
@@ -426,15 +429,18 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                  // url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
                   path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
                   //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                  scale:5,
+                  scale:7,
                   rotation:camion.direction,
-                  fillOpacity: 1,
-                  fillColor: "#7FFF00", //"#FFFFFF"
-                  strokeWeight: 2,
+                  // fillOpacity: 1,
+                  // fillColor: "#7FFF00", //"#FFFFFF"
+                  strokeWeight: 3,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
+                // icon:"assets/images/circles-animated.gif",
                 title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
                 label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                // animation:google.maps.Animation.BOUNCE
+                // animation:google.maps.Animation.DROP
               });
 
               // const promise = new Promise(function(resolve, reject) {
@@ -450,6 +456,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 //   })})
               })
               this.markers.push(marker)
+              this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+                this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
+                //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
+              })
             }  
           })
           
@@ -733,15 +743,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                  // url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
                   path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
                   //url:"http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                  scale:5,
+                  scale:7,
                   rotation:camion.direction,
-                  fillOpacity: 1,
-                  fillColor: "#7FFF00", //"#FFFFFF"
-                  strokeWeight: 2,
+                  // fillOpacity: 1,
+                  // fillColor: "#7FFF00", //"#FFFFFF"
+                  strokeWeight: 3,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
                 title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
                 label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                // animation:google.maps.Animation.BOUNCE
+                // animation:google.maps.Animation.DROP
               });
               //this.infoWindow = new google.maps.InfoWindow;
               marker.addListener('click', (event)=>{

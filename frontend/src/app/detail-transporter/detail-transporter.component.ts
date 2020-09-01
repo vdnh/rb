@@ -171,7 +171,8 @@ export class DetailTransporterComponent implements OnInit {
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
 
       this.camionsOutOperation = await this.camions.filter(camion=>(!camion.broker && !camion.status)) //this.filterCamionOutOperation()
-      this.camionsBroker= await this.camions.filter(camion=>(camion.broker && camion.status))
+      this.camionsBroker= await this.camions.filter(camion=>(camion.broker))
+      //  && camion.status
       await this.camionsInOperation.forEach(async (cam) => {
         await this.autreEntretiensService.autreEntretienDeCamion(cam.id).subscribe((data: Array<AutreEntretien>) => {
           if (data != null) {

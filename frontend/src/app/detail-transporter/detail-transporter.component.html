@@ -462,8 +462,8 @@
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
-                    <th>Nom</th><th>NID</th><th>NIR</th>
-                    <td rowspan="4"><button (click)="modifiyTransporter()">Enregistrer Profil</button></td>
+                    <th>Nom/Name</th><th>NID</th><th>NIR</th>
+                    <td rowspan="4"><button (click)="modifiyTransporter()">Save Profil</button></td>
                 </tr>
                 <tr>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
@@ -471,7 +471,7 @@
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.nir" /></td>                    
                 </tr>
                 <tr>
-                    <th>Address</th><th>Ville</th><th>CodePostal</th>
+                    <th>Address</th><th>Ville/City</th><th>CodePostal</th>
                 </tr>
                 <tr>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.address" /></td>

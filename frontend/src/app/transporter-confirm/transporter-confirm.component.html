@@ -40,19 +40,19 @@
         <td>
             <span>PICK UP &nbsp;</span><span>&nbsp;{{datePick | date : 'dd-MMM-yyyy'}}</span>
             <span><br>FROM : {{pickFrom}}</span>
-            <span><br>Nom de la compagnie : {{pickName}}</span>
+            <span><br>Company Name : {{pickName}}</span>
             <span><br></span>
-            <span><br>Adresse : {{pickAddress}}</span>
-            <span><br>Ville : {{pickVille}}</span>
+            <span><br>Address : {{pickAddress}}</span>
+            <span><br>City : {{pickVille}}</span>
             <span><br>Code postal : {{pickCodePostal}}</span>
         </td>
         <td>
             <span>DELIVER &nbsp;</span><span>&nbsp;{{dateDrop | date : 'dd-MMM-yyyy'}}</span>
             <span><br>TO : {{shipTo}}</span>
-            <span><br>Nom de la compagnie : {{shipName}}</span>
+            <span><br>Company Name : {{shipName}}</span>
             <span><br></span>
-            <span><br>Adresse : {{shipAddress}}</span>
-            <span><br>Ville : {{shipVille}}</span>
+            <span><br>Address : {{shipAddress}}</span>
+            <span><br>City : {{shipVille}}</span>
             <span><br>Code postal : {{shipCodePostal}}</span>
         </td>
       </tr>
@@ -133,9 +133,9 @@
     <button (click)="print('toprint')" class="btn btn-primary" style="margin-left: 1cm;"
       [disabled]="comName==null||comName.length==0">Print</button>
     <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button style="margin-left: 1cm;" (click)="newForm()" class="btn btn-primary">Nouveau</button>
+    <button style="margin-left: 1cm;" (click)="newForm()" class="btn btn-primary">New</button>
     <button *ngIf="confirmTransport.id>0" style="margin-left: 1cm;" (click)="copyForm()" class="btn btn-primary">Copy</button>
-    <strong style="margin-left: 1cm;">Liste Confirmations &nbsp;</strong> 
+    <strong style="margin-left: 1cm;">List Confirmations &nbsp;</strong> 
     <select type="text" [(ngModel)]="confirmTransport" (ngModelChange)="confirmFound(confirmTransport)">
         <option *ngFor="let c of listConfirm" [ngValue]="c">
           {{
@@ -176,8 +176,8 @@
         <td><span>Transporteur/Carrier : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comName"></span>
             <br>
             <br><span>Contact : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comContact"></span>
-            <br><span>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comAddress"></span>
-            <br><span>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comVille"></span>
+            <br><span>Address : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comAddress"></span>
+            <br><span>City : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comVille"></span>
             <br><span>Tel : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="comTel"></span>
             <br><span></span>
         </td>
@@ -189,10 +189,10 @@
             name="datePick" (change)="datePickChange($event)" 
             style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;"/>
             <span><br>FROM : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickFrom"></span>
-            <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickName"></span>
+            <span><br>Company Name : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickName"></span>
             <span><br></span>
-            <span><br>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickAddress"></span>
-            <span><br>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickVille"></span>
+            <span><br>Address : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickAddress"></span>
+            <span><br>City : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickVille"></span>
             <span><br>Code postal : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="pickCodePostal"></span>
         </td>
         <td>
@@ -201,10 +201,10 @@
             name="dateDrop" (change)="dateDropChange($event)" 
             style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;"/>
             <span><br>TO : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipTo"></span>
-            <span><br>Nom de la compagnie : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipName"></span>
+            <span><br>Company Name : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipName"></span>
             <span><br></span>
-            <span><br>Adresse : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipAddress"></span>
-            <span><br>Ville : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipVille"></span>
+            <span><br>Address : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipAddress"></span>
+            <span><br>City : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipVille"></span>
             <span><br>Code postal : <input style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="text" [(ngModel)]="shipCodePostal"></span>
         </td>
       </tr>
