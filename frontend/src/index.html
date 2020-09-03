@@ -39,14 +39,7 @@
       // alert("GPS en Francais")
     }
     document.write("<script type='text/javascript' src='"+ gpsSource + "'><\/scr" + "ipt>");
-    // let newAPI = document.createElement('script');
-    // newAPI.src = this.gpsSource
-    // document.querySelector('head').appendChild(newAPI);
-    // googleMapsAPILoaded = () => {
-    //   let event = new CustomEvent('googleMapsAPILoaded');
-    //   window.dispatchEvent(event);
-    // }
-    function myGpsSource() {
+       function myGpsSource() {
       if(localStorage.getItem('language').includes('English')){
         gpsSource=gpsEn
         // alert("GPS in English")

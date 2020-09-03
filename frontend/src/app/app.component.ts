@@ -75,6 +75,7 @@ export class AppComponent implements OnInit{
   gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
   gpsSource;
   languageChange(){
+    let urlTemp = location.href
     localStorage.setItem('language', this.varsGlobal.language)
     // document.write("<script" + "> myGpsSource(); <\/scr" + "ipt>");
     //document.location.reload()
@@ -98,7 +99,13 @@ export class AppComponent implements OnInit{
       newAPI.src = this.gpsSource
       // this.googleMapsAPILoaded();
       document.querySelector('head').appendChild(newAPI);
-      this.ngOnInit();
+      console.log('urlTemp : '+urlTemp)
+      let urlChild = urlTemp.split('://')[1].split('/')[1]
+      if(urlChild!=null && urlChild.length>=1){
+        this.router.navigateByUrl('/'+urlChild, {skipLocationChange: true});  
+      }
+      else this.router.navigateByUrl('/', {skipLocationChange: true});
+      //this.ngOnInit();
     // }
   }
   // googleMapsAPILoaded = () => {
@@ -143,7 +150,8 @@ export class AppComponent implements OnInit{
       window.webkitRTCPeerConnection;
   }
 
-  ngOnInit() {    
+  ngOnInit() { 
+    
     //await this.determineLocalIp();
     if(localStorage.getItem('language')){
       this.varsGlobal.language=localStorage.getItem('language')
@@ -421,6 +429,25 @@ export class AppComponent implements OnInit{
     sessionStorage.setItem('temporary', 'no')
     if(sessionStorage.getItem('temporary')!=null)
       this.session=this.varsGlobal.session; // sessionStorage.getItem('temporary')
+    
+    // // begin set google map   
+    // if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English')){
+    //   document.querySelectorAll('script[src^="https://maps.googleapis.com"]').forEach(script => {
+    //     script.remove();
+    //   });
+    //   this.gpsSource=this.gpsEn
+    //   let newAPI = document.createElement('script');
+    //   newAPI.src = this.gpsSource
+    //   document.querySelector('head').appendChild(newAPI);
+    // }
+    // else { // by default, set language in francais
+    //   this.gpsSource=this.gpsFr
+    // }
+    // // let newAPI = document.createElement('script');
+    // // newAPI.src = this.gpsSource
+    // // document.querySelector('head').appendChild(newAPI);
+    // // end set google map
+
   }
 
   signing(){
