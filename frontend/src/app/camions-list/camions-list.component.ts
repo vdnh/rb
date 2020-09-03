@@ -65,6 +65,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   subscriptionCSM : Subscription;
   //* for Itineraires and Reperes
   subscription : Subscription;
+  //* for refresh raffic layer
+  subscriptionTraffic : Subscription;
   //transporter:Transporter=new Transporter();
   detailCamion=false;
   camionCarrier:Camion; //=new Camion(); // camion which carry the trailer - just for trailer
@@ -191,6 +193,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     console.log('this.subscription.unsubscribe();')
     this.subscription.unsubscribe();
     this.subscriptionCSM.unsubscribe();
+    this.subscriptionTraffic.unsubscribe();
   }
 
   ngOnInit() {
@@ -437,8 +440,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
                 // icon:"assets/images/circles-animated.gif",
-                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
-                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)),
+                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)), color:"orange"},
                 // animation:google.maps.Animation.BOUNCE
                 // animation:google.maps.Animation.DROP
               });
@@ -465,10 +468,15 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           
           //begin show traffic layer
           this.showTraffic()
-          setInterval(()=>{
-            this.showTrafficNull();
-            this.showTraffic()
-          },15000) // refresh traffic for 15 seconds
+          const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
+          this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
+            this.showTraffic(); 
+          })
+          // setInterval(()=>{
+          //   this.showTrafficNull();
+          //   this.showTraffic()
+          // },15000) // refresh traffic for 15 seconds
+
           //end procedure show traffic layer
 
           const intervalIsCs = interval(20000);  // we refresh the Camions/Itineraires each 20 seconde - 20000ms
@@ -517,7 +525,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     //this.router.navigate(["/map-flotte", this.id]);
   }
 
-  trafficLayer = new google.maps.TrafficLayer();
+  trafficLayer: google.maps.TrafficLayer;
   showTraffic(){
     this.trafficLayer = new google.maps.TrafficLayer();
     this.trafficLayer.setMap(this.map);
@@ -750,8 +758,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   strokeWeight: 3,
                   strokeColor: "#008088", //"#FFFFFF",//"red",
                 },
-                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)),
-                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele)), color:"orange"},
+                title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)),
+                label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)), color:"orange"},
                 // animation:google.maps.Animation.BOUNCE
                 // animation:google.maps.Animation.DROP
               });
@@ -1053,8 +1061,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   radiusChange(){
     this.drawAddress();
   }
-  addressCircle = new google.maps.Circle(); 
-  markerAdsress =new google.maps.Marker();
+  addressCircle : google.maps.Circle // = new google.maps.Circle(); 
+  markerAdsress : google.maps.Marker  // =new google.maps.Marker();
   drawAddress(){
     if(this.addressCircle){
       this.addressCircle.setMap(null)
@@ -1330,9 +1338,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
   
 
-  originCircle = new google.maps.Circle(); 
-  destCircle1 = new google.maps.Circle(); 
-  flightPath = new google.maps.Polyline();
+  originCircle : google.maps.Circle //= new google.maps.Circle(); 
+  destCircle1 :google.maps.Circle // = new google.maps.Circle(); 
+  flightPath : google.maps.Polyline //= new google.maps.Polyline();
   flightPlanCoordinates:any;
   drawOrigin(){
     if(this.flightPath){

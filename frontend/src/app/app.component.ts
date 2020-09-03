@@ -70,9 +70,42 @@ export class AppComponent implements OnInit{
       })
   }
 
+  // begin change language dinamically
+  gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC";
+  gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
+  gpsSource;
   languageChange(){
     localStorage.setItem('language', this.varsGlobal.language)
+    // document.write("<script" + "> myGpsSource(); <\/scr" + "ipt>");
+    //document.location.reload()
+    if(localStorage.getItem('language').includes('English')){
+      this.gpsSource=this.gpsEn
+      // alert("GPS in English")
+    }
+    else {
+      this.gpsSource=this.gpsFr
+      // alert("GPS en Francais")
+    }
+    document.querySelectorAll('script[src^="https://maps.googleapis.com"]').forEach(script => {
+      script.remove();
+    });
+    // if (google) {
+      if (google) delete google.maps;
+      // document.write("<script type='text/javascript' src='"+ this.gpsSource + "'><\/scr" + "ipt>");
+      //Generate new Google Maps API script
+      let newAPI = document.createElement('script');
+      // newAPI.src = 'https://maps.googleapis.com/maps/api/js?libraries=' + libraries.join(',') + '&key=' + key + '&language=' + lang + '&callback=googleMapsAPILoaded';
+      newAPI.src = this.gpsSource
+      // this.googleMapsAPILoaded();
+      document.querySelector('head').appendChild(newAPI);
+      this.ngOnInit();
+    // }
   }
+  // googleMapsAPILoaded = () => {
+  //   let event = new CustomEvent('googleMapsAPILoaded');
+  //   window.dispatchEvent(event);
+  // }
+  // end change language dinamically
 
   private determineLocalIp() {
     window.rTCPeerConnection  = this.getRTCPeerConnection();
@@ -357,6 +390,10 @@ export class AppComponent implements OnInit{
           else if(location.href.includes("/transport")){
             this.router.navigate(['/transport/'], {skipLocationChange: true})            
           }
+          else if(location.href.includes("/camions-list")){
+            this.router.navigate(['/camions-list/'], {skipLocationChange: true})            
+          }
+          
           /*/
           else if(this.userId.length>0) this.router.navigate(['/remorquage-pro/'], {skipLocationChange: true});
           else this.router.navigate(['/remorquage/'], {skipLocationChange: true});
@@ -642,7 +679,7 @@ export class AppComponent implements OnInit{
     //this.varsGlobal.userLogs=new UserLogs();
     localStorage.clear();
     localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
-    
+
     this.role="";
     
     this.usernameLogin='';

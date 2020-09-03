@@ -44,11 +44,11 @@
         <!--  mat-menu-item -->
         
         <span *ngIf="camionClicked==null">
-            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic">
+            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic"><br>
             <small *ngFor="let camion of camionsSurMap">
                 <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
                     <!-- mat-menu-item  -->
-                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}                
+                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+ camion.unite+" "+camion.marque+" "+camion.modele))}}                
                 </strong>
                 <small *ngIf="camion.speed>0" (click)="onClickCamionId(camion.id)"><img [src]="imgArrow" [style.transform]="orientation(camion)">{{camion.speed}} km/h &nbsp;</small>
                 <small *ngIf="camion.location!=null && camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Emplacement:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
@@ -71,7 +71,7 @@
         <small *ngIf="camionClicked!=null">            
             <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;">
                 <!-- mat-menu-item  -->
-                {{((camionClicked.foreignName!=null && camionClicked.foreignName.length>0) ? camionClicked.foreignName : (camionClicked.unite+camionClicked.type+camionClicked.modele))}}                
+                {{((camionClicked.foreignName!=null && camionClicked.foreignName.length>0) ? camionClicked.foreignName : ("#"+camionClicked.unite+" "+camionClicked.marque+" "+camionClicked.modele))}}                
             </strong>
             <small *ngIf="camionClicked.speed>0"><img [src]="imgArrow" [style.transform]="orientation(camionClicked)">{{camionClicked.speed}} km/h &nbsp;</small>
             <small *ngIf="camionClicked.location!=null && camionClicked.location.length>0"><u>Emplacement:</u> {{(camionClicked.localName!=null && camionClicked.localName.length>0) ? camionClicked.localName : camionClicked.location}}</small>
@@ -1135,11 +1135,11 @@
         <!--  mat-menu-item -->
         
         <span *ngIf="camionClicked==null">
-            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic">
+            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic"><br>
             <small *ngFor="let camion of camionsSurMap">
                 <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
                     <!-- mat-menu-item  -->
-                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : (camion.unite+camion.type+camion.modele))}}                
+                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+ camion.unite+" "+camion.marque+" "+camion.modele))}}                
                 </strong>
                 <small *ngIf="camion.speed>0" (click)="onClickCamionId(camion.id)"><img [src]="imgArrow" [style.transform]="orientation(camion)">{{camion.speed}} km/h &nbsp;</small>
                 <small *ngIf="camion.location!=null && camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Location:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
@@ -1162,7 +1162,7 @@
         <small *ngIf="camionClicked!=null">            
             <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;">
                 <!-- mat-menu-item  -->
-                {{((camionClicked.foreignName!=null && camionClicked.foreignName.length>0) ? camionClicked.foreignName : (camionClicked.unite+camionClicked.type+camionClicked.modele))}}                
+                {{((camionClicked.foreignName!=null && camionClicked.foreignName.length>0) ? camionClicked.foreignName : ("#"+camionClicked.unite+" "+camionClicked.marque+" "+camionClicked.modele))}}                
             </strong>
             <small *ngIf="camionClicked.speed>0"><img [src]="imgArrow" [style.transform]="orientation(camionClicked)">{{camionClicked.speed}} km/h &nbsp;</small>
             <small *ngIf="camionClicked.location!=null && camionClicked.location.length>0"><u>Location:</u> {{(camionClicked.localName!=null && camionClicked.localName.length>0) ? camionClicked.localName : camionClicked.location}}</small>

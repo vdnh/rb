@@ -24,7 +24,40 @@
   <!--script src="http://maps.googleapis.com/maps/api/js"></script-->
   <!--script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBPFjwSzB_MzLoKt3rh0XktfpE0N4CBcWo&libraries=geometry"></script-->
   <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPFjwSzB_MzLoKt3rh0XktfpE0N4CBcWo&libraries=geometry,drawing,places&language=fr&region=QC"></script> -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC"></script>
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC"></script> -->
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC"></script> -->
+  <script>
+    var gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC";
+    var gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
+    var gpsSource;
+    if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English')){
+      gpsSource=gpsEn
+      // alert("GPS in English")
+    }
+    else {
+      gpsSource=gpsFr
+      // alert("GPS en Francais")
+    }
+    document.write("<script type='text/javascript' src='"+ gpsSource + "'><\/scr" + "ipt>");
+    // let newAPI = document.createElement('script');
+    // newAPI.src = this.gpsSource
+    // document.querySelector('head').appendChild(newAPI);
+    // googleMapsAPILoaded = () => {
+    //   let event = new CustomEvent('googleMapsAPILoaded');
+    //   window.dispatchEvent(event);
+    // }
+    function myGpsSource() {
+      if(localStorage.getItem('language').includes('English')){
+        gpsSource=gpsEn
+        // alert("GPS in English")
+      }
+      else {
+        gpsSource=gpsFr
+        // alert("GPS en Francais")
+      }
+      // document.write("<script type='text/javascript' src='"+ gpsSource + "'><\/scr" + "ipt>");
+    }
+  </script>
   
   <!-- Include the X-Frame-Bypass JS module: to bypass X-Frame-Option for all site in iframe -->
   <!-- <script type="module" src="https://unpkg.com/x-frame-bypass"></script> -->
@@ -37,6 +70,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="mat-typography">
+  <!-- <button onclick="myGpsSource()">Click me</button> -->
   <app-root></app-root>
 </body>
 </html>
