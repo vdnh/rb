@@ -119,8 +119,10 @@ export class DetailDemandeComponent implements OnInit {
 
   constructor(public messagesService : MessagesService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
     public voyagesService:VoyagesService, public adressesService:AdressesService, public demandesService:DemandesService, 
-    public transportersService : TransportersService, public geocoding : GeocodingService, public router:Router
-    , private formBuilder:FormBuilder)
+    public transportersService : TransportersService, 
+    // public geocoding : GeocodingService, 
+    public router:Router, 
+    private formBuilder:FormBuilder)
   {    
     this.id=activatedRoute.snapshot.params['id'];
     //* construct for checkbox list
@@ -414,7 +416,8 @@ onContact(){
   async search(address: string) {
   let point:google.maps.LatLng =null;
   if (address != "") {
-      await this.geocoding.codeAddress(address).forEach(
+      let geocoding = new GeocodingService()
+      await geocoding.codeAddress(address).forEach(
           (results: google.maps.GeocoderResult[]) => {
                 if(results[0].geometry.location.lat()>0){
                   console.log('results[0].geometry.location.lat() : '+results[0].geometry.location.lat().toPrecision(8));
@@ -442,7 +445,8 @@ onContact(){
   let point1:google.maps.LatLng =null;
   let point2:google.maps.LatLng =null;
   if (address1 != "" && address2!=null) {
-      await this.geocoding.codeAddress(address1).forEach(
+        let geocoding = new GeocodingService()
+        await geocoding.codeAddress(address1).forEach(
           (results: google.maps.GeocoderResult[]) => {
                 if(results[0].geometry.location.lat()>0){
                   point1= new google.maps.LatLng(
@@ -459,7 +463,7 @@ onContact(){
                   console.log('Ne pas pouvoir prendre coordonnees de cette point!!')
               }
           });
-          await this.geocoding.codeAddress(address2).forEach(
+          await geocoding.codeAddress(address2).forEach(
             (results: google.maps.GeocoderResult[]) => {
                   if(results[0].geometry.location.lat()>0){
                     point2= new google.maps.LatLng(
@@ -812,7 +816,8 @@ onContact(){
       
       this.demande.origin=this.demande.originAdresse+', '+this.demande.originVille+', '+this.demande.originProvince //+', canada'
       this.demande.origin=this.demande.origin.replace('null', '')
-      await this.geocoding.codeAddress(this.demande.origin).forEach(
+      let geocoding = new GeocodingService()
+      await geocoding.codeAddress(this.demande.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngOrigin= new google.maps.LatLng(
@@ -861,7 +866,8 @@ onContact(){
       // end check the provine
       this.demande.destination=this.demande.destAdresse+', '+this.demande.destVille+', '+this.demande.destProvince  //+', canada'
       this.demande.destination=this.demande.destination.replace('null', '')
-      await this.geocoding.codeAddress(this.demande.destination).forEach(
+      let geocoding = new GeocodingService()
+      await geocoding.codeAddress(this.demande.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngDestination= new google.maps.LatLng(

@@ -60,7 +60,8 @@ export class AppComponent implements OnInit{
 
   constructor(private authService:AuthenticationService, public messagesService:MessagesService, 
     private fb:FormBuilder, public varsGlobal:VarsGlobal, private router:Router,
-    private geolocation : GeolocationService, public geocoding : GeocodingService, 
+    private geolocation : GeolocationService, 
+    // public geocoding : GeocodingService, 
     public userLogsService: UserLogsService, public transportersService:TransportersService,
     private http: HttpClient, private zone: NgZone) 
     {
@@ -533,7 +534,8 @@ export class AppComponent implements OnInit{
           await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
             //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
             //this.varsGlobal.userLogs.latitude=data.coords.latitude;
-            await this.geocoding.geocode(new google.maps.LatLng(              
+            let geocoding = new GeocodingService()
+            await geocoding.geocode(new google.maps.LatLng(              
               this.varsGlobal.userLogs.latitude=data.coords.latitude,
               this.varsGlobal.userLogs.longtitude=data.coords.longitude
             ))
@@ -609,7 +611,7 @@ export class AppComponent implements OnInit{
             this.varsGlobal.session='no'  // to control we are in session 
             //*ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
             if(!(this.userId.length>0))
-              this.router.navigate(['/camions-list']); // enter into camions-itineraires first
+              this.router.navigate(['/camions-list'], {skipLocationChange: true}); // enter into camions-itineraires first
             //window.open(stringsd[0]+'://'+siteAddress, '_self');
           }
           //*/
@@ -655,7 +657,8 @@ export class AppComponent implements OnInit{
         await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
           this.varsGlobal.userLogs.ipPublic=data['ip'];
           await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
-            await this.geocoding.geocode(new google.maps.LatLng(              
+            let geocoding = new GeocodingService()
+            await geocoding.geocode(new google.maps.LatLng(              
               this.varsGlobal.userLogs.latitude=data.coords.latitude,
               this.varsGlobal.userLogs.longtitude=data.coords.longitude
             ))
@@ -790,8 +793,13 @@ export class AppComponent implements OnInit{
         this.ngOnInit()
       }
     }
-    else 
-      alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
+    else{
+      if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+        alert("Your role is only : " + localStorage.getItem('role') + ". Contact your admin if you want another role.")
+      else
+        alert("Votre role n'est que : " + localStorage.getItem('role') + ". Contactez votre fournisseur si vous voulez autre role.")
+    } 
+      
   }
 
   //for dispatch switch role : remor - trans - ressource - suivi
@@ -806,6 +814,8 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=false;
     this.suivi=false;
+    this.varsGlobal.switchLanguage=true;
+    this.router.navigateByUrl('/camions-list', {skipLocationChange: true})
   }
   onRemor(){
     this.camsItiners=false;
@@ -813,6 +823,7 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=false;
     this.suivi=false;
+    this.varsGlobal.switchLanguage=false; // do not allow switch language
   }
   onTrans(){
     this.camsItiners=false;
@@ -821,6 +832,7 @@ export class AppComponent implements OnInit{
     this.trans=true;
     this.ressource=false;
     this.suivi=false;
+    this.varsGlobal.switchLanguage=false; // do not allow switch language
   }
   onRessource(){
     this.camsItiners=false;
@@ -828,6 +840,7 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=true;
     this.suivi=false;
+    this.varsGlobal.switchLanguage=false; // do not allow switch language
   }
   onSuivi(){
     this.camsItiners=false;
@@ -835,6 +848,7 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=false;
     this.suivi=true;
+    this.varsGlobal.switchLanguage=true;
   }
   alertComingSoon(){
     alert('Coming soon ...')

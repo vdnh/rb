@@ -32,8 +32,12 @@ export class ListVoyageComponent implements OnInit {
   demande:Demande = null; //=new Demande();
   today = new Date();
   
-  constructor(public messagesService : MessagesService, public demandesService : DemandesService, 
-    public voyagesService:VoyagesService, public router:Router, public geocoding : GeocodingService) 
+  constructor(public messagesService : MessagesService, 
+    public demandesService : DemandesService, 
+    public voyagesService:VoyagesService, 
+    public router:Router, 
+    // public geocoding : GeocodingService
+    ) 
   { 
 
   }

@@ -110,7 +110,8 @@ export class DetailVoyageComponent implements OnInit {
     public activatedRoute:ActivatedRoute, public contactsService:ContactsService,
     public adressesService:AdressesService, public voyagesService:VoyagesService, 
     public demandesService : DemandesService, 
-    public transportersService : TransportersService, public geocoding : GeocodingService, 
+    public transportersService : TransportersService, 
+    // public geocoding : GeocodingService, 
     private geolocation : GeolocationService, private formBuilder:FormBuilder, public router:Router)
   {    
     this.id=activatedRoute.snapshot.params['id'];
@@ -644,7 +645,8 @@ async originChange(){
     
     this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince //+', canada'
     this.voyage.destination=this.voyage.destination.replace('null', '')
-    await this.geocoding.codeAddress(this.voyage.origin).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.voyage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngOrigin= new google.maps.LatLng(
@@ -698,7 +700,8 @@ async destinationChange(){
     // end check the provine
     this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince  //+', canada'
     this.voyage.destination=this.voyage.destination.replace('null', '')
-    await this.geocoding.codeAddress(this.voyage.destination).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.voyage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngDestination= new google.maps.LatLng(
@@ -722,7 +725,8 @@ async destinationChange(){
 
   async originChangeBK(){
     //*
-    await this.geocoding.codeAddress(this.voyage.origin).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.voyage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngOrigin= new google.maps.LatLng(
@@ -743,7 +747,8 @@ async destinationChange(){
   
   async destinationChangeBK(){
     //*
-    await this.geocoding.codeAddress(this.voyage.destination).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.voyage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngDestination= new google.maps.LatLng(
@@ -991,7 +996,8 @@ async destinationChange(){
       this.showMap(); // to test
   }
   latLngToAddress(pos:google.maps.LatLng){
-    this.geocoding.geocode(pos).forEach(
+    let geocoding = new GeocodingService()
+    geocoding.geocode(pos).forEach(
       (results: google.maps.GeocoderResult[]) => {
             //this.setMarker(this.center, "your locality", results[0].formatted_address);
         console.log('results[0].formatted_address : '+results[0].formatted_address)

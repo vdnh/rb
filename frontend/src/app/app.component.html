@@ -4,7 +4,8 @@
       <strong> CTS - Complete Transport Solution </strong> 
       <small style="float: right;margin-right: 20px;">
         <span>en cours de développement &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()">
+        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()" 
+          [disabled]="!varsGlobal.switchLanguage">
           <option *ngFor="let lg of varsGlobal.languages" [ngValue]="lg">{{lg}}</option>
         </select>
       </small>
@@ -214,23 +215,32 @@
                 <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
                 <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
                 <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
-                <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                  <!-- routerLink="/camions-list"  -->
                   <strong *ngIf="camsItiners">Camions/Itineraires</strong>
                   <span *ngIf="!camsItiners">Camions/Itineraires</span> 
                 </button> 
-                <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="onRemor(); router.navigateByUrl('/remorquage', {skipLocationChange: true})">
+                  <!-- routerLink="/remorquage"  -->
                   <strong *ngIf="remor">Remorquage</strong>
                   <span *ngIf="!remor">Remorquage</span> 
                 </button> 
-                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
+                  <!-- routerLink="/remorquage-pro" -->
                   <strong *ngIf="remor">Remorquage</strong>
                   <span *ngIf="!remor">Remorquage</span> 
                 </button> 
-                <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="onTrans(); router.navigateByUrl('/transport', {skipLocationChange: true})">
+                  <!-- routerLink="/transport"  -->
                   <strong *ngIf="trans">Transport</strong>
                   <span *ngIf="!trans">Transport</span> 
                 </button> 
-                <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
+                  <!--  routerLink="/transport-pro" -->
                   <strong *ngIf="trans">Transport</strong>
                   <span *ngIf="!trans">Transport</span> 
                 </button>
@@ -238,7 +248,9 @@
                   <span *ngIf="!ressource">Ressource</span>
                   <strong *ngIf="ressource">Ressource</strong>
                 </button> 
-                <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
+                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" 
+                (click)="onSuivi(); router.navigateByUrl('/suivi-rapide', {skipLocationChange: true})">
+                <!-- routerLink="/suivi-rapide" -->
                   <strong *ngIf="suivi">Suivi Rapide</strong>
                   <span *ngIf="!suivi">Suivi Rapide</span> 
                 </button>
@@ -256,9 +268,21 @@
               <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>
             <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
-              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Ajout Client</button> 
-              <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Liste Clients</button> 
-              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Chauffeurs</button>
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
+                <!-- routerLink="/new-shipper"  -->
+                Ajout Client
+              </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/shippers', {skipLocationChange: true})">
+                <!-- routerLink="/shippers"  -->
+                Liste Clients
+              </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
+                <!-- routerLink="/chauffeurs"  -->
+                Chauffeurs
+              </button>
             </div>
   
             <div *ngIf="role==''">
@@ -344,7 +368,8 @@
       <strong> CTS - Complete Transport Solution </strong> 
       <small style="float: right;margin-right: 20px;">
         <span>in development &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()">
+        <select [(ngModel)]="varsGlobal.language" (ngModelChange)="languageChange()"
+        [disabled]="!varsGlobal.switchLanguage">
           <option *ngFor="let lg of varsGlobal.languages" [ngValue]="lg">{{lg}}</option>
         </select>
       </small>
@@ -554,23 +579,32 @@
                 <!--button routerLink="/remorquage" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length==0)">Repartition</button> 
                 <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(varsGlobal.session.includes('no')&&userId.length>0)">Repartition</button--> 
                 <!--button routerLink="/calculer-express" class="btn btn-link" [disabled]="!varsGlobal.session.includes('no')">Accueil/Calcul-Express</button--> 
-                <button routerLink="/camions-list" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onCamsItiners()">
+                  <!-- routerLink="/camions-list"  -->
                   <strong *ngIf="camsItiners">Units/Routes</strong>
                   <span *ngIf="!camsItiners">Units/Routes</span> 
                 </button> 
-                <button routerLink="/remorquage" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onRemor()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="onRemor(); router.navigateByUrl('/remorquage', {skipLocationChange: true})">
+                  <!-- routerLink="/remorquage" -->
                   <strong *ngIf="remor">Towing</strong>
                   <span *ngIf="!remor">Towing</span> 
                 </button> 
-                <button routerLink="/remorquage-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"
+                  (click)="router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
+                  <!-- routerLink="/remorquage-pro" -->
                   <strong *ngIf="remor">Towing</strong>
                   <span *ngIf="!remor">Towing</span> 
                 </button> 
-                <button routerLink="/transport" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" (click)="onTrans()">
+                <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="onTrans(); router.navigateByUrl('/transport', {skipLocationChange: true})">
+                  <!-- routerLink="/transport" -->
                   <strong *ngIf="trans">Freight</strong>
                   <span *ngIf="!trans">Freight</span> 
                 </button> 
-                <button routerLink="/transport-pro" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                  (click)="router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
+                  <!-- routerLink="/transport-pro" -->
                   <strong *ngIf="trans">Freight</strong>
                   <span *ngIf="!trans">Freight</span> 
                 </button>
@@ -578,7 +612,9 @@
                   <span *ngIf="!ressource">Resources</span>
                   <strong *ngIf="ressource">Resources</strong>
                 </button> 
-                <button routerLink="/suivi-rapide" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" (click)="onSuivi()">
+                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" 
+                (click)="onSuivi(); router.navigateByUrl('/suivi-rapide', {skipLocationChange: true})">
+                  <!-- routerLink="/suivi-rapide" -->
                   <strong *ngIf="suivi">Track</strong>
                   <span *ngIf="!suivi">Track</span> 
                 </button>
@@ -596,9 +632,24 @@
               <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>
             <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
-              <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Add Client</button> 
+              <!-- <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Add Client</button> 
               <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">List Clients</button> 
-              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Drivers</button>
+              <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Drivers</button> -->
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
+                <!-- routerLink="/new-shipper"  -->
+                Add Client
+              </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/shippers', {skipLocationChange: true})">
+                <!-- routerLink="/shippers"  -->
+                List Clients
+              </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
+                <!-- routerLink="/chauffeurs"  -->
+                Drivers
+              </button>
             </div>
   
             <div *ngIf="role==''">

@@ -142,7 +142,9 @@ export class CreerVoyageComponent implements OnInit {
   //*/
   // finir ajouter des circles et markes */
   
-  constructor(public voyagesService : VoyagesService, public geocoding : GeocodingService, public demandesService : DemandesService, 
+  constructor(public voyagesService : VoyagesService, 
+    // public geocoding : GeocodingService, 
+    public demandesService : DemandesService, 
     private geolocation : GeolocationService, private formBuilder:FormBuilder, public router:Router) 
     { 
     this.latLngOrigin=new google.maps.LatLng(this.lat, this.lng);
@@ -632,7 +634,8 @@ getPaths() {
       // end check the provine
       
       this.voyage.origin=this.voyage.originAdresse+', '+this.voyage.originVille+', '+this.voyage.originProvince //+', canada'
-      await this.geocoding.codeAddress(this.voyage.origin).forEach(
+      let geocoding = new GeocodingService()
+      await geocoding.codeAddress(this.voyage.origin).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngOrigin= new google.maps.LatLng(
@@ -685,7 +688,8 @@ getPaths() {
         this.villeListD=this.YukonVilles;
       // end check the provine
       this.voyage.destination=this.voyage.destAdresse+', '+this.voyage.destVille+', '+this.voyage.destProvince  //+', canada'
-      await this.geocoding.codeAddress(this.voyage.destination).forEach(
+      let geocoding = new GeocodingService()
+      await geocoding.codeAddress(this.voyage.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
               if(results[0].geometry.location.lat()>0){
                 this.latLngDestination= new google.maps.LatLng(
@@ -876,7 +880,8 @@ getPaths() {
       this.showMap(); // to test
   }
   latLngToAddress(pos:google.maps.LatLng){
-    this.geocoding.geocode(pos).forEach(
+    let geocoding = new GeocodingService()
+    geocoding.geocode(pos).forEach(
       (results: google.maps.GeocoderResult[]) => {
             //this.setMarker(this.center, "your locality", results[0].formatted_address);
         console.log('results[0].formatted_address : '+results[0].formatted_address)

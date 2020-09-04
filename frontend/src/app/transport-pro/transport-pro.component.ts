@@ -231,7 +231,8 @@ export class TransportProComponent implements OnInit {
   idTransportTemp  : number = null; // to hold the number ID of transport
   modifyModels=false; // to appear the list models transport
   
-  constructor(public transportsService : TransportsService, public geocoding : GeocodingService, 
+  constructor(public transportsService : TransportsService, 
+    // public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
@@ -702,8 +703,8 @@ async originChange(){
     // end check the provine
     
     this.transport.origin=this.transport.originAdresse+', '+this.transport.originVille+', '+this.transport.originProvince //+', canada'
-    
-    await this.geocoding.codeAddress(this.transport.origin).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.transport.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngOrigin= new google.maps.LatLng(
@@ -758,7 +759,8 @@ async destinationChange(){
       this.villeListD=this.YukonVilles;
     // end check the provine
     this.transport.destination=this.transport.destAdresse+', '+this.transport.destVille+', '+this.transport.destProvince  //+', canada'
-    await this.geocoding.codeAddress(this.transport.destination).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.transport.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngDestination= new google.maps.LatLng(

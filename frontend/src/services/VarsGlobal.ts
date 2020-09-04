@@ -7,6 +7,7 @@ import { UserLogs } from 'src/model/model.userLogs';
 export class VarsGlobal{
   language='Francais'  // language by default is Francais
   languages=['Francais', 'English'] // language list
+  switchLanguage=true; // allow to switch language
   nombreMessages:number=0; // number of messages 
   session='no'; // no mean we are not in session particular
   pro='no'; // no mean we are not in session professionnal

@@ -179,7 +179,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public geocoding : GeocodingService,
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, 
+    // public geocoding : GeocodingService,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
     private viewportScroller: ViewportScroller,
@@ -404,7 +405,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 this.rep.originLat = event.latLng.lat(),
                 this.rep.originLong = event.latLng.lng()
               )
-              this.geocoding.geocode(new google.maps.LatLng(              
+              let geocodingTemp = new GeocodingService()
+              // this.geocoding.geocode(new google.maps.LatLng(              
+              geocodingTemp.geocode(new google.maps.LatLng(              
                 this.rep.originLat,
                 this.rep.originLong
               ))
@@ -1033,7 +1036,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   async addressChange(){
     if(this.rep.address!=null&&this.rep.address.length>2){
       this.latLngAddress=null
-      await this.geocoding.codeAddress(this.rep.address).forEach(
+      let geocodingTemp = new GeocodingService()
+      // await this.geocoding.codeAddress(this.rep.address).forEach(
+      await geocodingTemp.codeAddress(this.rep.address).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.latLngAddress= new google.maps.LatLng(
@@ -1043,7 +1048,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           }
           else
             {
-              alert("Ne pas pouvoir localiser de cette adresse.")
+              if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+                alert("Can't locate this address.")
+              else alert("Ne pas pouvoir localiser cette adresse.")
             }
       }).then(()=>{
         this.drawAddress();
@@ -1238,7 +1245,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.originFound=false;
     if(this.itiner.origin.length>4){ // address has at least 5 character
       this.latLngOrigin=null
-    await this.geocoding.codeAddress(this.itiner.origin).forEach(
+      let geocodingTemp = new GeocodingService()
+      // await this.geocoding.codeAddress(this.itiner.origin).forEach(
+    await geocodingTemp.codeAddress(this.itiner.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
         if(results[0].geometry.location.lat()>0){
           this.originFound=true;
@@ -1286,7 +1295,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     if(this.itiner.destination.length>4){ // address has at least 5 character
       this.latLngDestination=null
     //if(this.latLngOrigin!=null)
-      await this.geocoding.codeAddress(this.itiner.destination).forEach(
+      let geocodingTemp = new GeocodingService()
+      // await this.geocoding.codeAddress(this.itiner.destination).forEach(
+      await geocodingTemp.codeAddress(this.itiner.destination).forEach(
         (results: google.maps.GeocoderResult[]) => {
           if(results[0].geometry.location.lat()>0){
             this.destFound=true;
@@ -1971,10 +1982,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       //this._camionsSurMap.find(x=>(x.id==temp.id)).outService=false
       // this.remorques.find(x=>(x.id==temp.id))
       // this.camion.outService=false;
-      alert('SVP, Liberez Trailer/Carrier attache avant de le mettre hors service! ')
+      if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+        alert('Please, Release Trailer / Carrier attached before taking it out of service! ')
+      else
+        alert('SVP, Liberez Trailer/Carrier attache avant de le mettre hors service! ')
       this.onClickCamion(temp)
       // this.camion=temp;
-      console.log('this.camion.outService: '+this.camion.outService)
+      // console.log('this.camion.outService: '+this.camion.outService)
       
       // this.camion.outService=false;
     }
@@ -1988,17 +2002,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
         trailerTemp.idCarrier=null
         this.camionsService.saveCamions(trailerTemp).subscribe((data:Camion)=>{
           // this.trailerTemp=null;
-          console.log('Delete liasion')
+          // console.log('Delete liasion')
           this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
-            console.log('Save Camion')
+            // console.log('Save Camion')
             if(this.camionCarrier!=null){
               this.camionCarrier.idCarrier=this.camion.id
               this.camionsService.saveCamions(this.camionCarrier).subscribe((d:Camion)=>{
-                console.log('Save Trailer')
+                // console.log('Save Trailer')
               }
               ,err=>(console.log(err)))
-            }            
-            alert("C'est enregistre.")
+            }  
+            if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))          
+              alert("It's saved.")
+            else
+              alert("C'est enregistre.")
             this.closecamion(); // close detailCamion after modifying somthing to refresh all
           }, err=>{
             console.log(err);
@@ -2008,7 +2025,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }
       else{
         this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
-          alert("C'est enregistre.")
+          if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+            alert("It's saved.")
+          else
+            alert("C'est enregistre.")
           this.closecamion(); // close detailCamion after modifying somthing to refresh all
         }, err=>{console.log(err)})
       }
@@ -2016,14 +2036,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // In the case have no liason, just save change camion
     else{
       this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
-        console.log('Save Camion')
+        // console.log('Save Camion')
         if(this.camionCarrier!=null){
           this.camionsService.saveCamions(this.camionCarrier).subscribe((d:Camion)=>{
-            console.log('Save Trailer')
+            // console.log('Save Trailer')
           }
           ,err=>(console.log(err)))
         }
-        alert("C'est enregistre.")
+        if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+          alert("It's saved.")
+        else
+          alert("C'est enregistre.")
         this.closecamion();
       }, err=>{
         console.log(err);
@@ -2109,7 +2132,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }
       else 
         {
-          alert('Cette Unite est occupe. Veuillez choisir un autre!')
+          if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+            alert('This Unit is busy. Please get another one!')
+          else
+            alert('Cette Unite est occupe. Veuillez choisir un autre!')
           this.camionCarrier=null //new Camion();
       }
     }
@@ -2264,7 +2290,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.listNumberUnite.forEach(nu=>{
         if(nu.includes(this.addcamion.unite)&&(nu.length==this.addcamion.unite.length))
           {
-            alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
+            if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+              alert("Number Unit exist already. Please, get another one");
+            else
+              alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
             exist=true; // this Number unite exist already
           }
       })
@@ -2279,7 +2308,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             // console.log('fiche1 ok ' +  data.idCamion)
             this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{
               // console.log('fiche2 ok ' +  data.idCamion) 
-              alert("Unite a ete bien ajoute.")
+              if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+                alert("Unit was added well.")
+              else
+                alert("Unite a ete bien ajoute")
               // this.addcamion=new Camion();
               this.addUnite=false
               this.onRefresh()
@@ -2295,7 +2327,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }
     }
     else{
-      alert('Vous devez remplir des infos de cette unite.')
+      if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English'))
+        alert('You need to fill in infos for this unit')
+      else
+        alert('Vous devez remplir des infos de cette unite.')
     }
     
   }

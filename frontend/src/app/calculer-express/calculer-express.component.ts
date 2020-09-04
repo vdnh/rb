@@ -173,7 +173,8 @@ export class CalculerExpressComponent implements OnInit {
   towing=true; // false : dont need towing, true: need towing
   calculateDistance=false; // false : dont need calculate distance, true: need calculate
 
-  constructor(public remorquagesService : RemorquagesService, public geocoding : GeocodingService, 
+  constructor(public remorquagesService : RemorquagesService, 
+    // public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public chauffeursService:ChauffeursService,
@@ -314,8 +315,8 @@ async originChange(){
     // end check the provine
     
     this.remorquage.origin=this.remorquage.originAdresse+', '+this.remorquage.originVille+', '+this.remorquage.originProvince //+', canada'
-    
-    await this.geocoding.codeAddress(this.remorquage.origin).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.remorquage.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngOrigin= new google.maps.LatLng(
@@ -370,7 +371,8 @@ async destinationChange(){
       this.villeListD=this.YukonVilles;
     // end check the provine
     this.remorquage.destination=this.remorquage.destAdresse+', '+this.remorquage.destVille+', '+this.remorquage.destProvince  //+', canada'
-    await this.geocoding.codeAddress(this.remorquage.destination).forEach(
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.remorquage.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
               this.latLngDestination= new google.maps.LatLng(
@@ -1064,7 +1066,8 @@ async showMap() {
                 this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
                   this.varsGlobal.userLogs.ipPublic=data['ip'];
                   await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
-                    await this.geocoding.geocode(new google.maps.LatLng(              
+                    let geocoding = new GeocodingService()
+                    await geocoding.geocode(new google.maps.LatLng(              
                       this.varsGlobal.userLogs.latitude=data.coords.latitude,
                       this.varsGlobal.userLogs.longtitude=data.coords.longitude
                     ))
