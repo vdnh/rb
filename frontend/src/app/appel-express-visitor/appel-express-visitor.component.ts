@@ -240,7 +240,33 @@ export class AppelExpressVisitorComponent implements OnInit {
         this.shipper=this.shipperParticulier;
         localStorage.clear();  //  erase localstorage after taken particular price 
         //console.clear(); // try to clear infos 
-        
+        this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+          let tempEtatCountry=''
+          // let tempEtat=''
+          // let tempCountry=''
+          let geocoding = new GeocodingService()
+          await geocoding.geocode(new google.maps.LatLng(              
+            this.varsGlobal.userLogs.latitude=data.coords.latitude,
+            this.varsGlobal.userLogs.longtitude=data.coords.longitude
+          ))
+          .forEach(
+            (results: google.maps.GeocoderResult[]) => {
+              // this.varsGlobal.userLogs.place=results[0].formatted_address;
+              this.remorquage.originAdresse=results[0].formatted_address.split(',')[0];
+              this.remorquage.originVille=results[1].formatted_address.split(',')[1];
+              // tempEtatCountry=results[8].formatted_address
+              this.remorquage.destProvince=this.remorquage.originProvince=results[8].formatted_address.split(',')[0];                
+            }
+          ).then(()=>{
+            if(this.remorquage.originProvince.includes('Québec'))
+            this.remorquage.destProvince=this.remorquage.originProvince='Quebec'
+            // if(this.remorquage.destProvince.includes('Québec'))
+            //   this.remorquage.destProvince='Quebec'
+            // console.log('tempEtatCountry: '+ tempEtatCountry)
+            // console.log('remorquage.originProvince: '+ this.remorquage.originProvince)
+            // console.log('remorquage.destProvince: '+ this.remorquage.destProvince)
+          })
+        })
         // var CACHE_VERSION = 1;
         // var CURRENT_CACHES = {
         //   font: 'font-vache-v' + CACHE_VERSION

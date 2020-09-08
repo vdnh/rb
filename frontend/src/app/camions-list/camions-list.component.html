@@ -1931,13 +1931,13 @@
                 <td *ngIf="it.idCamion==null" style="width: 35%;">{{it.camionAttribue}}</td>
                 <!-- <td  style="width: 5%;"><button (click)="itinerFini(it)" class="btn btn-link">Finir</button></td> -->
                 <td colspan="2" style="width: 20%; font-size: small;">
-                    <button (click)="itinerFini(it)" class="btn btn-link">Finir</button> <button (click)="onModify(it)" class="btn btn-link">Modifier</button> <button (click)="itinerCancel(it)" class="btn btn-link">Annuler</button>
+                    <button (click)="itinerFini(it)" class="btn btn-link">Finish</button> <button (click)="onModify(it)" class="btn btn-link">Modifiy</button> <button (click)="itinerCancel(it)" class="btn btn-link">Cancel</button>
                 </td>
             </tr>
             <tr><br></tr>
             <tr>
                 <th colspan="5">
-                    Itineraires Finis
+                    Itineraires Finished
                 </th>
             </tr>
             <tr *ngFor="let it of itinersFinis; let i = index">
@@ -1967,7 +1967,7 @@
             <tr><br></tr>
             <tr>
                 <th colspan="5">
-                    Itineraires Annules
+                    Itineraires Cancelled
                 </th>
             </tr>
             <tr *ngFor="let it of itinersCancels; let i = index">
@@ -1990,7 +1990,7 @@
                     <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null" style="width: 35%;">{{it.camionAttribue}}</td>
-                <td  style="width: 10%;"><button (click)="itinerResumes(it)"  class="btn btn-link">Reprendre</button></td>
+                <td  style="width: 10%;"><button (click)="itinerResumes(it)"  class="btn btn-link">Resume</button></td>
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Delete</button></td>
             </tr>
 

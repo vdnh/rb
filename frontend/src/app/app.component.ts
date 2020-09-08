@@ -72,8 +72,10 @@ export class AppComponent implements OnInit{
   }
 
   // begin change language dinamically
-  gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC";
-  gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
+  gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr";
+  // &region=QC
+  gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en";
+  // &region=QC
   gpsSource;
   languageChange(){
     let urlTemp = location.href

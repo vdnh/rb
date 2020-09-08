@@ -1,7 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <!-- <meta charset="utf-8"> -->
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
   <title style="font: bold; font-size: 12pt">CTS - Complete Transport Solution</title>
   <base href="/">
 
@@ -27,8 +29,10 @@
   <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC"></script> -->
   <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC"></script> -->
   <script>
-    var gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC";
-    var gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
+    var gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr";
+    // &region=QC
+    var gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en";
+    // &region=QC
     var gpsSource;
     if(localStorage.getItem('language')&&localStorage.getItem('language').includes('English')){
       gpsSource=gpsEn
@@ -63,6 +67,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="mat-typography">
+<!-- <body> -->
   <!-- <button onclick="myGpsSource()">Click me</button> -->
   <app-root></app-root>
 </body>

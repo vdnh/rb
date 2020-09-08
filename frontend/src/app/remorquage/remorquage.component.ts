@@ -23,6 +23,7 @@ import { ShipperParticuliersService } from 'src/services/shipperParticuliers.ser
 import { ShipperParticulier } from 'src/model/model.shipperParticulier';
 import { Transporter } from 'src/model/model.transporter';
 import { TransportersService } from 'src/services/transporters.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-remorquage',
@@ -197,6 +198,7 @@ export class RemorquageComponent implements OnInit {
 
   constructor(public remorquagesService : RemorquagesService, 
     // public geocoding : GeocodingService, 
+    public varsGlobal:VarsGlobal,
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
