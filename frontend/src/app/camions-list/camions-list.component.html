@@ -44,7 +44,9 @@
         <!--  mat-menu-item -->
         
         <span *ngIf="camionClicked==null">
-            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic"><br>
+            <strong class="btn btn-link">* Traffic_Infos</strong>&nbsp;<input type="checkbox" [(ngModel)]="showTrafficLayer" (change)="showOrStopTrafficLayer()" />
+            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic" *ngIf="showTrafficLayer">
+            <br>
             <small *ngFor="let camion of camionsSurMap">
                 <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
                     <!-- mat-menu-item  -->
@@ -1135,7 +1137,9 @@
         <!--  mat-menu-item -->
         
         <span *ngIf="camionClicked==null">
-            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic"><br>
+            <strong class="btn btn-link">* Traffic_Infos</strong>&nbsp;<input type="checkbox" [(ngModel)]="showTrafficLayer" (change)="showOrStopTrafficLayer()" />
+            <img src="/assets/images/RoadTraffic.png" alt="RoadTraffic" *ngIf="showTrafficLayer">
+            <br>
             <small *ngFor="let camion of camionsSurMap">
                 <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
                     <!-- mat-menu-item  -->

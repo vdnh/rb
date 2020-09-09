@@ -538,6 +538,22 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.trafficLayer.setMap(null);
     //console.log('trffic null')
   }
+  
+  showTrafficLayer=true
+  showOrStopTrafficLayer(){
+    if(!this.showTrafficLayer){
+      this.trafficLayer.setMap(null);
+      this.subscriptionTraffic.unsubscribe()
+    }
+    if(this.showTrafficLayer){
+      this.showTraffic()
+        const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
+        this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
+          this.showTraffic(); 
+        })
+    }
+    //console.log('trffic null')
+  }
 
   // subscribe01 : Subscription;
   // refreshCamionsSurMap(){

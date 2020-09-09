@@ -13,6 +13,7 @@ import { GeocodingService } from 'src/services/geocoding.service';
 import { HttpClient } from '@angular/common/http';
 import { Transporter } from 'src/model/model.transporter';
 import { TransportersService } from 'src/services/transporters.service';
+import { ViewportScroller } from '@angular/common';
 
 declare global {
   interface Window {
@@ -63,7 +64,8 @@ export class AppComponent implements OnInit{
     private geolocation : GeolocationService, 
     // public geocoding : GeocodingService, 
     public userLogsService: UserLogsService, public transportersService:TransportersService,
-    private http: HttpClient, private zone: NgZone) 
+    private http: HttpClient, private zone: NgZone,
+    private viewportScroller: ViewportScroller,) 
     {
       this.form = fb.group({
         username:'chauffeur',
@@ -102,7 +104,7 @@ export class AppComponent implements OnInit{
       newAPI.src = this.gpsSource
       // this.googleMapsAPILoaded();
       document.querySelector('head').appendChild(newAPI);
-      console.log('urlTemp : '+urlTemp)
+      // console.log('urlTemp : '+urlTemp)
       let urlChild = urlTemp.split('://')[1].split('/')[1]
       if(urlChild!=null && urlChild.length>=1){
         this.router.navigateByUrl('/'+urlChild, {skipLocationChange: true});  
@@ -854,6 +856,17 @@ export class AppComponent implements OnInit{
   }
   alertComingSoon(){
     alert('Coming soon ...')
+  }
+  
+  gotoTop(){
+
+  }
+
+  gotoMark(mark:string){ // suvi rapide
+    this.router.navigateByUrl('/#'+mark, {skipLocationChange: true});
+  }
+  public gotoAnchorID(elementId: string): void { 
+    this.viewportScroller.scrollToAnchor(elementId);
   }
 }
 export interface User{

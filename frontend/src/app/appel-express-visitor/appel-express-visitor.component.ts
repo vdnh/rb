@@ -258,7 +258,7 @@ export class AppelExpressVisitorComponent implements OnInit {
               this.remorquage.destProvince=this.remorquage.originProvince=results[8].formatted_address.split(',')[0];                
             }
           ).then(()=>{
-            if(this.remorquage.originProvince.includes('Québec'))
+            if(this.remorquage.originProvince.includes('Qu')&&this.remorquage.originProvince.includes('bec'))
             this.remorquage.destProvince=this.remorquage.originProvince='Quebec'
             // if(this.remorquage.destProvince.includes('Québec'))
             //   this.remorquage.destProvince='Quebec'

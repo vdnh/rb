@@ -64,11 +64,14 @@
                   </div>
                   <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
                     <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
-                    <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Remorquage</h4></a></button> -->
+                    <button class="btn btn-link" (click)="modeExpress=1;gotoAnchorID('RMEX')"><h4>Remorquage</h4></button>
                       <span>&nbsp;&nbsp;&nbsp;</span>
-                    <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Transport</h4></a></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Transport</h4></a></button> -->
+                    <button class="btn btn-link" (click)="modeExpress=2;gotoAnchorID('TPEX')"><h4>Transport</h4></button>
                       <span>&nbsp;&nbsp;&nbsp;</span>
-                    <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Suivi Rapide</h4></a></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Suivi Rapide</h4></a></button> -->
+                    <button class="btn btn-link" (click)="modeExpress=3;gotoAnchorID('SURA')"><h4>Suivi Rapide</h4></button>
                   </div>
                   <div class="col-sm-12 col-md-4 col-lg-4">
                     <marquee behavior="scroll" direction="up" scrollamount="5">
@@ -427,12 +430,15 @@
                     </div>
                   </div>
                   <div class="col-sm-12 col-md-3 col-lg-3" style="text-align: center;">
-                    <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>
-                    <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Towing</h4></a></button>
+                    <h4 style="font-weight: bold;"><strong>Services 24/7</strong></h4>                    
+                    <button class="btn btn-link" (click)="modeExpress=1;gotoAnchorID('RMEX')"><h4>Towing</h4></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=1;"><a href="#RMEX"><h4>Towing</h4></a></button> -->
                       <span>&nbsp;&nbsp;&nbsp;</span>
-                    <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Freight</h4></a></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=2;"><a href="#TPEX"><h4>Freight</h4></a></button> -->
+                    <button class="btn btn-link" (click)="modeExpress=2;gotoAnchorID('TPEX')"><h4>Freight</h4></button>
                       <span>&nbsp;&nbsp;&nbsp;</span>
-                    <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Track</h4></a></button>
+                    <!-- <button class="btn btn-link" (click)="modeExpress=3;"><a href="#SURA"><h4>Track</h4></a></button> -->
+                    <button class="btn btn-link" (click)="modeExpress=3;gotoAnchorID('SURA')"><h4>Track</h4></button>
                   </div>
                   <div class="col-sm-12 col-md-4 col-lg-4">
                     <marquee behavior="scroll" direction="up" scrollamount="5">
