@@ -543,6 +543,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   showOrStopTrafficLayer(){
     if(!this.showTrafficLayer){
       this.trafficLayer.setMap(null);
+      this.trafficLayer = null;
       this.subscriptionTraffic.unsubscribe()
     }
     if(this.showTrafficLayer){
