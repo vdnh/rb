@@ -194,7 +194,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     console.log('this.subscription.unsubscribe();')
     this.subscription.unsubscribe();
     this.subscriptionCSM.unsubscribe();
-    this.subscriptionTraffic.unsubscribe();
+    // this.subscriptionTraffic.unsubscribe();
   }
 
   ngOnInit() {
@@ -471,10 +471,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           
           //begin show traffic layer
           this.showTraffic()
-          const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
-          this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
-            this.showTraffic(); 
-          })
+          // const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
+          // this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
+          //   this.showTraffic(); 
+          // })
           // setInterval(()=>{
           //   this.showTrafficNull();
           //   this.showTraffic()
@@ -543,15 +543,15 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   showOrStopTrafficLayer(){
     if(!this.showTrafficLayer){
       this.trafficLayer.setMap(null);
-      this.trafficLayer = null;
-      this.subscriptionTraffic.unsubscribe()
+      // this.trafficLayer = null;
+      // this.subscriptionTraffic.unsubscribe()
     }
     if(this.showTrafficLayer){
       this.showTraffic()
-        const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
-        this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
-          this.showTraffic(); 
-        })
+        // const intervalTraffic = interval(20000);  // we refresh the traffic each 20 seconde - 20000ms
+        // this.subscriptionTraffic=intervalTraffic.subscribe(val=>{
+        //   this.showTraffic(); 
+        // })
     }
     //console.log('trffic null')
   }

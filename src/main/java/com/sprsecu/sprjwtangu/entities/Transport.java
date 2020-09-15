@@ -164,6 +164,8 @@ public class Transport implements Serializable{
     
     private Float loadsFee;   // 
     
+    private String taxProvince;  // province where apply tax for this transport
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

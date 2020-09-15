@@ -129,6 +129,7 @@ public class Remorquage implements Serializable{
     private Float tps=0.00f;
     private Float tvq=0.00f;
     private Float total=0.00f;
+    private String taxProvince;  // province where apply tax for this towing
     //fin de prix total
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

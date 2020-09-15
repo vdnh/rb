@@ -58,7 +58,9 @@ export class RemorquageComponent implements OnInit {
   listShipper=[];
   //filteredShippers=[]; //=this.listShipper;
   //firstFilteredShipper='' //new Shipper();
-
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
+  // taxtest = this.taxProvince.pst
   provinceList=myGlobals.provinceList ;
   
   villeListO= myGlobals.QuebecVilles; //villeList Origin ;
@@ -125,6 +127,13 @@ export class RemorquageComponent implements OnInit {
   shipperParticulier: Shipper;
   transporter: Transporter;
   
+  onSelectTax(){
+    this.taxList.forEach(tp=>{
+      if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+        this.taxProvince=tp
+    })
+    //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
+  }
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -375,7 +384,11 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.timeCall=heure+':'+minute
     console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
-    
+    if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+      this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+    this.taxProvince = this.taxList[10]; // tax province is Quebec tax by default
+    console.log("this.remorquage.taxProvince: " + this.remorquage.taxProvince)
+    console.log("this.taxProvince.id: " + this.taxProvince.id)
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
@@ -614,20 +627,26 @@ printBonDeRemorquage(cmpId){
   WindowPrt.close();
 }
 
-async prixCalcul(){
+prixCalcul(){
   this.remorquage.horstax=this.remorquage.prixBase
   if((this.remorquage.distance-this.remorquage.inclus)>0){
-    this.remorquage.horstax =await this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
+    this.remorquage.horstax =this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
   }
   if(this.remorquage.taxable){
-    this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
-    this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+    // this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
+    // this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+    if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+      this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+    this.onSelectTax();
+    // we must remember : tps is gsthst and tvq is pst
+    this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+    this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
   }
   else{
     this.remorquage.tps =0.00;
     this.remorquage.tvq =0.00;
   }
-  this.remorquage.total=await Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
   //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
 
@@ -1536,8 +1555,15 @@ onFileUpLoad(event){
 
   prixCalculWithHorsTax(){
     if(this.remorquage.taxable){
-      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
-      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+        this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.onSelectTax();
+
+      // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      // we must remember : tps is gsthst and tvq is pst
+      this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
       this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
     }
     else{
@@ -1549,8 +1575,14 @@ onFileUpLoad(event){
 
   horstaxChange(){
     if(this.remorquage.taxable){
-      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
-      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+        this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.onSelectTax();
+      // we must remember : tps is gsthst and tvq is pst
+      this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
     }
     else{
       this.remorquage.tps =0.00;

@@ -94,5 +94,6 @@ export class Remorquage{
     tps=0.00;
     tvq=0.00;
     total=0.00;
+    taxProvince="";  // province where apply tax for this towing
     //fin de prix total
 }

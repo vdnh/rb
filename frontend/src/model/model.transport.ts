@@ -133,4 +133,6 @@ export class Transport{
     ptoFee:number=0.00;   // = ptoTime * ptoPrice
     
     loadsFee:number=0.00;   // 
+
+    taxProvince="";  // province where apply tax for this towing
 }

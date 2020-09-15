@@ -832,11 +832,15 @@
                 </tr>
               </table>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <label class="control-label">Taxable</label>
               <input style="width: 2pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="remorquage.taxable" name="taxable" class="form-control"/>
+              <select *ngIf="remorquage.taxable" class="form-control" [(ngModel)]="remorquage.taxProvince"
+                  (ngModelChange)="prixCalculWithHorsTax()">
+                <option *ngFor="let prv of provinceList" [ngValue]="prv">{{prv}}</option>
+              </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <label class="control-label" style="font-weight: bold; align-content: center">A Payer</label>
               <table  >
                 <tr>
@@ -848,11 +852,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="text-align: right">TPS:</td>
+                  <td *ngIf="remorquage.taxProvince.includes('Quebec')" style="text-align: right">TPS:</td>
+                  <td *ngIf="!remorquage.taxProvince.includes('Quebec')" style="text-align: right">GST/HST:</td>
                   <td style="text-align: right">{{remorquage.tps | number : '1.2'}}</td>
                 </tr>
                 <tr>
-                  <td style="text-align: right">TVQ:</td>
+                  <td *ngIf="remorquage.taxProvince.includes('Quebec')" style="text-align: right">TVQ:</td>
+                  <td *ngIf="!remorquage.taxProvince.includes('Quebec')" style="text-align: right">PST:</td>
                   <td style="text-align: right">{{remorquage.tvq | number : '1.2'}}</td>
                 </tr>
                 <tr>
@@ -993,89 +999,6 @@
           </td>
         </tr>
       </table>
-      <!--table border='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
-        <tr>
-          <td><span style="font-size: 16pt" style="font-weight: bold"> Bon de Remorquage <label
-              *ngIf="remorquage.id!=null"> : {{remorquage.id}}</label></span></td>
-          <td>Date : {{remorquage.dateDepart | date: 'yyyy-MMM-dd'}} - {{remorquage.timeCall}}</td>
-        </tr>
-        <tr>
-          <td>Entreprise : {{remorquage.nomEntreprise}}</td>
-          <td>#PO : {{remorquage.numPO}}</td>
-        </tr>
-        <tr>
-          <td>Contact : {{remorquage.nomContact}}</td>
-          <td>Tel: {{remorquage.telContact}} &nbsp;&nbsp; ext. {{remorquage.extTelContact}}</td>
-        </tr>
-        <tr>
-          <td>Chauffeur : {{remorquage.nomIntervenant}}</td>
-          <td>Tel : {{remorquage.telIntervenant}}</td>
-          <td>Courriel : {{remorquage.emailIntervenant}}</td>
-        </tr>
-        <tr>
-          <td>Client : {{remorquage.nomClient}}</td>
-          <td>Tel 1er : {{remorquage.telClient}}</td>
-          <td>Tel 2em : {{remorquage.telClient2em}}</td>
-        </tr>
-        <tr>
-          <td>Date Reserve : {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}}</td>
-          <td>Heure Reserve : {{remorquage.timeResrvation}}</td>
-        </tr>
-        <tr>
-          <td>Type : {{remorquage.typeService}}</td>
-          <td>Marque : {{remorquage.marque}}</td>
-          <td>Modele : {{remorquage.modele}}</td>
-        </tr>
-        <tr>
-          <td>Couleur : {{remorquage.couleur}}</td>
-          <td>Plaque : {{remorquage.plaque}}</td>
-          <td>Serie : {{remorquage.serie}}</td>
-        </tr>
-        <tr>
-          <td colspan="3">
-            <span>Service : </span>
-            <span *ngIf="remorquage.panne">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Panne </span>
-            <span *ngIf="remorquage.accident">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Accident </span>
-            <span *ngIf="remorquage.pullOut">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;PullOut </span>
-            <span *ngIf="remorquage.debaragePorte">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;DebaragePorte </span>
-            <span *ngIf="remorquage.survoltage">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Survoltage </span>
-            <span *ngIf="remorquage.essence">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Essence </span>
-            <span *ngIf="remorquage.changementPneu">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;ChangementPneu
-              </span>
-          </td>
-        </tr>
-        <tr>
-          <td><textarea cols="25" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">De : {{remorquage.origin}}</textarea></td>
-          <td><textarea cols="25" rows="3" style="font-size: 12pt; border: none; scroll-margin: unset">A : {{remorquage.destination}}</textarea></td>
-          <td>Distance(kms) : {{remorquage.distance}}</td>
-        </tr>
-        <tr>
-          <td><textarea cols="25" rows="10"
-                  style="font-size: 11pt; border: none; scroll-margin: unset">Notes Additionnelles : {{remorquage.comments}}</textarea></td>
-          <td><textarea cols="25" rows="10"
-                  style="font-size: 11pt; border: none; scroll-margin: unset">Note au Chauffeur : {{remorquage.driverNote}}</textarea></td>
-          <td style="text-align: right">
-            <table style="font-size: 12pt" style="text-align: right">
-              <tr>
-                <th>HorsTax:</th>
-                <td>{{remorquage.horstax | number : '1.2'}}</td>
-              </tr>
-              <tr>
-                <th>TPS:</th>
-                <td>{{remorquage.tps | number : '1.2'}}</td>
-              </tr>
-              <tr>
-                <th>TVQ:</th>
-                <td>{{remorquage.tvq | number : '1.2'}}</td>
-              </tr>
-              <tr>
-                <th>TOTAL:</th>
-                <td>{{remorquage.total | number : '1.2'}}</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table-->
     </div>
 </div>
 
@@ -1749,7 +1672,7 @@
           <div class="row" *ngIf="pagePresent==7">
             <div class="col-sm-12 col-md-2 col-lg-2">
               <label style="text-decoration-line: underline" for="">Attach Photo</label>
-              <input type="file" title="Joindre une image" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+              <input type="file" title="Join an image" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
               <button *ngIf="remorquage.imgUrl.length>0" (click)="remorquage.imgUrl=''" class="btn btn-link">Delete photo</button>
             </div>
             <div *ngIf="remorquage.imgUrl.length>0" class="col-sm-12 col-md-10 col-lg-10" style="border: 2px dotted gray">
@@ -1913,11 +1836,16 @@
                 </tr>
               </table>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <label class="control-label">Taxable</label>
               <input style="width: 2pc;" type="checkbox" (change)="prixCalculWithHorsTax()" [(ngModel)]="remorquage.taxable" name="taxable" class="form-control"/>
+                <select *ngIf="remorquage.taxable" class="form-control" [(ngModel)]="remorquage.taxProvince"
+                    (ngModelChange)="prixCalculWithHorsTax()">
+                    <!-- onSelectTax() -->
+                  <option *ngFor="let prv of provinceList" [ngValue]="prv">{{prv}}</option>
+                </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <label class="control-label" style="font-weight: bold; align-content: center">Pay</label>
               <table  >
                 <tr>
@@ -1929,17 +1857,18 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="text-align: right">GST/HST:</td>
+                  <td style="text-align: right">
+                   <span *ngIf="remorquage.taxProvince.includes('Quebec')">TPS: </span> 
+                   <span *ngIf="!remorquage.taxProvince.includes('Quebec')">GST/HST: </span>
+                  </td>
                   <td style="text-align: right">{{remorquage.tps | number : '1.2'}}</td>
                 </tr>
                 <tr>
-                  <td style="text-align: right">PST:</td>
-                  <!-- <td style="text-align: right">{{remorquage.tvq | number : '1.2'}}</td> -->
                   <td style="text-align: right">
-                    <!--  we can also use the function horstaxChange() -->
-                    <input type="number" [(ngModel)]="remorquage.tvq" name="privincetax" style="text-align: right;"
-                     (change)="horstaxChange()" class="form-control"/>
+                    <span *ngIf="remorquage.taxProvince.includes('Quebec')">TVQ: </span>
+                    <span *ngIf="!remorquage.taxProvince.includes('Quebec')">PST: </span>
                   </td>
+                  <td style="text-align: right">{{remorquage.tvq | number : '1.2'}}</td>
                 </tr>
                 <tr>
                   <td style="text-align: right">TOTAL:</td>
@@ -1963,11 +1892,11 @@
       <button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button>
       <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id==null)">Reset</button-->
       <!--button (click)="onReset()" class="btn btn-link" *ngIf="(remorquage.id>0)">NouvelAppel</button-->
-      <button (click)="remorquage.valid=true; onSavePlusAlert()" class="btn btn-link" [disabled]="remorquage.fini">Enregistrer</button>
+      <button (click)="remorquage.valid=true; onSavePlusAlert()" class="btn btn-link" [disabled]="remorquage.fini">Save</button>
       <!--button (click)="onFini()" class="btn btn-link" [disabled]="(!(remorquage.id>0)||remorquage.fini)">AppelFini</button>
       <button (click)="onCancel()" class="btn btn-link"[disabled]="(!(remorquage.id>0)||remorquage.fini)">AnnulerFini</button-->
       <button (click)="remorquage.valid=true; onEnvoyer()" class="btn btn-link" [disabled]="remorquage.id==null || remorquage.fini">
-          <span *ngIf="!remorquage.sent">EnvoyerAuChauffeur</span><span *ngIf="remorquage.sent">Re-EnvoyerAuChauffeur</span>
+          <span *ngIf="!remorquage.sent">SendToDriver</span><span *ngIf="remorquage.sent">Re-SendToDriver</span>
       </button>
       <!--button (click)="onEnvoyer()" class="btn btn-link" *ngIf="remorquage.sent" [disabled]="remorquage.id==null || remorquage.fini">Re-EnvoyerAuChauffeur</button-->
       <!--button (click)="refreshMap()" class="btn btn-link" [disabled]="remorquage.id==null">RafraichirMap</button-->
@@ -1978,10 +1907,10 @@
     <div class="col-sm-12 col-lg-12 col-md-12" *ngIf="(particulier||compteClient) && modeHistoire==-1">
       <div class="row">
         <div class="col-md-2 col-sm-2 col-lg-2">
-          <button (click)="onBack()" [disabled]="back<=0">Avant</button>
+          <button (click)="onBack()" [disabled]="back<=0">Back</button>
         </div>      
         <div class="col-md-2 col-sm-2 col-lg-2">
-          <button (click)="onForward()" [disabled]="forward>=12">Suivant</button>
+          <button (click)="onForward()" [disabled]="forward>=12">Next</button>
         </div>
       </div>
     </div>
@@ -2002,28 +1931,28 @@
     <div id="toprint" hidden  *ngIf="modeHistoire==-1">
       <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
         <tr>
-          <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
-          <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
-          <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
+          <td style="text-align: center; text-anchor: start ">TimeCall <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Dispatch <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
+          <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Driver <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
           <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
-          <td style="text-align: center; text-anchor: start "># Bon <br> <span>&nbsp;{{remorquage.id}}</span></td>
+          <td style="text-align: center; text-anchor: start "># Num <br> <span>&nbsp;{{remorquage.id}}</span></td>
         </tr>
         <tr>
           <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
-          <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
-          <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
-          <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
-          <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>
+          <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+          <td style="text-align: center; text-anchor: start ">#Unit <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Equipements' Type <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
+          <td style="text-align: center; text-anchor: start " colspan="2">$ Rate $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>
         </tr>
         <tr style="border: 0px">
-          <td *ngIf="remorquage.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+          <td *ngIf="remorquage.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">ChargeToAccount : {{remorquage.porterAuCompte}}</td>
           <!--td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td-->
-          <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
-          <td *ngIf="remorquage.byCash" style="text-align: center; text-anchor: start "> par cash </td>
-          <td *ngIf="remorquage.byCheck" style="text-align: center; text-anchor: start "> par cheque </td>
-          <td *ngIf="remorquage.creditCard"> par carte credit </td>
-          <td *ngIf="remorquage.byInterac"> par interac </td>
-          <td *ngIf="remorquage.transfer"> par virement</td>
+          <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collect Money : {{remorquage.collecterArgent | number : '1.2'}}</th>
+          <td *ngIf="remorquage.byCash" style="text-align: center; text-anchor: start "> Cash </td>
+          <td *ngIf="remorquage.byCheck" style="text-align: center; text-anchor: start "> Check </td>
+          <td *ngIf="remorquage.creditCard"> Credit Card </td>
+          <td *ngIf="remorquage.byInterac"> Interac </td>
+          <td *ngIf="remorquage.transfer"> Transfer </td>
         </tr>
         <tr>
           <td colspan="5" *ngIf="remorquage.nomEntreprise!=null&&remorquage.nomEntreprise.length>0">Client: 
@@ -2041,20 +1970,20 @@
             <br> &nbsp;</td>  
         </tr>
         <tr>
-          <td colspan="5">De: <span>&nbsp;{{remorquage.origin}}</span> <br> &nbsp;</td>
+          <td colspan="5">From: <span>&nbsp;{{remorquage.origin}}</span> <br> &nbsp;</td>
         </tr>
         <tr>
-            <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> &nbsp;</td>
+            <td colspan="5">To: <span>&nbsp;{{remorquage.destination}}</span> <br> &nbsp;</td>
         </tr>
         <tr>
-          <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
+          <td colspan="3" style="text-align: left; text-anchor: start ">Vehicle: 
             <span>&nbsp;{{remorquage.marque}}</span>
             <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
             <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
             <br><span>&nbsp;</span>
           </td> 
           <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
-          <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
+          <td style="text-align: center; text-anchor: start "> Plate: <span>{{remorquage.plaque}}</span></td>
         </tr>
         <tr> 
           <td colspan="5"style="text-align: left; text-anchor: start ">
@@ -2068,7 +1997,7 @@
         </tr>
         <tr> 
           <td colspan="5"style="text-align: left; text-anchor: start ">
-            Note au Chauffeur: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
+            Drivers' Note: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
           </td>
         </tr>
         <tr>
