@@ -699,10 +699,23 @@
             <div class="col-sm-6 col-md-3 col-lg-3">
               <div class="form-group">
                 <label for="">Camion</label>
-                <input type="text" [(ngModel)]="remorquage.camionAttribue" 
+                <input type="text" [(ngModel)]="remorquage.camionAttribue" (change)="camionChange()" 
                   name="camionAttribue" list="defaultCamions" class="form-control" required>
                 <datalist id="defaultCamions">
-                    <option *ngFor="let c of camions" [ngValue]="c">{{c.unite +' - ' +c.marque +'  ' +c.modele}}</option>
+                  <!-- <optgroup label="Unit with GPS"> -->
+                    <option value=" "><strong>Units with GPS</strong></option>
+                    <!-- </optgroup> -->
+                    <option *ngFor="let c of camionsGps" [ngValue]="c">
+                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
+                      <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->
+                    </option>
+                    <!-- <optgroup label="Unit no GPS"> -->
+                      <option value=" "><strong>Units no-GPS</strong></option>
+                      <option *ngFor="let c of camions" [ngValue]="c">
+                        {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
+                        <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->
+                      </option>
+                    <!-- </optgroup> -->
                 </datalist>
               </div>
             </div>          
@@ -1703,10 +1716,23 @@
             <div class="col-sm-6 col-md-3 col-lg-3">
               <div class="form-group">
                 <label for="">Unit</label>
-                <input type="text" [(ngModel)]="remorquage.camionAttribue" 
+                <input type="text" [(ngModel)]="remorquage.camionAttribue" (change)="camionChange()" 
                   name="camionAttribue" list="defaultCamions" class="form-control" required>
                 <datalist id="defaultCamions">
-                    <option *ngFor="let c of camions" [ngValue]="c">{{c.unite +' - ' +c.marque +'  ' +c.modele}}</option>
+                  <!-- <optgroup label="Unit with GPS"> -->
+                  <option value=" "><strong>Units with GPS</strong></option>
+                  <!-- </optgroup> -->
+                  <option *ngFor="let c of camionsGps" [ngValue]="c">
+                    {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
+                    <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->
+                  </option>
+                  <!-- <optgroup label="Unit no GPS"> -->
+                    <option value=" "><strong>Units no-GPS</strong></option>
+                    <option *ngFor="let c of camions" [ngValue]="c">
+                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
+                      <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->
+                    </option>
+                  <!-- </optgroup> -->
                 </datalist>
               </div>
             </div>          
@@ -1941,7 +1967,7 @@
           <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
           <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
           <td style="text-align: center; text-anchor: start ">#Unit <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
-          <td style="text-align: center; text-anchor: start ">Equipements' Type <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Equipements' Type <br> <span>&nbsp;{{typeServiceEnglish(remorquage.typeService)}}</span></td>
           <td style="text-align: center; text-anchor: start " colspan="2">$ Rate $ <br> <span>&nbsp;{{remorquage.total | number : '1.2'}}</span></td>
         </tr>
         <tr style="border: 0px">

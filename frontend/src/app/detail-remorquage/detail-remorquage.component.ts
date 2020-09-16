@@ -536,6 +536,10 @@ async showMap() {
     if (status === google.maps.DirectionsStatus.OK) {
       document.getElementById('right-panel').innerHTML="";
       await directionsDisplay.setDirections(response);
+      // console.log('response.geocoded_waypoints pop(): ' + response.geocoded_waypoints.pop().types.toString())
+      // console.log('response.geocoded_waypoints length: ' + response.geocoded_waypoints.length)
+      // console.log('response.routes.pop().copyrights: ' + response.routes.pop().copyrights)
+      // console.log('response.routes length: ' + response.routes.length)
     } else {
       window.alert('Directions request failed due to ' + status);
     }
@@ -1533,11 +1537,17 @@ async showMap() {
     //console.log("this.remorquage.camionAttribue : "+ this.remorquage.camionAttribue)
     await this.camions.forEach(c=>{
       //console.log("c.unite +' - ' +c.marque +'  ' +c.modele : "+ c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim())
-      if(this.remorquage.camionAttribue.includes(c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()) &&
+      if(this.remorquage.idCamion==c.id){
+        this.camion=c;
+      }
+      else if(this.remorquage.camionAttribue.includes(c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()) &&
        this.remorquage.camionAttribue.length== (c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()).length) 
       {
         this.camion=c;
         //console.log("find the truck : "+ this.camion.unite)
+      }
+      else if((c.foreignName!=null && c.foreignName.length>0) && this.remorquage.camionAttribue.includes(c.foreignName)){
+        this.camion=c;
       }
     })
   }

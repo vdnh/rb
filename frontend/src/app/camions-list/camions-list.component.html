@@ -958,12 +958,12 @@
                 <!--  (ngModelChange)="onChangeCamionCapacity()" -->
                 <optgroup label="Unite avec GPS">
                     <option *ngFor="let c of camionsSurMap" [ngValue]="c">
-                        {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
+                        {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' '+c.marque +' ' +c.type+ ' ' +c.modele)}}
                     </option>
                 </optgroup>
                 <optgroup label="Unite sans GPS">
                     <option *ngFor="let c of camionsNoGPS" [ngValue]="c">
-                        {{"#"+c.unite + ' ' +c.type+ ' ' +c.modele}}
+                        {{"#"+c.unite + ' '+c.marque +' ' +c.type+ ' ' +c.modele}}
                     </option>
                 </optgroup>
                 <optgroup label="Trailer">

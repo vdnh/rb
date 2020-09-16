@@ -190,9 +190,9 @@ export class RemorquageComponent implements OnInit {
   compteClient=false;
 
   em:EmailMessage=new EmailMessage();
-
-  camions:Array<Camion>;
-
+  camion:Camion;
+  camions:Array<Camion>; // truck no gps
+  camionsGps:Array<Camion>; // truck with Gps
   vehiculeModeles = []; //myGlobals.d2cmediaacura;
   marquesModeles = myGlobals.marquesModeles;
   colors = myGlobals.colors
@@ -266,20 +266,39 @@ export class RemorquageComponent implements OnInit {
   
   problemService(){
     let probSer=" ";
-    if(this.remorquage.panne)
-      probSer=probSer+"Panne, "
-    if(this.remorquage.accident)
-      probSer=probSer+"Accident, "
-    if(this.remorquage.pullOut)
-      probSer=probSer+"PullOut, "
-    if(this.remorquage.debaragePorte)
-      probSer=probSer+"Debarage Porte, "
-    if(this.remorquage.survoltage)
-      probSer=probSer+"Survoltage, "
-    if(this.remorquage.essence)
-      probSer=probSer+"Essence, "
-    if(this.remorquage.changementPneu)
-      probSer=probSer+"Changement Pneu, "
+    if(this.varsGlobal.language.includes('English')){
+      if(this.remorquage.panne)
+        probSer=probSer+"Breakdown, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Door Unclock, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Boost, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Gasoline, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Tire Change, "
+    }
+    else{
+      if(this.remorquage.panne)
+        probSer=probSer+"Panne, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Debarage Porte, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Survoltage, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Essence, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Changement Pneu, "
+    }
+    
     return probSer;
   }
   
@@ -353,9 +372,13 @@ export class RemorquageComponent implements OnInit {
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
+      this.camionsGps=[];
       data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
+        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
+        {
+          if(!camion.gps) this.camions.push(camion)
+          if(camion.gps) this.camionsGps.push(camion)
+        }          
       })
       // this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
       this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
@@ -382,13 +405,13 @@ export class RemorquageComponent implements OnInit {
     var minute= this.remorquage.dateDepart.getMinutes().toString().length==2?this.remorquage.dateDepart.getMinutes().toString():'0'+this.remorquage.dateDepart.getMinutes().toString()
     //if(this.remorquage.timeCall.length)
     this.remorquage.timeCall=heure+':'+minute
-    console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
+    // console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
     if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
       this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
     this.taxProvince = this.taxList[10]; // tax province is Quebec tax by default
-    console.log("this.remorquage.taxProvince: " + this.remorquage.taxProvince)
-    console.log("this.taxProvince.id: " + this.taxProvince.id)
+    // console.log("this.remorquage.taxProvince: " + this.remorquage.taxProvince)
+    // console.log("this.taxProvince.id: " + this.taxProvince.id)
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
@@ -441,6 +464,29 @@ export class RemorquageComponent implements OnInit {
     })
   }
   
+  async camionChange(){
+    this.remorquage.idCamion=null; //before being found camion, set this.remorquage.idCamion=null
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
+    let strings:Array<string>=this.remorquage.camionAttribue.split(".Id.");
+    if(strings.length>1){
+      let cId:number =  Number(strings[1])
+      // console.log('cId: '+cId)
+      await allCamions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          this.camion=c;
+          this.remorquage.camionAttribue = strings[0].trim()
+          this.remorquage.idCamion=this.camion.id
+          //c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()
+        }
+      })
+      if(cId!=this.camion.id)
+        this.camion=null;
+    }
+    else this.camion=null;
+  }
+
   async gotoDetailRemorquage(r:Remorquage){
     /*
     this.remorquage=r;
@@ -506,7 +552,12 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de ce origin")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Do not locate this origin")
+                if(this.varsGlobal.language.includes('Francais'))
+                  alert("Ne pas trouver de coordonnees de ce origin")
+              }
     });//*/
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -562,7 +613,11 @@ async destinationChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de cet destination")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Do not locate this destination")
+                else alert("Ne pas trouver de coordonnees de cet destination")
+              }
     });//*/
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -703,7 +758,9 @@ async showMap() {
       document.getElementById('right-panel').innerHTML="";
       await directionsDisplay.setDirections(response);
     } else {
-      window.alert('Directions request failed due to ' + status);
+      if(this.varsGlobal.language.includes('English'))
+        window.alert('Directions request failed due to ' + status);
+      else window.alert("La demande d'itinéraire a échoué en raison de : " + status);
     }
   });
   //*/
@@ -800,8 +857,10 @@ onFileUpLoad(event){
   }
 
   onFini(){
-    var r = confirm("Etes vous sur que ce cas est fini ?")
-    if(r==true){
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure the case was finished ?")
+    else var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(r){
       console.log("Le cas est termine.")
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
@@ -815,8 +874,10 @@ onFileUpLoad(event){
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
-    if(r==true){
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure to cancel this case ?")
+    else var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(r){
       console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
@@ -826,7 +887,9 @@ onFileUpLoad(event){
             this.em.titre="Annuler #Bon : " + this.remorquage.id.toString()
             this.em.content='<div><p> '+'Annuler #Bon : ' + this.remorquage.id.toString()+' </p></div>'    
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              if(this.varsGlobal.language.includes('English'))
+                  alert("An email was also sent to driver")
+              else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
             })
@@ -842,8 +905,10 @@ onFileUpLoad(event){
   }
 
   onDelete(rq:Remorquage){
-    var r = confirm("Etes vous sure de supprimer cet appel ?")
-    if(r==true){      
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure to delete this case ?")
+    else var r = confirm("Etes vous sure de supprimer cet appel ?")
+    if(r){      
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
           this.listRqsAnnule.splice(this.listRqsAnnule.indexOf(rq),1)
@@ -897,12 +962,17 @@ onFileUpLoad(event){
       this.remorquage=new Remorquage();
       this.remorquage.idTransporter=Number(localStorage.getItem('idTransporter'))
     }, err=>{console.log(err)})
-    alert("C'est enregistre.")
+    if(this.varsGlobal.language.includes('English'))
+      alert("It's saved")
+    else alert("C'est enregistre.")
 
   }
 
   onReset(){
-    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure to cancel this case ?")
+    else var r = confirm("Etes vous sur d'annuler cet appel ?")
+    if(r) {
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
@@ -1357,7 +1427,9 @@ onFileUpLoad(event){
       }
     }
     else{
-      alert("Il n'y a pas de Remorquage pour ce jour.")
+      if(this.varsGlobal.language.includes('English'))
+        alert("There isn't towing today")
+      else alert("Il n'y a pas de Remorquage pour ce jour.")
     }
   }
 
@@ -1408,14 +1480,18 @@ onFileUpLoad(event){
           FileSaver.saveAs(blobSage, filenameSageExport+"-Export.IMP"); 
         }
         else{
-          alert("Il n'y a pas de Remorquage pour ce jour.")
+          if(this.varsGlobal.language.includes('English'))
+            alert("There isn't towing today")
+          else alert("Il n'y a pas de Remorquage pour ce jour.")
         }
       }, err=>{
         console.log(err)
       })
     }
     else{
-      alert('Il faut choisir le jour que vous voulez exporter.')
+      if(this.varsGlobal.language.includes('English'))
+        alert("You must choose the date to export")
+      else alert('Il faut choisir le jour que vous voulez exporter.')
     }    
   }
   //
@@ -1434,7 +1510,9 @@ onFileUpLoad(event){
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
+        if(this.varsGlobal.language.includes('English'))
+          alert("Mesage was sent to driver")
+        else alert("Le courriel a ete envoye au chauffeur.")
         if(this.remorquage.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.remorquage.emailContact;  // email of professional
@@ -1472,7 +1550,11 @@ onFileUpLoad(event){
       });  // go to top  
     }
     else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
+      {
+        if(this.varsGlobal.language.includes('English'))
+          alert("Enter the drivers' email address, please!!")
+        alert("Entrer l'adresse email de chauffer, SVP!!!")
+      }
   }
   
   ifDebit(){ // porter au compte

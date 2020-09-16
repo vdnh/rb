@@ -28,6 +28,7 @@ export class Remorquage{
     emailIntervenant="";
     idEntreprise:number;  // bientot id de Shipper
     idTransporter:number;  // id de Transporter
+    idCamion:number;  // id Unit
     sent=false; // sent or didn't send to driver
     camionAttribue="";
     signature="";
