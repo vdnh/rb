@@ -1,159 +1,321 @@
-<div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false || remorquage.driverNote.includes('!!Cancelled!!')))">
-  <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3>
-  <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
+<div *ngIf="varsGlobal.language.includes('Francais')">
+  <div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false || remorquage.driverNote.includes('!!Cancelled!!')))">
+    <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3>
+    <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
+  </div>
+  
+  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
+    <table>
+      <tr>
+        <td><button (click)="onFermer()" class="btn btn-link" >Fermer</button></td>
+        <!-- <td><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button></td> -->
+      </tr>
+    </table>    
+  </div>
+  
+  <div id="toprint"  *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
+    <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
+        <tr>
+          <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
+          <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
+          <td style="text-align: center; text-anchor: start "># Bon <br> <span>&nbsp;{{remorquage.id}}</span></td>
+        </tr>
+        <tr>
+          <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
+          <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+          <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
+          <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
+        </tr>
+        <tr>
+          <!-- <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+          <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td> -->
+          <td *ngIf="remorquage.porterAuCompte>0" colspan="5" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+          <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
+          <!-- <th *ngIf="remorquage.collecterArgent>0" colspan="2">Mode de paiement </th> -->
+          <td *ngIf="remorquage.collecterArgent>0" colspan="3">
+            <table border="1"><tr>
+                <td>Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+                <td>Chq <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+                <td>Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+                <td>Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+                <td>Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+            </tr></table>
+          </td>        
+        </tr>
+        <!-- <tr *ngIf="remorquage.collecterArgent>0"><td colspan="2">Mode de paiement </td></tr> -->
+        <!-- <tr *ngIf="remorquage.collecterArgent>0">
+          <td style="width: 20%;">Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+          <td style="width: 20%;">Cheque <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+          <td style="width: 20%;">Carte Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+          <td style="width: 20%;">Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+          <td style="width: 20%;">Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+        </tr> -->
+        <tr>
+          <td colspan="5" *ngIf="remorquage.nomEntreprise!=null&&remorquage.nomEntreprise.length>0">Client: 
+            <span>&nbsp;{{remorquage.nomEntreprise}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telContact}}</span>
+            <span *ngIf="remorquage.extTelContact!=null&&remorquage.extTelContact.length>0">&nbsp;&nbsp;&nbsp;{{"Ext: " + remorquage.extTelContact}}</span> <br>
+            <span *ngIf="remorquage.nomContact!=null&&remorquage.nomContact.length>0">{{"Commande par : " + remorquage.nomContact}}</span>
+            <br> &nbsp;</td>  
+        </tr>
+        <tr>
+          <td colspan="5">Contact: 
+            <span>&nbsp;{{remorquage.nomClient}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient2em}}</span>
+            <br> &nbsp;</td>  
+        </tr>
+        <tr>
+          <td colspan="5">
+            De: <span>&nbsp;{{remorquage.origin}}</span> <br> 
+            <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.origin)" title="Ouvrir GoogleMaps">
+              Y aller avec GoogleMaps
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> 
+            <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.destination)" title="Ouvrir GoogleMaps">
+              Y aller avec GoogleMaps
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
+            <span>&nbsp;{{remorquage.marque}}</span>
+            <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
+            <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
+            <br><span>&nbsp;</span>
+          </td> 
+          <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
+          <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Problems / Services: <span>&nbsp;{{problemService()}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Detail: <span>&nbsp;{{remorquage.comments}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Note au Chauffeur: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <!--tr>
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            {{remorquage.nomSignature}}  <span>&nbsp;
+              <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
+            <br>&nbsp;</span>
+          </td>
+        </tr-->
+        <tr>
+          <td colspan="5">
+            <label for="">
+              <input type="text" (change)="remorquage.nomSignature=$event.target.value.toUpperCase(); $event.target.value=''" name="nomSignature"
+               style="width: 300px" class="form-control" placeholder="Nom de Signateur" [disabled]="remorquage.fini">
+            </label>
+            <br>
+          <!--/td>
+          <td-->
+            <div class="m-signature-pad" *ngIf="!remorquage.signature.length>0">  
+              <signature-pad #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+                (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
+              </signature-pad>
+            </div>
+            <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
+            <span *ngIf="remorquage.nomSignature.length>0"><br> 
+              NOM EN LETTRES MOULEES : &nbsp;&nbsp; {{remorquage.nomSignature}}
+            </span>
+            <div>
+              <button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-signer</button>
+              <span>&nbsp;&nbsp;</span>
+              <button (click)="okHandler()" *ngIf="(!remorquage.signature.length>0 && remorquage.nomSignature.length>0 && !remorquage.fini)">Ok</button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div *ngIf="remorquage.imgUrl.length>0">
+      <a href="{{remorquage.imgUrl}}" target="_blank">
+        <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
+      </a>
+        <!-- <img id="sky" [src]="remorquage.imgUrl" alt="piece joint" style="position: absolute; z-index: 1; max-width: 216mm; max-height: 279mm;"> -->
+        <!-- <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad2 [options]="signaturePad2Options" (onBeginEvent)="draw2Start()"
+            (onEndEvent)="draw2Complete()" (onSave)="onSave2Handler($event)" (onClear)="onClear2Handler()">
+        </signature-pad>
+        <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0" width="width" height="height"> -->
+      <!-- <div class="noprint">
+          <button class="noprint; myBtn" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">SignerSurBonOrigin</button>
+          <button class="noprint; myBtn" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
+      </div> -->
+    </div>
 </div>
 
-<div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
-  <table>
-    <tr>
-      <td><button (click)="onFermer()" class="btn btn-link" >Fermer</button></td>
-      <!-- <td><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button></td> -->
-    </tr>
-  </table>    
+<div *ngIf="varsGlobal.language.includes('English')">
+  <div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false || remorquage.driverNote.includes('!!Cancelled!!')))">
+    <h3>This #{{id}} was cancelled. Please contact your dispatch !!</h3>
+    <button (click)="onFermer()" class="btn btn-link" >Close</button>
+  </div>
+  
+  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
+    <table>
+      <tr>
+        <td><button (click)="onFermer()" class="btn btn-link" >Close</button></td>
+        <!-- <td><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link">Print</button></td> -->
+      </tr>
+    </table>    
+  </div>
+  
+  <div id="toprint"  *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
+    <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
+        <tr>
+          <td style="text-align: center; text-anchor: start ">TimeCall <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Dispatch <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Driver <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
+          <td style="text-align: center; text-anchor: start ">#PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
+          <td style="text-align: center; text-anchor: start ">#Num <br> <span>&nbsp;{{remorquage.id}}</span></td>
+        </tr>
+        <tr>
+          <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
+          <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
+          <td style="text-align: center; text-anchor: start ">#Unit <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
+          <td style="text-align: center; text-anchor: start ">Equipments' Type <br> <span>&nbsp;{{typeServiceEnglish(remorquage.typeService)}}</span></td>
+          <td style="text-align: center; text-anchor: start " colspan="2">$ Rate $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
+        </tr>
+        <tr>
+          <!-- <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
+          <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td> -->
+          <td *ngIf="remorquage.porterAuCompte>0" colspan="5" style="text-align: center; text-anchor: start ">ChargeAccount : {{remorquage.porterAuCompte}}</td>
+          <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collect Money : {{remorquage.collecterArgent | number : '1.2'}}</th>
+          <!-- <th *ngIf="remorquage.collecterArgent>0" colspan="2">Mode de paiement </th> -->
+          <td *ngIf="remorquage.collecterArgent>0" colspan="3">
+            <table border="1"><tr>
+                <td>Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+                <td>Check <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+                <td>Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+                <td>Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+                <td>Transfer <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+            </tr></table>
+          </td>        
+        </tr>
+        <!-- <tr *ngIf="remorquage.collecterArgent>0"><td colspan="2">Mode de paiement </td></tr> -->
+        <!-- <tr *ngIf="remorquage.collecterArgent>0">
+          <td style="width: 20%;">Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
+          <td style="width: 20%;">Cheque <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
+          <td style="width: 20%;">Carte Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
+          <td style="width: 20%;">Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
+          <td style="width: 20%;">Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
+        </tr> -->
+        <tr>
+          <td colspan="5" *ngIf="remorquage.nomEntreprise!=null&&remorquage.nomEntreprise.length>0">Client: 
+            <span>&nbsp;{{remorquage.nomEntreprise}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telContact}}</span>
+            <span *ngIf="remorquage.extTelContact!=null&&remorquage.extTelContact.length>0">&nbsp;&nbsp;&nbsp;{{"Ext: " + remorquage.extTelContact}}</span> <br>
+            <span *ngIf="remorquage.nomContact!=null&&remorquage.nomContact.length>0">{{"Commande par : " + remorquage.nomContact}}</span>
+            <br> &nbsp;</td>  
+        </tr>
+        <tr>
+          <td colspan="5">Contact: 
+            <span>&nbsp;{{remorquage.nomClient}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
+            <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient2em}}</span>
+            <br> &nbsp;</td>  
+        </tr>
+        <tr>
+          <td colspan="5">
+            From: <span>&nbsp;{{remorquage.origin}}</span> <br> 
+            <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.origin)" title="GoogleMaps">
+              Go with GoogleMaps
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">To: <span>&nbsp;{{remorquage.destination}}</span> <br> 
+            <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.destination)" title="GoogleMaps">
+              Go with GoogleMaps
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align: left; text-anchor: start ">Vehicle: 
+            <span>&nbsp;{{remorquage.marque}}</span>
+            <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
+            <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
+            <br><span>&nbsp;</span>
+          </td> 
+          <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
+          <td style="text-align: center; text-anchor: start "> Plate: <span>{{remorquage.plaque}}</span></td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Problems / Services: <span>&nbsp;{{problemService()}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Detail: <span>&nbsp;{{remorquage.comments}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <tr> 
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            Note to Driver: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
+          </td>
+        </tr>
+        <!--tr>
+          <td colspan="5"style="text-align: left; text-anchor: start ">
+            {{remorquage.nomSignature}}  <span>&nbsp;
+              <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
+            <br>&nbsp;</span>
+          </td>
+        </tr-->
+        <tr>
+          <td colspan="5">
+            <label for="">
+              <input type="text" (change)="remorquage.nomSignature=$event.target.value.toUpperCase(); $event.target.value=''" name="nomSignature"
+               style="width: 300px" class="form-control" placeholder="Nom de Signateur" [disabled]="remorquage.fini">
+            </label>
+            <br>
+          <!--/td>
+          <td-->
+            <div class="m-signature-pad" *ngIf="!remorquage.signature.length>0">  
+              <signature-pad #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+                (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
+              </signature-pad>
+            </div>
+            <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
+            <span *ngIf="remorquage.nomSignature.length>0"><br> 
+              NAME IN BLOCK LETTERS : &nbsp;&nbsp; {{remorquage.nomSignature}}
+            </span>
+            <div>
+              <button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-sign</button>
+              <span>&nbsp;&nbsp;</span>
+              <button (click)="okHandler()" *ngIf="(!remorquage.signature.length>0 && remorquage.nomSignature.length>0 && !remorquage.fini)">Ok</button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div *ngIf="remorquage.imgUrl.length>0">
+      <a href="{{remorquage.imgUrl}}" target="_blank">
+        <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
+      </a>
+        <!-- <img id="sky" [src]="remorquage.imgUrl" alt="piece joint" style="position: absolute; z-index: 1; max-width: 216mm; max-height: 279mm;"> -->
+        <!-- <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad2 [options]="signaturePad2Options" (onBeginEvent)="draw2Start()"
+            (onEndEvent)="draw2Complete()" (onSave)="onSave2Handler($event)" (onClear)="onClear2Handler()">
+        </signature-pad>
+        <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0" width="width" height="height"> -->
+      <!-- <div class="noprint">
+          <button class="noprint; myBtn" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">SignerSurBonOrigin</button>
+          <button class="noprint; myBtn" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
+      </div> -->
+    </div>
 </div>
-
-<div id="toprint"  *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true && !remorquage.driverNote.includes('!!Cancelled!!'))">
-  <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
-      <tr>
-        <td style="text-align: center; text-anchor: start ">Heure d'Appel <br> <span>&nbsp;{{remorquage.dateDepart | date: 'dd-MMM-yyyy'}} - {{remorquage.timeCall}}</span></td>
-        <td style="text-align: center; text-anchor: start ">Repartiteur <br> <span>&nbsp;{{remorquage.nomDispatch}}</span></td>
-        <td style="text-align: center; text-anchor: start ">Chauffeur <br> <span>&nbsp;{{remorquage.nomIntervenant}}</span></td>
-        <td style="text-align: center; text-anchor: start "># PO <br> <span>&nbsp;{{remorquage.numPO}}</span></td>
-        <td style="text-align: center; text-anchor: start "># Bon <br> <span>&nbsp;{{remorquage.id}}</span></td>
-      </tr>
-      <tr>
-        <td *ngIf="remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Rush</td>
-        <td *ngIf="!remorquage.rush" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{remorquage.dateReserve | date : 'dd-MMM-yyyy'}} - {{remorquage.timeResrvation}}</td>
-        <td style="text-align: center; text-anchor: start "># Camion <br> <span>&nbsp;{{remorquage.camionAttribue}}</span></td>
-        <td style="text-align: center; text-anchor: start ">Type d"Equipement <br> <span>&nbsp;{{remorquage.typeService}}</span></td>
-        <td style="text-align: center; text-anchor: start " colspan="2">$ Montant $ <br> <span>&nbsp;{{remorquage.total}}</span></td>
-      </tr>
-      <tr>
-        <!-- <td colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
-        <td colspan="3" style="text-align: center; text-anchor: start ">Collecter en argent : {{remorquage.collecterArgent}}</td> -->
-        <td *ngIf="remorquage.porterAuCompte>0" colspan="5" style="text-align: center; text-anchor: start ">Porter au Compte : {{remorquage.porterAuCompte}}</td>
-        <th *ngIf="remorquage.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{remorquage.collecterArgent | number : '1.2'}}</th>
-        <!-- <th *ngIf="remorquage.collecterArgent>0" colspan="2">Mode de paiement </th> -->
-        <td *ngIf="remorquage.collecterArgent>0" colspan="3">
-          <table border="1"><tr>
-              <td>Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
-              <td>Chq <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
-              <td>Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
-              <td>Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
-              <td>Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
-          </tr></table>
-        </td>        
-      </tr>
-      <!-- <tr *ngIf="remorquage.collecterArgent>0"><td colspan="2">Mode de paiement </td></tr> -->
-      <!-- <tr *ngIf="remorquage.collecterArgent>0">
-        <td style="width: 20%;">Cash <input type="checkbox" [(ngModel)]="remorquage.byCash"></td>
-        <td style="width: 20%;">Cheque <input type="checkbox" [(ngModel)]="remorquage.byCheck"></td>
-        <td style="width: 20%;">Carte Credit <input type="checkbox" [(ngModel)]="remorquage.creditCard"></td>
-        <td style="width: 20%;">Interac <input type="checkbox" [(ngModel)]="remorquage.byInterac"></td>
-        <td style="width: 20%;">Virement <input type="checkbox" [(ngModel)]="remorquage.transfer"></td>
-      </tr> -->
-      <tr>
-        <td colspan="5" *ngIf="remorquage.nomEntreprise!=null&&remorquage.nomEntreprise.length>0">Client: 
-          <span>&nbsp;{{remorquage.nomEntreprise}}</span>
-          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telContact}}</span>
-          <span *ngIf="remorquage.extTelContact!=null&&remorquage.extTelContact.length>0">&nbsp;&nbsp;&nbsp;{{"Ext: " + remorquage.extTelContact}}</span> <br>
-          <span *ngIf="remorquage.nomContact!=null&&remorquage.nomContact.length>0">{{"Commande par : " + remorquage.nomContact}}</span>
-          <br> &nbsp;</td>  
-      </tr>
-      <tr>
-        <td colspan="5">Contact: 
-          <span>&nbsp;{{remorquage.nomClient}}</span>
-          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient}}</span>
-          <span>&nbsp;&nbsp;&nbsp;{{"Tel: " + remorquage.telClient2em}}</span>
-          <br> &nbsp;</td>  
-      </tr>
-      <tr>
-        <td colspan="5">
-          De: <span>&nbsp;{{remorquage.origin}}</span> <br> 
-          <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.origin)" title="Ouvrir GoogleMaps">
-            Y aller avec GoogleMaps
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="5">A: <span>&nbsp;{{remorquage.destination}}</span> <br> 
-          <button class="btn btn-link" (click)="urlGoogleMaps(remorquage.destination)" title="Ouvrir GoogleMaps">
-            Y aller avec GoogleMaps
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3" style="text-align: left; text-anchor: start ">Vehicule: 
-          <span>&nbsp;{{remorquage.marque}}</span>
-          <span>&nbsp;&nbsp;{{remorquage.modele}}</span>
-          <span>&nbsp;&nbsp;{{remorquage.couleur}}</span>
-          <br><span>&nbsp;</span>
-        </td> 
-        <td style="text-align: center; text-anchor: start "> N/S: <span>{{remorquage.serie}}</span></td>
-        <td style="text-align: center; text-anchor: start "> Plaque: <span>{{remorquage.plaque}}</span></td>
-      </tr>
-      <tr> 
-        <td colspan="5"style="text-align: left; text-anchor: start ">
-          Problems / Services: <span>&nbsp;{{problemService()}} <br>&nbsp;</span>
-        </td>
-      </tr>
-      <tr> 
-        <td colspan="5"style="text-align: left; text-anchor: start ">
-          Detail: <span>&nbsp;{{remorquage.comments}} <br>&nbsp;</span>
-        </td>
-      </tr>
-      <tr> 
-        <td colspan="5"style="text-align: left; text-anchor: start ">
-          Note au Chauffeur: <span>&nbsp;{{remorquage.driverNote}} <br>&nbsp;</span>
-        </td>
-      </tr>
-      <!--tr>
-        <td colspan="5"style="text-align: left; text-anchor: start ">
-          {{remorquage.nomSignature}}  <span>&nbsp;
-            <img [src]="remorquage.signature" height="100" width="250" *ngIf="remorquage.signature.length>0">
-          <br>&nbsp;</span>
-        </td>
-      </tr-->
-      <tr>
-        <td colspan="5">
-          <label for="">
-            <input type="text" (change)="remorquage.nomSignature=$event.target.value.toUpperCase(); $event.target.value=''" name="nomSignature"
-             style="width: 300px" class="form-control" placeholder="Nom de Signateur" [disabled]="remorquage.fini">
-          </label>
-          <br>
-        <!--/td>
-        <td-->
-          <div class="m-signature-pad" *ngIf="!remorquage.signature.length>0">  
-            <signature-pad #SignaturePad [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
-              (onEndEvent)="drawComplete()" (onSave)="onSaveHandler($event)" (onClear)="onClearHandler()">
-            </signature-pad>
-          </div>
-          <img [src]="remorquage.signature" alt="Signature" *ngIf="remorquage.signature.length>0">
-          <span *ngIf="remorquage.nomSignature.length>0"><br> 
-            NOM EN LETTRES MOULEES : &nbsp;&nbsp; {{remorquage.nomSignature}}
-          </span>
-          <div>
-            <button (click)="clearHandler()" *ngIf="remorquage.nomSignature.length>0 && !remorquage.fini">Re-signer</button>
-            <span>&nbsp;&nbsp;</span>
-            <button (click)="okHandler()" *ngIf="(!remorquage.signature.length>0 && remorquage.nomSignature.length>0 && !remorquage.fini)">Ok</button>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div *ngIf="remorquage.imgUrl.length>0">
-    <a href="{{remorquage.imgUrl}}" target="_blank">
-      <img [src]="remorquage.imgUrl" alt="piece joint" class="img-responsive" width="100%" height="auto">
-    </a>
-      <!-- <img id="sky" [src]="remorquage.imgUrl" alt="piece joint" style="position: absolute; z-index: 1; max-width: 216mm; max-height: 279mm;"> -->
-      <!-- <signature-pad *ngIf="readyToSign" style="position: absolute; z-index: 2; opacity: 0.6; filter: alpha(opacity=60);" #SignaturePad2 [options]="signaturePad2Options" (onBeginEvent)="draw2Start()"
-          (onEndEvent)="draw2Complete()" (onSave)="onSave2Handler($event)" (onClear)="onClear2Handler()">
-      </signature-pad>
-      <img style="position: absolute; opacity: 0.6; z-index: 2; filter: alpha(opacity=60);" [src]="signature" *ngIf="signature.length>0" width="width" height="height"> -->
-    <!-- <div class="noprint">
-        <button class="noprint; myBtn" *ngIf="!readyToSign" (click)="toSign()" title="Cliquer pour signer">SignerSurBonOrigin</button>
-        <button class="noprint; myBtn" *ngIf="readyToSign && signe" (click)="validateSign()" title="Valider signature">Valider</button>
-    </div> -->
-  </div>
   
   

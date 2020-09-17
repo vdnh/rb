@@ -1499,7 +1499,18 @@ export const YukonVilles=['Dawson',
     { marque: "Volkswagen", modeles: d2cmediavolkswagen },
     { marque: "Volvo", modeles: d2cmediavolvo }
   ];  
-
+  export const colorsEnglish = [
+    "Black",
+    "Dark Red",
+    "Gold",
+    "Light Brown",
+    "Med. Dark Blue",
+    "Med. Dark Gray",
+    "Med. Dark Green",
+    "Med. Red",
+    "Silver",
+    "White"
+  ]
   export const colors = [
     "Argent",
     "Beige",

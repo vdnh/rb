@@ -196,6 +196,7 @@ export class RemorquageComponent implements OnInit {
   vehiculeModeles = []; //myGlobals.d2cmediaacura;
   marquesModeles = myGlobals.marquesModeles;
   colors = myGlobals.colors
+  colorsEnglish = myGlobals.colorsEnglish
   
   marqueChange(){
     this.vehiculeModeles=[];
@@ -884,8 +885,15 @@ onFileUpLoad(event){
           // commence d'envoyer email
           if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
             this.em.emailDest=this.remorquage.emailIntervenant
-            this.em.titre="Annuler #Bon : " + this.remorquage.id.toString()
+            if(this.varsGlobal.language.includes('English')){
+              this.em.titre="Cancel #Num : " + this.remorquage.id.toString()
+            this.em.content='<div><p> '+'Cancel #Num : ' + this.remorquage.id.toString()+' </p></div>'    
+            }
+            else{
+              this.em.titre="Annuler #Bon : " + this.remorquage.id.toString()
             this.em.content='<div><p> '+'Annuler #Bon : ' + this.remorquage.id.toString()+' </p></div>'    
+            }
+            
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
               if(this.varsGlobal.language.includes('English'))
                   alert("An email was also sent to driver")
@@ -1505,7 +1513,7 @@ onFileUpLoad(event){
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Demande</h4></a>" +" </p></div>"    
+      +"'><h4>DETAIL</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
@@ -1516,7 +1524,28 @@ onFileUpLoad(event){
         if(this.remorquage.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.remorquage.emailContact;  // email of professional
-          em.titre= "Encours traitement - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "In process - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+          em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you.</div>'+
+              '<div><br></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Encours traitement - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
           em.content='<div><p> '+ em.titre + " <br>" + 
             '<div>'+
               '<div><br></div>'+
@@ -1534,6 +1563,8 @@ onFileUpLoad(event){
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
+          }
+          
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')
           }, err=>{console.log(err)})

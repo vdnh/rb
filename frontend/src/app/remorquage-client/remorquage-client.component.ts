@@ -467,22 +467,47 @@ async toSign(){
     
   }
   
+  typeServiceEnglish(text:string){ // i is index of typeService
+    if(text.includes('Leger')) return 'Light'
+    if(text.includes('Moyen')) return 'Medium'
+    if(text.includes('Lourd')) return 'Heavy'
+  }
+
   problemService(){
     let probSer=" ";
-    if(this.remorquage.panne)
-      probSer=probSer+"Panne, "
-    if(this.remorquage.accident)
-      probSer=probSer+"Accident, "
-    if(this.remorquage.pullOut)
-      probSer=probSer+"PullOut, "
-    if(this.remorquage.debaragePorte)
-      probSer=probSer+"Debarage Porte, "
-    if(this.remorquage.survoltage)
-      probSer=probSer+"Survoltage, "
-    if(this.remorquage.essence)
-      probSer=probSer+"Essence, "
-    if(this.remorquage.changementPneu)
-      probSer=probSer+"Changement Pneu, "
+    if(this.varsGlobal.language.includes('English')){
+      if(this.remorquage.panne)
+        probSer=probSer+"Breakdown, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Door Unclock, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Boost, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Gasoline, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Tire Change, "
+    }
+    else{
+      if(this.remorquage.panne)
+        probSer=probSer+"Panne, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Debarage Porte, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Survoltage, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Essence, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Changement Pneu, "
+    }
+    
     return probSer;
   }
   

@@ -57,6 +57,9 @@ export class DetailRemorquageComponent implements OnInit {
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
 
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
+
   provinceList=myGlobals.provinceList ;
   
   villeListO= myGlobals.QuebecVilles; //villeList Origin ;
@@ -120,6 +123,13 @@ export class DetailRemorquageComponent implements OnInit {
     //'canvasHeight': 100,
   };
   transporter: Transporter;
+
+  typeServiceEnglish(text:string){ // i is index of typeService
+    if(text.includes('Leger')) return 'Light'
+    if(text.includes('Moyen')) return 'Medium'
+    if(text.includes('Lourd')) return 'Heavy'
+  }
+
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -155,14 +165,16 @@ export class DetailRemorquageComponent implements OnInit {
   em:EmailMessage=new EmailMessage();
   id:number;
   camions:Array<Camion>;
+  camionsGps:Array<Camion>;
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
   
-vehiculeModeles = []; //myGlobals.d2cmediaacura;
-marquesModeles = myGlobals.marquesModeles;
-colors = myGlobals.colors
+  vehiculeModeles = []; //myGlobals.d2cmediaacura;
+  marquesModeles = myGlobals.marquesModeles;
+  colors = myGlobals.colors
+  colorsEnglish = myGlobals.colorsEnglish
 
-marqueChange(){
+  marqueChange(){
     this.vehiculeModeles=[];
     this.marquesModeles.forEach(mm =>{
       if(this.remorquage.marque.includes(mm.marque))
@@ -203,12 +215,20 @@ marqueChange(){
 
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
+      this.onSelectTax(); // get tax province right now
       if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
         this.remorquage.nomDispatch=localStorage.getItem('fullName')
       //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
       //this.titleService.setTitle('Case : '+this.remorquage.id + 
-      this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-      (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
+      if(this.varsGlobal.language.includes('English')){
+        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Cancelled" : ' - in pending'))
+      }
+      else{
+        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
+      }
+      
 
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
@@ -239,12 +259,20 @@ marqueChange(){
     //this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
     this.camionsService.camionsDeTransporter(this.remorquage.idTransporter).
     subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
+      
+      // this.camions=[];
+      // data.forEach(camion=>{
+      //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+      //     this.camions.push(camion)
+      // })
       this.camions=[];
+      this.camionsGps=[];
       data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
+        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
+        {
+          if(!camion.gps) this.camions.push(camion)
+          if(camion.gps) this.camionsGps.push(camion)
+        }          
       })
       this.findCamionId(); // to find the truck we have choosen
       //this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
@@ -278,24 +306,7 @@ marqueChange(){
       }
     })
   }
-  problemService(){
-    let probSer=" ";
-    if(this.remorquage.panne)
-      probSer=probSer+"Panne, "
-    if(this.remorquage.accident)
-      probSer=probSer+"Accident, "
-    if(this.remorquage.pullOut)
-      probSer=probSer+"PullOut, "
-    if(this.remorquage.debaragePorte)
-      probSer=probSer+"Debarage Porte, "
-    if(this.remorquage.survoltage)
-      probSer=probSer+"Survoltage, "
-    if(this.remorquage.essence)
-      probSer=probSer+"Essence, "
-    if(this.remorquage.changementPneu)
-      probSer=probSer+"Changement Pneu, "
-    return probSer;
-  }
+  
   async gotoDetailRemorquage(r:Remorquage){
     this.remorquage=r;
     this.modeHistoire=-1;
@@ -374,7 +385,11 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de ce origin")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Do not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
     });//*/
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -430,7 +445,11 @@ async destinationChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de cet destination")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Do not locate this destination")
+                else alert("Ne pas trouver de coordonnees de cet destination")
+              }
     });//*/
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -465,23 +484,59 @@ printBonDeRemorquage(cmpId){
   WindowPrt.close();
 }
 
+// prixCalcul(){
+//   this.remorquage.horstax=this.remorquage.prixBase
+//   if((this.remorquage.distance-this.remorquage.inclus)>0){
+//     this.remorquage.horstax = this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
+//   }
+//   if(this.remorquage.taxable){
+//     this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
+//     this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
+//   }
+//   else{
+//     this.remorquage.tps =0.00;
+//     this.remorquage.tvq =0.00;
+//   }
+//   //this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
+//   //this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
+//   this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+//   //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+// }
 prixCalcul(){
   this.remorquage.horstax=this.remorquage.prixBase
   if((this.remorquage.distance-this.remorquage.inclus)>0){
-    this.remorquage.horstax = this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
+    this.remorquage.horstax =this.remorquage.horstax + (this.remorquage.distance-this.remorquage.inclus)*this.remorquage.prixKm
   }
   if(this.remorquage.taxable){
-    this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
-    this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
+    // this.remorquage.tps =await Math.round(this.remorquage.horstax*0.05*100)/100
+    // this.remorquage.tvq =await Math.round(this.remorquage.horstax*0.09975*100)/100
+    if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+      this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+    this.onSelectTax();
+    // we must remember : tps is gsthst and tvq is pst
+    this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+    this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
   }
   else{
     this.remorquage.tps =0.00;
     this.remorquage.tvq =0.00;
   }
-  //this.remorquage.tps = Math.round(this.remorquage.horstax*0.05*100)/100
-  //this.remorquage.tvq = Math.round(this.remorquage.horstax*0.09975*100)/100
   this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
-  //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+  //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
+}
+onSelectTax(){
+  if(this.remorquage.taxProvince==null)
+    {
+      this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.taxProvince=this.taxList[10]
+    }
+  else{
+    this.taxList.forEach(tp=>{
+      if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+        this.taxProvince=tp
+    })
+  }
+  //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
 }
 
 async showMap() {
@@ -623,22 +678,52 @@ async showMap() {
   }
 
   async onFini(){
-    var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(this.varsGlobal.language.includes('English'))
+    var r = confirm("Is this case finished ?")
+    else var r = confirm("Etes vous sur que ce cas est fini ?")
     if(r==true){
       this.onTextExporter(); //  write into text export sage et excel
       await this.printBonDeRemorquage('toprint');  // wait for print first tag html id="toprint"
-      console.log("Le cas est termine.")
+      // console.log("Le cas est termine.")
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
         //this.remorquage=new Remorquage();
         //this.titleService.setTitle('Case : '+this.remorquage.id + 
-        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        if(this.varsGlobal.language.includes('English')){
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : ' - in pending'))
+        }
+        else{
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
         (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        }
+        
         if(this.remorquage.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.remorquage.emailContact;  // email of professional
-          em.titre= "Succes - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-          em.content='<div><p> '+ em.titre + " <br>" + 
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "Success - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you.</div>'+
+              '<div><br></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Succes - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
             '<div>'+
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
@@ -655,6 +740,8 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
+          }
+          
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi message succes .')
             window.close();
@@ -702,7 +789,9 @@ async showMap() {
   }
 
   onDevoirAttendre(){
-    var r = confirm("Etes vous sur de mettre ce cas sur la liste d'attente?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you put this case to waiting list ?")
+    else var r = confirm("Etes vous sur de mettre ce cas sur la liste d'attente?")
     if(r==true){
       this.remorquage.sent=false; // dans le cas En Cours en attendre
       this.remorquage.driverNote=""; // dans le cas Annule en attendre
@@ -710,8 +799,29 @@ async showMap() {
         if(this.remorquage.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.remorquage.emailContact;  // email of professional
-          em.titre= "Devoir attendre - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-          em.content='<div><p> '+ em.titre + " <br>" + 
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "Have to wait - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you for your comprehension.</div>'+
+              '<div><br></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Devoir attendre - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
             '<div>'+
               '<div><br></div>'+
               '<div>Merci de votre comprehension.</div>'+
@@ -728,6 +838,8 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
+          }
+          
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi message attente .')
             window.close();
@@ -740,9 +852,11 @@ async showMap() {
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to cancel this case ?")
+    else var r = confirm("Etes vous sur d'annuller ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      // console.log("Le cas est annulle.")
       if(this.remorquage.id>0){
         this.remorquage.driverNote="!!Cancelled!!";
         this.remorquage.sent=false;
@@ -751,22 +865,33 @@ async showMap() {
           if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
             this.em.emailDest=this.remorquage.emailIntervenant
             //this.em.titre="Annuler case numero : " + this.remorquage.id.toString()
-            this.em.titre="Annuler case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            if(this.varsGlobal.language.includes('English'))
+              this.em.titre="Cancel case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            else 
+              this.em.titre="Annuler case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
             //this.em.content='<div><p> '+'Annuler case numero : ' + this.remorquage.id.toString()+' </p></div>'    
             let styleCss = '<style> '
             +' div.cts_rotate {width: 150px; height: 80px; background-color: yellow; -ms-transform: rotate(340deg); -webkit-transform: rotate(340deg); transform: rotate(340deg);} '
             +' </style> '
             // styleCss + 
-            this.em.content= ' <div  style="transform: rotate(340); background-color: yellow; width: 150px; height: 100px;">' 
-            +'<p> <h4> '+'Annuler case : ' + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur+' </h4> </p>'
-            +'</div>'    
+            if(this.varsGlobal.language.includes('English'))
+              this.em.content= ' <div  style="transform: rotate(340); background-color: yellow; width: 150px; height: 100px;">' 
+              +'<p> <h4> '+'Cancel case : ' + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur+' </h4> </p>'
+              +'</div>'
+            else 
+              this.em.content= ' <div  style="transform: rotate(340); background-color: yellow; width: 150px; height: 100px;">' 
+              +'<p> <h4> '+'Annuler case : ' + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur+' </h4> </p>'
+              +'</div>'    
             await this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              if(this.varsGlobal.language.includes('English'))
+                alert("An email cancellation was sent to driver.")
+              else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
               if(this.remorquage.emailContact.length>10){
                 let em:EmailMessage=new EmailMessage();
                 em.emailDest=this.remorquage.emailContact;  // email of professional
-                em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-                em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
+                if(this.varsGlobal.language.includes('English')){
+                  em.titre= "Cancelled - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+                  em.content='<div><p> '+'You have '+ em.titre + " <br>" + 
                   '<div>'+
                     '<div><br></div>'+
                     //'<div>Merci de votre collaboration.</div>'+
@@ -783,8 +908,30 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
                   " </p></div>"
+                }
+                else{
+                  em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+                  em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
+                  '<div>'+
+                    '<div><br></div>'+
+                    //'<div>Merci de votre collaboration.</div>'+
+                    //'<div><br></div>'+
+                    //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                  " </p></div>"
+                }
+                
                 this.bankClientsService.envoyerMail(em).subscribe(data=>{
-                  console.log('Le client professionnel recois aussi message annulation .')
+                  // console.log('Le client professionnel recois aussi message annulation .')
                   window.close();
                 }, err=>{console.log(err)})
               }
@@ -798,12 +945,33 @@ async showMap() {
           //*/
           //else 
           else {
-            console.log('Case cancelled - We are trying to send confirmation to client pro.')
+            // console.log('Case cancelled - We are trying to send confirmation to client pro.')
             if(this.remorquage.emailContact.length>10){
-              console.log("Case cancelled - Emails' pro is valid.")
+              // console.log("Case cancelled - Emails' pro is valid.")
               let em:EmailMessage=new EmailMessage();
               em.emailDest=this.remorquage.emailContact;  // email of professional
-              em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+              if(this.varsGlobal.language.includes('English')){
+                em.titre= "Cancelled - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+              em.content='<div><p> '+'You have '+ em.titre + " <br>" + 
+                '<div>'+
+                  '<div><br></div>'+
+                  //'<div>Merci de votre collaboration.</div>'+
+                  //'<div><br></div>'+
+                  //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+                " </p></div>"
+              }
+              else{
+                em.titre= "Annule - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
               em.content='<div><p> '+'Vous avez '+ em.titre + " <br>" + 
                 '<div>'+
                   '<div><br></div>'+
@@ -821,6 +989,8 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
                 " </p></div>"
+              }
+              
               await this.bankClientsService.envoyerMail(em).subscribe(data=>{
                 console.log('Le client professionnel recois aussi message annulation.')
                 window.close();
@@ -838,9 +1008,11 @@ async showMap() {
   }
 
   onDelete(){
-    var r = confirm("Etes vous sur de supprimer ce cas ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to delete this case ?")
+    else var r = confirm("Etes vous sur de supprimer ce cas ?")
     if(r==true){
-      console.log("Le cas est supprime.")
+      // console.log("Le cas est supprime.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
           window.close();
@@ -870,7 +1042,9 @@ async showMap() {
 
   onSavePlusAlert(){
     this.onSave();
-    alert("C'est enregistre." );
+    if(this.varsGlobal.language.includes('English'))
+      alert("It's saved.")
+    else alert("C'est enregistre." );
   }
   
   onPrint(heure){    
@@ -1197,17 +1371,40 @@ async showMap() {
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
       + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-      +"'><h4>Ouvrir la Demande</h4></a>" +" </p></div>"    
+      +"'><h4>DETAIL</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)
         //console.log('this.em.emailDest : '+ this.em.emailDest)
         //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
+        if(this.varsGlobal.language.includes('English'))
+          alert("An email was sent to driver.")
+        else alert("Le courriel a ete envoye au chauffeur.")
         if(this.remorquage.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.remorquage.emailContact;  // email of professional
-          em.titre= "Encours traitement - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
-          em.content='<div><p> '+ em.titre + " <br>" + 
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "In progress - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you.</div>'+
+              '<div><br></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Encours traitement - " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
+            em.content='<div><p> '+ em.titre + " <br>" + 
             '<div>'+
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
@@ -1224,6 +1421,8 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
+          }
+          
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')
           }, err=>{console.log(err)})
@@ -1231,8 +1430,15 @@ async showMap() {
         this.remorquage.sent=true;
         this.onSave();
         //this.titleService.setTitle('Case : '+this.remorquage.id + 
-        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        if(this.varsGlobal.language.includes('English')){
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+          (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : ' - in pending'))
+        }
+        else{
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+          (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        }
+        
       }, err=>{
         console.log()
       })//*/
@@ -1243,7 +1449,11 @@ async showMap() {
       });  // go to top  
     }
     else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
+      {
+        if(this.varsGlobal.language.includes('English'))
+          alert("Enter the drivers' email, please!!")
+        else alert("Entrer le courriel de chauffer, SVP!!!")
+      }
   }
   
   ifDebit(){ // porter au compte
@@ -1407,7 +1617,7 @@ async showMap() {
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
-      this.carteText='Mettre sur la Carte'
+      this.carteText='Voir sur la Carte'
       this.marker.setMap(null);
       this.subscription.unsubscribe();
     }
@@ -1464,7 +1674,10 @@ async showMap() {
             this.subscription=source.subscribe(val=>{this.getLocalisation()})  
           }
           else
-            alert("Ce camion n'est pas suivi gps")
+            {
+              if(this.varsGlobal.language.includes('English'))
+                alert("This unit hasn't GPS")
+              else alert("Ce camion n'est pas suivi gps")}
         }, err=>{
           console.log();
         })//*/
@@ -1516,15 +1729,37 @@ async showMap() {
       console.log();
     })
   }
+  // async camionChange(){
+  //   let strings:Array<string>=this.remorquage.camionAttribue.split("Id.");
+  //   if(strings.length>1){
+  //     let cId:number =  Number(strings[1])
+  //     await this.camions.forEach(c=>{
+  //       if(c.id==cId) 
+  //       {
+  //         this.camion=c;
+  //         this.remorquage.camionAttribue = c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()
+  //       }
+  //     })
+  //     if(cId!=this.camion.id)
+  //       this.camion=null;
+  //   }
+  //   else this.camion=null;
+  // }
   async camionChange(){
-    let strings:Array<string>=this.remorquage.camionAttribue.split("Id.");
+    this.remorquage.idCamion=null; //before being found camion, set this.remorquage.idCamion=null
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
+    let strings:Array<string>=this.remorquage.camionAttribue.split(".Id.");
     if(strings.length>1){
       let cId:number =  Number(strings[1])
-      await this.camions.forEach(c=>{
+      // console.log('cId: '+cId)
+      await allCamions.forEach(c=>{
         if(c.id==cId) 
         {
           this.camion=c;
-          this.remorquage.camionAttribue = c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()
+          this.remorquage.camionAttribue = strings[0].trim()
+          this.remorquage.idCamion=this.camion.id
+          //c.unite.trim() +' - ' +c.marque.trim() +' ' +c.modele.trim()
         }
       })
       if(cId!=this.camion.id)
@@ -1532,7 +1767,6 @@ async showMap() {
     }
     else this.camion=null;
   }
-  
   async findCamionId(){
     //console.log("this.remorquage.camionAttribue : "+ this.remorquage.camionAttribue)
     await this.camions.forEach(c=>{
@@ -1553,10 +1787,25 @@ async showMap() {
   }
   // end of show camion on map
 
+  // prixCalculWithHorsTax(){
+  //   if(this.remorquage.taxable){
+  //     this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+  //     this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+  //     this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
+  //   }
+  //   else{
+  //     this.remorquage.tps =0.00; 
+  //     this.remorquage.tvq =0.00; 
+  //     this.remorquage.total= this.remorquage.horstax; 
+  //   }
+  // }
   prixCalculWithHorsTax(){
     if(this.remorquage.taxable){
-      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
-      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+        this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.onSelectTax();
+      this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
       this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
     }
     else{
@@ -1565,17 +1814,71 @@ async showMap() {
       this.remorquage.total= this.remorquage.horstax; 
     }
   }
-
+  // horstaxChange(){
+  //   if(this.remorquage.taxable){
+  //     this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+  //     this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+  //   }
+  //   else{
+  //     this.remorquage.tps =0.00;
+  //     this.remorquage.tvq =0.00;
+  //   }
+  //   this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  // }
   horstaxChange(){
     if(this.remorquage.taxable){
-      this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
-      this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+      // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+      if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+        this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.onSelectTax();
+      // we must remember : tps is gsthst and tvq is pst
+      this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+      this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
     }
     else{
       this.remorquage.tps =0.00;
       this.remorquage.tvq =0.00;
     }
     this.remorquage.total=Math.round(this.remorquage.horstax*100)/100+this.remorquage.tvq+this.remorquage.tps
+  }
+
+  problemService(){
+    let probSer=" ";
+    if(this.varsGlobal.language.includes('English')){
+      if(this.remorquage.panne)
+        probSer=probSer+"Breakdown, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Door Unclock, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Boost, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Gasoline, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Tire Change, "
+    }
+    else{
+      if(this.remorquage.panne)
+        probSer=probSer+"Panne, "
+      if(this.remorquage.accident)
+        probSer=probSer+"Accident, "
+      if(this.remorquage.pullOut)
+        probSer=probSer+"PullOut, "
+      if(this.remorquage.debaragePorte)
+        probSer=probSer+"Debarage Porte, "
+      if(this.remorquage.survoltage)
+        probSer=probSer+"Survoltage, "
+      if(this.remorquage.essence)
+        probSer=probSer+"Essence, "
+      if(this.remorquage.changementPneu)
+        probSer=probSer+"Changement Pneu, "
+    }
+    
+    return probSer;
   }
 
   logout(){

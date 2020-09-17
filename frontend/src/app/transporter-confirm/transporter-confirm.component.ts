@@ -63,6 +63,7 @@ export class TransporterConfirmComponent implements OnInit {
   urlPresent:string; // path url
   ngOnInit() {
     this.urlPresent=location.href // get url present
+    this.urlPresent=this.urlPresent + "  -  Complete Transport Solution"
     this.confirmTransport=new ConfirmTransport();
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
       this.transporter=data;
