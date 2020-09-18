@@ -214,47 +214,55 @@ export class DetailRemorquageComponent implements OnInit {
     }), err=>{ console.log(err) }
 
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
-      this.remorquage=data;
-      this.onSelectTax(); // get tax province right now
-      if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
-        this.remorquage.nomDispatch=localStorage.getItem('fullName')
-      //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
-      //this.titleService.setTitle('Case : '+this.remorquage.id + 
-      if(this.varsGlobal.language.includes('English')){
-        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-        (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Cancelled" : ' - in pending'))
+      if(data.idTransporter!=Number(localStorage.getItem('idTransporter'))){
+        this.onFermer();
+        this.router.navigateByUrl("").then(()=>{location.reload()});
+        return;
       }
       else{
-        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
-      }
-      
-
-      if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
-        this.latLngOrigin= new google.maps.LatLng(
-          this.remorquage.originLat,
-          this.remorquage.originLong                                          
-        )
-        this.latLngDestination= new google.maps.LatLng(
-          this.remorquage.destLat,
-          this.remorquage.destLong                                          
-        )
-        // If appel come from a prof - get its price and its contacts
-        if(this.remorquage.idEntreprise>0){
-          this.shipperservice.getDetailShipper(this.remorquage.idEntreprise).subscribe((data:Shipper)=>{
-            this.shipper=data;
-            this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-              this.contacts=data;
-            }, err=>{
-              console.log(err);
-            });
-          }, err=>{
-            console.log(err);
-          })
+        this.remorquage=data;
+        this.onSelectTax(); // get tax province right now
+        if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
+          this.remorquage.nomDispatch=localStorage.getItem('fullName')
+        //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+        //this.titleService.setTitle('Case : '+this.remorquage.id + 
+        if(this.varsGlobal.language.includes('English')){
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+          (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Cancelled" : ' - in pending'))
+        }
+        else{
+          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+          (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
         }
         
-        this.showMap()
+
+        if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
+          this.latLngOrigin= new google.maps.LatLng(
+            this.remorquage.originLat,
+            this.remorquage.originLong                                          
+          )
+          this.latLngDestination= new google.maps.LatLng(
+            this.remorquage.destLat,
+            this.remorquage.destLong                                          
+          )
+          // If appel come from a prof - get its price and its contacts
+          if(this.remorquage.idEntreprise>0){
+            this.shipperservice.getDetailShipper(this.remorquage.idEntreprise).subscribe((data:Shipper)=>{
+              this.shipper=data;
+              this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+                this.contacts=data;
+              }, err=>{
+                console.log(err);
+              });
+            }, err=>{
+              console.log(err);
+            })
+          }
+          
+          this.showMap()
+        }
       }
+      
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
     this.camionsService.camionsDeTransporter(this.remorquage.idTransporter).
@@ -1370,7 +1378,7 @@ async showMap() {
       this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
-      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      + (this.remorquage.id*100-5)  //this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>DETAIL</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)

@@ -186,21 +186,29 @@ clearHandler(){
     })
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
-      this.remorquage=data;
-      //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
-      this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-      (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
-      if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
-        this.latLngOrigin= new google.maps.LatLng(
-          this.remorquage.originLat,
-          this.remorquage.originLong                                          
-        )
-        this.latLngDestination= new google.maps.LatLng(
-          this.remorquage.destLat,
-          this.remorquage.destLong                                          
-        )
-        this.showMap()
+      if(data.idTransporter!=Number(localStorage.getItem('idTransporter'))){
+        this.onFermer();
+        this.router.navigateByUrl("").then(()=>{location.reload()});
+        return;
       }
+      else{
+        this.remorquage=data;
+        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+        (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
+        if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
+          this.latLngOrigin= new google.maps.LatLng(
+            this.remorquage.originLat,
+            this.remorquage.originLong                                          
+          )
+          this.latLngDestination= new google.maps.LatLng(
+            this.remorquage.destLat,
+            this.remorquage.destLong                                          
+          )
+          this.showMap()
+        }
+      }
+      
     }, err=>{
       console.log(err);
     })
@@ -546,9 +554,9 @@ async showMap() {
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    var r = confirm("Etes vous sur d'annuler ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      console.log("Le cas est annule.")
       if(this.remorquage.id>0){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
           //this.remorquage=new Remorquage();
@@ -571,9 +579,9 @@ async showMap() {
   }
 
   onDelete(rq:Remorquage){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    var r = confirm("Etes vous sur d'annuler ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      console.log("Le cas est annule.")
       if(rq.id>0){
         this.remorquagesService.deleteRemorquage(rq.id).subscribe(data=>{
           if(rq.fini)
@@ -704,12 +712,12 @@ async showMap() {
   ifAccident(){
     if(this.remorquage.accident)
       this.remorquage.panne=false
-    console.log('fonctionne ifAccident : '+this.remorquage.accident+ 'then panne : '+this.remorquage.panne)
+    // console.log('fonctionne ifAccident : '+this.remorquage.accident+ 'then panne : '+this.remorquage.panne)
   }
   ifPanne(){
     if(this.remorquage.panne)
       this.remorquage.accident=false
-    console.log('fonctionne ifPanne : '+this.remorquage.panne + 'then accident : '+this.remorquage.accident)
+    // console.log('fonctionne ifPanne : '+this.remorquage.panne + 'then accident : '+this.remorquage.accident)
   }
   calculePrixbase(){
     let panne=0, accident=0, pullOut=0, debarragePorte=0, boost=0, essence=0, changementPneu=0;

@@ -242,13 +242,17 @@ async toSign(){
     public camionsService:CamionsService,
     private geolocation : GeolocationService,
     ) { 
-      this.id=activatedRoute.snapshot.params['id'];
+      let tempId:number = Number(activatedRoute.snapshot.params['id']);
+      // console.log('tempId : '+tempId)
+      this.id=(tempId+5.00)/100  //(this.remorquage.id*100-5)
+      // console.log('this.id : '+this.id)
     }
 
   // on close window
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event){
     localStorage.clear();
+    localStorage.setItem('language', this.varsGlobal.language)
     //this.router.navigateByUrl("");
   }//*/
 
@@ -447,7 +451,7 @@ async toSign(){
     // end of taking list camion SOSPrestige
     await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
       this.remorquage=data;
-      this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+      //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
         this.latLngOrigin= new google.maps.LatLng(
           this.remorquage.originLat,
@@ -463,6 +467,7 @@ async toSign(){
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
       localStorage.clear();
+      localStorage.setItem('language', this.varsGlobal.language)
     })
     
   }
@@ -818,7 +823,7 @@ async showMap() {
       this.remorquage.fini=true;
       this.remorquagesService.saveRemorquages(this.remorquage).subscribe(data=>{
         //this.remorquage=new Remorquage();
-        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{console.log(err)})
     }
     else {
@@ -829,6 +834,7 @@ async showMap() {
   
   onFermer(){
     localStorage.clear();
+    localStorage.setItem('language', this.varsGlobal.language)
     this.router.navigateByUrl("").then(()=>{location.reload()});
     //location.reload();
   }
@@ -1147,7 +1153,7 @@ async showMap() {
         alert("Votre courriel a ete envoye.")
         this.remorquage.sent=true;
         this.onSave();
-        this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
+        //this.titleService.setTitle('Case : '+this.remorquage.id + (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : ' - en attente'))
       }, err=>{
         console.log()
       })//*/
@@ -1169,12 +1175,12 @@ async showMap() {
     //return "https://www.google.com/maps/dir/520+Rue+Guindon,+Saint-Eustache,+QC/1185+Boulevard+Moody,+Terrebonne,+Quebec"
   }
   
-  logout(){
-    localStorage.clear();
-    //this.router.navigateByUrl("");
-    this.router.navigateByUrl('/transporters/');
-    this.router.navigate(['']);
-  }
+  // logout(){
+  //   localStorage.clear();
+  //   //this.router.navigateByUrl("");
+  //   this.router.navigateByUrl('/transporters/');
+  //   this.router.navigate(['']);
+  // }
 }
 
 interface marker {

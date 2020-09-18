@@ -1512,7 +1512,7 @@ onFileUpLoad(event){
       this.em.titre="Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+stringsd[0]+"/remorquage-client/"
-      + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
+      + (this.remorquage.id*100-5)  //this.remorquage.id   //1733  // replace by Number of Bon Remorquage
       +"'><h4>DETAIL</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
         //console.log('this.em.titre : ' + this.em.titre)

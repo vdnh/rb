@@ -1,6 +1,7 @@
 <div *ngIf="varsGlobal.language.includes('Francais')">
   <div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false || remorquage.driverNote.includes('!!Cancelled!!')))">
-    <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3>
+    <h3>Ce bon a ete annule. Veuillez contactez votre dispatch !!</h3>
+    <!-- <h3>Ce bon {{id}} a ete annule. Veuillez contactez votre dispatch !!</h3> -->
     <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
   </div>
   
@@ -160,7 +161,8 @@
 
 <div *ngIf="varsGlobal.language.includes('English')">
   <div *ngIf="(modeHistoire==-1 && (remorquage.id==null || remorquage.valid==false || remorquage.driverNote.includes('!!Cancelled!!')))">
-    <h3>This #{{id}} was cancelled. Please contact your dispatch !!</h3>
+    <h3>This case was cancelled. Please contact your dispatch !!</h3>
+    <!-- <h3>This #{{id}} was cancelled. Please contact your dispatch !!</h3> -->
     <button (click)="onFermer()" class="btn btn-link" >Close</button>
   </div>
   
