@@ -127,13 +127,38 @@ export class RemorquageComponent implements OnInit {
   shipperParticulier: Shipper;
   transporter: Transporter;
   
+  // onSelectTax(){
+  //   this.taxList.forEach(tp=>{
+  //     if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+  //       this.taxProvince=tp
+  //   })
+  //   //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
+  // }
+
   onSelectTax(){
-    this.taxList.forEach(tp=>{
-      if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
-        this.taxProvince=tp
-    })
+    if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+    {
+      if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
+        this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+        this.taxProvince=this.taxList[10]
+      }
+      else{ // exist tax province for this transporter
+        this.remorquage.taxProvince=this.transporter.taxProvince
+        this.taxList.forEach(tp=>{
+          if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+            this.taxProvince=tp
+        })
+      }
+    }
+    else{  // exist tax province for this towing
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
     //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
   }
+
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
     //this.remorquage.signature=this.signaturePad.toDataURL()
@@ -408,14 +433,18 @@ export class RemorquageComponent implements OnInit {
     this.remorquage.timeCall=heure+':'+minute
     // console.log('this.remorquage.timeCall : '+this.remorquage.timeCall)
     this.remorquage.typeService=this.serviceTypes[0];
-    if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
-      this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
-    this.taxProvince = this.taxList[10]; // tax province is Quebec tax by default
+    
+    // if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+    //   this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+    // this.taxProvince = this.taxList[10]; // tax province is Quebec tax by default
+    // this.onSelectTax();
+
     // console.log("this.remorquage.taxProvince: " + this.remorquage.taxProvince)
     // console.log("this.taxProvince.id: " + this.taxProvince.id)
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
+      this.onSelectTax(); // get tax province after having transporter
       // First get the price particular - then calculate price default
       this.shipperParticuliersService.getDetailShipperParticulierByIdTransporter(this.transporter.id)
       .subscribe((data:ShipperParticulier)=>{
@@ -969,6 +998,7 @@ onFileUpLoad(event){
       this.compteClient=false;
       this.remorquage=new Remorquage();
       this.remorquage.idTransporter=Number(localStorage.getItem('idTransporter'))
+      this.onSelectTax() // get tax province default by transporter when init new towing
     }, err=>{console.log(err)})
     if(this.varsGlobal.language.includes('English'))
       alert("It's saved")
@@ -989,11 +1019,16 @@ onFileUpLoad(event){
       if(this.remorquage.id!=null){
         this.remorquagesService.deleteRemorquage(this.remorquage.id).subscribe(data=>{
           this.remorquage=new Remorquage();
+          this.onSelectTax() // get tax default by transporter, every time reset the towing
         }, err=>{
           console.log(err)
         })
       }
-      else this.remorquage=new Remorquage();      
+      else 
+      {
+        this.remorquage=new Remorquage();    
+        this.onSelectTax()  // get tax default by transporter, every time reset the towing
+      }
     }
   }
   onConsulterClient(){

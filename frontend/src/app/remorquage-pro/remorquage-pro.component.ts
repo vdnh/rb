@@ -181,6 +181,7 @@ export class RemorquageProComponent implements OnInit {
   vehiculeModeles = []; //myGlobals.d2cmediaacura;
   marquesModeles = myGlobals.marquesModeles;
   colors = myGlobals.colors
+  colorsEnglish = myGlobals.colorsEnglish
   
   marqueChange(){
     this.vehiculeModeles=[];
@@ -461,7 +462,11 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de ce origin")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert('Do not locate the origin.')
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
     });//*/
     if(this.remorquage.destination!=null && this.remorquage.destination.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -517,7 +522,11 @@ async destinationChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de cet destination")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert('Do not locate the destination.')
+                alert("Ne pas trouver de coordonnees de cet destination")
+              }
     });//*/
     if(this.remorquage.origin!=null && this.remorquage.origin.length>0){
       await this.setDistanceTravel(this.remorquage.origin, this.remorquage.destination)
@@ -768,7 +777,9 @@ onFileUpLoad(event){
             this.em.titre="Annuler #Bon : " + this.remorquage.id.toString()
             this.em.content='<div><p> '+'Annuler #Bon : ' + this.remorquage.id.toString()+' </p></div>'    
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              if(this.varsGlobal.language.includes('English'))
+                alert('An email was sent to driver.')
+              else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
             })
@@ -1024,6 +1035,13 @@ onFileUpLoad(event){
       else//*/ if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
     }
   }
+
+  typeServiceEnglish(text:string){ // i is index of typeService
+    if(text.includes('Leger')) return 'Light'
+    if(text.includes('Moyen')) return 'Medium'
+    if(text.includes('Lourd')) return 'Heavy'
+  }
+
   typeServiceChange(type){
     this.remorquage.typeService=type
     /*if(this.remorquage.accident){
@@ -1136,18 +1154,20 @@ onFileUpLoad(event){
     //window.open(stringsd[0], '_self');
     //this.onSave();
     //if(this.remorquage.emailIntervenant!=null && this.remorquage.emailIntervenant.length>10){
-    this.em.emailDest=myGlobals.emailPrincipal; //this.remorquage.emailIntervenant
+    this.em.emailDest=myGlobals.emailPrincipal; //  this must be email of transporter taht this client-pro belongs to
     //this.em.titre= this.remorquage.nomEntreprise + " - Case numero : " + this.remorquage.id.toString()
     this.em.titre= this.remorquage.nomEntreprise +" - Case : " + this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur
     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
     " <br> <a href='"+stringsd[0]+"/detail-remorquage/" //"/detail-remorquage-express/"
     + this.remorquage.id   //1733  // replace by Number of Bon Remorquage
-    +"'><h4>Ouvrir la DemandeFacture</h4></a>" +" </p></div>"    
+    +"'><h4>Detail</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
       //console.log('this.em.titre : ' + this.em.titre)
       //console.log('this.em.emailDest : '+ this.em.emailDest)
       //console.log('this.em.content : ' + this.em.content)
-      alert("Cette appel a ete envoye.")
+      if(this.varsGlobal.language.includes('English'))
+        alert('This case was sent.')
+      else alert("Cette appel a ete envoye.")
       //*/ Also App send confirmation email to client professionnel
       if(this.remorquage.emailContact.length>10){
         let em:EmailMessage=new EmailMessage();

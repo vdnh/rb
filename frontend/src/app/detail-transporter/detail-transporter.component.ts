@@ -20,7 +20,7 @@ import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
-import { reduce } from 'rxjs/operators';
+import * as myGlobals from 'src/services/globals';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -28,6 +28,7 @@ import { reduce } from 'rxjs/operators';
   styleUrls: ['./detail-transporter.component.css']
 })
 export class DetailTransporterComponent implements OnInit {
+  provinceList=myGlobals.provinceList ;
   //* for map flotte truck
   subscription : Subscription;
   subscriptionRefresh:Subscription;

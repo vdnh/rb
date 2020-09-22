@@ -45,6 +45,7 @@ public class Transporter {
     private String ville;
     private String codePostal;
     private String initial;  // example SP, LG, ... in capital
+    private String taxProvince;  // Quebec, Ontario, ....
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

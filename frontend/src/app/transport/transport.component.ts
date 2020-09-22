@@ -28,6 +28,7 @@ import { VoyagesService } from 'src/services/voyages.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
 import { LoadFrequent } from 'src/model/model.loadFrequent';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-transport',
@@ -64,6 +65,9 @@ export class TransportComponent implements OnInit {
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
+
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
 
   provinceList=myGlobals.provinceList ;
   
@@ -237,7 +241,7 @@ export class TransportComponent implements OnInit {
   modifyModels=false; // to appear the list models transport
   
   constructor(public transportsService : TransportsService, 
-    // public geocoding : GeocodingService, 
+    public varsGlobal:VarsGlobal,
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
@@ -378,13 +382,17 @@ export class TransportComponent implements OnInit {
       if(this.transport.id!=null){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
+          this.onSelectTax(); // select tax when re-init a transport
           this.templateName='';
           if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         }, err=>{
           console.log(err)
         })
       }
-      else this.transport=new Transport();      
+      else {
+        this.transport=new Transport();
+        this.onSelectTax(); // select tax when re-init a transport
+      }
       if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       this.templateName='';
     }
@@ -488,6 +496,7 @@ export class TransportComponent implements OnInit {
     await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
+      this.onSelectTax(); // get tax province after having transporter
     }), err=>{
       console.log(err)
     };
@@ -1035,10 +1044,58 @@ async prixCalcul(){
   this.ifDebit()
 }
 
+// prixCalculWithHorsTax(){
+//   if(this.remorquage.taxable){
+//     if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+//       this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+//     this.onSelectTax();
+
+//     // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+//     // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+//     // we must remember : tps is gsthst and tvq is pst
+//     this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+//     this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
+//     this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
+//   }
+//   else{
+//     this.remorquage.tps =0.00; 
+//     this.remorquage.tvq =0.00; 
+//     this.remorquage.total= this.remorquage.horstax; 
+//   }
+// }
+
+onSelectTax(){
+  if(this.transport.taxProvince==null || this.transport.taxProvince.length==0)
+  {
+    if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
+      this.transport.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.taxProvince=this.taxList[10]
+    }
+    else{ // exist tax province for this transporter
+      this.transport.taxProvince=this.transporter.taxProvince
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.transport.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
+  }
+  else{  // exist tax province for this towing
+    this.taxList.forEach(tp=>{
+      if(tp.id.localeCompare(this.transport.taxProvince)==0)
+        this.taxProvince=tp
+    })
+  }
+  //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
+}
+
 prixCalculWithHorsTax(){
   if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.onSelectTax();
+    // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    // we must remember : tps is gsthst and tvq is pst
+    this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+    this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
     this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
   else{
@@ -1191,6 +1248,7 @@ async showMap() {
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
+        this.onSelectTax(); // select tax when re-init a transport
       }, err=>{console.log(err)})
     }
     else {
@@ -1218,6 +1276,7 @@ async showMap() {
           }
           //*/
           this.transport=new Transport();
+          this.onSelectTax(); // select tax when re-init a transport
         }, err=>{console.log(err)})
       }
     }
@@ -1285,6 +1344,7 @@ async showMap() {
         this.pagePresent=this.back+1;
         this.forward=this.back+2
         this.transport=new Transport();      
+        this.onSelectTax(); // select tax when re-init a transport
         this.camion=null
         this.trailer1=null
         this.trailer2=null
@@ -1316,6 +1376,7 @@ async showMap() {
         this.pagePresent=this.back+1;
         this.forward=this.back+2
         this.transport=new Transport();   
+        this.onSelectTax(); // select tax when re-init a transport
         this.camion=null
         this.trailer1=null
         this.trailer2=null   

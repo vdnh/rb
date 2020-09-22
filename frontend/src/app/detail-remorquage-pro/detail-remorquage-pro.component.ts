@@ -822,6 +822,14 @@ async showMap() {
       else if(this.remorquage.prixBase==0) this.remorquage.prixBase=this.shipper.panne3
     }
   }//*/
+
+  typeServiceEnglish(text:string){ // i is index of typeService
+    if(text.includes('Leger')) return 'Light'
+    if(text.includes('Moyen')) return 'Medium'
+    if(text.includes('Lourd')) return 'Heavy'
+  }
+
+
   typeServiceChange(type){
     this.remorquage.typeService=type
     /*if(this.remorquage.accident){

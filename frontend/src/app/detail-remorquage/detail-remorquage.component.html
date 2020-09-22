@@ -65,7 +65,7 @@
     <h3>Ce bon {{id}} a ete annule ou n'existe pas !!</h3>
     <button (click)="onFermer()" class="btn btn-link" >Fermer</button>
   </div>
-  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true)">
+  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true)" [hidden]="remorquage.fini">
   <!--div *ngIf="modeHistoire==-1"-->
       <div class="panel panel-primary">
         <div class="col-sm-12 col-lg-12 col-md-12">
@@ -686,7 +686,7 @@
       <!--for test directionService-->
       <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
     </div>
-    <div id="toprint" hidden  *ngIf="modeHistoire==-1">
+    <div id="toprint" [hidden]="!remorquage.fini"  *ngIf="modeHistoire==-1">
       <!-- <table border='1' id='Tablbpm1' style="font-size: 12pt; margin-inline: 5px">
         <h4 *ngIf="transporter!=null" style="text-decoration-line: underline; float: left">
           <br>
@@ -942,7 +942,7 @@
     <h3>This case {{id}} was cancelled or didn't exist !!</h3>
     <button (click)="onFermer()" class="btn btn-link" >Close</button>
   </div>
-  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true)">
+  <div *ngIf="(modeHistoire==-1 && remorquage.id!=null && remorquage.valid==true)" [hidden]="remorquage.fini">
   <!--div *ngIf="modeHistoire==-1"-->
       <div class="panel panel-primary">
         <div class="col-sm-12 col-lg-12 col-md-12">
@@ -1563,7 +1563,7 @@
       <!--for test directionService-->
       <div id="right-panel" style="float: right; width:30%; font-size: 9pt"></div>
     </div>
-    <div id="toprint" hidden  *ngIf="modeHistoire==-1">
+    <div id="toprint" [hidden]="!remorquage.fini"  *ngIf="modeHistoire==-1">
       
       <table border='1' id='Tablbpm2' style="font-size: 12pt; margin-inline: 5px">
         <tr *ngIf="transporter!=null" >

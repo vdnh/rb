@@ -211,89 +211,89 @@ export class DetailRemorquageComponent implements OnInit {
     
     await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
       this.transporter=data;
-    }), err=>{ console.log(err) }
-
-    await this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
-      if(data.idTransporter!=Number(localStorage.getItem('idTransporter'))){
-        this.onFermer();
-        this.router.navigateByUrl("").then(()=>{location.reload()});
-        return;
-      }
-      else{
-        this.remorquage=data;
-        this.onSelectTax(); // get tax province right now
-        if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
-          this.remorquage.nomDispatch=localStorage.getItem('fullName')
-        //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
-        //this.titleService.setTitle('Case : '+this.remorquage.id + 
-        if(this.varsGlobal.language.includes('English')){
-          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-          (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Cancelled" : ' - in pending'))
+      this.remorquagesService.getDetailRemorquage(this.id).subscribe((data:Remorquage)=>{
+        if(data.idTransporter!=this.transporter.id) //Number(localStorage.getItem('idTransporter')))
+        {
+          this.onFermer();
+          this.router.navigateByUrl("").then(()=>{location.reload()});
+          return;
         }
         else{
-          this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
-          (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
-        }
-        
-
-        if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
-          this.latLngOrigin= new google.maps.LatLng(
-            this.remorquage.originLat,
-            this.remorquage.originLong                                          
-          )
-          this.latLngDestination= new google.maps.LatLng(
-            this.remorquage.destLat,
-            this.remorquage.destLong                                          
-          )
-          // If appel come from a prof - get its price and its contacts
-          if(this.remorquage.idEntreprise>0){
-            this.shipperservice.getDetailShipper(this.remorquage.idEntreprise).subscribe((data:Shipper)=>{
-              this.shipper=data;
-              this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-                this.contacts=data;
+          this.remorquage=data;
+          this.onSelectTax(); // get tax province right now
+          if(localStorage.getItem('fullName')!=null && !(this.remorquage.nomDispatch.length>0)) 
+            this.remorquage.nomDispatch=localStorage.getItem('fullName')
+          //this.remorquage.collecterArgent=this.remorquage.total-this.remorquage.porterAuCompte
+          //this.titleService.setTitle('Case : '+this.remorquage.id + 
+          if(this.varsGlobal.language.includes('English')){
+            this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+            (this.remorquage.fini? " - finished" : this.remorquage.sent? " - in progress" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Cancelled" : ' - in pending'))
+          }
+          else{
+            this.titleService.setTitle('Case : '+ this.remorquage.marque+' '+ this.remorquage.modele +' ' + this.remorquage.couleur +
+            (this.remorquage.fini? " - fini" : this.remorquage.sent? " - encours" : this.remorquage.driverNote.includes("!!Cancelled!!")? " - Annule" : ' - en attente'))
+          }
+          
+  
+          if(!this.remorquage.fini && this.remorquage.originLat!=0 && this.remorquage.destLat!=0){
+            this.latLngOrigin= new google.maps.LatLng(
+              this.remorquage.originLat,
+              this.remorquage.originLong                                          
+            )
+            this.latLngDestination= new google.maps.LatLng(
+              this.remorquage.destLat,
+              this.remorquage.destLong                                          
+            )
+            // If appel come from a prof - get its price and its contacts
+            if(this.remorquage.idEntreprise>0){
+              this.shipperservice.getDetailShipper(this.remorquage.idEntreprise).subscribe((data:Shipper)=>{
+                this.shipper=data;
+                this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+                  this.contacts=data;
+                }, err=>{
+                  console.log(err);
+                });
+              }, err=>{
+                console.log(err);
+              })
+            }
+            
+            this.showMap()
+            // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+            //this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+            this.camionsService.camionsDeTransporter(this.remorquage.idTransporter).
+            subscribe((data:Array<Camion>)=>{
+              
+              // this.camions=[];
+              // data.forEach(camion=>{
+              //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+              //     this.camions.push(camion)
+              // })
+              this.camions=[];
+              this.camionsGps=[];
+              data.forEach(camion=>{
+                if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
+                {
+                  if(!camion.gps) this.camions.push(camion)
+                  if(camion.gps) this.camionsGps.push(camion)
+                }          
+              })
+              this.findCamionId(); // to find the truck we have choosen
+              //this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
+              this.chauffeursService.chauffeursDeTransporter(this.remorquage.idTransporter)
+              .subscribe((data:Array<Chauffeur>)=>{
+                this.chauffeurs=data;
               }, err=>{
                 console.log(err);
               });
             }, err=>{
-              console.log(err);
+              console.log();
             })
+            // end of taking list camion SOSPrestige
           }
-          
-          this.showMap()
         }
-      }
-      
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    //this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-    this.camionsService.camionsDeTransporter(this.remorquage.idTransporter).
-    subscribe((data:Array<Camion>)=>{
-      
-      // this.camions=[];
-      // data.forEach(camion=>{
-      //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-      //     this.camions.push(camion)
-      // })
-      this.camions=[];
-      this.camionsGps=[];
-      data.forEach(camion=>{
-        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
-        {
-          if(!camion.gps) this.camions.push(camion)
-          if(camion.gps) this.camionsGps.push(camion)
-        }          
-      })
-      this.findCamionId(); // to find the truck we have choosen
-      //this.chauffeursService.chauffeursDeTransporter(8).subscribe((data:Array<Chauffeur>)=>{
-      this.chauffeursService.chauffeursDeTransporter(this.remorquage.idTransporter)
-      .subscribe((data:Array<Chauffeur>)=>{
-        this.chauffeurs=data;
-      }, err=>{
-        console.log(err);
-      });
-    }, err=>{
-      console.log();
-    })
-    // end of taking list camion SOSPrestige
+    }), err=>{ console.log(err) }  
+    
     }, err=>{
       console.log(err);
       console.log("Il n'existe pas ce Bon.")
@@ -533,12 +533,21 @@ prixCalcul(){
   //this.remorquage.collecterArgent=await this.remorquage.total-this.remorquage.porterAuCompte
 }
 onSelectTax(){
-  if(this.remorquage.taxProvince==null)
-    {
+  if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+  {
+    if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
       this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
       this.taxProvince=this.taxList[10]
     }
-  else{
+    else{ // exist tax province for this transporter
+      this.remorquage.taxProvince=this.transporter.taxProvince
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
+  }
+  else{  // exist tax province for this towing
     this.taxList.forEach(tp=>{
       if(tp.id.localeCompare(this.remorquage.taxProvince)==0)
         this.taxProvince=tp

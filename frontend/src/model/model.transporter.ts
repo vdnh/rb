@@ -16,4 +16,5 @@ export class Transporter{
     ville:string="";
     codePostal:string="";
     initial:string="";  // example SP, LG, ... in capital
+    taxProvince:string="";  // Quebec, Ontario, ....
 }
