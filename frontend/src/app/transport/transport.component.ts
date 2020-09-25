@@ -226,7 +226,8 @@ export class TransportComponent implements OnInit {
 
   em:EmailMessage=new EmailMessage();
 
-  camions:Array<Camion>;
+  camions:Array<Camion>;  // truck no GPS
+  camionsGps:Array<Camion>; // truck with Gps
   remorques:Array<Camion>;  // list of trailers
   camion:Camion;
   trailer1:Camion;
@@ -369,7 +370,11 @@ export class TransportComponent implements OnInit {
     this.onSave();
   }
   onReset(){
-    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this case ?")
+    }
+    else var r = confirm("Etes vous sur d'annuler cet appel ?")
+    if(r) {
       this.camion=null;
       this.chauffeur=null;
       this.loadDetail=new LoadDetail();;
@@ -456,12 +461,22 @@ export class TransportComponent implements OnInit {
       //this.camions = data
       // this will take camions with gps monitor
       this.camions=[];
+      this.camionsGps=[];
       this.remorques=[];
+      // data.forEach(camion=>{
+      //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+      //     this.camions.push(camion)
+      //   else
+      //     if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
+      // })
       data.forEach(camion=>{
-        if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-        else
-          if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
+        if(camion.trailer && !camion.outService && camion.status) // trailer + not out ofservice + in operation
+          this.remorques.push(camion)
+        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
+        {
+          if(!camion.gps) this.camions.push(camion)
+          if(camion.gps) this.camionsGps.push(camion)
+        }          
       })
       this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
       .subscribe((data:Array<Chauffeur>)=>{
@@ -496,7 +511,9 @@ export class TransportComponent implements OnInit {
     await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
-      this.onSelectTax(); // get tax province after having transporter
+      // this.onSelectTax(); // get tax province after having transporter
+      this.prixBaseInit();
+      this.prixCalcul(); // there are already function onSelectTax()
     }), err=>{
       console.log(err)
     };
@@ -510,8 +527,8 @@ export class TransportComponent implements OnInit {
     //this.transport.typeService=this.serviceTypes[0];
     //this.typeServiceChange(this.serviceTypes[0]);
     //this.calculTotalpoints() 
-    this.prixBaseInit();
-    this.prixCalcul()
+    // this.prixBaseInit();
+    // this.prixCalcul()
     // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
   }
   
@@ -540,6 +557,8 @@ export class TransportComponent implements OnInit {
   }
 
   camionChange(){
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
     let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
     //let string0 :string = strings[0]
     // console.log('strings.lenght : '+strings.length);
@@ -548,7 +567,8 @@ export class TransportComponent implements OnInit {
     if(strings.length>1){
       let string0 :string = strings[0]
       let cId:number =  Number(strings[1])
-      this.camions.forEach(c=>{
+      // this.camions
+      allCamions.forEach(c=>{
         if(c.id==cId) 
         {
           this.camion=c;
@@ -597,8 +617,11 @@ export class TransportComponent implements OnInit {
       let string0 :string = strings[0]
       let tId:number =  Number(strings[1])
       if(tId==this.trailer1.id){
-       alert('Il ne faut pas le meme de trailer1 !!')     
-       this.transport.trailer2=''
+        if(this.varsGlobal.language.includes('English')){
+          alert('Do not choose the same trailer1 !!')
+        }
+        else alert('Il ne faut pas le meme de trailer1 !!')
+        this.transport.trailer2=''
       }
       else{
         this.remorques.forEach(r=>{
@@ -902,7 +925,12 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de ce origin")
+            {
+              if(this.varsGlobal.language.includes('English')){
+                alert('Can not locate this origin !!')
+              }
+              else alert("Ne pas trouver de coordonnees de ce origin")
+            }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -958,7 +986,12 @@ async destinationChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de cet destination")
+            {
+              if(this.varsGlobal.language.includes('English')){
+                alert('can not locate this destination')
+              }
+              else alert("Ne pas trouver de coordonnees de cet destination")
+            }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -1031,8 +1064,12 @@ async prixCalcul(){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
   if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.onSelectTax();
+    // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+    // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    // we must remember : tps is gsthst and tvq is pst
+    this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+    this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
     this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
   else{
@@ -1242,7 +1279,10 @@ async showMap() {
   }
 
   onFini(){
-    var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure this case is finished ?")
+    }
+    else var r = confirm("Etes vous sur que ce cas est fini ?")
     if(r==true){
       console.log("Le cas est termine.")
       this.transport.fini=true;
@@ -1258,7 +1298,10 @@ async showMap() {
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuler ce cas ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this case ?")
+    }
+    else var r = confirm("Etes vous sur d'annuler ce cas ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.transport.id>0){
@@ -1266,10 +1309,19 @@ async showMap() {
           // commence d'envoyer email
           if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
             this.em.emailDest=this.transport.emailIntervenant
-            this.em.titre="Annuler case numero : " + this.transport.id.toString()
-            this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
+            if(this.varsGlobal.language.includes('English')){
+              this.em.titre="Cancel case #Num : " + this.transport.id.toString()
+              this.em.content='<div><p> '+'Cancel case #Num : ' + this.transport.id.toString()+' </p></div>'
+            }
+            else{
+              this.em.titre="Annuler case #Bon : " + this.transport.id.toString()
+              this.em.content='<div><p> '+'Annuler case #Bon : ' + this.transport.id.toString()+' </p></div>'    
+            }
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              if(this.varsGlobal.language.includes('English')){
+                alert('A canceled email was sent to driver.')
+              }
+              else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
             })
@@ -1286,7 +1338,10 @@ async showMap() {
   }
 
   onDelete(tr:Transport){
-    var r = confirm("Etes vous sur de supprimer ce transport ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to delete this case ?")
+    }
+    else var r = confirm("Etes vous sur de supprimer ce transport ?")
     if(r==true){
       console.log("Ce Transport est supprime.")
       if(tr.id>0){
@@ -1326,7 +1381,12 @@ async showMap() {
       this.changeUnite();  // we must change to mode=1
       await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+        {
+          if(this.varsGlobal.language.includes('English')){
+            alert("It's saved.")
+          }
+          else alert("C'est enregistre.")
+        }
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1357,7 +1417,12 @@ async showMap() {
     else{ // mode=1 already, just save
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+        {
+          if(this.varsGlobal.language.includes('English')){
+            alert("It's saved.")
+          }
+          else alert("C'est enregistre.")
+        }
         //await this.createVoyage() // creer un voyage
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
@@ -1455,7 +1520,10 @@ async showMap() {
     this.voyage.optionVoyage=this.transport.optionDemande
     this.voyage.idTransporter=8 // id of sosprestige by default
     this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-      alert('Un voyage est aussi cree.')
+      if(this.varsGlobal.language.includes('English')){
+        alert('A voyage was also created.')
+      }
+      else alert('Un voyage est aussi cree.')
       this.voyage=data
       this.transport.idVoyage=this.voyage.id
       this.transportsService.saveTransports(this.transport).subscribe(data=>{},err=>{console.log(err)})
@@ -1617,22 +1685,41 @@ async showMap() {
     let stringsd:string[]=location.href.split('/transport-client/')
     if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
       this.em.emailDest=this.transport.emailIntervenant
-      this.em.titre="Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+      if(this.varsGlobal.language.includes('English')){
+        this.em.titre="From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
+      }
+      else this.em.titre="De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
       this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
       " <br> <a href='"+ stringsd[0] +"/transport-client/"
-      + this.transport.id   //1733  // replace by Number of Bon Transport
-      +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+      + (this.transport.id*100-5)   //1733  // replace by Number of Bon Transport
+      +"'><h4>Detail</h4></a>" +" </p></div>"    
       this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-        //console.log('this.em.titre : ' + this.em.titre)
-        //console.log('this.em.emailDest : '+ this.em.emailDest)
-        //console.log('this.em.content : ' + this.em.content)
-        alert("Le courriel a ete envoye au chauffeur.")
+        if(this.varsGlobal.language.includes('English')){
+          alert('Email was sent to driver.')
+        }
+        else alert("Le courriel a ete envoye au chauffeur.")
         if(this.transport.emailContact.length>10){
           let em:EmailMessage=new EmailMessage();
           em.emailDest=this.transport.emailContact;  // email of professional
-          em.titre= "Encours traitement - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
-          em.content='<div><p> '+ em.titre + " <br>" + 
-            "<div> Numero Bon: " + this.transport.id+ " </div>"+
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "In progress - " + "From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            "<div> #Num: " + this.transport.id+ " </div>"+
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you for your collaboration.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Encours traitement - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            "<div> #Bon: " + this.transport.id+ " </div>"+
             '<div>'+
               '<div><br></div>'+
               '<div>Merci de votre collaboration.</div>'+
@@ -1649,6 +1736,8 @@ async showMap() {
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
             " </p></div>"
+          }
+          
           this.bankClientsService.envoyerMail(em).subscribe(data=>{
             console.log('Le client professionnel recois aussi .')
           }, err=>{console.log(err)})
@@ -1671,7 +1760,12 @@ async showMap() {
       })//*/
     }
     else 
-      alert("Checkez le courriel de chauffer, SVP!!!")
+    {
+      if(this.varsGlobal.language.includes('English')){
+        alert("Verify drivers' email, please!!")
+      }
+      else alert("Verifier le courriel de chauffer, SVP!!!")
+    }
   }
 
   ifDebit(){ // porter au compte
@@ -1808,12 +1902,12 @@ async showMap() {
   //   //alert('Shipper : idTransporter + nom + tel : '+ this.testVar.idTransporter +  ' - ' + this.testVar.nom +  ' - ' + this.testVar.tel)
   // }
 
-  logout(){
-    localStorage.clear();
-    //this.router.navigateByUrl("");
-    //this.router.navigateByUrl('/transporters/');
-    this.router.navigate(['']);
-  }
+  // logout(){
+  //   localStorage.clear();
+  //   //this.router.navigateByUrl("");
+  //   //this.router.navigateByUrl('/transporters/');
+  //   this.router.navigate(['']);
+  // }
 }
 
 interface marker {

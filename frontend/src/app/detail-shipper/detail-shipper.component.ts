@@ -12,6 +12,7 @@ import { Adresse } from 'src/model/model.adresse';
 import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-detail-shipper',
@@ -28,8 +29,13 @@ export class DetailShipperComponent implements OnInit {
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   appUser: AppUser;
-  constructor(public authenticationService:AuthenticationService, public activatedRoute:ActivatedRoute, public shippersService:ShippersService, public contactsService:ContactsService,
-    public adressesService:AdressesService, public router:Router){    
+  constructor(public authenticationService:AuthenticationService, 
+    public activatedRoute:ActivatedRoute, 
+    public shippersService:ShippersService, 
+    public contactsService:ContactsService,
+    public adressesService:AdressesService, 
+    public varsGlobal:VarsGlobal,
+    public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
     //this.id=Number(localStorage.getItem('userId'))
   }

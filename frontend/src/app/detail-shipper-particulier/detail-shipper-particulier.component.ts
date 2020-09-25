@@ -10,6 +10,7 @@ import { Adresse } from 'src/model/model.adresse';
 import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-detail-shipper-particulier',
@@ -26,8 +27,13 @@ export class DetailShipperParticulierComponent implements OnInit {
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   appUser: AppUser;
-  constructor(public authenticationService:AuthenticationService, public activatedRoute:ActivatedRoute, public shipperParticuliersService:ShipperParticuliersService, public contactsService:ContactsService,
-    public adressesService:AdressesService, public router:Router){    
+  constructor(public authenticationService:AuthenticationService, 
+    public activatedRoute:ActivatedRoute, 
+    public shipperParticuliersService:ShipperParticuliersService, 
+    public contactsService:ContactsService,
+    public adressesService:AdressesService, 
+    public varsGlobal:VarsGlobal,
+    public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
     //this.id=Number(localStorage.getItem('userId'))
   }
@@ -54,7 +60,7 @@ export class DetailShipperParticulierComponent implements OnInit {
   }
 
   printPriceList(cmpId){
-    let envoy = document.getElementById('toprint').innerHTML;
+    // let envoy = document.getElementById('toprint').innerHTML;
     const printContent = document.getElementById(cmpId);
     const WindowPrt = window.open();
     WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');

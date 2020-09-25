@@ -64,6 +64,9 @@ export class DetailTransportComponent implements OnInit {
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
 
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
+
   provinceList=myGlobals.provinceList ;
   
   villeListO= myGlobals.QuebecVilles; //villeList Origin ;
@@ -216,7 +219,8 @@ export class DetailTransportComponent implements OnInit {
   
   em:EmailMessage=new EmailMessage();
 
-  camions:Array<Camion>;
+  camions:Array<Camion>;  // truck no GPS
+  camionsGps:Array<Camion>; // truck with Gps
   remorques:Array<Camion>;  // list of trailers
   camion:Camion;
   trailer1:Camion;
@@ -323,32 +327,47 @@ export class DetailTransportComponent implements OnInit {
           //this.camions = data
           // this will take camions with gps monitor
           this.camions=[];
+          this.camionsGps=[];
           this.remorques=[];
           data.forEach(camion=>{
-            if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-              this.camions.push(camion)
-            else
-              if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
+            // if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+            //   this.camions.push(camion)
+            // else
+            //   if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
+            if(camion.trailer && !camion.outService && camion.status) // trailer + not out ofservice + in operation
+              this.remorques.push(camion)
+            if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
+            {
+              if(!camion.gps) this.camions.push(camion)
+              if(camion.gps) this.camionsGps.push(camion)
+            }
+            if(camion.id==this.transport.idCamion)
+              this.camion= camion;
+            if(this.transport.idTrailer1!=undefined && camion.id==this.transport.idTrailer1)
+              this.trailer1= camion;
+            if(this.transport.idTrailer2!=undefined && camion.id==this.transport.idTrailer2)
+              this.trailer2= camion;
           })
           //console.log('this.transport.idCamion : '+this.transport.idCamion)
           //console.log('this.transport.idTrailer1 : '+this.transport.idTrailer1)
           //console.log('this.transport.idTrailer2 : '+this.transport.idTrailer2)
-          this.camions.forEach((node)=>{ 
-            if(node.id==this.transport.idCamion)
-              this.camion= node;
-          })
-          if(this.transport.idTrailer1!=undefined){
-            this.remorques.forEach((node)=>{ 
-              if(node.id==this.transport.idTrailer1)
-                this.trailer1= node;
-            })
-          }
-          if(this.transport.idTrailer2!=undefined){
-            this.remorques.forEach((node:Camion)=>{ 
-              if(node.id==this.transport.idTrailer2)
-                this.trailer2= node;
-            })
-          }
+
+          // this.camions.forEach((node)=>{ 
+          //   if(node.id==this.transport.idCamion)
+          //     this.camion= node;
+          // })
+          // if(this.transport.idTrailer1!=undefined){
+          //   this.remorques.forEach((node)=>{ 
+          //     if(node.id==this.transport.idTrailer1)
+          //       this.trailer1= node;
+          //   })
+          // }
+          // if(this.transport.idTrailer2!=undefined){
+          //   this.remorques.forEach((node:Camion)=>{ 
+          //     if(node.id==this.transport.idTrailer2)
+          //       this.trailer2= node;
+          //   })
+          // }
         }, err=>{
           console.log();
         })
@@ -358,6 +377,7 @@ export class DetailTransportComponent implements OnInit {
       this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
       .subscribe((data:Transporter)=>{
         this.transporter=data;
+        this.onSelectTax();
       }), err=>{
         console.log(err)
       };
@@ -456,10 +476,12 @@ export class DetailTransportComponent implements OnInit {
   }
 
   async camionChange(){
-    let strings:Array<string>=this.transport.camionAttribue.split("Id.");
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
+    let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
     if(strings.length>1){
       let cId:number =  Number(strings[1])
-      await this.camions.forEach(c=>{
+      await allCamions.forEach(c=>{
         if(c.id==cId) 
         {
           this.camion=c;
@@ -972,15 +994,38 @@ printBonDeTransport(cmpId){
 //   this.transport.total=await Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
 //   //this.transport.collecterArgent=await this.transport.total-this.transport.porterAuCompte
 // }
-
+onSelectTax(){
+  if(this.transport.taxProvince==null || this.transport.taxProvince.length==0)
+  {
+    if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
+      this.transport.taxProvince=this.provinceList[10] // Quebec is the province by default
+      this.taxProvince=this.taxList[10]
+    }
+    else{ // exist tax province for this transporter
+      this.transport.taxProvince=this.transporter.taxProvince
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.transport.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
+  }
+  else{  // exist tax province for this towing
+    this.taxList.forEach(tp=>{
+      if(tp.id.localeCompare(this.transport.taxProvince)==0)
+        this.taxProvince=tp
+    })
+  }
+  //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
+}
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
+  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee + this.transport.ptoFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
   if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.onSelectTax();
+    this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+    this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
     this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
   else{
@@ -994,8 +1039,9 @@ async prixCalcul(){
 
 prixCalculWithHorsTax(){
   if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.onSelectTax();
+    this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+    this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
     this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
   else{

@@ -1,91 +1,223 @@
-<!--div class="container spacer"-->
-<div class="panel panel-primary">
-      <div class="panel-body">
-            <br> 
-              <table border="1">  
-                <tr *ngIf='!role.includes("SHIPPER")'><td colspan="11"><h4><strong>Prix de Remorquage - Particulier</strong></h4></td></tr>     
-                <tr *ngIf='!role.includes("SHIPPER")'>
-                    <th width="9%">Type</th>
-                    <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
-                    <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
-                    <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
-                </tr>
-                <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
-                <tr *ngIf='!role.includes("SHIPPER")'>
-                  
-                  <th width="9%">Leger</th>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1P" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1A" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence1" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu1" /></td>
-                </tr>
-                <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
-                <tr *ngIf='!role.includes("SHIPPER")'>
-                 
-                  <th width="9%">Moyen</th>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2P" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2A" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence2" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu2" /></td>
-                </tr>   
+<div *ngIf="varsGlobal.language.includes('Francais')">
+  <div class="panel panel-primary">
+    <div class="panel-body">
+          <br> 
+            <table border="1">  
+              <tr *ngIf='!role.includes("SHIPPER")'><td colspan="11"><h4><strong>Prix de Remorquage - Particulier</strong></h4></td></tr>     
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                  <th width="9%">Type</th>
+                  <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+                  <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+                  <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
+              </tr>
+              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                
+                <th width="9%">Leger</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu1" /></td>
+              </tr>
+              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+              <tr *ngIf='!role.includes("SHIPPER")'>
                
-                <tr *ngIf='!role.includes("SHIPPER")'>
-                  
-                  <th width="9%">Lourd</th>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3P" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3A" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence3" /></td>
-                  <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu3" /></td>
-                </tr>       
-        </table>            
-        
-        <table> 
-            <td>
-              <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
-            </td>
-            <td><button class="btn btn-primary" (click)="saveShipperParticulier()">Enregistrer</button></td>
-            <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>                  
-        </table>
-      <!--/div-->
+                <th width="9%">Moyen</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu2" /></td>
+              </tr>   
+             
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                
+                <th width="9%">Lourd</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu3" /></td>
+              </tr>       
+      </table>            
+      
+      <table> 
+          <td>
+            <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+          </td>
+          <td><button class="btn btn-primary" (click)="saveShipperParticulier()">Enregistrer</button></td>
+          <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>                  
+      </table>
+    <!--/div-->
+    </div>   
+</div>
+
+
+<!-- *ngIf='role.includes("DISPATCH")'  -->
+<div id="toprint" hidden>
+  <table border="1">
+    <tr></tr>
+    <tr><td colspan="10"><strong>Prix de Remorquage - Particulier</strong></td></tr>     
+    <tr>
+      <th width="9%">Type</th>
+      <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+      <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+      <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
+    </tr>
+    <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+    <tr>
+      <th width="9%">Leger</th>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.inclus1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm1P}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.panne1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm1A}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.accident1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.pullOut1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.debarragePorte1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.boost1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.essence1}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.changementPneu1}}</td>
+    </tr>
+    <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+    <tr>
+      <th width="9%">Moyen</th>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.inclus2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm2P}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.panne2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm2A}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.accident2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.pullOut2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.debarragePorte2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.boost2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.essence2}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.changementPneu2}}</td>
+    </tr>   
+    <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
+    <tr>
+      <th width="9%">Lourd</th>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.inclus3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm3P}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.panne3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm3A}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.accident3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.pullOut3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.debarragePorte3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.boost3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.essence3}}</td>
+      <td width="9%" style="text-align: right;">{{shipperParticulier.changementPneu3}}</td>
+    </tr>       
+  </table>  
+</div>
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+  <div class="panel panel-primary">
+    <div class="panel-body">
+          <br> 
+            <table border="1">  
+              <tr *ngIf='!role.includes("SHIPPER")'><td colspan="11"><h4><strong>Towing Price - Particuliar</strong></h4></td></tr>     
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                  <th width="9%">Type</th>
+                  <th width="9%">Included</th><th width="9%">$/KmBrkDwn</th><th width="9%">BreakDown</th><th width="9%">$/KmAcc</th>
+                  <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DoorUnclk</th>
+                  <th width="9%">Boost</th><th width="9%">Gasoline</th><th width="9%">TireChange</th>
+              </tr>
+              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                
+                <th width="9%">Light</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm1A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence1" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu1" /></td>
+              </tr>
+              <!-- <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+              <tr *ngIf='!role.includes("SHIPPER")'>
+               
+                <th width="9%">Medium</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm2A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence2" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu2" /></td>
+              </tr>   
+             
+              <tr *ngIf='!role.includes("SHIPPER")'>
+                
+                <th width="9%">Heavy</th>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.inclus3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3P" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.panne3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.prixKm3A" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.accident3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.pullOut3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.debarragePorte3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.boost3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.essence3" /></td>
+                <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipperParticulier.changementPneu3" /></td>
+              </tr>       
+      </table>            
+      
+      <table> 
+          <td>
+            <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+          </td>
+          <td><button class="btn btn-primary" (click)="saveShipperParticulier()">Save</button></td>
+          <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>                  
+      </table>
+    <!--/div-->
       </div>   
   </div>
-  
-  
+
+
   <div *ngIf='role.includes("DISPATCH")' id="toprint" hidden>
     <table border="1">
       <tr></tr>
-      <tr><td colspan="10"><strong>Prix de Remorquage - Particulier</strong></td></tr>     
+      <tr><td colspan="10"><strong>Towing Price - Particuliar</strong></td></tr>     
       <tr>
         <th width="9%">Type</th>
-        <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
-        <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
-        <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
+        <th width="9%">Included</th><th width="9%">$/KmBrkDwn</th><th width="9%">BreakDown</th><th width="9%">$/KmAcc</th>
+        <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DoorUnclk</th>
+        <th width="9%">Boost</th><th width="9%">Gasoline</th><th width="9%">TireChange</th>
       </tr>
       <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
       <tr>
-        <th width="9%">Leger</th>
+        <th width="9%">Light</th>
         <td width="9%" style="text-align: right;">{{shipperParticulier.inclus1}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm1P}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.panne1}}</td>
@@ -99,7 +231,7 @@
       </tr>
       <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
       <tr>
-        <th width="9%">Moyen</th>
+        <th width="9%">Medium</th>
         <td width="9%" style="text-align: right;">{{shipperParticulier.inclus2}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm2P}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.panne2}}</td>
@@ -113,7 +245,7 @@
       </tr>   
       <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
       <tr>
-        <th width="9%">Lourd</th>
+        <th width="9%">Heavy</th>
         <td width="9%" style="text-align: right;">{{shipperParticulier.inclus3}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.prixKm3P}}</td>
         <td width="9%" style="text-align: right;">{{shipperParticulier.panne3}}</td>
@@ -127,4 +259,5 @@
       </tr>       
     </table>  
   </div>
-  <!--/div-->
+</div>
+

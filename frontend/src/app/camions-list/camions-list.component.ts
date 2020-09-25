@@ -192,8 +192,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // throw new Error("Method not implemented.");
     console.log('this.subscription.unsubscribe();')
-    this.subscription.unsubscribe();
-    this.subscriptionCSM.unsubscribe();
+    if(this.subscription!=null) this.subscription.unsubscribe();
+    if(this.subscriptionCSM!=null) this.subscriptionCSM.unsubscribe();
     // this.subscriptionTraffic.unsubscribe();
   }
 

@@ -23,6 +23,8 @@ import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { TransportersService } from 'src/services/transporters.service';
+import { Transporter } from 'src/model/model.transporter';
 
 @Component({
   selector: 'app-transport-client',
@@ -59,6 +61,9 @@ export class TransportClientComponent implements OnInit {
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
+
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
 
   provinceList=myGlobals.provinceList ;
   
@@ -149,7 +154,50 @@ export class TransportClientComponent implements OnInit {
         err=>{console.log(err)
       })
     }, err=>{
-      alert('Cette appel '+this.id+' a ete annule');
+      if(this.varsGlobal.language.includes('English'))
+        alert('This #Num'+this.id+' was canceled');
+      else alert('Cette #Bon'+this.id+' a ete annule');
+      window.close()
+    })
+  }
+
+  onSelectTax(){
+    if(this.transport.taxProvince==null || this.transport.taxProvince.length==0)
+    {
+      if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
+        this.transport.taxProvince=this.provinceList[10] // Quebec is the province by default
+        this.taxProvince=this.taxList[10]
+      }
+      else{ // exist tax province for this transporter
+        this.transport.taxProvince=this.transporter.taxProvince
+        this.taxList.forEach(tp=>{
+          if(tp.id.localeCompare(this.transport.taxProvince)==0)
+            this.taxProvince=tp
+        })
+      }
+    }
+    else{  // exist tax province for this towing
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.transport.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
+    //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
+  }
+  
+  onSaveHoursWP(){ // save time Waiting and PTO
+    // First, we try once more to get detail of this appel whether it was deleted
+    // if good, we make save - update
+    this.transportsService.getDetailTransport(this.id).subscribe(async data=>{
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        this.transport=data;
+      }, 
+        err=>{console.log(err)
+      })
+    }, err=>{
+      if(this.varsGlobal.language.includes('English'))
+        alert('This #Num'+this.id+' was canceled');
+      else alert('Cette #Bon'+this.id+' a ete annule');
       window.close()
     })
   }
@@ -206,6 +254,8 @@ export class TransportClientComponent implements OnInit {
 
   camions:Array<Camion>;
 
+  transporter: Transporter;
+  
   constructor(public transportsService : TransportsService, 
     // public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
@@ -219,8 +269,13 @@ export class TransportClientComponent implements OnInit {
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
+    public transportersService:TransportersService
     ) { 
-      this.id=activatedRoute.snapshot.params['id'];
+      // this.id=activatedRoute.snapshot.params['id'];
+      let tempId:number = Number(activatedRoute.snapshot.params['id']);
+      // console.log('tempId : '+tempId)
+      this.id=(tempId+5.00)/100  //(this.remorquage.id*100-5)
+      // console.log('this.id : '+this.id)
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
       //const selectAllControl01 = new FormControl(false);
@@ -288,20 +343,27 @@ export class TransportClientComponent implements OnInit {
     this.varsGlobal.session='yes'  // to control we are in session
     // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-    await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      data.forEach(camion=>{
-        if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-          this.camions.push(camion)
-      })
-    }, err=>{
-      console.log();
-    })
+    // await this.camionsService.camionsDeTransporter(8).subscribe((data:Array<Camion>)=>{
+    //   //this.camions = data
+    //   // this will take camions with gps monitor
+    //   this.camions=[];
+    //   data.forEach(camion=>{
+    //     if((camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+    //       this.camions.push(camion)
+    //   })
+    // }, err=>{
+    //   console.log();
+    // })
     // end of taking list camion SOSPrestige
     await this.transportsService.getDetailTransport(this.id).subscribe((data:Transport)=>{
       this.transport=data;
+      this.transportersService.getDetailTransporter(this.transport.idTransporter)
+    .subscribe((data:Transporter)=>{
+      this.transporter=data;
+      this.onSelectTax(); // get tax province after having transporter
+    }), err=>{
+      console.log(err)
+    };
       this.loadDetailsService.loadDetailsDeTransport(this.id).subscribe((lds:Array<LoadDetail>)=>{
         this.loadDetails=lds;
       }, err=>{
@@ -711,13 +773,14 @@ onWaitingTime(){
   })
 }
 async prixCalcul(){
-  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee
+  this.transport.horstax=this.transport.prixBase + this.transport.waitingFee + this.transport.ptoFee
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
   if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+    this.onSelectTax();
+    this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+    this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
     this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
   }
   else{
@@ -982,8 +1045,15 @@ async showMap() {
   }
   
   
+  // onFermer(){
+  //   this.CloseWithWindowOpenTrick();
+  // }
+
   onFermer(){
-    this.CloseWithWindowOpenTrick();
+    localStorage.clear();
+    localStorage.setItem('language', this.varsGlobal.language)
+    this.router.navigateByUrl("").then(()=>{location.reload()});
+    //location.reload();
   }
 
   onDelete(tr:Transport){

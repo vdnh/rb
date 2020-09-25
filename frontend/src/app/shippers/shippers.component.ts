@@ -7,6 +7,7 @@ import { PageShipper } from 'src/model/model.pageShipper';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { Shipper } from 'src/model/model.shipper';
 import { AppUser } from 'src/model/model.appUser';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 //import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -25,7 +26,9 @@ export class ShippersComponent implements OnInit
   //index=1;
 
   //*/
-  constructor(public authenticationService:AuthenticationService, public shipperservice:ShippersService, public router:Router) { }
+  constructor(public authenticationService:AuthenticationService, 
+    public shipperservice:ShippersService,
+    public varsGlobal:VarsGlobal, public router:Router) { }
 
   ngOnInit() {
     //this.index=1;
@@ -83,7 +86,7 @@ export class ShippersComponent implements OnInit
     this.doSearch();
   }
   gotoDetailShipper(id:number){
-    this.router.navigate(['detail-shipper',id]);
+    this.router.navigate(['detail-shipper',id], {skipLocationChange: true});
   }
 
   gotoDetailShipperParticulier(id:number){
@@ -92,7 +95,7 @@ export class ShippersComponent implements OnInit
     if(localStorage.getItem('idTransporter')!=undefined) 
       id=Number(localStorage.getItem('idTransporter'))
     
-    this.router.navigate(['detail-shipper-particulier',id]);
+    this.router.navigate(['detail-shipper-particulier',id], {skipLocationChange: true});
   }
 
   deleteShipper(id:number){

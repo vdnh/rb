@@ -703,14 +703,14 @@
                   name="camionAttribue" list="defaultCamions" class="form-control" required>
                 <datalist id="defaultCamions">
                   <!-- <optgroup label="Unit with GPS"> -->
-                    <option value=" "><strong>Units with GPS</strong></option>
+                    <option value=" "><strong>Unites avec GPS</strong></option>
                     <!-- </optgroup> -->
                     <option *ngFor="let c of camionsGps" [ngValue]="c">
                       {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
                       <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->
                     </option>
                     <!-- <optgroup label="Unit no GPS"> -->
-                      <option value=" "><strong>Units no-GPS</strong></option>
+                      <option value=" "><strong>Unites no-GPS</strong></option>
                       <option *ngFor="let c of camions" [ngValue]="c">
                         {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.type+ ' ' +c.modele+'  .Id.'+c.id)}}
                         <!-- {{"#"+c.unite +' - ' +c.marque +'  ' +c.modele}} -->

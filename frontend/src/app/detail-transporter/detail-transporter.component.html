@@ -462,13 +462,14 @@
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
-                    <th>Nom/Name</th><th>NID</th><th>NIR</th>
-                    <td rowspan="2"><button (click)="modifiyTransporter()">Save Profil</button></td>
+                    <th>Nom/Name</th><th>NID</th><th>NIR</th><th>INITIAL</th>
+                    <!-- <td rowspan="2"><button (click)="modifiyTransporter()">Save Profile</button></td> -->
                 </tr>
                 <tr>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.nid" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.nir" /></td>                    
+                    <td><input style="width: 12ch;" class="form-control" type="text" [(ngModel)]="transporter.initial" /></td>
                 </tr>
                 <tr>
                     <th>Address</th><th>Ville/City</th><th>CodePostal</th><th>TaxProvince</th>
@@ -486,13 +487,15 @@
                     
                 </tr>
                 <tr>
-                    <th>Contacts Express</th><th>Tel</th><th>Email</th><th>Initial</th>
+                    <th>Contacts Express</th><th>Tel</th><th>Email</th>
+                    <!-- <th>Initial</th> -->
                 </tr>
                 <tr>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.expressContact" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
                     <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
-                    <td><input style="width: 12ch;" class="form-control" type="text" [(ngModel)]="transporter.initial" /></td>
+                    <!-- <td><input style="width: 12ch;" class="form-control" type="text" [(ngModel)]="transporter.initial" /></td> -->
+                    <td rowspan="2"><button (click)="modifiyTransporter()">Save Profile</button></td>
                 </tr>
                 <tr>
                     <!-- <th>

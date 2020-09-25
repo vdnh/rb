@@ -349,7 +349,10 @@ export class TransportProComponent implements OnInit {
     this.onSave();
   }
   onReset(){
-    if(window.confirm("Etes vous sur d'annuler cet appel ?")) {
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to cancel this load ?")
+    else var r = confirm("Etes vous sur d'annuler cet appel ?")
+    if(r) {
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
@@ -716,7 +719,11 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de ce origin")
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Can not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -772,7 +779,11 @@ async destinationChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              alert("Ne pas trouver de coordonnees de cet destination")
+            {
+              if(this.varsGlobal.language.includes('English'))
+                alert("Can not locate this destination")
+              else alert("Ne pas trouver de coordonnees de cet destination")
+            }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -1001,9 +1012,11 @@ async showMap() {
   }
 
   onFini(){
-    var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure this load in finished?")
+    else var r = confirm("Etes vous sur que ce load est fini ?")
     if(r==true){
-      console.log("Le cas est termine.")
+      // console.log("Le cas est termine.")
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
@@ -1016,7 +1029,9 @@ async showMap() {
   }
 
   onCancel(){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to cancel this load ?")
+    else var r = confirm("Etes vous sur d'annuller ce load ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.transport.id>0){
@@ -1027,7 +1042,9 @@ async showMap() {
             this.em.titre="Annuler case numero : " + this.transport.id.toString()
             this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              alert("Un courriel annulation a ete aussi envoye au chauffeur.")
+              if(this.varsGlobal.language.includes('English'))
+                alert("An email cancel was sent to driver.")
+              else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
             })
@@ -1043,9 +1060,11 @@ async showMap() {
   }
 
   onDelete(tr:Transport){
-    var r = confirm("Etes vous sur d'annuller ce cas ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to delete this load ?")
+    else var r = confirm("Etes vous sur de supprimer ce cas ?")
     if(r==true){
-      console.log("Le cas est annulle.")
+      // console.log("Le cas est supprime.")
       if(tr.id>0){
         this.transportsService.deleteTransport(tr.id).subscribe(data=>{
           if(tr.fini)
@@ -1086,7 +1105,11 @@ async showMap() {
       this.changeUnite();  // we must change to mode=1
       await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+        {
+          if(this.varsGlobal.language.includes('English'))
+            alert("It's saved.")
+          else alert("C'est enregistre.")
+        }
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1115,7 +1138,11 @@ async showMap() {
     else{ // mode=1 already, just save
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
-          alert("C'est enregistre.")
+          {
+            if(this.varsGlobal.language.includes('English'))
+              alert("it's saved.")
+            else alert("C'est enregistre.")
+          }
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1343,14 +1370,21 @@ async showMap() {
   onEnvoyer(){
     let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest=myGlobals.emailPrincipal; 
-    this.em.titre= this.transport.nomEntreprise +" - Transport De- " + this.transport.originVille+', '+this.transport.originProvince +
-    ' A- ' + this.transport.destVille+', '+this.transport.destProvince
+    if(this.varsGlobal.language.includes('English'))
+      this.em.titre= this.transport.nomEntreprise +" - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
+      ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
+    else this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
+      ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
     " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
     + this.transport.id   //1733  // replace by Number of Bon Transport
-    +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
+    +"'><h4>Detail</h4></a>" +" </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-      alert("Cette appel a ete envoye.")
+      {
+        if(this.varsGlobal.language.includes('English'))
+          alert("This load was sent")
+        else alert("Ce load a ete envoye.")
+      }
       //*/ Also App send confirmation email to client professionnel
       if(this.transport.emailContact.length>10){
         let em:EmailMessage=new EmailMessage();

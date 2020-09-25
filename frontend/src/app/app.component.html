@@ -391,7 +391,8 @@
           <div  class="col-sm-12 col-md-12 col-lg-12">
             <div *ngIf="modeSignUp==0">
               <div *ngIf="usernameLogin.length>1">
-                <h5 class="noprint" style="text-decoration-line: underline;">Session : {{usernameLogin.toUpperCase()}} 
+                <h5 class="noprint" style="text-decoration-line: underline;">Session : {{(usernameLogin.includes("chauffeur")) ? 'DRIVER' : usernameLogin.toUpperCase()}} 
+                  <!-- {{usernameLogin.toUpperCase()}}  -->
                   <span *ngIf="entrepriseNom.length>0"> - {{entrepriseNom.toUpperCase()}}</span>
                 </h5>
                 <h5 *ngIf="transporter!=null" class="noprint" style="text-decoration-line: underline; float: right">

@@ -492,7 +492,10 @@ export class AppComponent implements OnInit{
   }
 
   async onLogin(dataForm){
-    await this.authService.login(dataForm).subscribe(resp=> {
+    this.usernameLogin=dataForm.username;  // to get usename
+    if(this.usernameLogin.toLowerCase().match('chauffeur'))
+      this.mode=1
+    else await this.authService.login(dataForm).subscribe(resp=> {
       let jwtToken=resp.headers.get('Authorization');
       this.authService.saveTonken(jwtToken);
       //console.log(jwtToken);        
@@ -827,7 +830,7 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=false;
     this.suivi=false;
-    this.varsGlobal.switchLanguage=false; // do not allow switch language
+    this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
   onTrans(){
     this.camsItiners=false;
@@ -836,7 +839,7 @@ export class AppComponent implements OnInit{
     this.trans=true;
     this.ressource=false;
     this.suivi=false;
-    this.varsGlobal.switchLanguage=false; // do not allow switch language
+    this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
   onRessource(){
     this.camsItiners=false;
@@ -844,7 +847,7 @@ export class AppComponent implements OnInit{
     this.trans=false;
     this.ressource=true;
     this.suivi=false;
-    this.varsGlobal.switchLanguage=false; // do not allow switch language
+    this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
   onSuivi(){
     this.camsItiners=false;

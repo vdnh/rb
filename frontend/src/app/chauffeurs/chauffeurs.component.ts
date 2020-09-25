@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Chauffeur } from 'src/model/model.chauffeur';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-chauffeurs',
@@ -12,7 +13,12 @@ export class ChauffeursComponent implements OnInit {
   chauffeurs:Array<Chauffeur>;
   addchauffeur:Chauffeur=new Chauffeur(); // to add more chauffeur
   idTransporter = Number(localStorage.getItem('idTransporter'))
-  constructor(public chauffeursService:ChauffeursService,) { }
+  
+  constructor(public chauffeursService:ChauffeursService,
+              public varsGlobal:VarsGlobal,) 
+  { 
+
+  }
 
   ngOnInit() {
     // here we find drivers of SOSPrestige, therefore, id transporter = 8

@@ -212,7 +212,7 @@ export class DetailTransporterComponent implements OnInit {
   // just for the dispatch modify profil of transporter (just save the change of transporter)
   modifiyTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
-      alert('Profil enregistre.');
+      alert('Profile Modified.');
     }, err=>{
       console.log(err);
     });

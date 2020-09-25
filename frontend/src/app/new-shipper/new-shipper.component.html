@@ -1,286 +1,577 @@
-<!-- <div class="container spacer"> -->
-  <br>
-  <div class="panel panel-primary" *ngIf="mode==1">
-    <div class="panel-heading"><H4><strong>Nouveau Client</strong></H4></div>
-      <div class="panel-body">
-              <!-- <table class="table table-striped"> -->
-        <table border="1">  
-          <tr>
-            <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">Client Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
-          </tr>
-          <tr>
-            <td width="14%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="shipper.nom" /></td>
-            <td width="28%"><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
-            <td width="14%"><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
-            <td width="16%"><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
-            <td width="14%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="shipper.tel" /> -->
-              <input type="tel" [(ngModel)]="shipper.tel" name="telShipper"
-                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                (focusout)="shipper.tel=reformTelEvent($event)" required>
+<div *ngIf="varsGlobal.language.includes('Francais')">
+  <!-- <div class="container spacer"> -->
+    <br>
+    <div class="panel panel-primary" *ngIf="mode==1">
+      <div class="panel-heading"><H4><strong>Nouveau Client</strong></H4></div>
+        <div class="panel-body">
+                <!-- <table class="table table-striped"> -->
+          <table border="1">  
+            <tr>
+              <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">Client Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="shipper.nom" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
+              <td width="14%"><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.tel" /> -->
+                <input type="tel" [(ngModel)]="shipper.tel" name="telShipper"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="shipper.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.fax" /> -->
+                <input type="tel" [(ngModel)]="shipper.fax" name="faxShipper"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="shipper.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
+            </tr>
+            <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+            <tr>
+              <th width="14%">Numero</th><th width="28%">Rue</th><th width="14%">Code Postal</th><th width="16%">Ville</th><th width="14%">Province</th>
+              <!-- <th>Pays</th> -->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+              <td width="16%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="adresse.ville" /> -->
+                <input type="text" [(ngModel)]="adresse.ville" name="originVille"
+                  class="form-control" list="defaultVilles" placeholder="Ville">
+                <datalist id="defaultVilles">
+                    <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+                </datalist>
+              </td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="adresse.province" /> -->
+                <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
+                  <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                </select>
+              </td>
+              <!-- <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td> -->
+            </tr>  
+          </table>                      
+          
+          <table border="1">
+            <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
+            <tr>
+              <th width="14%">Nom</th><th width="14%">Prenom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
+                <input type="tel" [(ngModel)]="contact.tel" name="telContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="contact.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td> 
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
+                <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="contact.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
+            </tr>     
+            <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
+            <tr>
+              <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
+            </tr>
+            <tr>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase3" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+            </tr>                          -->
+          </table>
+          <br>                    
+          <table border="1">
+            <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
+            <tr>
+              <th width="9%">Type</th>
+              <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+              <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+              <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
+            </tr>
+            <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+            <tr>
+              <th width="9%">Leger</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
+            </tr>
+            <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+            <tr>
+              <th width="9%">Moyen</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td>
+            </tr>   
+            <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
+            <tr>
+              <th width="9%">Lourd</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
+            </tr>       
+            <tr>
+              <td colspan="2"><strong>Username - Password</strong></td>
+            </tr>
+            <tr>
+              <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
+              <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
+              <!-- <td>
+                <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
+              </td> -->
+            </tr>
+          </table>          
+          <table> 
+            <td>
+              <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
             </td>
-            <td width="14%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="shipper.fax" /> -->
-              <input type="tel" [(ngModel)]="shipper.fax" name="faxShipper"
-                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                (focusout)="shipper.fax=reformTelEvent($event)" required>
-            </td>
-            <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
-          </tr>
-          <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
-          <tr>
-            <th width="14%">Numero</th><th width="28%">Rue</th><th width="14%">Code Postal</th><th width="16%">Ville</th><th width="14%">Province</th>
-            <!-- <th>Pays</th> -->
-          </tr>
-          <tr>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
-            <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
-            <td width="16%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="adresse.ville" /> -->
-              <input type="text" [(ngModel)]="adresse.ville" name="originVille"
-                class="form-control" list="defaultVilles" placeholder="Ville">
-              <datalist id="defaultVilles">
-                  <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
-              </datalist>
-            </td>
-            <td width="14%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="adresse.province" /> -->
-              <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
-                <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
-              </select>
-            </td>
-            <!-- <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td> -->
-          </tr>  
-        </table>                      
+            <td><button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></td>
+          </table>
+          <!-- <div> <button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></div> -->
+        </div>   
+  </div>
+  
+  <div class="panel panel-primary" *ngIf="mode==2">
+      <div class="panel-heading"><strong>Confirmation</strong></div>
+      <table border="1">
+        <tr>
+          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Fax</th>
+        </tr>
+        <tr>
+          <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td>
+        </tr>
         
-        <table border="1">
-          <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
-          <tr>
-            <th width="14%">Nom</th><th width="14%">Prenom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
-          </tr>
-          <tr>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
-            <td width="16%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
-            <td width="14%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
-              <input type="tel" [(ngModel)]="contact.tel" name="telContact"
-                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                (focusout)="contact.tel=reformTelEvent($event)" required>
-            </td>
-            <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td> 
-            <td width="14%">
-              <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
-              <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
-                class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
-                (focusout)="contact.fax=reformTelEvent($event)" required>
-            </td>
-            <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
-          </tr>     
-          <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
-          <tr>
-            <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
-          </tr>
-          <tr>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase1" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase2" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase3" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3" /></td>
-            <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
-          </tr>                          -->
-        </table>
-        <br>                    
-        <table border="1">
-          <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
-          <tr>
-            <th width="9%">Type</th>
-            <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
-            <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
-            <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
-          </tr>
-          <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
-          <tr>
-            <th width="9%">Leger</th>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
-          </tr>
-          <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
-          <tr>
-            <th width="9%">Moyen</th>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2A" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td>
-          </tr>   
-          <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
-          <tr>
-            <th width="9%">Lourd</th>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3P" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3A" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
-            <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
-          </tr>       
-          <tr>
-            <td colspan="2"><strong>Username - Password</strong></td>
-          </tr>
-          <tr>
-            <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
-            <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
-            <!-- <td>
-              <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
-            </td> -->
-          </tr>
-        </table>          
-        <table> 
-          <td>
-            <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
-          </td>
-          <td><button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></td>
-        </table>
-        <!-- <div> <button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></div> -->
-      </div>   
-</div>
-
-<div class="panel panel-primary" *ngIf="mode==2">
-    <div class="panel-heading"><strong>Confirmation</strong></div>
+        <tr><td colspan="2"><br><strong>Adresse Principal</strong></td></tr>
+        <tr>
+          <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
+        </tr>
+        <tr>
+          <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+        </tr>
+        
+        <tr><td colspan="2"><br><strong>Personne principal a contact</strong></td></tr>
+        <tr>
+          <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+        </tr>
+        <tr>
+          <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+        </tr>      
+        <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
+        <tr>
+          <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
+        </tr>
+        <tr>
+          <td width="11%">{{shipper.prixBase1}}</td>
+          <td width="11%">{{shipper.prixKm1}}</td>
+          <td width="11%">{{shipper.inclus1}}</td>
+          <td width="11%">{{shipper.prixBase2}}</td>
+          <td width="11%">{{shipper.prixKm2}}</td>
+          <td width="11%">{{shipper.inclus2}}</td>
+          <td width="11%">{{shipper.prixBase3}}</td>
+          <td width="11%">{{shipper.prixKm3}}</td>
+          <td width="11%">{{shipper.inclus3}}</td>
+        </tr>   -->
+      </table>
+        <div class="panel-body">
+          <div>
+            
+            <div> <button class="btn btn-primary" (click)="mode=1">Nouveau Client Professionelle</button></div>
+          </div>
+        </div>   
+  </div>
+  <div id="toprint" hidden>
     <table border="1">
       <tr>
-        <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th><th>Fax</th>
+        <td colspan="11">{{shipper.nom + ', '+shipper.email + ', '+shipper.tel}}</td>
+        <!-- <td>{{shipper.raison_sociale}}</td>
+        <td>{{shipper.email}}</td>
+        <td>{{shipper.tel}}</td> -->
       </tr>
       <tr>
-        <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td>
+        <td colspan="11">{{adresse.num + ' ' + adresse.rue + ', ' + adresse.ville  + ', ' + adresse.province }}</td>
+        <!-- <td>{{adresse.rue}}</td>
+        <td>{{adresse.code_postal}}</td>
+        <td>{{adresse.ville}}</td>
+        <td>{{adresse.province}}</td>
+        <td>{{adresse.pays}}</td> -->
       </tr>
-      
-      <tr><td colspan="2"><br><strong>Adresse Principal</strong></td></tr>
+      <tr></tr>
+      <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
       <tr>
-        <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
+        <th width="9%">Type</th>
+        <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
+        <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
+        <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
       </tr>
+      <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
       <tr>
-        <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+        <th width="9%">Leger</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm1P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm1A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu1}}</td>
       </tr>
-      
-      <tr><td colspan="2"><br><strong>Personne principal a contact</strong></td></tr>
+      <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
       <tr>
-        <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
-      </tr>
+        <th width="9%">Moyen</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm2P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm2A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu2}}</td>
+      </tr>   
+      <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
       <tr>
-        <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
-      </tr>      
-      <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
-      <tr>
-        <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
-      </tr>
-      <tr>
-        <td width="11%">{{shipper.prixBase1}}</td>
-        <td width="11%">{{shipper.prixKm1}}</td>
-        <td width="11%">{{shipper.inclus1}}</td>
-        <td width="11%">{{shipper.prixBase2}}</td>
-        <td width="11%">{{shipper.prixKm2}}</td>
-        <td width="11%">{{shipper.inclus2}}</td>
-        <td width="11%">{{shipper.prixBase3}}</td>
-        <td width="11%">{{shipper.prixKm3}}</td>
-        <td width="11%">{{shipper.inclus3}}</td>
-      </tr>   -->
-    </table>
-      <div class="panel-body">
-        <div>
+        <th width="9%">Lourd</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm3P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm3A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu3}}</td>
+      </tr>       
+    </table>  
+  </div>
+  <!-- </div> -->
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+  <!-- <div class="container spacer"> -->
+    <br>
+    <div class="panel panel-primary" *ngIf="mode==1">
+      <div class="panel-heading"><H4><strong>New Client</strong></H4></div>
+        <div class="panel-body">
+                <!-- <table class="table table-striped"> -->
+          <table border="1">  
+            <tr>
+              <th width="14%">Name</th><th width="28%">Business</th><th width="14%">Client since</th><th width="16%">Email</th><th width="14%">Phone</th><th width="14%">Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="shipper.nom" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="shipper.raison_sociale" /></td>
+              <td width="14%"><input class="form-control" type="date" [(ngModel)]="shipper.depuis" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="shipper.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.tel" /> -->
+                <input type="tel" [(ngModel)]="shipper.tel" name="telShipper"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="shipper.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="shipper.fax" /> -->
+                <input type="tel" [(ngModel)]="shipper.fax" name="faxShipper"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="shipper.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="shipper.photo" /></td-->
+            </tr>
+            <tr><td colspan="2"><strong>Address Principal</strong></td></tr>
+            <tr>
+              <th width="14%">Number</th><th width="28%">Road</th><th width="14%">Code Postal</th><th width="16%">City</th><th width="14%">Province</th>
+              <!-- <th>Pays</th> -->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+              <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+              <td width="16%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="adresse.ville" /> -->
+                <input type="text" [(ngModel)]="adresse.ville" name="originVille"
+                  class="form-control" list="defaultVilles" placeholder="City">
+                <datalist id="defaultVilles">
+                    <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+                </datalist>
+              </td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="adresse.province" /> -->
+                <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
+                  <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                </select>
+              </td>
+              <!-- <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td> -->
+            </tr>  
+          </table>                      
           
-          <div> <button class="btn btn-primary" (click)="mode=1">Nouveau Client Professionelle</button></div>
-        </div>
-      </div>   
+          <table border="1">
+            <tr><td colspan="2"><strong>Contact</strong></td></tr>
+            <tr>
+              <th width="14%">LastName</th><th width="14%">FirstName</th><th width="14%">Function</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
+                <input type="tel" [(ngModel)]="contact.tel" name="telContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="contact.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td> 
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
+                <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="contact.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
+            </tr>     
+            <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
+            <tr>
+              <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
+            </tr>
+            <tr>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixBase3" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3" /></td>
+              <td width="11%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+            </tr>                          -->
+          </table>
+          <br>                    
+          <table border="1">
+            <tr><td colspan="3"><strong>Towing Price</strong></td></tr>     
+            <tr>
+              <th width="9%">Type</th>
+              <th width="9%">Included</th><th width="9%">$/KmBrkDwn</th><th width="9%">BreakDown</th><th width="9%">$/KmAcc</th>
+              <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DoorUnclk</th>
+              <th width="9%">Boost</th><th width="9%">Gasoline</th><th width="9%">TireChange</th>
+            </tr>
+            <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+            <tr>
+              <th width="9%">Light</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm1A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence1" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu1" /></td>
+            </tr>
+            <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+            <tr>
+              <th width="9%">Medium</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm2A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence2" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu2" /></td>
+            </tr>   
+            <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
+            <tr>
+              <th width="9%">Heavy</th>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.inclus3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3P" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.panne3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.prixKm3A" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.accident3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.pullOut3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.debarragePorte3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.boost3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.essence3" /></td>
+              <td width="9%"><input class="form-control" type="number" [(ngModel)]="shipper.changementPneu3" /></td>
+            </tr>       
+            <tr>
+              <td colspan="2"><strong>Username - Password</strong></td>
+            </tr>
+            <tr>
+              <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
+              <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
+              <!-- <td>
+                <button (click)="printPriceList('toprint')" class="btn btn-link">Print</button>
+              </td> -->
+            </tr>
+          </table>          
+          <table> 
+            <td>
+              <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+            </td>
+            <td><button class="btn btn-primary" (click)="signUpShipper()">Save</button></td>
+          </table>
+          <!-- <div> <button class="btn btn-primary" (click)="signUpShipper()">Enregistrer</button></div> -->
+        </div>   
+  </div>
+  
+  <div class="panel panel-primary" *ngIf="mode==2">
+      <div class="panel-heading"><strong>Confirmation</strong></div>
+      <table border="1">
+        <tr>
+          <th>Name</th><th>Business</th><th>Email</th><th>Phone</th><th>Fax</th>
+        </tr>
+        <tr>
+          <td>{{shipper.nom}}</td><td>{{shipper.raison_sociale}}</td><td>{{shipper.email}}</td><td>{{shipper.tel}}</td><td>{{shipper.fax}}</td>
+        </tr>
+        
+        <tr><td colspan="2"><br><strong>Address Principal</strong></td></tr>
+        <tr>
+          <th>Number</th><th>Road</th><th>Code Postal</th><th>City</th><th>Province</th><th>Country</th>
+        </tr>
+        <tr>
+          <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+        </tr>
+        
+        <tr><td colspan="2"><br><strong>Contact</strong></td></tr>
+        <tr>
+          <th>LastName</th><th>FirstName</th><th>Function</th><th>Email</th><th>Phone</th><th>Fax</th>
+        </tr>
+        <tr>
+          <td>{{contact.nom}}</td><td>{{contact.prenom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+        </tr>      
+        <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
+        <tr>
+          <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
+        </tr>
+        <tr>
+          <td width="11%">{{shipper.prixBase1}}</td>
+          <td width="11%">{{shipper.prixKm1}}</td>
+          <td width="11%">{{shipper.inclus1}}</td>
+          <td width="11%">{{shipper.prixBase2}}</td>
+          <td width="11%">{{shipper.prixKm2}}</td>
+          <td width="11%">{{shipper.inclus2}}</td>
+          <td width="11%">{{shipper.prixBase3}}</td>
+          <td width="11%">{{shipper.prixKm3}}</td>
+          <td width="11%">{{shipper.inclus3}}</td>
+        </tr>   -->
+      </table>
+        <div class="panel-body">
+          <div>
+            
+            <div> <button class="btn btn-primary" (click)="mode=1">New Client Professional</button></div>
+          </div>
+        </div>   
+  </div>
+  <div id="toprint" hidden>
+    <table border="1">
+      <tr>
+        <td colspan="11">{{shipper.nom + ', '+shipper.email + ', '+shipper.tel}}</td>
+        <!-- <td>{{shipper.raison_sociale}}</td>
+        <td>{{shipper.email}}</td>
+        <td>{{shipper.tel}}</td> -->
+      </tr>
+      <tr>
+        <td colspan="11">{{adresse.num + ' ' + adresse.rue + ', ' + adresse.ville  + ', ' + adresse.province }}</td>
+        <!-- <td>{{adresse.rue}}</td>
+        <td>{{adresse.code_postal}}</td>
+        <td>{{adresse.ville}}</td>
+        <td>{{adresse.province}}</td>
+        <td>{{adresse.pays}}</td> -->
+      </tr>
+      <tr></tr>
+      <tr><td colspan="3"><strong>Towing Price</strong></td></tr>     
+      <tr>
+        <th width="9%">Type</th>
+        <th width="9%">Included</th><th width="9%">$/KmBrkDwn</th><th width="9%">BreakDown</th><th width="9%">$/KmAcc</th>
+        <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DoorUnclk</th>
+        <th width="9%">Boost</th><th width="9%">Gasoline</th><th width="9%">TireChange</th>
+      </tr>
+      <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
+      <tr>
+        <th width="9%">Light</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm1P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm1A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence1}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu1}}</td>
+      </tr>
+      <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
+      <tr>
+        <th width="9%">Medium</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm2P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm2A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence2}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu2}}</td>
+      </tr>   
+      <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
+      <tr>
+        <th width="9%">Heavy</th>
+        <td width="9%" style="text-align: right;">{{shipper.inclus3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm3P}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.panne3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.prixKm3A}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.accident3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.pullOut3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.debarragePorte3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.boost3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.essence3}}</td>
+        <td width="9%" style="text-align: right;">{{shipper.changementPneu3}}</td>
+      </tr>       
+    </table>  
+  </div>
+  <!-- </div> -->
 </div>
-<div id="toprint" hidden>
-  <table border="1">
-    <tr>
-      <td colspan="11">{{shipper.nom + ', '+shipper.email + ', '+shipper.tel}}</td>
-      <!-- <td>{{shipper.raison_sociale}}</td>
-      <td>{{shipper.email}}</td>
-      <td>{{shipper.tel}}</td> -->
-    </tr>
-    <tr>
-      <td colspan="11">{{adresse.num + ' ' + adresse.rue + ', ' + adresse.ville  + ', ' + adresse.province }}</td>
-      <!-- <td>{{adresse.rue}}</td>
-      <td>{{adresse.code_postal}}</td>
-      <td>{{adresse.ville}}</td>
-      <td>{{adresse.province}}</td>
-      <td>{{adresse.pays}}</td> -->
-    </tr>
-    <tr></tr>
-    <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
-    <tr>
-      <th width="9%">Type</th>
-      <th width="9%">Inclus</th><th width="9%">$/KmPan</th><th width="9%">Panne</th><th width="9%">$/KmAcc</th>
-      <th width="9%">Accident</th><th width="9%">PullOut</th><th width="9%">DebarPorte</th>
-      <th width="9%">Boost</th><th width="9%">Essence</th><th width="9%">ChangePneus</th>
-    </tr>
-    <!-- <tr><td colspan="3"><strong>Type Leger</strong></td></tr>      -->
-    <tr>
-      <th width="9%">Leger</th>
-      <td width="9%" style="text-align: right;">{{shipper.inclus1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm1P}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.panne1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm1A}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.accident1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.pullOut1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.debarragePorte1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.boost1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.essence1}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.changementPneu1}}</td>
-    </tr>
-    <!-- <tr><td colspan="3"><strong>Type Moyen</strong></td></tr>      -->
-    <tr>
-      <th width="9%">Moyen</th>
-      <td width="9%" style="text-align: right;">{{shipper.inclus2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm2P}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.panne2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm2A}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.accident2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.pullOut2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.debarragePorte2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.boost2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.essence2}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.changementPneu2}}</td>
-    </tr>   
-    <!-- <tr><td colspan="3"><strong>Type Lourd</strong></td></tr>         -->
-    <tr>
-      <th width="9%">Lourd</th>
-      <td width="9%" style="text-align: right;">{{shipper.inclus3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm3P}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.panne3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.prixKm3A}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.accident3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.pullOut3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.debarragePorte3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.boost3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.essence3}}</td>
-      <td width="9%" style="text-align: right;">{{shipper.changementPneu3}}</td>
-    </tr>       
-  </table>  
-</div>
-<!-- </div> -->

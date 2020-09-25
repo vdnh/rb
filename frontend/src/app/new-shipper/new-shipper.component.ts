@@ -9,6 +9,7 @@ import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
 import { Router } from '@angular/router';
 import * as myGlobals from 'src/services/globals';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-new-shipper',
@@ -53,8 +54,12 @@ export class NewShipperComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 
-  constructor(public shippersService:ShippersService, public contactsService:ContactsService, 
-    public adressesService:AdressesService, public authenticationService:AuthenticationService, public router:Router) { }
+  constructor(public shippersService:ShippersService, 
+    public contactsService:ContactsService, 
+    public adressesService:AdressesService, 
+    public authenticationService:AuthenticationService, 
+    public varsGlobal:VarsGlobal,
+    public router:Router) { }
 
   ngOnInit() {
     this.role=localStorage.getItem('role');
