@@ -1,0 +1,25 @@
+<select [(ngModel)]="truck" (ngModelChange)="showMap()">
+    <option *ngFor="let tk of allTrucks" [ngValue]="tk">
+        {{((tk.foreignName!=null && tk.foreignName.length>0) ? tk.foreignName : ("#"+tk.unite+" "+tk.marque+" "+tk.modele))}}
+    </option>
+</select>
+<input type="text" placeholder="#driver">
+<button>OK</button><br>
+<div *ngIf="truck!=null">
+    <!-- <input type="number" [(ngModel)]="truck.speed"> -->
+    <label for="">Odometer</label>
+    <input type="number" [(ngModel)]="truck.odometre">
+    <label for="">Latitude</label>
+    <input type="number" [(ngModel)]="truck.latitude">
+    <label for="">Longitude</label>
+    <input type="number" [(ngModel)]="truck.longtitude">
+    <button (click)="onSaveTruck()">UpdateTruck</button>
+</div>
+<p>
+    {{driverNote}}
+</p>
+<p>
+    {{driverMoved}}
+</p>
+<h3>List Itineraires</h3>
+<div [hidden]="truck==null" #gmap style="width:100%;height:650px" ></div>

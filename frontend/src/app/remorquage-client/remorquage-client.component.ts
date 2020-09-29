@@ -157,8 +157,8 @@ export class RemorquageClientComponent implements OnInit {
   //end for signature pad
   
   // for signature client bon
-  width:number;
-  height:number;
+  width:number=100;
+  height:number=100;
   signe=false;
 @ViewChild('SignaturePad2') signaturePad2: SignaturePad;
 public signaturePad2Options: Object = {

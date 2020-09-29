@@ -74,9 +74,9 @@ export class AppComponent implements OnInit{
   }
 
   // begin change language dinamically
-  gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr";
+  gpsFr ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=fr&region=QC";
   // &region=QC
-  gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en";
+  gpsEn ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAgK16ejXEP9AphdK54w8XHELA9gnyYxs&libraries=geometry,drawing,places&language=en&region=QC";
   // &region=QC
   gpsSource;
   languageChange(){
@@ -416,6 +416,13 @@ export class AppComponent implements OnInit{
         }
         //localStorage.setItem('userId', res.id.toString());
       }//*/
+      // Terminal
+      if(this.role.includes('TERMINAL')) {         
+        //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
+        // this.router.navigate(['/terminal/'], {skipLocationChange: true});
+        this.router.navigate(['/terminal/'], {skipLocationChange: true})
+        //localStorage.setItem('userId', res.id.toString());
+      }
       /*
       if(this.role.includes('TRANSPORTER')) {         
         this.router.navigateByUrl('/detail-transporter/'+ localStorage.getItem('userId'));

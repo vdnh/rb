@@ -231,7 +231,7 @@
                   <span *ngIf="!remor">Remorquage</span> 
                 </button> 
                 <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
-                  (click)="router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
+                  (click)="onRemor(); router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
                   <!-- routerLink="/remorquage-pro" -->
                   <strong *ngIf="remor">Remorquage</strong>
                   <span *ngIf="!remor">Remorquage</span> 
@@ -243,7 +243,7 @@
                   <span *ngIf="!trans">Transport</span> 
                 </button> 
                 <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
-                  (click)="router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
+                  (click)="onTrans(); router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
                   <!--  routerLink="/transport-pro" -->
                   <strong *ngIf="trans">Transport</strong>
                   <span *ngIf="!trans">Transport</span> 
@@ -268,6 +268,13 @@
                   <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
                   <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
                 <!-- </div> -->
+              </div>
+
+              <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
+                <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
+                <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>    
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>      
               </div>
               <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>
@@ -600,7 +607,7 @@
                   <span *ngIf="!remor">Towing</span> 
                 </button> 
                 <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')"
-                  (click)="router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
+                  (click)="onRemor(); router.navigateByUrl('/remorquage-pro', {skipLocationChange: true})">
                   <!-- routerLink="/remorquage-pro" -->
                   <strong *ngIf="remor">Towing</strong>
                   <span *ngIf="!remor">Towing</span> 
@@ -612,7 +619,7 @@
                   <span *ngIf="!trans">Freight</span> 
                 </button> 
                 <button class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
-                  (click)="router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
+                  (click)="onTrans(); router.navigateByUrl('/transport-pro', {skipLocationChange: true})">
                   <!-- routerLink="/transport-pro" -->
                   <strong *ngIf="trans">Freight</strong>
                   <span *ngIf="!trans">Freight</span> 
@@ -637,6 +644,13 @@
                   <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
                   <button (click)="logout()" class="btn btn-link" *ngIf="varsGlobal.session.includes('no')">Logout</button>
                 <!-- </div> -->
+              </div>
+
+              <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
+                <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
+                <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>    
+                <button (click)="logout()" class="btn btn-link">Logout</button>
+                <br>      
               </div>
               <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>

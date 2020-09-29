@@ -4,7 +4,7 @@
     <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerAppel</button></span>
     <span *ngIf="modeHistoire==-1&&remorquage.id==null"><button (click)="onNouvelAppel()" class="btn btn-link">NouvelAppel</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelAppel</button></span>
-    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Historique-Des-Appels</button></span>
+    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Status-Des-Appels</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
   </h4>
   <hr style="border: 1px dotted black"/>
@@ -890,7 +890,7 @@
     <span *ngIf="modeHistoire==-1&&remorquage.id>0"><button (click)="onReset()" class="btn btn-link">CancelCase</button></span>
     <span *ngIf="modeHistoire==-1&&remorquage.id==null"><button (click)="onNouvelAppel()" class="btn btn-link">NewCase</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NewCase</button></span>
-    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">CasesManagement</button></span>
+    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">CasesStatus</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
   </h4>
   <hr style="border: 1px dotted black"/>

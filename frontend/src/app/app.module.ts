@@ -92,6 +92,8 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { TerminalComponent } from './terminal/terminal.component';
+import { TerminalFollowComponent } from './terminal-follow/terminal-follow.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -142,6 +144,8 @@ const appRoutes:Routes=[
   {path: 'suivi-rapide', component:SuiviRapideComponent},
   {path: 'camions-list', component:CamionsListComponent},
   {path: 'transporter-confirm', component:TransporterConfirmComponent},
+  {path: 'terminal', component: TerminalComponent},
+  {path: 'terminal-follow', component: TerminalFollowComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -194,6 +198,8 @@ const appRoutes:Routes=[
     SuiviRapideComponent,
     CamionsListComponent,
     TransporterConfirmComponent,
+    TerminalComponent,
+    TerminalFollowComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

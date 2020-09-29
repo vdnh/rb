@@ -14,7 +14,15 @@ import { Transporter } from 'src/model/model.transporter';
 })
 export class AppUsersComponent implements OnInit {
 
-  roleTypes = ["ADMIN", "SHIPPER", "TRANSPORTER", "DISPATCH", "TECHNICIEN", "CHAUFFEUR"];
+  roleTypes = [
+    "ADMIN", 
+    "SHIPPER", 
+    "TRANSPORTER", 
+    "DISPATCH", 
+    "TECHNICIEN", 
+    "CHAUFFEUR",
+    "TERMINAL"
+  ];
   appUser : AppUser = new AppUser();
   appUserToMod : AppUser = new AppUser();
   appUserToDel : AppUser = new AppUser();
@@ -83,6 +91,10 @@ export class AppUsersComponent implements OnInit {
       this.disabledIdSecond=true; // reserve for future
     }
     else if(this.appUser.roleSimple.includes('CHAUFFEUR')){
+      this.disabledIdUser=false;
+      this.disabledIdSecond=true; // reserve for future
+    }
+    else if(this.appUser.roleSimple.includes('TERMINAL')){
       this.disabledIdUser=false;
       this.disabledIdSecond=true; // reserve for future
     }

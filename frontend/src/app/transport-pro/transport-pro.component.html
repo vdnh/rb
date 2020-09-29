@@ -3,8 +3,8 @@
     Transport<span>&nbsp;&nbsp;&nbsp;</span>
     <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">AnnulerLoad</button></span>
     <!--span *ngIf="modeHistoire==-1&&transport.id==null"><button (click)="onNew()" class="btn btn-link">NouvelAppel</button></span-->
-    <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouvelLoad</button></span>
-    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">Gestion-Des-Loads</button></span>
+    <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NouveauLoad</button></span>
+    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">LoadsStatus</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
   </h4>
   <hr style="border: 1px dotted black"/>
@@ -66,7 +66,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrs.length==0" style="color: green">
+          <tr *ngIf="listTrs==null || listTrs.length==0" style="color: green">
             <td>Liste d'Attente est vide actuellement.</td>
           </tr>
         </table>
@@ -87,7 +87,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsSent.length==0" style="color:orange">
+          <tr *ngIf="listTrsSent==null || listTrsSent.length==0" style="color:orange">
             <td>Liste en Cours est vide actuellement.</td>
           </tr>  
         </table>
@@ -108,7 +108,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsFini.length==0" style="color: red">
+          <tr *ngIf="listTrsFini==null || listTrsFini.length==0" style="color: red">
             <td>Liste termines est vide actuellement.</td>
           </tr>
         </table>
@@ -129,7 +129,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsAnnule.length==0" style="color: blue">
+          <tr *ngIf="listTrsAnnule==null || listTrsAnnule.length==0" style="color: blue">
             <td>Il n'y a pas d'appel annule.</td>
           </tr>
         </table>
@@ -954,7 +954,7 @@
     <span *ngIf="modeHistoire==-1&&transport.id>0"><button (click)="onReset()" class="btn btn-link">CancelLoad</button></span>
     <!--span *ngIf="modeHistoire==-1&&transport.id==null"><button (click)="onNew()" class="btn btn-link">NouvelAppel</button></span-->
     <span *ngIf="modeHistoire==1"><button (click)="onHistoire()" class="btn btn-link">NewLoad</button></span>
-    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">ManagementLoads</button></span>
+    <span *ngIf="modeHistoire==-1"><button (click)="onHistoire()" class="btn btn-link">LoadsStatus</button></span>
     <span *ngIf="modeHistoire==1"><button (click)="onRefresh()" class="btn btn-link">Refresh</button></span>
   </h4>
   <hr style="border: 1px dotted black"/>
@@ -1016,7 +1016,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrs.length==0" style="color: green">
+          <tr *ngIf="listTrs==null || listTrs.length==0" style="color: green">
             <td>Waiting List is empty now.</td>
           </tr>
         </table>
@@ -1037,7 +1037,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsSent.length==0" style="color:orange">
+          <tr *ngIf="listTrsSent==null || listTrsSent.length==0" style="color:orange">
             <td>Current List is empty now.</td>
           </tr>  
         </table>
@@ -1058,7 +1058,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsFini.length==0" style="color: red">
+          <tr *ngIf="listTrsFini==null || listTrsFini.length==0" style="color: red">
             <td>Finished List is empty now.</td>
           </tr>
         </table>
@@ -1079,7 +1079,7 @@
             <td (click)="gotoDetailTransport(t)">{{t.nomIntervenant}}</td>
             <td (click)="gotoDetailTransport(t)">{{t.camionAttribue}}</td>
           </tr>
-          <tr *ngIf="listTrsAnnule.length==0" style="color: blue">
+          <tr *ngIf="listTrsAnnule==null || listTrsAnnule.length==0" style="color: blue">
             <td>Canceled List is empty now.</td>
           </tr>
         </table>
