@@ -288,7 +288,15 @@
                 (click)="router.navigateByUrl('/shippers', {skipLocationChange: true})">
                 <!-- routerLink="/shippers"  -->
                 Liste Clients
+              </button>
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/new-terminal', {skipLocationChange: true})">
+                Add Terminal
               </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/terminals', {skipLocationChange: true})"
+                >Terminals List
+              </button>
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
                 <!-- routerLink="/chauffeurs"  -->
@@ -668,6 +676,14 @@
                 <!-- routerLink="/shippers"  -->
                 List Clients
               </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/new-terminal', {skipLocationChange: true})">
+                Add Terminal
+              </button> 
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                (click)="router.navigateByUrl('/terminals', {skipLocationChange: true})"
+                >Terminals List
+              </button>
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
                 <!-- routerLink="/chauffeurs"  -->

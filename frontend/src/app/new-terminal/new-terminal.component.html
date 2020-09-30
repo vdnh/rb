@@ -1,0 +1,45 @@
+<!-- <div class="container spacer"> -->
+    <br>
+    <div class="panel panel-primary">
+      <div class="panel-heading"><H4><strong>New Terminal</strong></H4></div>
+        <div class="panel-body">
+                <!-- <table class="table table-striped"> -->
+          <table border="1">  
+            <tr>
+              <th width="19%">Name</th>
+              <th width="5%">Status</th>
+              <th width="19%">Latitude</th>
+              <th width="19%">Longitude</th>
+              <th width="19%">Truck</th>
+              <th width="19%">Driver</th>
+            </tr>
+            <tr>
+              <td width="19%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="terminal.name" /></td>
+              <td width="5%"><input class="form-control" type="checkbox" [(ngModel)]="terminal.status" /></td>
+              <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.latitude" /></td>
+              <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.longitude" /></td>
+              <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idTruck" /></td>
+              <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
+            </tr>
+          </table>                      
+          
+          <br>                    
+          <table border="1">
+             <tr>
+              <td colspan="2"><strong>Username - Password</strong></td>
+            </tr>
+            <tr>
+              <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="terminal.loginName"></td>
+              <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="terminal.password"></td>
+            </tr>
+          </table>          
+          <table> 
+            <td>
+              <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
+            </td>
+            <td><button class="btn btn-primary" (click)="signUpShipper()">Save</button></td>
+          </table>
+        </div>   
+  </div>
+  
+  <!-- </div> -->

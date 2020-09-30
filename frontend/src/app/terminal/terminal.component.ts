@@ -168,6 +168,7 @@ export class TerminalComponent implements OnInit {
 
   marker : google.maps.Marker
   showMap() {
+    if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.marker!=null) this.marker.setMap(null)
     let mapProp = {
       center: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
@@ -195,16 +196,24 @@ export class TerminalComponent implements OnInit {
       position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
       map: this.map,
       //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+      // icon: {
+      //   path: google.maps.SymbolPath.CIRCLE,
+      //   scale:7,
+      // },
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale:7,
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        scale:5,
+        rotation:this.truck.direction,
+        strokeWeight: 3,
+        strokeColor: "#008088", //"#FFFFFF",//"red",
       },
       title: this.truck.unite
     });
     // centrer la carte
     this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
-    const intervalCSM = interval(30000); //intervel 30 seconds for update data truck on the map
-    this.subscription=intervalCSM.subscribe(val=>{
+    const intervalCSM = interval(10000); //intervel 10 seconds for update data truck on the map
+    // if this truck no-gps, get the GPS of terminal
+    if(!this.truck.gps) this.subscription=intervalCSM.subscribe(val=>{
       this.onSaveTruck();
     })
 
@@ -238,7 +247,7 @@ export class TerminalComponent implements OnInit {
     navigator.geolocation.watchPosition(position=>{
       if(position.coords.accuracy<=10){ // take the position when accuracy<=10 meter  // && position.coords.altitudeAccuracy<=10
         let newPoint= new google.maps.LatLng(this.truck.latitude=position.coords.latitude, this.truck.longtitude=position.coords.longitude)
-        if(this.marker!=null) this.movingTruck()
+        // if(this.marker!=null) this.movingTruck()
         // let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
         this.truck.speed = speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
         // let degree = Math.round(position.coords.heading);
@@ -267,9 +276,16 @@ export class TerminalComponent implements OnInit {
       position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
       map: this.map,
       //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+      // icon: {
+      //   path: google.maps.SymbolPath.CIRCLE,
+      //   scale:7,
+      // },
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale:7,
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        scale:5,
+        rotation:this.truck.direction,
+        strokeWeight: 3,
+        strokeColor: "#008088", //"#FFFFFF",//"red",
       },
       title: this.truck.unite
     });

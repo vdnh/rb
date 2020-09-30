@@ -94,6 +94,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { TerminalComponent } from './terminal/terminal.component';
 import { TerminalFollowComponent } from './terminal-follow/terminal-follow.component';
+import { NewTerminalComponent } from './new-terminal/new-terminal.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -146,6 +147,7 @@ const appRoutes:Routes=[
   {path: 'transporter-confirm', component:TransporterConfirmComponent},
   {path: 'terminal', component: TerminalComponent},
   {path: 'terminal-follow', component: TerminalFollowComponent},
+  {path: 'new-terminal', component:  NewTerminalComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -200,6 +202,7 @@ const appRoutes:Routes=[
     TransporterConfirmComponent,
     TerminalComponent,
     TerminalFollowComponent,
+    NewTerminalComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

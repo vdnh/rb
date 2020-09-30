@@ -103,32 +103,43 @@ export class TerminalFollowComponent implements OnInit {
 
   marker : google.maps.Marker
   showMap() {
-    if(this.marker!=null) this.marker.setMap(null)
-    let mapProp = {
-      center: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
-      zoom: 12,
-      //mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-    
-    this.marker = new google.maps.Marker({
-      position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
-      map: this.map,
-      //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale:7,
-      },
-      title: this.truck.unite
-    });
-    // centrer la carte
-    this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
+    this.camionsService.getDetailCamion(this.truck.id).subscribe((data:Camion)=>{
+      this.truck=data;
+      if(this.marker!=null) this.marker.setMap(null)
+      let mapProp = {
+        center: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
+        zoom: 15,
+        //mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+      
+      this.marker = new google.maps.Marker({
+        position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
+        map: this.map,
+        //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+        // icon: {
+        //   path: google.maps.SymbolPath.CIRCLE,
+        //   scale:7,
+        // },
+        icon: {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          scale:5,
+          rotation:this.truck.direction,
+          strokeWeight: 3,
+          strokeColor: "#008088", //"#FFFFFF",//"red",
+        },
+        title: this.truck.unite
+      });
+      // centrer la carte
+      this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
+    },err=>{console.log(err)})
+
     const intervalCSM = interval(30000); //intervel 30 seconds for update data truck on the map
     this.subscription=intervalCSM.subscribe(val=>{
       this.camionsService.getDetailCamion(this.truck.id).subscribe((data:Camion)=>{
         this.truck=data;
         this.movingTruck();
-      })
+      },err=>{console.log(err)})
     })
 
 
@@ -140,10 +151,17 @@ export class TerminalFollowComponent implements OnInit {
       position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
       map: this.map,
       //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+      // icon: {
+      //   path: google.maps.SymbolPath.CIRCLE,
+      //   scale:7,
+      // },
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale:7,
-      },
+         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+         scale:5,
+         rotation:this.truck.direction,
+         strokeWeight: 3,
+         strokeColor: "#008088", //"#FFFFFF",//"red",
+       },
       title: this.truck.unite
     });
     this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
