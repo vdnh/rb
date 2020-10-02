@@ -326,7 +326,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 // find all trucks
                 else{
                   // find trucks with gps
-                  if(camion.gps)
+                  // if(camion.gps)
+                  if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
                   {
                     this.camionsSurMap.push(camion)
                     this.camionsGPSAndNoGPS.push(camion)
@@ -335,7 +336,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                     this._camionsGPSAndNoGPS.push(camion)
                   }
                   // find trucks without gps
-                  if(!camion.gps)
+                  // if(!camion.gps)
+                  if(!camion.gps && (camion.idTerminal==null || camion.idTerminal<=0))
                   {
                     this.camionsNoGPS.push(camion)
                     this.camionsGPSAndNoGPS.push(camion)
@@ -660,7 +662,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 // find all trucks
                 else{
                   // find trucks with gps
-                  if(camion.gps)
+                  // if(camion.gps)
+                  if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
                   {
                     this.camionsSurMap.push(camion)
                     this.camionsGPSAndNoGPS.push(camion)
@@ -669,7 +672,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                     this._camionsGPSAndNoGPS.push(camion)
                   }
                   // find trucks without gps
-                  if(!camion.gps)
+                  // if(!camion.gps)
+                  if(!camion.gps && (camion.idTerminal==null || camion.idTerminal<=0))
                   {
                     this.camionsNoGPS.push(camion)
                     this.camionsGPSAndNoGPS.push(camion)
@@ -1878,7 +1882,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             // find all trucks
             else{
               // find trucks with gps
-              if(camion.gps)
+              // if(camion.gps)
+              if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
               {
                 this.camionsSurMap.push(camion)
                 this.camionsGPSAndNoGPS.push(camion)
@@ -1887,7 +1892,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 this._camionsGPSAndNoGPS.push(camion)
               }
               // find trucks without gps
-              if(!camion.gps)
+              // if(!camion.gps)
+              if(!camion.gps && (camion.idTerminal==null || camion.idTerminal<=0))
               {
                 this.camionsNoGPS.push(camion)
                 this.camionsGPSAndNoGPS.push(camion)

@@ -18,7 +18,14 @@
               <td width="5%"><input class="form-control" type="checkbox" [(ngModel)]="terminal.status" /></td>
               <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.latitude" /></td>
               <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.longitude" /></td>
-              <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idTruck" /></td>
+              <!-- <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idTruck" /></td> -->
+              <select [(ngModel)]="truck" (ngModelChange)="onSelectTruck()">
+                <option [ngValue]="null">&nbsp;</option>
+                <option *ngFor="let c of trucks" [ngValue]="c">
+                    <!-- {{tk.name}} -->
+                    {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
+                </option>
+              </select>
               <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
             </tr>
           </table>                      

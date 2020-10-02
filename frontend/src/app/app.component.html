@@ -224,6 +224,9 @@
                   <strong *ngIf="camsItiners">Camions/Itineraires</strong>
                   <span *ngIf="!camsItiners">Camions/Itineraires</span> 
                 </button> 
+                <button routerLink="/terminal-follow" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  SuivreTerminal
+                </button>
                 <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                   (click)="onRemor(); router.navigateByUrl('/remorquage', {skipLocationChange: true})">
                   <!-- routerLink="/remorquage"  -->
@@ -272,7 +275,7 @@
 
               <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
                 <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
-                <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>    
+                <!-- <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>     -->
                 <button (click)="logout()" class="btn btn-link">Logout</button>
                 <br>      
               </div>
@@ -608,6 +611,9 @@
                   <strong *ngIf="camsItiners">Units/Routes</strong>
                   <span *ngIf="!camsItiners">Units/Routes</span> 
                 </button> 
+                <button routerLink="/terminal-follow" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">
+                  FollowTerminal
+                </button>
                 <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                   (click)="onRemor(); router.navigateByUrl('/remorquage', {skipLocationChange: true})">
                   <!-- routerLink="/remorquage" -->
@@ -656,7 +662,7 @@
 
               <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
                 <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
-                <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>    
+                <!-- <button routerLink="/terminal-follow" class="btn btn-link">FollowTerminal</button>     -->
                 <button (click)="logout()" class="btn btn-link">Logout</button>
                 <br>      
               </div>

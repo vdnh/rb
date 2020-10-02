@@ -114,6 +114,9 @@ public class Camion implements Serializable{
     private String localName; // name in AVL
     
     private Long idCarrier; // id of truck carrying - just for trailer who need a carrier
+    private Long idTerminal; // id of terminal if it have terminal
+    private String nameTerminal="";
+    
     private boolean broker=false; // Truck of broker, false by default
     private boolean outService=false; // out of service for some reason, , false by default
     private boolean trailer=false; // Truck or trailer

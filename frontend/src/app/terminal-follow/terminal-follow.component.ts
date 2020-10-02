@@ -56,7 +56,8 @@ export class TerminalFollowComponent implements OnInit {
   }
 
   ngOnInit(){
-    this.transportersService.getDetailTransporter(Number(localStorage.getItem('userId'))).subscribe((data:Transporter)=>{
+    // this.transportersService.getDetailTransporter(Number(localStorage.getItem('userId'))).subscribe((data:Transporter)=>{
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
       this.transporter=data; 
       // this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
       //   this.allTrucks=data.filter(x=>(!x.trailer && x.status && !x.outService))

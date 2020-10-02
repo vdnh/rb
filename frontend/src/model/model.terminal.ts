@@ -1,7 +1,7 @@
 export class Terminal{
     id:number;
     idTransporter:number;
-    idTruck:number;
+    idTruck:number; // id camion go with this terminal
     idDriver:number;
     name:string=""; //name
     

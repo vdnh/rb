@@ -1,17 +1,22 @@
-<select [(ngModel)]="terminal" (ngModelChange)="showMap()">
-    <option *ngFor="let tk of terminals" [ngValue]="tk">
-        {{tk.name}}
-    </option>
-</select>
+<div>
+    <strong style="text-underline-position: below;">Terminal</strong>
+    <select [(ngModel)]="terminal" (ngModelChange)="showMap()">
+        <option *ngFor="let tk of terminals" [ngValue]="tk">
+            {{tk.name}}
+        </option>
+    </select>
+</div>
+
 <!-- <input type="text" placeholder="#driver"> -->
 <!-- <button>OK</button><br> -->
 <div *ngIf="terminal!=null">
     <!-- <input type="number" [(ngModel)]="truck.speed"> -->
-    <!-- <label for="">Odometer</label>
-    <input type="number" [(ngModel)]="truck.odometre" disabled> -->
-    <label for="">Latitude</label>
-    <input type="number" [(ngModel)]="terminal.latitude" disabled>
-    <label for="">Longitude</label>
+    <!-- Terminal &nbsp;  -->
+    <span>{{terminal.name}} &nbsp;</span>
+    <!-- <input type="text" [(ngModel)]="terminal.name" disabled> -->
+    <label for=""> Latitude &nbsp;</label>
+    <input type="number" [(ngModel)]="terminal.latitude" disabled> &nbsp;
+    <label for=""> Longitude &nbsp;</label>
     <input type="number" [(ngModel)]="terminal.longitude" disabled>
     <p>
         <span>Speed : </span> {{terminal.speed + " km/h"}}

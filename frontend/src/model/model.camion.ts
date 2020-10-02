@@ -83,6 +83,8 @@ export class Camion{
     foreignName=""; // name at GPS Supplier
     
     idCarrier:number; // id of truck carrying - just for trailer who need a carrier
+    idTerminal:number; // id of terminal if it have terminal
+    nameTerminal="";
 
     broker=false; // Truck of broker, false by default
     outService=false; // out of service for some reason, false by default

@@ -14,6 +14,7 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 import { Subscription, interval } from 'rxjs';
 import { TerminalsService } from 'src/services/terminals.service';
 import { Terminal } from 'src/model/model.terminal';
+import { GeocodingService } from 'src/services/geocoding.service';
 
 @Component({
   selector: 'app-terminal',
@@ -30,13 +31,15 @@ export class TerminalComponent implements OnInit {
   constructor(
     public terminalsService:TerminalsService,
     public transportersService:TransportersService,
-    // public camionsService:CamionsService,
+    public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, 
     private reperesService:ReperesService,) { }
 
+  truck:Camion;
+  truckTemp:Camion;
   terminal : Terminal; // terminal to modify detail 
   terminalTemp : Terminal; // terminal temp to compare gps before update - to save time update null 
   terminals:Terminal[]  // list of terminal
@@ -48,8 +51,14 @@ export class TerminalComponent implements OnInit {
   itinersFinis:Array<Itineraire>=[];
 
   subscription : Subscription;
+  subscription2 : Subscription
+  countTime=0;  // for each time call function saveTerminal
+  countTimeNoWrite=0; // for each time no write
+  stopped = false; // at beginning the terminal is in working
+
   ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
+    if(this.subscription2!=null) this.subscription2.unsubscribe()
   }
 
   ngOnInit(){
@@ -58,6 +67,11 @@ export class TerminalComponent implements OnInit {
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
         this.terminals=data.filter(x=>(x.status))
         this.terminal=data.find(x=>(x.loginName.localeCompare(localStorage.getItem('usernameLogin'))==0))
+        if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
+          this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+            this.truck=data
+          })
+        }
         this.showMap();
       }, err=>{
         console.log(err)
@@ -154,19 +168,70 @@ export class TerminalComponent implements OnInit {
   }
 
   onSaveTerminal(){
+    this.countTime++; // we count every time save terminal
     // must verify if the data have changed
     if(this.terminalTemp==null ||
         this.terminalTemp.latitude!=this.terminal.latitude || 
         this.terminalTemp.longitude!=this.terminal.longitude)
     {
+      this.countTimeNoWrite=0;  // reset time no write eache time we can write
+      this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         this.terminalTemp = data;
-        // this.showMap();
+        if(this.truck!=null && !this.truck.gps){
+          this.truck.latitude=this.terminal.latitude;
+          this.truck.longtitude=this.terminal.longitude;
+          this.truck.direction=this.terminal.direction
+          this.truck.speed=this.terminal.speed
+
+          if(this.countTime%12==0){ // we locate address 1 time per 12 times saveTerminal ()
+            let geocodingTemp = new GeocodingService()             
+            geocodingTemp.geocode(new google.maps.LatLng(              
+              this.truck.latitude,
+              this.truck.longtitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.truck.location=results[0].formatted_address;
+              }
+            ).then(()=>{
+              console.log('this.countTime: '+ this.countTime)
+              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
+              ,err=>{console.log(err)})
+            })
+          }
+          else{
+            this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
+            ,err=>{console.log(err)})
+          }
+        }
+        if (this.countTime>8640) this.countTime=0;  // if countTime last more than 1 day reset countTime
         this.movingTerminal();
       },err=>{})
     }
     else { 
       // if data no change : do nothing
+      this.countTimeNoWrite++
+      if(!this.stopped && this.countTimeNoWrite%12){ // if there are no data for 2 minutes, it means the terminal is stopped
+        this.stopped=true; // set teminal stop
+        this.truck.speed=this.terminal.speed=0; // set speed to 0
+        this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+          this.terminalTemp = data;
+          let geocodingTemp = new GeocodingService()             
+            geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+              this.truck.latitude,
+              this.truck.longtitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.truck.location=results[0].formatted_address;
+              }
+            ).then(()=>{
+              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
+              ,err=>{console.log(err)})
+            })
+        }, err=>{console.log(err)})
+      }
     }
   }
 
@@ -221,6 +286,32 @@ export class TerminalComponent implements OnInit {
       this.onSaveTerminal();
     })
 
+    // encode address every 2 minutes
+    // const intervalAddress = interval(120000)
+    
+    // if(this.truck!=null){
+    //   this.subscription2=intervalAddress.subscribe(val=>{
+    //     if(this.truckTemp==null || 
+    //       this.truckTemp.latitude!=this.truck.latitude ||
+    //       this.truckTemp.longtitude!=this.truck.longtitude)
+    //     {
+    //       let geocodingTemp = new GeocodingService()             
+    //       geocodingTemp.geocode(new google.maps.LatLng(              
+    //         this.truck.latitude,
+    //         this.truck.longtitude
+    //       ))
+    //       .forEach(
+    //         (results: google.maps.GeocoderResult[]) => {
+    //           this.truck.location=results[0].formatted_address;
+    //         }
+    //       ).then(()=>{
+    //         this.truckTemp=this.truck
+    //       })
+    //     }
+        
+    //   })  
+    // }
+
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());
       let dLon = toRadians(p2.lng() - p1.lng());
@@ -254,6 +345,7 @@ export class TerminalComponent implements OnInit {
         // if(this.marker!=null) this.movingTruck()
         // let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
         this.terminal.speed = speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
+        this.terminal.direction = position.coords.heading
         // let degree = Math.round(position.coords.heading);
         //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
         if(oldPoint!=null)

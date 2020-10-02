@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 import * as myGlobals from 'src/services/globals';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { TerminalsService } from 'src/services/terminals.service';
+import { CamionsService } from 'src/services/camions.service';
+import { Camion } from 'src/model/model.camion';
 
 @Component({
   selector: 'app-new-terminal',
@@ -21,7 +23,8 @@ import { TerminalsService } from 'src/services/terminals.service';
 })
 export class NewTerminalComponent implements OnInit {
 
-  // shipper:Shipper=new Shipper(); 
+  truck:Camion;
+  trucks:Camion[]; // list all trucks, but not trailer
   terminal:Terminal=new Terminal();
   // mode:number=1;
   // contact:Contact=new Contact();
@@ -31,40 +34,12 @@ export class NewTerminalComponent implements OnInit {
   
   listLoginName:Array<string>=[];
   
-  // provinceList=myGlobals.provinceList ;
-  // villeList= myGlobals.QuebecVilles; //villeList;
-  // AlbertaVilles=myGlobals.AlbertaVilles;
   
-  // BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
-  
-  // ManitobaVilles=myGlobals.ManitobaVilles;
-  
-  // NewBrunswickVilles=myGlobals.NewBrunswickVilles;
-  
-  // NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
-  
-  // NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
-  
-  // NovaScotiaVilles=myGlobals.NovaScotiaVilles;
-  
-  // NunavutVilles=myGlobals.NunavutVilles;
-  
-  // OntarioVilles=myGlobals.OntarioVilles;
-  
-  // PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
-  
-  // QuebecVilles=myGlobals.QuebecVilles;
-  
-  // SaskatchewanVilles=myGlobals.SaskatchewanVilles;
-  
-  // YukonVilles=myGlobals.YukonVilles;
-
   constructor(
     // public shippersService:ShippersService,
     
     public terminalsService:TerminalsService, 
-
-    // public contactsService:ContactsService, 
+    public camionsService:CamionsService, 
     // public adressesService:AdressesService, 
     public authenticationService:AuthenticationService, 
     public varsGlobal:VarsGlobal,
@@ -87,53 +62,19 @@ export class NewTerminalComponent implements OnInit {
       })
 
     }, err=>{console.log(err)})
+    this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Camion>)=>{
+      this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
+        !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
+        // we select truck that : no-trailer + in Exploit + not yet terminal
+      ));
+    }, err=>{console.log(err)})
 
   }
 
-  // async villeChange(){
-  //   //*
-  //   if(this.adresse.province!=null){
-  //     // check the province to limit the cities
-  //     if(this.adresse.province==this.provinceList[0])
-  //       this.villeList=this.AlbertaVilles;
-  //     if(this.adresse.province==this.provinceList[1])
-  //       this.villeList=this.BritishColumbiaVilles;        
-  //     if(this.adresse.province==this.provinceList[2])
-  //       this.villeList=this.ManitobaVilles;
-  //     if(this.adresse.province==this.provinceList[3])
-  //       this.villeList=this.NewBrunswickVilles;    
-  //     if(this.adresse.province==this.provinceList[4])
-  //       this.villeList=this.NewfoundlandLabradorVilles;    
-  //     if(this.adresse.province==this.provinceList[5])
-  //       this.villeList=this.NorthwestTerritoriesVilles;
-  //     if(this.adresse.province==this.provinceList[6])
-  //       this.villeList=this.NovaScotiaVilles;
-  //     if(this.adresse.province==this.provinceList[7])
-  //       this.villeList=this.NunavutVilles;
-  //     if(this.adresse.province==this.provinceList[8])
-  //       this.villeList=this.OntarioVilles;
-  //     if(this.adresse.province==this.provinceList[9])
-  //       this.villeList=this.PrinceEdwardIslandVilles;
-  //     if(this.adresse.province==this.provinceList[10])
-  //       this.villeList=this.QuebecVilles;
-  //     if(this.adresse.province==this.provinceList[11])
-  //       this.villeList=this.SaskatchewanVilles;  
-  //     if(this.adresse.province==this.provinceList[12])
-  //       this.villeList=this.YukonVilles;
-  //   }
-  //   //this.showMap();
-  // }
-  
-  // reformTelEvent(tel:any){
-  //   if(tel.target.value.indexOf('-')<0)
-  //     {
-  //       let sub1 = tel.target.value.substr(0,3)
-  //       let sub2 = tel.target.value.substr(3,3)
-  //       let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
-  //       tel.target.value=sub1+'-'+sub2+'-'+sub3
-  //     }
-  //   return tel.target.value;
-  // }
+  onSelectTruck(){
+    if(this.truck!=null) this.terminal.idTruck=this.truck.id; // assign idtruck for this terminal
+    else this.terminal.idTruck=null
+  }
 
   onNameChange(){
     // this.shipper.loginName=this.shipper.nom.trim().replace(/\s/g,"").toLowerCase();
@@ -175,6 +116,13 @@ export class NewTerminalComponent implements OnInit {
         // this.mode=2;
         this.terminal=data;
         this.onCreateUser();
+        if(this.truck!=null){
+          this.truck.idTerminal=this.terminal.id; // set this terminal for the truck
+          this.truck.nameTerminal=this.terminal.name
+          this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+            this.truck=data
+          })
+        }
         // this.contact.id_shipper=this.shipper.id;
         // this.adresse.id_shipper=this.shipper.id;
         // this.signUpContact();
