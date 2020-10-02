@@ -1,23 +1,23 @@
-<select [(ngModel)]="truck" (ngModelChange)="showMap()">
-    <option *ngFor="let tk of allTrucks" [ngValue]="tk">
-        {{((tk.foreignName!=null && tk.foreignName.length>0) ? tk.foreignName : ("#"+tk.unite+" "+tk.marque+" "+tk.modele))}}
+<select [(ngModel)]="terminal" (ngModelChange)="showMap()">
+    <option *ngFor="let tk of terminals" [ngValue]="tk">
+        {{tk.name}}
     </option>
 </select>
-<input type="text" placeholder="#driver">
-<button>OK</button><br>
-<div *ngIf="truck!=null">
+<!-- <input type="text" placeholder="#driver"> -->
+<!-- <button>OK</button><br> -->
+<div *ngIf="terminal!=null">
     <!-- <input type="number" [(ngModel)]="truck.speed"> -->
-    <label for="">Odometer</label>
-    <input type="number" [(ngModel)]="truck.odometre" disabled>
+    <!-- <label for="">Odometer</label>
+    <input type="number" [(ngModel)]="truck.odometre" disabled> -->
     <label for="">Latitude</label>
-    <input type="number" [(ngModel)]="truck.latitude" disabled>
+    <input type="number" [(ngModel)]="terminal.latitude" disabled>
     <label for="">Longitude</label>
-    <input type="number" [(ngModel)]="truck.longtitude" disabled>
+    <input type="number" [(ngModel)]="terminal.longitude" disabled>
     <p>
-        <span>Speed : </span> {{truck.speed + " km/h"}}
+        <span>Speed : </span> {{terminal.speed + " km/h"}}
     </p>
 </div>
 
 
-<h3>List Itineraires</h3>
-<div [hidden]="truck==null" #gmap style="width:100%;height:650px" ></div>
+<!-- <h3>List Itineraires</h3> -->
+<div [hidden]="terminal==null" #gmap style="width:100%;height:650px" ></div>

@@ -12,6 +12,8 @@ import { ReperesService } from 'src/services/reperes.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { Subscription, interval } from 'rxjs';
+import { TerminalsService } from 'src/services/terminals.service';
+import { Terminal } from 'src/model/model.terminal';
 
 @Component({
   selector: 'app-terminal-follow',
@@ -26,17 +28,21 @@ export class TerminalFollowComponent implements OnInit {
   map: google.maps.Map;
   
   constructor(
+    public terminalsService:TerminalsService,
     public transportersService:TransportersService,
-    public camionsService:CamionsService,
+    // public camionsService:CamionsService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, 
     private reperesService:ReperesService,) { }
 
-  truck : Camion; // camion to modify detail 
-  truckTemp : Camion; // camion temp to compare gps before update - to save time update null 
-  allTrucks:Camion[]  // list of camions no-gps and gps
+  terminal : Terminal;
+  terminalTemp : Terminal; // terminal temp to compare gps before update - to save time update null 
+  terminals : Terminal[];
+  // truck : Camion; // camion to modify detail 
+  // truckTemp : Camion; // camion temp to compare gps before update - to save time update null 
+  // allTrucks:Camion[]  // list of camions no-gps and gps
   driver : Chauffeur;
   allDrivers : Chauffeur[];
   transporter : Transporter;
@@ -52,9 +58,14 @@ export class TerminalFollowComponent implements OnInit {
   ngOnInit(){
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('userId'))).subscribe((data:Transporter)=>{
       this.transporter=data; 
-      this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
-        this.allTrucks=data.filter(x=>(!x.trailer && x.status && !x.outService))
-        // console.log('Number of trucks: ' + this.allTrucks.length)
+      // this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+      //   this.allTrucks=data.filter(x=>(!x.trailer && x.status && !x.outService))
+      //   // console.log('Number of trucks: ' + this.allTrucks.length)
+      // }, err=>{
+      //   console.log(err)
+      // })
+      this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
+        this.terminals=data.filter(x=>(x.status))
       }, err=>{
         console.log(err)
       })
@@ -84,16 +95,16 @@ export class TerminalFollowComponent implements OnInit {
     return angle * (180 / Math.PI);
   }
 
-  onSaveTruck(){
+  onSaveTerminal(){
     // must verify if the data have changed
-    if(this.truckTemp==null || this.truckTemp.odometre!=this.truck.odometre ||
-        this.truckTemp.latitude!=this.truck.latitude || 
-        this.truckTemp.longtitude!=this.truck.longtitude)
+    if(this.terminalTemp==null ||
+        this.terminalTemp.latitude!=this.terminal.latitude || 
+        this.terminalTemp.longitude!=this.terminal.longitude)
     {
-      this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-        this.truckTemp = data;
+      this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+        this.terminalTemp = data;
         // this.showMap();
-        this.movingTruck();
+        this.movingTerminal();
       },err=>{})
     }
     else { 
@@ -103,18 +114,18 @@ export class TerminalFollowComponent implements OnInit {
 
   marker : google.maps.Marker
   showMap() {
-    this.camionsService.getDetailCamion(this.truck.id).subscribe((data:Camion)=>{
-      this.truck=data;
+    this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+      this.terminal=data;
       if(this.marker!=null) this.marker.setMap(null)
       let mapProp = {
-        center: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
+        center: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
         zoom: 15,
         //mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
       
       this.marker = new google.maps.Marker({
-        position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
+        position: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
         map: this.map,
         //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
         // icon: {
@@ -124,31 +135,31 @@ export class TerminalFollowComponent implements OnInit {
         icon: {
           path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
           scale:5,
-          rotation:this.truck.direction,
+          rotation:this.terminal.direction,
           strokeWeight: 3,
           strokeColor: "#008088", //"#FFFFFF",//"red",
         },
-        title: this.truck.unite
+        title: this.terminal.name
       });
       // centrer la carte
-      this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
+      this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
     },err=>{console.log(err)})
 
-    const intervalCSM = interval(30000); //intervel 30 seconds for update data truck on the map
+    const intervalCSM = interval(30000); //intervel 30 seconds for update data terminal on the map
     this.subscription=intervalCSM.subscribe(val=>{
-      this.camionsService.getDetailCamion(this.truck.id).subscribe((data:Camion)=>{
-        this.truck=data;
-        this.movingTruck();
+      this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+        this.terminal=data;
+        this.movingTerminal();
       },err=>{console.log(err)})
     })
 
 
   }
 
-  movingTruck() {
+  movingTerminal() {
     //if(this.marker!=null) this.marker.setMap(null) 
     this.marker = new google.maps.Marker({
-      position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
+      position: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
       map: this.map,
       //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
       // icon: {
@@ -158,13 +169,13 @@ export class TerminalFollowComponent implements OnInit {
       icon: {
          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
          scale:5,
-         rotation:this.truck.direction,
+         rotation:this.terminal.direction,
          strokeWeight: 3,
          strokeColor: "#008088", //"#FFFFFF",//"red",
        },
-      title: this.truck.unite
+      title: this.terminal.name
     });
-    this.map.setCenter(new google.maps.LatLng(this.truck.latitude, this.truck.longtitude));
+    this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
 
 }

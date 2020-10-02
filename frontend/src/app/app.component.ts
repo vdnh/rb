@@ -604,6 +604,9 @@ export class AppComponent implements OnInit{
           this.router.navigate(['/detail-shipper/'+ res.id], {skipLocationChange: true});
           //localStorage.setItem('userId', res.id.toString());
         }
+        if(res.roleName.includes('TERMINAL')){
+          this.router.navigate(['/terminal'], {skipLocationChange: true}); // enter into terminal first
+        }
         if(res.roleName.includes('DISPATCH')) {         
           //if(res.id!=null) this.router.navigate(['/remorquage-client/'+ res.id], {skipLocationChange: true});
           //if(res.id!=null) this.router.navigate(['/'], {skipLocationChange: true});

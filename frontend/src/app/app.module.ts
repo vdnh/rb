@@ -95,6 +95,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TerminalComponent } from './terminal/terminal.component';
 import { TerminalFollowComponent } from './terminal-follow/terminal-follow.component';
 import { NewTerminalComponent } from './new-terminal/new-terminal.component';
+import { TerminalsComponent } from './terminals/terminals.component';
+import { TerminalsService } from 'src/services/terminals.service';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -148,6 +150,7 @@ const appRoutes:Routes=[
   {path: 'terminal', component: TerminalComponent},
   {path: 'terminal-follow', component: TerminalFollowComponent},
   {path: 'new-terminal', component:  NewTerminalComponent},
+  {path: 'terminals', component:  TerminalsComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -203,6 +206,7 @@ const appRoutes:Routes=[
     TerminalComponent,
     TerminalFollowComponent,
     NewTerminalComponent,
+    TerminalsComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]
@@ -230,7 +234,7 @@ const appRoutes:Routes=[
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
     RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService,
-    ItinerairesService, ReperesService, ConfirmTransportService],
+    ItinerairesService, ReperesService, ConfirmTransportService, TerminalsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
