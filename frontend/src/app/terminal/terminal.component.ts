@@ -24,9 +24,11 @@ import { GeocodingService } from 'src/services/geocoding.service';
 export class TerminalComponent implements OnInit {
   driverNote="Speed : ";
   driverMoved="Having moved : ";
+  instantMoved: number; // in meter, distance moved after each watch navigator
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+  
   
   constructor(
     public terminalsService:TerminalsService,
@@ -170,9 +172,12 @@ export class TerminalComponent implements OnInit {
   onSaveTerminal(){
     this.countTime++; // we count every time save terminal
     // must verify if the data have changed
-    if(this.terminalTemp==null ||
+    if(
+        (this.terminalTemp==null ||
         this.terminalTemp.latitude!=this.terminal.latitude || 
         this.terminalTemp.longitude!=this.terminal.longitude)
+        &&
+        (this.terminal.speed>0 || this.instantMoved>0))
     {
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
@@ -212,15 +217,17 @@ export class TerminalComponent implements OnInit {
     else { 
       // if data no change : do nothing
       this.countTimeNoWrite++
-      if(!this.stopped && this.countTimeNoWrite%12){ // if there are no data for 2 minutes, it means the terminal is stopped
+      if(!this.stopped && this.countTimeNoWrite%12==0){ // if there are no data for 2 minutes, it means the terminal is stopped
         this.stopped=true; // set teminal stop
-        this.truck.speed=this.terminal.speed=0; // set speed to 0
+        this.terminal.speed=0; // set speed to 0
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
           this.terminalTemp = data;
-          let geocodingTemp = new GeocodingService()             
+          if(this.truck!=null && !this.truck.gps){
+            this.truck.speed=0
+            let geocodingTemp = new GeocodingService()             
             geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
-              this.truck.latitude,
-              this.truck.longtitude
+              this.truck.latitude=this.terminal.latitude,
+              this.truck.longtitude=this.terminal.longitude
             ))
             .forEach(
               (results: google.maps.GeocoderResult[]) => {
@@ -230,6 +237,7 @@ export class TerminalComponent implements OnInit {
               this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
               ,err=>{console.log(err)})
             })
+          }
         }, err=>{console.log(err)})
       }
     }
@@ -333,7 +341,7 @@ export class TerminalComponent implements OnInit {
     }
 
     //*// watchposition deactivate for temporary
-    let speed=0;
+    // let speed=0;
     let index=0;
     let note = "Speed : ";
     let havingMoved = "Having moved : ";
@@ -344,16 +352,17 @@ export class TerminalComponent implements OnInit {
         let newPoint= new google.maps.LatLng(this.terminal.latitude=position.coords.latitude, this.terminal.longitude=position.coords.longitude)
         // if(this.marker!=null) this.movingTruck()
         // let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
-        this.terminal.speed = speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
+        this.terminal.speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
         this.terminal.direction = position.coords.heading
+        this.instantMoved = calculateDistance(oldPoint, newPoint)
         // let degree = Math.round(position.coords.heading);
         //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
         if(oldPoint!=null)
-          this.driverMoved= havingMoved + calculateDistance(oldPoint, newPoint).toString() + " meter.";
+          this.driverMoved= havingMoved + this.instantMoved + " meter.";
         else this.driverMoved= havingMoved
         oldPoint=newPoint;
         index++;
-        this.driverNote= note + (speed>0? ' '+speed+' km/h' : '');
+        this.driverNote= note + (this.terminal.speed>0? ' '+this.terminal.speed+' km/h' : '0 km/h');
           // (speed>0? ' \r\n Vitesse actuelle : '+speed+' kmh' + ' \r\n accuracy : '+position.coords.accuracy + ' m' : '');
       }
     }, err=>{
