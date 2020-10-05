@@ -43,6 +43,8 @@ export class TerminalsComponent implements OnInit {
   truckHooked:Camion
   truck:Camion;
   trucks:Camion[]; // list all trucks, but not trailer
+  trucksGps:Camion[]; // list all trucks Gps
+  trucksNoGps:Camion[]; // list all trucks NoGps
   appUser : AppUser = new AppUser();
   role:string="";
     
@@ -72,7 +74,7 @@ export class TerminalsComponent implements OnInit {
       this.transporter=data; 
       
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
-        this.terminals=data.filter(x=>(x.status))
+        this.terminals=data //.filter(x=>(x.status))
         this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
           //this.listAppUsers=data;
           data.forEach(aU=>{
@@ -84,6 +86,8 @@ export class TerminalsComponent implements OnInit {
             !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
             // we select truck that : no-trailer + in Exploit + not yet terminal
           ));
+          this.trucksGps=this.trucks.filter(x=>(x.gps))
+          this.trucksNoGps=this.trucks.filter(x=>(!x.gps))
         }, err=>{console.log(err)})
       }, err=>{
         console.log(err)
@@ -173,13 +177,13 @@ export class TerminalsComponent implements OnInit {
       this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
     },err=>{console.log(err)})
 
-    const intervalCSM = interval(30000); //intervel 30 seconds for update data terminal on the map
-    this.subscription=intervalCSM.subscribe(val=>{
-      this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
-        this.terminal=data;
-        this.movingTerminal();
-      },err=>{console.log(err)})
-    })
+    // const intervalCSM = interval(30000); //intervel 30 seconds for update data terminal on the map
+    // this.subscription=intervalCSM.subscribe(val=>{
+    //   this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+    //     this.terminal=data;
+    //     this.movingTerminal();
+    //   },err=>{console.log(err)})
+    // })
   }
 
   movingTerminal() {
@@ -205,8 +209,10 @@ export class TerminalsComponent implements OnInit {
   }
 
   onSelectTruck(){
-    if(this.truck!=null) this.terminal.idTruck=this.truck.id; // assign idtruck for this terminal
+    if(this.truck!=null) 
+      this.terminal.idTruck=this.truck.id; // assign idtruck for this terminal
     else this.terminal.idTruck=null
+    // console.log('this.terminal.idTruck when select: '+this.terminal.idTruck)
   }
 
   onNameChange(){
@@ -259,25 +265,52 @@ export class TerminalsComponent implements OnInit {
   }
 
   onModifyTerminal(){
+    // release truck when terminal inactivated
+    if(!this.terminal.status) {
+      this.terminal.idTruck=null
+      this.truck=null
+    }
+    // console.log('this.terminal.idTruck before modify: '+this.terminal.idTruck)
     this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
       this.terminal=data;
+      // console.log('this.terminal.idTruck after modify: '+this.terminal.idTruck)
       if(this.truck!=null){
         this.truck.idTerminal=this.terminal.id; // set this terminal for the truck
         this.truck.nameTerminal=this.terminal.name
         this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
           this.truckHooked=data  // it means this truck hook terminal now
+          this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+            this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
+              !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
+            ));
+          }, err=>{console.log(err)});
         })
       }
       else{
-        this.truckHooked.idTerminal=null;
-        this.camionsService.saveCamions(this.truckHooked).subscribe((data:Camion)=>{
-          this.truckHooked=null // it means this truck without terminal
-        })
+        if(this.truckHooked!=null){
+          this.truckHooked.idTerminal=null;
+          this.truckHooked.nameTerminal=""
+          this.camionsService.saveCamions(this.truckHooked).subscribe((data:Camion)=>{
+            this.truckHooked=null // it means this truck without terminal
+            this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+              this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
+                !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
+              ));
+            }, err=>{console.log(err)});
+          })
+        }
       }
       this.truck=null;
+      alert("Ok, it's modified")
         // this.router.navigate(['/terminals']);  //this.mode=2;
     }, err=>{
       console.log(err);
-    });
+    })
+    
+    // await this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+    //   this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
+    //     !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
+    //   ));
+    // }, err=>{console.log(err)});
   }
 }

@@ -8,18 +8,20 @@
 <div *ngIf="terminal!=null">
     <!-- <input type="number" [(ngModel)]="truck.speed"> -->
     <!-- <label for="">Odometer</label>
-    <input type="number" [(ngModel)]="truck.odometre">
-    <label for="">Latitude</label> -->
+    <input type="number" [(ngModel)]="truck.odometre"> -->
+    <label for="">Latitude &nbsp;</label> 
     <input type="number" [(ngModel)]="terminal.latitude">
-    <label for="">Longitude</label>
+    <label for=""> &nbsp; Longitude &nbsp;</label>
     <input type="number" [(ngModel)]="terminal.longitude">
     <!-- <button (click)="onSaveTruck()">UpdateTruck</button> -->
+
+    <p>
+        {{driverNote}}
+    </p>
+    <p>
+        {{driverMoved}}
+    </p>
 </div>
-<p>
-    {{driverNote}}
-</p>
-<p>
-    {{driverMoved}}
-</p>
+
 <!-- <h3>List Itineraires</h3> -->
 <div [hidden]="terminal==null" #gmap style="width:100%;height:650px" ></div>

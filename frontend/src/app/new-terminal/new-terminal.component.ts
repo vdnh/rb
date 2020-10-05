@@ -25,6 +25,8 @@ export class NewTerminalComponent implements OnInit {
 
   truck:Camion;
   trucks:Camion[]; // list all trucks, but not trailer
+  trucksGps:Camion[]; // list all trucks Gps
+  trucksNoGps:Camion[]; // list all trucks NoGps
   terminal:Terminal=new Terminal();
   // mode:number=1;
   // contact:Contact=new Contact();
@@ -67,6 +69,8 @@ export class NewTerminalComponent implements OnInit {
         !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
         // we select truck that : no-trailer + in Exploit + not yet terminal
       ));
+      this.trucksGps=this.trucks.filter(x=>(x.gps))
+      this.trucksNoGps=this.trucks.filter(x=>(!x.gps))
     }, err=>{console.log(err)})
 
   }
@@ -112,6 +116,11 @@ export class NewTerminalComponent implements OnInit {
       alert('Password must have at least 4 characteres!')
 
     if(!exist && this.terminal.password.length>=4){
+      // no truck when terminal inactivated
+      if(!this.terminal.status) {
+        this.terminal.idTruck=null
+        this.truck=null
+      }
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         // this.mode=2;
         this.terminal=data;

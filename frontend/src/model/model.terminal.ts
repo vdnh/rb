@@ -11,6 +11,7 @@ export class Terminal{
     direction:number; // 0.00 - 359.99 -- north-east-south-west;    
     speed:number;
     stopDuration=0; // in minute
+    timeStop:number; // the time when terminal stopped;  new Date().getTime()
     status:boolean=true; // exploit or non
     loginName:string;
     password:string;    

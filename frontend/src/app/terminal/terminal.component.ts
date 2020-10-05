@@ -15,6 +15,7 @@ import { Subscription, interval } from 'rxjs';
 import { TerminalsService } from 'src/services/terminals.service';
 import { Terminal } from 'src/model/model.terminal';
 import { GeocodingService } from 'src/services/geocoding.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-terminal',
@@ -58,6 +59,51 @@ export class TerminalComponent implements OnInit {
   countTimeNoWrite=0; // for each time no write
   stopped = false; // at beginning the terminal is in working
 
+  cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
+
+  camionItinersFind(idCamion){
+    let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
+    if(cIsL!=null)
+      return cIsL.itiners
+    else return null
+  }
+  makeCIsLList(){
+    this.cIsLList=new Array<CamionItinersList>();
+    let cIsL : CamionItinersList;
+    // this.camionsSurMap.forEach(c=>{
+      cIsL= new CamionItinersList();
+      cIsL.camionId=this.truck.id
+      cIsL.itiners= this.camionItiners(this.truck.id)
+      this.cIsLList.push(cIsL)
+    // })
+    // this.camionsNoGPS.forEach(c=>{
+    //   cIsL= new CamionItinersList();
+    //   cIsL.camionId=c.id
+    //   cIsL.itiners= this.camionItiners(c.id)
+    //   this.cIsLList.push(cIsL)
+    // })
+  }
+  camionItiners(id:number){
+    let cIs:Array<Itineraire>=[]
+    this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      if(data!=null) {
+        this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+          (a,b)=>(a.id-b.id)).sort(
+            (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+      }
+      if(this.itiners.length>0){
+        //alert("Hi from camionItiners(): " + id)
+        this.itiners.forEach(it=>{
+         if(it.idCamion==id) cIs.push(it)
+        })
+        //alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
+        //return cIs
+      }
+    }, err=>{console.log(err)})
+    
+    return cIs
+  }
+
   ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe()
@@ -69,12 +115,30 @@ export class TerminalComponent implements OnInit {
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
         this.terminals=data.filter(x=>(x.status))
         this.terminal=data.find(x=>(x.loginName.localeCompare(localStorage.getItem('usernameLogin'))==0))
-        if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
-          this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-            this.truck=data
-          })
+        // terminal active
+        if(this.terminal.status){
+          if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
+            this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+              this.truck=data
+              // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+              //   if(data!=null) {
+              //     this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+              //       (a,b)=>(a.id-b.id)).sort(
+              //         (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+              //   }
+              // }, err=>{console.log(err)})
+            })
+          }
+          this.showMap();
         }
-        this.showMap();
+        // terminal inactive
+        else{
+          alert('This terminal inactivated.')
+          localStorage.clear();
+          localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
+          location.reload();
+        }
+        
       }, err=>{
         console.log(err)
       })
@@ -179,6 +243,7 @@ export class TerminalComponent implements OnInit {
         &&
         (this.terminal.speed>0 || this.instantMoved>0))
     {
+      this.terminal.timeStop=null; // in moving the timeStop is null
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
@@ -218,6 +283,21 @@ export class TerminalComponent implements OnInit {
       // if data no change : do nothing
       this.countTimeNoWrite++
       if(!this.stopped && this.countTimeNoWrite%12==0){ // if there are no data for 2 minutes, it means the terminal is stopped
+        if(this.terminal.timeStop!=null){
+          // this terminal is stopping
+          // do nothing
+          console.log('Do nothing')
+          let duration = new Date().getTime() - this.terminal.timeStop
+          console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + "minutes")
+        }
+        else{
+          // this terminal just stop
+          this.terminal.timeStop = new Date().getTime() - 120000; // -120000 - means 2 minutes we wait to determine stop or non
+          console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
+          let dt= new Date(this.terminal.timeStop)
+          console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
+          console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
+        }
         this.stopped=true; // set teminal stop
         this.terminal.speed=0; // set speed to 0
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
@@ -239,6 +319,10 @@ export class TerminalComponent implements OnInit {
             })
           }
         }, err=>{console.log(err)})
+      }
+      else if(this.stopped && this.countTimeNoWrite%12==0){
+        let duration = new Date().getTime() - this.terminal.timeStop
+        console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + "minutes")
       }
     }
   }
@@ -397,4 +481,9 @@ export class TerminalComponent implements OnInit {
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
 
+}
+
+export class CamionItinersList{
+  camionId:number
+  itiners:Array<Itineraire>
 }

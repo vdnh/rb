@@ -26,30 +26,38 @@
       <th width="19%">Driver</th>
     </tr>
     <tr>
-      <td width="19%"><input class="form-control" type="text" (change)="onNameChange()" [(ngModel)]="terminal.name" /></td>
+      <td width="19%"><input class="form-control" type="text" [(ngModel)]="terminal.name" /></td>
       <td width="5%"><input class="form-control" type="checkbox" [(ngModel)]="terminal.status" /></td>
       <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.latitude" /></td>
       <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.longitude" /></td>
       <!-- <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idTruck" /></td> -->
-      <select *ngIf="truckHooked!=null" [(ngModel)]="truck" (ngModelChange)="onSelectTruck()">
+      <select *ngIf="truckHooked!=null" [(ngModel)]="truck" (ngModelChange)="onSelectTruck()" [disabled]="!terminal.status">
         
         <option [ngValue]="null" disabled selected>
-            {{(truckHooked.foreignName!=null && truckHooked.foreignName.length>0) ? truckHooked.foreignName : (truckHooked.unite+ ' ' +truckHooked.type+ ' ' +truckHooked.modele)}}
+            {{(truckHooked.foreignName!=null && truckHooked.foreignName.length>0) ? truckHooked.foreignName : (truckHooked.unite+ ' ' +truckHooked.marque+ ' ' +truckHooked.modele)}}
         </option>
         <option [ngValue]="null">&nbsp;</option>
         <!-- <option *ngFor="let c of trucks" [ngValue]="c">
-            {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
+            {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.marque+ ' ' +c.modele)}}
         </option> -->
       </select>
-      <select *ngIf="truckHooked==null" [(ngModel)]="truck" (ngModelChange)="onSelectTruck()">
+      <select *ngIf="truckHooked==null" [(ngModel)]="truck" (ngModelChange)="onSelectTruck()" [disabled]="!terminal.status">
         <option [ngValue]="null">&nbsp;</option>
-        <!-- <option *ngIf="truck!=null" [ngValue]="truck" selected>
-            {{(truck.foreignName!=null && truck.foreignName.length>0) ? truck.foreignName : (truck.unite+ ' ' +truck.type+ ' ' +truck.modele)}}
+        <!-- <option *ngFor="let c of trucks" [ngValue]="c">
+            {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.marque+ ' ' +c.modele)}}
         </option> -->
-        <option *ngFor="let c of trucks" [ngValue]="c">
-            <!-- {{tk.name}} -->
-            {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.type+ ' ' +c.modele)}}
-        </option>
+        <!-- option of group -->
+        <optgroup label="Units with GPS">
+            <option *ngFor="let c of trucksGps" [ngValue]="c">
+                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' ' +c.marque+ ' ' +c.modele)}}
+            </option>
+        </optgroup>
+        <optgroup label="Units no-GPS">
+            <option *ngFor="let c of trucksNoGps" [ngValue]="c">
+                {{"#"+c.unite + ' ' +c.marque+ ' ' +c.modele}}
+            </option>
+        </optgroup>
+        <!-- end option of group -->
       </select>
       <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
     </tr>
