@@ -161,7 +161,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     alert(`Click on Action 2 for`);
   }
 
-
+  calculateStopTime(timeStop:number){
+    if(timeStop!=null){
+      let duration = new Date().getTime() - timeStop
+      //console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+      return ' Stopped: ' + this.showStopDuration(Math.round(duration/1000/60))
+      // return ' stopped: ' + Math.round(duration/1000/60) + " minutes"
+    }
+    else 
+      return ''
+  }
+  
   // @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
   // showMessage(message: any) {
@@ -821,8 +831,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   // to show the stop duration in day-hours-minute
   showStopDuration(stopDuration:number){
     let duration='';
-    let days =  Number.parseInt((stopDuration/1440).toString()) +' jour(s) '
-    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' heure(s) '
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' day(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' hour(s) '
     let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '
     
     if((stopDuration/1440)>=1)

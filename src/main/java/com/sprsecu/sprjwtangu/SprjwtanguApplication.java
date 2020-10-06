@@ -218,16 +218,23 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     camion.setLocalName(unite.getLocalName());
                                     camion.setForeignName(unite.getForeignName());  // set name at GPS fournisseur for camions
                                     camion.setOdometre(new Float(unite.getOdometer()).longValue());
-                                    camion.setLongtitude(new Double(unite.getLongitude()));
-                                    camion.setLatitude(new Double(unite.getLatitude()));
+                                    //camion.setLongtitude(new Double(unite.getLongitude()));
+                                    //camion.setLatitude(new Double(unite.getLatitude()));
                                     camion.setDirection(new Double(unite.getDirection()));
                                     //System.out.println("unite speed : "+ unite.getSpeed());
-                                    if(new Double(unite.getSpeed())==0.00){
+                                    
+                                    // if speed = 0 or latitude and longitude haven't changed
+                                    if(new Double(unite.getSpeed())==0.00 ||
+                                       (Double.compare(camion.getLongtitude(), new Double(unite.getLongitude()))==0
+                                        &&
+                                        Double.compare(camion.getLatitude(), new Double(unite.getLatitude()))==0 
+                                       )
+                                    ){
                                         //System.out.println("unite.getSpeed())==0.00");
                                         if(camion.getSpeed()>0.00){
                                             //System.out.println("camion.getSpeed()>0.00");
                                             camion.setSpeed(0.00);
-                                            camion.setStopDuration(0);
+                                            camion.setStopDuration(4);
                                         }
                                         else{
                                             //System.out.println("already - camion.getSpeed()==0.00");
@@ -237,6 +244,8 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     else {
                                         //System.out.println("unite.getSpeed())>0.00");
                                         camion.setSpeed(new Double(unite.getSpeed()));
+                                        camion.setLongtitude(new Double(unite.getLongitude()));
+                                        camion.setLatitude(new Double(unite.getLatitude()));
                                         camion.setStopDuration(0);
                                     }
                                     camionRepository.save(camion);

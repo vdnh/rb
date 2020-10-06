@@ -33,6 +33,11 @@ public class ItineraireRestService {
         return itineraireRepository.findByIdTransporter(idTransporter);
     }
     
+    // All itineraires of a truck
+    @RequestMapping(value = "/itinerairesCamion/{idCamion}", method = RequestMethod.GET)
+    public List<Itineraire> getItinerairesCamion(@PathVariable Long idCamion){
+        return itineraireRepository.findByIdCamion(idCamion);
+    }
     
     @RequestMapping(value = "/itineraires", method = RequestMethod.GET)
     public List<Itineraire> getItineraires(){

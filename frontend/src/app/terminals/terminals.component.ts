@@ -171,7 +171,7 @@ export class TerminalsComponent implements OnInit {
           strokeWeight: 3,
           strokeColor: "#008088", //"#FFFFFF",//"red",
         },
-        title: this.terminal.name
+        title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
       });
       // centrer la carte
       this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
@@ -203,7 +203,7 @@ export class TerminalsComponent implements OnInit {
          strokeWeight: 3,
          strokeColor: "#008088", //"#FFFFFF",//"red",
        },
-      title: this.terminal.name
+      title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
     });
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
@@ -312,5 +312,33 @@ export class TerminalsComponent implements OnInit {
     //     !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
     //   ));
     // }, err=>{console.log(err)});
+  }
+
+  calculateStopTime(timeStop:number){
+    if(timeStop!=null){
+      let duration = new Date().getTime() - timeStop
+      //console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+      // return ' stopped: ' + Math.round(duration/1000/60) + " minutes"
+      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60))
+    }
+    else 
+      return ''
+  }
+  // to show the stop duration in day-hours-minute
+  showStopDuration(stopDuration:number){  // this stopDuration is in minute
+    let duration='';
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' day(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' hour(s) '
+    let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '
+    
+    if((stopDuration/1440)>=1)
+      duration = duration+days;
+    if(((stopDuration%1440)/24)>=1)
+      duration=duration+hours
+    duration=duration+minutes
+    
+    //duration = days+' jour(s) '+hours+' heure(s) '+minutes+' minute(s) '
+
+    return duration;
   }
 }

@@ -60,6 +60,7 @@ public class Camion implements Serializable{
     private Double direction; // 0.00 - 359.99 -- north-east-south-west;    
     private Double speed;
     private Integer stopDuration=0; // in minute
+    private Long timeStop; // the time when terminal stopped;  new Date().getTime()
     private boolean status; //en mission ou non
     private String localDepart;
     private String destination;    

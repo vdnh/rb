@@ -10,17 +10,32 @@
     <!-- <label for="">Odometer</label>
     <input type="number" [(ngModel)]="truck.odometre"> -->
     <label for="">Latitude &nbsp;</label> 
-    <input type="number" [(ngModel)]="terminal.latitude">
+    <input type="number" style="width: 15%;" [(ngModel)]="terminal.latitude">
     <label for=""> &nbsp; Longitude &nbsp;</label>
-    <input type="number" [(ngModel)]="terminal.longitude">
+    <input type="number" style="width: 15%;" [(ngModel)]="terminal.longitude">
+    <label for=""> &nbsp; Speed(km/h) &nbsp;</label>
+    <input type="number" style="width: 15%;" [(ngModel)]="terminal.speed">
     <!-- <button (click)="onSaveTruck()">UpdateTruck</button> -->
+    <div>
+        <table *ngIf="itiners!=null" class="table-responsive">
+            <tr *ngFor="let iti of itiners" >
+                <!-- (click)="onModify(iti)"  -->
+                <p>
+                    <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                    <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
+                </p>
 
-    <p>
+            </tr>
+        </table>
+    </div>
+
+    <!-- <p>
         {{driverNote}}
-    </p>
-    <p>
+    </p> -->
+    <!-- <p>
         {{driverMoved}}
-    </p>
+    </p> -->
 </div>
 
 <!-- <h3>List Itineraires</h3> -->

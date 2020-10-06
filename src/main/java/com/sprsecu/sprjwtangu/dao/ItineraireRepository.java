@@ -16,4 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long>{
     public List<Itineraire> findByIdTransporter(Long idTransporter);
     public List<Itineraire> findByIdEntreprise(Long idEntreprise);
+    public List<Itineraire> findByIdCamion(Long idCamion);
 }

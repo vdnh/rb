@@ -34,6 +34,7 @@ export class Camion{
     direction:number; // 0.00 - 359.99 -- north-east-south-west;    
     speed: number;
     stopDuration:number=0; // in minute
+    timeStop:number; // the time when terminal stopped;  new Date().getTime()
     status:boolean=true;   // en exploitant ou non => enexploitant suivi en Tableau d'Entretiens
     localDepart:string="";
     destination:string="";

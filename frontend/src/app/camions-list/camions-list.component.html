@@ -259,6 +259,12 @@
                             &#8593;  this is arrow up ^ (0 degree). It will be rotated in clockwise >
                         </h4>  -->
                     </span>
+                    <small style="color: darkred;" *ngIf="c.stopDuration!=null && c.stopDuration>0"> <br>
+                        {{"Stopped: "+ showStopDuration(c.stopDuration)}}
+                    </small>
+                    <small style="color: darkred;" *ngIf="c.timeStop!=null && c.timeStop>0"> <br>
+                        {{calculateStopTime(c.timeStop)}}
+                    </small>
                 </td>
                 <td style="width: 40%;">
                     <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->
@@ -1352,6 +1358,12 @@
                             &#8593;  this is arrow up ^ (0 degree). It will be rotated in clockwise >
                         </h4>  -->
                     </span>
+                    <small style="color: darkred;" *ngIf="c.stopDuration!=null && c.stopDuration>0"> <br>
+                        {{"Stopped: "+ showStopDuration(c.stopDuration)}}
+                    </small>
+                    <small style="color: darkred;" *ngIf="c.timeStop!=null && c.timeStop>0"> <br>
+                        {{calculateStopTime(c.timeStop)}}
+                    </small>
                 </td>
                 <td style="width: 40%;">
                     <!-- Hi from camion {{c.id + " - nombre itiraires: "+ camionItiners(c.id).length}} -->

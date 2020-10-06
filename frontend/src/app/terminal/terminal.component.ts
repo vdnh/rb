@@ -24,7 +24,7 @@ import { DatePipe } from '@angular/common';
 })
 export class TerminalComponent implements OnInit {
   driverNote="Speed : ";
-  driverMoved="Having moved : ";
+  // driverMoved="Having moved : ";
   instantMoved: number; // in meter, distance moved after each watch navigator
 
   @ViewChild('gmap') gmapElement: any;
@@ -59,50 +59,50 @@ export class TerminalComponent implements OnInit {
   countTimeNoWrite=0; // for each time no write
   stopped = false; // at beginning the terminal is in working
 
-  cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
+  // cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
 
-  camionItinersFind(idCamion){
-    let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
-    if(cIsL!=null)
-      return cIsL.itiners
-    else return null
-  }
-  makeCIsLList(){
-    this.cIsLList=new Array<CamionItinersList>();
-    let cIsL : CamionItinersList;
-    // this.camionsSurMap.forEach(c=>{
-      cIsL= new CamionItinersList();
-      cIsL.camionId=this.truck.id
-      cIsL.itiners= this.camionItiners(this.truck.id)
-      this.cIsLList.push(cIsL)
-    // })
-    // this.camionsNoGPS.forEach(c=>{
-    //   cIsL= new CamionItinersList();
-    //   cIsL.camionId=c.id
-    //   cIsL.itiners= this.camionItiners(c.id)
-    //   this.cIsLList.push(cIsL)
-    // })
-  }
-  camionItiners(id:number){
-    let cIs:Array<Itineraire>=[]
-    this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-      if(data!=null) {
-        this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
-          (a,b)=>(a.id-b.id)).sort(
-            (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
-      }
-      if(this.itiners.length>0){
-        //alert("Hi from camionItiners(): " + id)
-        this.itiners.forEach(it=>{
-         if(it.idCamion==id) cIs.push(it)
-        })
-        //alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
-        //return cIs
-      }
-    }, err=>{console.log(err)})
+  // camionItinersFind(idCamion){
+  //   let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
+  //   if(cIsL!=null)
+  //     return cIsL.itiners
+  //   else return null
+  // }
+  // makeCIsLList(){
+  //   this.cIsLList=new Array<CamionItinersList>();
+  //   let cIsL : CamionItinersList;
+  //   // this.camionsSurMap.forEach(c=>{
+  //     cIsL= new CamionItinersList();
+  //     cIsL.camionId=this.truck.id
+  //     cIsL.itiners= this.camionItiners(this.truck.id)
+  //     this.cIsLList.push(cIsL)
+  //   // })
+  //   // this.camionsNoGPS.forEach(c=>{
+  //   //   cIsL= new CamionItinersList();
+  //   //   cIsL.camionId=c.id
+  //   //   cIsL.itiners= this.camionItiners(c.id)
+  //   //   this.cIsLList.push(cIsL)
+  //   // })
+  // }
+  // camionItiners(id:number){
+  //   let cIs:Array<Itineraire>=[]
+  //   this.itinerairesService.itinerairesDeCamion(this.truck.id).subscribe((data:Array<Itineraire>)=>{
+  //     if(data!=null) {
+  //       this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
+  //         (a,b)=>(a.id-b.id)).sort(
+  //           (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+  //     }
+  //     if(this.itiners.length>0){
+  //       //alert("Hi from camionItiners(): " + id)
+  //       this.itiners.forEach(it=>{
+  //        if(it.idCamion==id) cIs.push(it)
+  //       })
+  //       //alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
+  //       //return cIs
+  //     }
+  //   }, err=>{console.log(err)})
     
-    return cIs
-  }
+  //   return cIs
+  // }
 
   ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
@@ -117,19 +117,65 @@ export class TerminalComponent implements OnInit {
         this.terminal=data.find(x=>(x.loginName.localeCompare(localStorage.getItem('usernameLogin'))==0))
         // terminal active
         if(this.terminal.status){
-          if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
-            this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-              this.truck=data
-              // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-              //   if(data!=null) {
-              //     this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
-              //       (a,b)=>(a.id-b.id)).sort(
-              //         (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
-              //   }
-              // }, err=>{console.log(err)})
-            })
-          }
-          this.showMap();
+          // if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
+          //   this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+          //     this.truck=data
+              
+          //   })
+          // }
+          // at beginning, we write the position actual and set data for terminalTemp
+          navigator.geolocation.getCurrentPosition(
+            (position: Position) => {
+                // observer.next(position);
+                // observer.complete();
+                this.terminal.latitude=position.coords.latitude 
+                this.terminal.longitude=position.coords.longitude
+                this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+                  this.terminalTemp = data;
+                  console.log("Set terminalTemp to the actual position")
+                  // and then find the truck and update his location then showMap()
+                  if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
+                    this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+                      this.truck=data  
+                      let geocodingTemp = new GeocodingService()             
+                      geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+                        this.truck.latitude=this.terminal.latitude,
+                        this.truck.longtitude=this.terminal.longitude
+                      ))
+                      .forEach(
+                        (results: google.maps.GeocoderResult[]) => {
+                          this.truck.location=results[0].formatted_address;
+                        }
+                      ).then(()=>{
+                        this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                          this.truck=data
+                          console.log("Updated trucks' location and find list itiners and then showMap()")
+                          this.itinerairesService.itinerairesDeCamion(this.truck.id).
+                          subscribe((data:Array<Itineraire>)=>{
+                            this.itiners=data.filter(x=>(!x.fini && !x.cancelled))
+                            this.itinersFinis=data.filter(x=>(x.fini))
+                            this.showMap()  
+                          })                                            
+                        }
+                        ,err=>{console.log(err)})
+                      })
+                    })
+                  }
+                  // Just showMap(), if there are no truck
+                  else this.showMap();
+                }, err=>{console.log(err)})
+            },
+            (error: PositionError) => {
+                console.log('Geolocation service: ' + error.message);
+                // observer.error(error);
+            }
+          );
+          // if(this.terminalTemp==null){ // at beginning, we write the position actual and set data for terminalTemp
+          //   this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+          //     this.terminalTemp = data;
+          //   }, err=>{console.log(err)})
+          // }
+          // this.showMap();
         }
         // terminal inactive
         else{
@@ -142,75 +188,11 @@ export class TerminalComponent implements OnInit {
       }, err=>{
         console.log(err)
       })
-      // // get list itineraires and then sort ithem
-      // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
-      //   if(data!=null) {
-      //     this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
-      //       (a,b)=>(a.id-b.id)).sort(
-      //         (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
-      //     this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
-      //       (b,a)=>(a.id-b.id)).sort(
-      //         (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
-      //   }
-      // },
-      // err=>{
-      //   console.log(err)
-      // })
+     
     },err=>{
       console.log(err)
     }) 
 
-    // function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
-    //   let dLat = toRadians(p2.lat() - p1.lat());
-    //   let dLon = toRadians(p2.lng() - p1.lng());
-    //   let a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-    //           + Math.cos(toRadians(p1.lat()))
-    //           * Math.cos(toRadians(p2.lat())) * Math.sin(dLon / 2)
-    //           * Math.sin(dLon / 2);
-    //   let c = 2 * Math.asin(Math.sqrt(a));
-    //   let distanceInMeters = Math.round(6371000 * c);
-    //   return distanceInMeters;
-    // }
-    
-    // function toRadians (angle) {
-    //   return angle * (Math.PI / 180);
-    // }
-    
-    // function toDegrees (angle) {
-    //   return angle * (180 / Math.PI);
-    // }
-
-    // //*// watchposition deactivate for temporary
-    // let speed=0;
-    // let index=0;
-    // let note = "Speed : ";
-    // let havingMoved = "Having moved : ";
-    // let oldPoint : google.maps.LatLng;
-    // let watchId;
-    // navigator.geolocation.watchPosition(position=>{
-    //   if(position.coords.accuracy<=10){ // take the position when accuracy<=10 meter  // && position.coords.altitudeAccuracy<=10
-    //     let newPoint= new google.maps.LatLng(this.truck.latitude=position.coords.latitude, this.truck.longtitude=position.coords.longitude)
-    //     if(this.marker!=null) this.movingTruck()
-    //     // let distanceMetter = this.calculateDistance(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng()) ;
-    //     speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
-    //     // let degree = Math.round(position.coords.heading);
-    //     //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
-    //     if(oldPoint!=null)
-    //       this.driverMoved= havingMoved + calculateDistance(oldPoint, newPoint).toString() + " meter.";
-    //     else this.driverMoved= havingMoved
-    //     oldPoint=newPoint;
-    //     index++;
-    //     this.driverNote= note + (speed>0? ' '+speed+' km/h' : '');
-    //       // (speed>0? ' \r\n Vitesse actuelle : '+speed+' kmh' + ' \r\n accuracy : '+position.coords.accuracy + ' m' : '');
-    //   }
-    // }, err=>{
-    //   console.log(err)
-    // },
-    // {
-    //   timeout: 1000, // 1 second before the request errors out
-    //   maximumAge: 5000, // age of the position cached by the browser. Don't accept one older than the set amount
-    //   enableHighAccuracy: true  // require a position with highest level of accuracy possible
-    // })//*/
   }
 
   calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
@@ -236,8 +218,15 @@ export class TerminalComponent implements OnInit {
   onSaveTerminal(){
     this.countTime++; // we count every time save terminal
     // must verify if the data have changed
-    if(
-        (this.terminalTemp==null ||
+    // if(this.terminalTemp==null){ // at beginning, we write the position actual and set data for terminalTemp
+    //   this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+    //     this.terminalTemp = data;
+    //   }, err=>{console.log(err)})
+    // }
+    // else 
+    if( // since now, we know terminalTemp is not equal null
+      //this.terminalTemp==null ||
+        (
         this.terminalTemp.latitude!=this.terminal.latitude || 
         this.terminalTemp.longitude!=this.terminal.longitude)
         &&
@@ -249,6 +238,7 @@ export class TerminalComponent implements OnInit {
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         this.terminalTemp = data;
         if(this.truck!=null && !this.truck.gps){
+          this.truck.timeStop=null; // in moving the timeStop is null
           this.truck.latitude=this.terminal.latitude;
           this.truck.longtitude=this.terminal.longitude;
           this.truck.direction=this.terminal.direction
@@ -286,9 +276,9 @@ export class TerminalComponent implements OnInit {
         if(this.terminal.timeStop!=null){
           // this terminal is stopping
           // do nothing
-          console.log('Do nothing')
+          // console.log('Do nothing')
           let duration = new Date().getTime() - this.terminal.timeStop
-          console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + "minutes")
+          console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
         }
         else{
           // this terminal just stop
@@ -296,7 +286,7 @@ export class TerminalComponent implements OnInit {
           console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
           let dt= new Date(this.terminal.timeStop)
           console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
-          console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
+          // console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
         }
         this.stopped=true; // set teminal stop
         this.terminal.speed=0; // set speed to 0
@@ -304,6 +294,7 @@ export class TerminalComponent implements OnInit {
           this.terminalTemp = data;
           if(this.truck!=null && !this.truck.gps){
             this.truck.speed=0
+            this.truck.timeStop=this.terminal.timeStop
             let geocodingTemp = new GeocodingService()             
             geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
               this.truck.latitude=this.terminal.latitude,
@@ -322,7 +313,7 @@ export class TerminalComponent implements OnInit {
       }
       else if(this.stopped && this.countTimeNoWrite%12==0){
         let duration = new Date().getTime() - this.terminal.timeStop
-        console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + "minutes")
+        console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
       }
     }
   }
@@ -337,21 +328,7 @@ export class TerminalComponent implements OnInit {
       //mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-    // let marker = new google.maps.Marker({
-    //   position: new google.maps.LatLng(this.truck.latitude, this.truck.longtitude),
-    //   map: this.map,
-    //   icon: {
-    //     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    //     scale:7,
-    //     // rotation:this.truck.direction,
-    //     // fillOpacity: 1,
-    //     // fillColor: "#7FFF00", //"#FFFFFF"
-    //     strokeWeight: 3,
-    //     strokeColor: "#008088", //"#FFFFFF",//"red",
-    //   },
-    //   title: ((this.truck.foreignName!=null && this.truck.foreignName.length>0) ? this.truck.foreignName : ("#"+this.truck.unite+" "+this.truck.marque+" "+this.truck.modele)),
-    //   label: {text:((this.truck.foreignName!=null && this.truck.foreignName.length>0) ? this.truck.foreignName : ("#"+this.truck.unite+" "+this.truck.marque+" "+this.truck.modele)), color:"orange"},
-    // });
+  
     
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
@@ -368,7 +345,7 @@ export class TerminalComponent implements OnInit {
         strokeWeight: 3,
         strokeColor: "#008088", //"#FFFFFF",//"red",
       },
-      title: this.terminal.name
+      title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
     });
     // centrer la carte
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
@@ -377,32 +354,6 @@ export class TerminalComponent implements OnInit {
     this.subscription=intervalCSM.subscribe(val=>{
       this.onSaveTerminal();
     })
-
-    // encode address every 2 minutes
-    // const intervalAddress = interval(120000)
-    
-    // if(this.truck!=null){
-    //   this.subscription2=intervalAddress.subscribe(val=>{
-    //     if(this.truckTemp==null || 
-    //       this.truckTemp.latitude!=this.truck.latitude ||
-    //       this.truckTemp.longtitude!=this.truck.longtitude)
-    //     {
-    //       let geocodingTemp = new GeocodingService()             
-    //       geocodingTemp.geocode(new google.maps.LatLng(              
-    //         this.truck.latitude,
-    //         this.truck.longtitude
-    //       ))
-    //       .forEach(
-    //         (results: google.maps.GeocoderResult[]) => {
-    //           this.truck.location=results[0].formatted_address;
-    //         }
-    //       ).then(()=>{
-    //         this.truckTemp=this.truck
-    //       })
-    //     }
-        
-    //   })  
-    // }
 
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());
@@ -426,11 +377,11 @@ export class TerminalComponent implements OnInit {
 
     //*// watchposition deactivate for temporary
     // let speed=0;
-    let index=0;
-    let note = "Speed : ";
-    let havingMoved = "Having moved : ";
+    // let index=0;
+    // let note = "Speed : ";
+    // let havingMoved = "Having moved : ";
     let oldPoint : google.maps.LatLng;
-    let watchId;
+    // let watchId;
     navigator.geolocation.watchPosition(position=>{
       if(position.coords.accuracy<=10){ // take the position when accuracy<=10 meter  // && position.coords.altitudeAccuracy<=10
         let newPoint= new google.maps.LatLng(this.terminal.latitude=position.coords.latitude, this.terminal.longitude=position.coords.longitude)
@@ -441,26 +392,54 @@ export class TerminalComponent implements OnInit {
         this.instantMoved = calculateDistance(oldPoint, newPoint)
         // let degree = Math.round(position.coords.heading);
         //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
-        if(oldPoint!=null)
-          this.driverMoved= havingMoved + this.instantMoved + " meter.";
-        else this.driverMoved= havingMoved
+        // if(oldPoint!=null)
+        //   this.driverMoved= havingMoved + this.instantMoved + " meter.";
+        // else this.driverMoved= havingMoved
         oldPoint=newPoint;
-        index++;
-        this.driverNote= note + (this.terminal.speed>0? ' '+this.terminal.speed+' km/h' : '0 km/h');
+        // index++;
+        // this.driverNote= note + (this.terminal.speed>0? ' '+this.terminal.speed+' km/h' : '0 km/h');
           // (speed>0? ' \r\n Vitesse actuelle : '+speed+' kmh' + ' \r\n accuracy : '+position.coords.accuracy + ' m' : '');
       }
     }, err=>{
       console.log(err)
     },
     {
-      timeout: 1000, // 1 second before the request errors out
-      maximumAge: 5000, // age of the position cached by the browser. Don't accept one older than the set amount
+      timeout: 2000, // 2 second before the request errors out
+      maximumAge: 10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
       enableHighAccuracy: true  // require a position with highest level of accuracy possible
     })//*/
   }
 
+  calculateStopTime(timeStop:number){
+    if(timeStop!=null){
+      let duration = new Date().getTime() - timeStop
+      //console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+      // return ' stopped: ' + Math.round(duration/1000/60) + " minutes"
+      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60))
+    }
+    else 
+      return ''
+  }
+  // to show the stop duration in day-hours-minute
+  showStopDuration(stopDuration:number){  // this stopDuration is in minute
+    let duration='';
+    let days =  Number.parseInt((stopDuration/1440).toString()) +' day(s) '
+    let hours = Number.parseInt(((stopDuration%1440)/60).toString()) +' hour(s) '
+    let minutes = ((stopDuration%1440)%60).toString() +' minute(s) '
+    
+    if((stopDuration/1440)>=1)
+      duration = duration+days;
+    if(((stopDuration%1440)/24)>=1)
+      duration=duration+hours
+    duration=duration+minutes
+    
+    //duration = days+' jour(s) '+hours+' heure(s) '+minutes+' minute(s) '
+
+    return duration;
+  }
+
   movingTerminal() {
-    //if(this.marker!=null) this.marker.setMap(null) 
+    if(this.marker!=null) this.marker.setMap(null) 
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
       map: this.map,
@@ -476,7 +455,7 @@ export class TerminalComponent implements OnInit {
         strokeWeight: 3,
         strokeColor: "#008088", //"#FFFFFF",//"red",
       },
-      title: this.terminal.name
+      title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
     });
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
