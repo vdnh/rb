@@ -199,32 +199,70 @@ public class SprjwtanguApplication implements CommandLineRunner{
         
         // Thread update odometre pour SOS Prestige
         Thread updateOdoSOSPrestigeThread = new Thread(() -> {
-            //List<Camion> camions = new ArrayList<>();
+            List<Camion> truckTers = new ArrayList<>(); // trucks noGps but with terminal
+            List<Camion> truckTersTemp = new ArrayList<>(); // truckTersTemp noGps but with terminal, be used to compare
             //camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
             while (true) {
                 try {
+                    List<Camion> camions = new ArrayList<>();
+                    truckTers.clear();
+                    camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
+                    camions.forEach(camion ->{
+                        // if truck is noGps and with terminal
+                        //if(camion.getIdTerminal()!=null) System.out.println("camion.idTerminal: "+ camion.getIdTerminal());
+                        if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
+                            truckTers.add(camion);
+                            //System.out.println("Camion.id + camion.terminalName: "+ camion.getId() + " - " + camion.getNameTerminal());
+                        }
+                    });
+                    if(truckTersTemp.isEmpty()){
+                        truckTersTemp = truckTers;
+                        //System.out.println("truckTersTemp.size + truckTers.size : " + truckTersTemp.size() + truckTers.size());
+                    }
+                    else{
+                        truckTersTemp.forEach(truck ->{
+                            if(
+                               Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
+                                &&
+                               Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
+                            )
+                            {
+//                                truck.setTimeStop(Date.getTime());
+                            };
+                            truck.getLongtitude();
+                        });
+                    }
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
                     //https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1
                     if(!listUnite.isEmpty()) {
                         //System.out.println("listUnite : " + listUnite.toString());
                         //System.out.println("Sure! listUnite isn't empty!!");
-                        List<Camion> camions = new ArrayList<>();
-                        camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
+                        //List<Camion> camions = new ArrayList<>();
+                        //camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
                         camions.forEach(camion ->{
+                            /*// if truck is noGps and with terminal
+                            if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
+                                truckTers.add(camion);
+                            }//*/
                             listUnite.forEach(unite->{
                                 if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
                                     camion.setLocation(unite.getLocation());
                                     camion.setLocalName(unite.getLocalName());
                                     camion.setForeignName(unite.getForeignName());  // set name at GPS fournisseur for camions
-                                    camion.setOdometre(new Float(unite.getOdometer()).longValue());
+                                    //camion.setOdometre(new Float(unite.getOdometer()).longValue());
                                     //camion.setLongtitude(new Double(unite.getLongitude()));
                                     //camion.setLatitude(new Double(unite.getLatitude()));
                                     camion.setDirection(new Double(unite.getDirection()));
                                     //System.out.println("unite speed : "+ unite.getSpeed());
                                     
-                                    // if speed = 0 or latitude and longitude haven't changed
-                                    if(new Double(unite.getSpeed())==0.00 ||
+                                    // if speed = 0 and odomter hasn't changed OR latitude and longitude haven't changed
+                                    if(
+                                       (new Double(unite.getSpeed())==0.00
+                                        &&
+                                        Long.compare(camion.getOdometre(), new Float(unite.getOdometer()).longValue())== 0
+                                       ) 
+                                            ||
                                        (Double.compare(camion.getLongtitude(), new Double(unite.getLongitude()))==0
                                         &&
                                         Double.compare(camion.getLatitude(), new Double(unite.getLatitude()))==0 
@@ -244,6 +282,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     else {
                                         //System.out.println("unite.getSpeed())>0.00");
                                         camion.setSpeed(new Double(unite.getSpeed()));
+                                        camion.setOdometre(new Float(unite.getOdometer()).longValue());
                                         camion.setLongtitude(new Double(unite.getLongitude()));
                                         camion.setLatitude(new Double(unite.getLatitude()));
                                         camion.setStopDuration(0);
