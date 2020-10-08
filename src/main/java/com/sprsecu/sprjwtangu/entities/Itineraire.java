@@ -42,6 +42,9 @@ public class Itineraire  implements Serializable{
     private Long idCamion;
     private Long idPickStone; // Repere Pick
     private Long idDropStone; // Repere Drop
+    
+    private Long idRouteFather; // to find route father if there is
+    private Long idRouteFatherF1; // to find route father F1 if there is
 
     private Long idEntreprise;  // bientot id de Shipper
     private Long idTransporter;  // id de Transporter

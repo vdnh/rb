@@ -2373,6 +2373,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.modeProfil=true;
   }
 
+  onselectRouteFather(itinerId){
+    console.log("id route father: " + itinerId)
+  }
+
   print(cmpId){
     //let envoy = document.getElementById('toprint').innerHTML;
     //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')

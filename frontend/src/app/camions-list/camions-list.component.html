@@ -260,10 +260,10 @@
                         </h4>  -->
                     </span>
                     <small style="color: darkred;" *ngIf="c.stopDuration!=null && c.stopDuration>0"> <br>
-                        {{"Stopped: "+ showStopDuration(c.stopDuration)}}
+                        {{"Stopped: "+ showStopDuration(c.stopDuration)}} (ou dehors network-phone)
                     </small>
                     <small style="color: darkred;" *ngIf="c.timeStop!=null && c.timeStop>0"> <br>
-                        {{calculateStopTime(c.timeStop)}}
+                        {{calculateStopTime(c.timeStop)}}  (ou dehors network phone)
                     </small>
                 </td>
                 <td style="width: 40%;">
@@ -603,8 +603,20 @@
                 <td *ngIf="itiner.camionAttribue.length>0" style="width: 30%;">
                     <input style="width: 100%;" type="text" [(ngModel)]="itiner.camionAttribue" placeholder="UniteCamion">
                 </td>
-                <td *ngIf="itiner.camionAttribue.length>0" style="width: 30%;">
+                <td *ngIf="itiner.camionAttribue.length>0" style="width: 10%;">
                     <span>LongReste:&nbsp; </span><input style="width: 11ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.dispoReste" placeholder=""><span>ft</span>
+                </td>
+                <td style="width: 22%;">
+                    <!-- <input style="width: 100%;" type="text" [(ngModel)]="itiner.idRouteFather" placeholder="Itineraire Avant"> -->
+                    <select type="text" [(ngModel)]="itiner.idRouteFather" (ngModelChange)="onselectRouteFather(itiner.idRouteFather)">
+                        <option [ngValue]="null"> </option>
+                        <option *ngFor="let iti of camionItinersFind(itiner.idCamion); let i = index" [ngValue]="iti.id">
+                            <!-- {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}} -->
+                            {{i+1}}
+                            <!-- .&nbsp;&nbsp; Pick: {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} 
+                            Drop: {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}} -->
+                        </option>                    
+                    </select>
                 </td>
                 <td style="width: 8%;">
                     <button class="btn btn-link" (click)="onAjouter()"
@@ -613,9 +625,24 @@
                         <span *ngIf="itiner.id!=null&&itiner.id>0">Modifier</span>
                     </button>
                 </td>
-                <td style="width: 32%;">&nbsp;</td>
+
             </tr>
         </table>
+
+        <!-- <table *ngIf="itiner.camionAttribue!=null && itiner.camionAttribue.length>4" border="1">
+            <tr><br></tr>
+            <tr>
+                <th colspan="4">
+                    <h4>Choisir Itineraire Avant</h4>
+                </th>
+            </tr>
+            <tr *ngFor="let iti of camionItinersFind(itiner.idCamion)">
+                            
+                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                
+            </tr>
+        </table> -->
 
         <table *ngIf="itiner.origin.length>4 && itiner.destination.length>4" border="1">
             <tr><br></tr>
@@ -666,10 +693,10 @@
                             </tr>
                         </table> -->
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
-                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
-                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                <strong>{{i+1}}. Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
                                 
                             </p>
                         </ng-container>
@@ -698,9 +725,9 @@
                     </td>
                     <td style="width: 40%;">
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
-                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
-                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                 <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
                                 
                             </p>
@@ -731,9 +758,9 @@
 
                     <td style="width: 40%;">
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
-                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
-                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                 <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
                                 
                             </p>
@@ -762,9 +789,9 @@
 
                     <td style="width: 40%;">
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
-                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
-                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                 <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
                                 
                             </p>
@@ -793,9 +820,9 @@
 
                     <td style="width: 40%;">
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
-                            <p *ngFor="let iti of camionItinersFind(c.id)">
+                            <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
-                                <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                 <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
                                 
                             </p>
@@ -1359,10 +1386,10 @@
                         </h4>  -->
                     </span>
                     <small style="color: darkred;" *ngIf="c.stopDuration!=null && c.stopDuration>0"> <br>
-                        {{"Stopped: "+ showStopDuration(c.stopDuration)}}
+                        {{"Stopped: "+ showStopDuration(c.stopDuration)}}  (or network phone off)
                     </small>
                     <small style="color: darkred;" *ngIf="c.timeStop!=null && c.timeStop>0"> <br>
-                        {{calculateStopTime(c.timeStop)}}
+                        {{calculateStopTime(c.timeStop)}}  (or network phone off)
                     </small>
                 </td>
                 <td style="width: 40%;">

@@ -155,7 +155,7 @@ export class TerminalComponent implements OnInit {
                             this.itiners=data.filter(x=>(!x.fini && !x.cancelled))
                             this.itinersFinis=data.filter(x=>(x.fini))
                             this.showMap()  
-                          })                                            
+                          }, err=>{console.log(err)})                                            
                         }
                         ,err=>{console.log(err)})
                       })
@@ -168,6 +168,10 @@ export class TerminalComponent implements OnInit {
             (error: PositionError) => {
                 console.log('Geolocation service: ' + error.message);
                 // observer.error(error);
+            },{
+              timeout: 2000, // 2 second before the request errors out
+              maximumAge: 3000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
+              enableHighAccuracy: true  // require a position with highest level of accuracy possible
             }
           );
           // if(this.terminalTemp==null){ // at beginning, we write the position actual and set data for terminalTemp
@@ -321,6 +325,7 @@ export class TerminalComponent implements OnInit {
   marker : google.maps.Marker
   showMap() {
     if(this.subscription!=null) this.subscription.unsubscribe();
+    if(this.subscription2!=null) this.subscription2.unsubscribe();
     if(this.marker!=null) this.marker.setMap(null)
     let mapProp = {
       center: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
@@ -354,6 +359,19 @@ export class TerminalComponent implements OnInit {
     this.subscription=intervalCSM.subscribe(val=>{
       this.onSaveTerminal();
     })
+    const intervalItiners = interval(20000); //intervel 20 seconds for update itineraires/routes
+    this.subscription2=intervalItiners.subscribe(val=>{
+      if(this.truck!=null && this.truck.id!=null){ // always check truck do nothing if it is null
+        this.itiners=null // set the itiners to null
+        this.itinersFinis=null // set the itinersFinis to null
+        this.itinerairesService.itinerairesDeCamion(this.truck.id).
+        subscribe((data:Array<Itineraire>)=>{
+          this.itiners=data.filter(x=>(!x.fini && !x.cancelled))
+          this.itinersFinis=data.filter(x=>(x.fini))
+        }, err=>{console.log(err)})                                            
+      }
+    })
+    
 
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());
@@ -405,7 +423,7 @@ export class TerminalComponent implements OnInit {
     },
     {
       timeout: 2000, // 2 second before the request errors out
-      maximumAge: 10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
+      maximumAge: 3000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
       enableHighAccuracy: true  // require a position with highest level of accuracy possible
     })//*/
   }

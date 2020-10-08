@@ -9,23 +9,31 @@
     <!-- <input type="number" [(ngModel)]="truck.speed"> -->
     <!-- <label for="">Odometer</label>
     <input type="number" [(ngModel)]="truck.odometre"> -->
-    <label for="">Latitude &nbsp;</label> 
+    <!-- <label for="">Latitude &nbsp;</label> 
     <input type="number" style="width: 15%;" [(ngModel)]="terminal.latitude">
     <label for=""> &nbsp; Longitude &nbsp;</label>
-    <input type="number" style="width: 15%;" [(ngModel)]="terminal.longitude">
-    <label for=""> &nbsp; Speed(km/h) &nbsp;</label>
-    <input type="number" style="width: 15%;" [(ngModel)]="terminal.speed">
+    <input type="number" style="width: 15%;" [(ngModel)]="terminal.longitude"> -->
+    <!-- <label for="" style="font-weight: bold;"> &nbsp; Speed(km/h) &nbsp;</label>
+    <input type="number" style="width: 15%; font-weight: bold;" [(ngModel)]="terminal.speed" disabled> -->
     <!-- <button (click)="onSaveTruck()">UpdateTruck</button> -->
+    <strong>List : </strong>
     <div>
-        <table *ngIf="itiners!=null" class="table-responsive">
-            <tr *ngFor="let iti of itiners" >
+        <table *ngIf="itiners!=null" border="1">
+            <tr *ngFor="let iti of itiners; let i = index" >
                 <!-- (click)="onModify(iti)"  -->
-                <p>
-                    <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
-                    <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
-                </p>
-
+                <th>&nbsp;{{i+1}}&nbsp;</th>
+                <td>
+                    <!-- <p> -->
+                    <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
+                        &nbsp;&nbsp; 
+                    <button class="btn btn-link"><small>OnRoute</small></button> &nbsp;&nbsp;  
+                    <button class="btn btn-link"><small>Pending</small></button> &nbsp;&nbsp;  
+                    <button class="btn btn-link"><small>Arrive</small></button>
+                    <!-- </p> -->
+                </td>
+                
             </tr>
         </table>
     </div>
@@ -39,4 +47,4 @@
 </div>
 
 <!-- <h3>List Itineraires</h3> -->
-<div [hidden]="terminal==null" #gmap style="width:100%;height:650px" ></div>
+<div [hidden]="terminal==null" #gmap style="width:100%;height:400px" ></div>

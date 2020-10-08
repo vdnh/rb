@@ -215,22 +215,38 @@ public class SprjwtanguApplication implements CommandLineRunner{
                             //System.out.println("Camion.id + camion.terminalName: "+ camion.getId() + " - " + camion.getNameTerminal());
                         }
                     });
-                    if(truckTersTemp.isEmpty()){
+                    // in the cas truckterstemp is nul or truckterstemp is not equal truckters
+                    if(truckTersTemp.isEmpty() || (truckTersTemp.size()!=truckTers.size())){
                         truckTersTemp = truckTers;
                         //System.out.println("truckTersTemp.size + truckTers.size : " + truckTersTemp.size() + truckTers.size());
                     }
                     else{
                         truckTersTemp.forEach(truck ->{
-                            if(
+                            if( // if data gps was changed
                                Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
                                 &&
                                Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
                             )
                             {
-//                                truck.setTimeStop(Date.getTime());
-                            };
-                            truck.getLongtitude();
+                                // and timestop is null ==> must set timestop to current time
+                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()== null){
+                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(System.currentTimeMillis());
+                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+                                }
+                                
+                            }
+                            else{ // in case the gps data was changed, if timestop!= null must set timestop to null
+                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()!=null
+                                        &&
+                                   truckTers.get(truckTers.indexOf(truck)).getTimeStop()>0)
+                                {
+                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(null);
+                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+                                }
+                            }
                         });
+                        // when finished update timeStop for all trucks, set truckterstemp equal truckters
+                        truckTersTemp = truckTers;
                     }
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
