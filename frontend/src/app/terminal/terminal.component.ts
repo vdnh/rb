@@ -152,7 +152,7 @@ export class TerminalComponent implements OnInit {
                           console.log("Updated trucks' location and find list itiners and then showMap()")
                           this.itinerairesService.itinerairesDeCamion(this.truck.id).
                           subscribe((data:Array<Itineraire>)=>{
-                            this.itiners=data.filter(x=>(!x.fini && !x.cancelled))
+                            this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
                             this.itinersFinis=data.filter(x=>(x.fini))
                             this.showMap()  
                           }, err=>{console.log(err)})                                            
@@ -197,6 +197,44 @@ export class TerminalComponent implements OnInit {
       console.log(err)
     }) 
 
+  }
+
+  sortItiners(itiners){
+    // let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
+    // if(cIsL!=null)
+    // {
+      itiners.sort((a,b)=>{
+        // (a.id-b.id)
+
+        // If a and b are lonely
+        if(a.idRouteFatherF1==null && b.idRouteFatherF1==null){
+          return (a.id-b.id);
+        }
+        // If a has father and b is lonely
+        if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
+          // if b is not father F1 of a
+          if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
+          // if b is father F1 of a
+          else  return (a.id-b.id);
+        }
+        // If a has father and b has father
+        if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
+          // if they have same father F1
+          if(a.idRouteFatherF1==b.idRouteFatherF1) return (a.idRouteFather-b.idRouteFather);
+          else  return (a.idRouteFatherF1-b.idRouteFatherF1);
+        }
+        // If a is lonely and b has father
+        if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
+          // if a is father F1 of b
+          if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+          // if a is not father of b
+          else  return (a.id-b.idRouteFatherF1);
+        }
+        return 0;
+      }) 
+      return itiners
+    // }
+    // else return null
   }
 
   calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
@@ -366,7 +404,7 @@ export class TerminalComponent implements OnInit {
         this.itinersFinis=null // set the itinersFinis to null
         this.itinerairesService.itinerairesDeCamion(this.truck.id).
         subscribe((data:Array<Itineraire>)=>{
-          this.itiners=data.filter(x=>(!x.fini && !x.cancelled))
+          this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
           this.itinersFinis=data.filter(x=>(x.fini))
         }, err=>{console.log(err)})                                            
       }

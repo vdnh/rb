@@ -220,6 +220,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
             (a,b)=>(a.id-b.id)).sort(
               (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+          this.itiners=this.sortItiners(this.itiners)
           this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
             (b,a)=>(a.id-b.id)).sort(
               (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
@@ -503,6 +504,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
                     (a,b)=>(a.id-b.id)).sort(
                       (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+                  this.itiners=this.sortItiners(this.itiners)
                   this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
                     (b,a)=>(a.id-b.id)).sort(
                       (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
@@ -952,10 +954,73 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.infoWindow.open(this.map);//*/      
   }
   
+  sortItiners(itiners){
+    itiners.sort((a,b)=>{
+      // (a.id-b.id)
+
+      // If a and b are lonely
+      if(a.idRouteFatherF1==null && b.idRouteFatherF1==null){
+        return (a.id-b.id);
+      }
+      // If a has father and b is lonely
+      if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
+        // if b is not father F1 of a
+        if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
+        // if b is father F1 of a
+        else  return (a.id-b.id);
+      }
+      // If a has father and b has father
+      if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
+        // if they have same father F1
+        if(a.idRouteFatherF1==b.idRouteFatherF1) return (a.idRouteFather-b.idRouteFather);
+        else  return (a.idRouteFatherF1-b.idRouteFatherF1);
+      }
+      // If a is lonely and b has father
+      if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
+        // if a is father F1 of b
+        if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+        // if a is not father of b
+        else  return (a.id-b.idRouteFatherF1);
+      }
+      return 0;
+    }) 
+    return itiners
+  }
   camionItinersFind(idCamion){
     let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
     if(cIsL!=null)
+    {
+      cIsL.itiners.sort((a,b)=>{
+        // (a.id-b.id)
+
+        // If a and b are lonely
+        if(a.idRouteFatherF1==null && b.idRouteFatherF1==null){
+          return (a.id-b.id);
+        }
+        // If a has father and b is lonely
+        if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
+          // if b is not father F1 of a
+          if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
+          // if b is father F1 of a
+          else  return (a.id-b.id);
+        }
+        // If a has father and b has father
+        if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
+          // if they have same father F1
+          if(a.idRouteFatherF1==b.idRouteFatherF1) return (a.idRouteFather-b.idRouteFather);
+          else  return (a.idRouteFatherF1-b.idRouteFatherF1);
+        }
+        // If a is lonely and b has father
+        if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
+          // if a is father F1 of b
+          if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+          // if a is not father of b
+          else  return (a.id-b.idRouteFatherF1);
+        }
+        return 0;
+      }) 
       return cIsL.itiners
+    }
     else return null
   }
   deleteRepere(r:Repere){
@@ -971,57 +1036,54 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.itiners.splice(this.itiners.indexOf(it),1)
     // this.makeCIsLList()
   }
-  onAjouter(){ // add fItineraire
-    // console.log('this.itiner.dPick: '+this.itiner.dPick)
-    // console.log('this.itiner.mPick: '+this.itiner.mPick)
-    // console.log('this.itiner.yPick: '+this.itiner.yPick)
-    // console.log('this.itiner.dDrop: '+this.itiner.dDrop)
-    // console.log('this.itiner.mDrop: '+this.itiner.mDrop)
-    // console.log('this.itiner.yDrop: '+this.itiner.yDrop)
-    // console.log('this.itiner.datePick.toString(): '+this.itiner.datePick.toString())
-    // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
+  onAjouter(){ 
+    
     if(this.itiner.id==null||this.itiner.id==0){ // add new itineraire
       this.itiner.idTransporter=this.transporter.id;
       this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
         //this.itiner=data
         this.itiners.push(data) // put this itinaire to the list of transporter
-        //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
-        this.makeCIsLList() // make CamionItinerairesList replace for the line above
-        this.onClearMap();
+        // Update this.routeSonNowTemp - route/itineraire temporary if it is not null
+        if(this.routeSonNowTemp!=null){
+          this.itinerairesService.saveItineraires(this.routeSonNowTemp).subscribe((data)=>{
+            this.routeSonNowTemp=null // set him to null after recorded
+            //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+            this.makeCIsLList() // make CamionItinerairesList replace for the line above
+            this.onClearMap();
+          }, err=>{console.log(err)})
+        }
+        else{
+          //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+          this.makeCIsLList() // make CamionItinerairesList replace for the line above
+          this.onClearMap();
+        }
+        
       }, err=>{console.log(err)})
     }
     else{ // modify one itineraire
       this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
-        this.itiners.forEach(x=>{
-          if(x.id==data.id) x=data
-        })
-        // this.itiners.push(data) // put this itinaire to the list of transporter
-        //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
-        this.makeCIsLList() // make CamionItinerairesList replace for the line above
-        this.onClearMap();
+        // this.itiners.forEach(x=>{
+        //   if(x.id==data.id) x=data
+        // })
+        // // this.itiners.push(data) // put this itinaire to the list of transporter
+        // //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+        // this.makeCIsLList() // make CamionItinerairesList replace for the line above
+        // this.onClearMap();
+        if(this.routeSonNowTemp!=null){
+          this.itinerairesService.saveItineraires(this.routeSonNowTemp).subscribe((data)=>{
+            this.routeSonNowTemp=null // set him to null after recorded
+            //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+            this.makeCIsLList() // make CamionItinerairesList replace for the line above
+            this.onClearMap();
+          }, err=>{console.log(err)})
+        }
+        else{
+          //this.cIsLList.find(res=>res.camionId==data.idCamion).itiners.push(data) // put this itineraire to this camion
+          this.makeCIsLList() // make CamionItinerairesList replace for the line above
+          this.onClearMap();
+        }
       }, err=>{console.log(err)})
     }
-    
-    //this.itiners.push(it)
-    // this.cIsLList.find(res=>res.camionId==it.idCamion).itiners.push(it) // put this itineraire to this camion
-    // this.itiner=new Itineraire()
-    //this.drawOrigin()
-    
-    // if(this.originCircle){
-    //   this.originCircle.setMap(null)
-    // }
-    // if(this.destCircle1)(
-    //   this.destCircle1.setMap(null)
-    // )
-    // if(this.flightPath){
-    //   this.flightPath.setMap(null)
-    // }
-    // this.latLngOrigin=null
-    // this.latLngDestination=null
-    // this.flightPath=null
-    // this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
-    //   this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
-    // })
     
   }
 
@@ -1251,6 +1313,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
         this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
           (a,b)=>(a.id-b.id)).sort(
             (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
+        this.itiners=this.sortItiners(this.itiners)
         this.itinersFinis=data.filter(x=>(x.fini==true&&x.archive==false)).sort(
           (b,a)=>(a.id-b.id)).sort(
             (b,a)=>(new Date(a.dateDrop).getTime()-new Date(b.dateDrop).getTime())) // id desc - dateDrop desc
@@ -2373,8 +2436,38 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.modeProfil=true;
   }
 
-  onselectRouteFather(itinerId){
-    console.log("id route father: " + itinerId)
+  routeSonNowTemp : Itineraire = null; // to obtain the route son temporaey
+  onselectRouteFather(itinerFatherId){
+    if(itinerFatherId==null){
+      // reconfirm null for idRrouteFather and idRrouteFatherF1
+      this.itiner.idRouteFather = null
+      this.itiner.idRouteFatherF1 = null
+      console.log("set null for idRouteFather and idRoutefatherF1")
+    }
+    else{
+      let routeFather = this.itiners.find(x=>(x.id == itinerFatherId))
+      // must find if this father has already a son
+      this.routeSonNowTemp = this.itiners.find(x=>(x.id == itinerFatherId))
+      if(this.routeSonNowTemp!=null){ // found son 
+        this.routeSonNowTemp.idRouteFather=null // set null his father
+        // routeSonNowTemp.idRouteFather=this.itiner.id // this.itiner become his father
+        // here we put a call back, it will be called when this.itiner is addad/ajoute
+        // this is in onAjouter()
+      }
+      else{ // no son
+        this.routeSonNowTemp=null // reconfirm it is null
+      }
+      //
+      
+      // here : Son is this.itiner
+      // if routerFather have routeFatherF1 (route origin). Set route origin of son equal his father, 
+      // it's mean they are in same family
+      if(routeFather.idRouteFatherF1!=null && routeFather.idRouteFatherF1>0)
+        this.itiner.idRouteFatherF1 = routeFather.idRouteFatherF1
+      else // if route father hasn't origin, then it is th origin
+        this.itiner.idRouteFatherF1 = this.itiner.idRouteFather
+      console.log("id route father: " + itinerFatherId)
+    }
   }
 
   print(cmpId){

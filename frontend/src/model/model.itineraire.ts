@@ -15,6 +15,7 @@ export class Itineraire{
     idDropStone:number; // Repere Drop
 
     idRouteFather:number; // to find route father if there is
+    idRouteFatherF1; // to find route father F1 if there is
 
     idEntreprise:number;  // bientot id de Shipper
     idTransporter:number;  // id de Transporter
