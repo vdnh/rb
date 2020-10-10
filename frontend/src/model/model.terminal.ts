@@ -14,5 +14,6 @@ export class Terminal{
     timeStop:number; // the time when terminal stopped;  new Date().getTime()
     status:boolean=true; // exploit or non
     loginName:string;
-    password:string;    
+    password:string;
+    accepts:string=""; // all devices accepted    
 }

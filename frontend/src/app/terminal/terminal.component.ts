@@ -17,6 +17,8 @@ import { Terminal } from 'src/model/model.terminal';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { DatePipe } from '@angular/common';
 
+declare var Fingerprint2: any;
+
 @Component({
   selector: 'app-terminal',
   templateUrl: './terminal.component.html',
@@ -29,6 +31,7 @@ export class TerminalComponent implements OnInit {
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+  hash: any;
   
   
   constructor(
@@ -39,7 +42,13 @@ export class TerminalComponent implements OnInit {
     public varsGlobal:VarsGlobal,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, 
-    private reperesService:ReperesService,) { }
+    private reperesService:ReperesService,) {
+      new Fingerprint2().get((result, components) => {
+        this.hash = result;
+        // console.log(result); //a hash, representing your device fingerprint
+        //console.log(components); // an array of FP components
+      });
+     }
 
   truck:Camion;
   truckTemp:Camion;
@@ -59,51 +68,41 @@ export class TerminalComponent implements OnInit {
   countTimeNoWrite=0; // for each time no write
   stopped = false; // at beginning the terminal is in working
 
-  // cIsLList: Array<CamionItinersList>=new Array<CamionItinersList>();
+  codeValided=false;
+  codeValidation:number;
+  timeTried=0;
+  onCodeValidation(){
+    // console.log("this.codeValidaton entered: "+this.codeValidation)
+    // console.log("this.codeValidaton must be: "+(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0)))
+    if(this.terminal.accepts.includes(this.hash)){
 
-  // camionItinersFind(idCamion){
-  //   let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
-  //   if(cIsL!=null)
-  //     return cIsL.itiners
-  //   else return null
-  // }
-  // makeCIsLList(){
-  //   this.cIsLList=new Array<CamionItinersList>();
-  //   let cIsL : CamionItinersList;
-  //   // this.camionsSurMap.forEach(c=>{
-  //     cIsL= new CamionItinersList();
-  //     cIsL.camionId=this.truck.id
-  //     cIsL.itiners= this.camionItiners(this.truck.id)
-  //     this.cIsLList.push(cIsL)
-  //   // })
-  //   // this.camionsNoGPS.forEach(c=>{
-  //   //   cIsL= new CamionItinersList();
-  //   //   cIsL.camionId=c.id
-  //   //   cIsL.itiners= this.camionItiners(c.id)
-  //   //   this.cIsLList.push(cIsL)
-  //   // })
-  // }
-  // camionItiners(id:number){
-  //   let cIs:Array<Itineraire>=[]
-  //   this.itinerairesService.itinerairesDeCamion(this.truck.id).subscribe((data:Array<Itineraire>)=>{
-  //     if(data!=null) {
-  //       this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
-  //         (a,b)=>(a.id-b.id)).sort(
-  //           (a,b)=>(new Date(a.datePick).getTime()-new Date(b.datePick).getTime())) // id asc - datePick asc
-  //     }
-  //     if(this.itiners.length>0){
-  //       //alert("Hi from camionItiners(): " + id)
-  //       this.itiners.forEach(it=>{
-  //        if(it.idCamion==id) cIs.push(it)
-  //       })
-  //       //alert("Hi from camionItiners() - nombre itiners: " + cIs.length)
-  //       //return cIs
-  //     }
-  //   }, err=>{console.log(err)})
-    
-  //   return cIs
-  // }
+    }
+    if(this.codeValidation==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0)))
+    {
+      this.codeValided=true;
+      localStorage.setItem('terus',this.terminal.loginName)
+      localStorage.setItem('terpw',this.terminal.password)
+      localStorage.setItem('terky',this.codeValidation.toString())
+    }
+    else
+    {
+      this.codeValided=false;
+      this.timeTried++
+      alert("Code validation error!!!")
+      if(this.timeTried==4){
+        localStorage.clear();
+        location.reload();
+      }
+      
+    }
+  }
 
+  wait10seconds(){
+    interval(10000).subscribe(val => {
+      localStorage.clear();
+      location.reload();
+    });
+  }
   ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe()
@@ -117,6 +116,8 @@ export class TerminalComponent implements OnInit {
         this.terminal=data.find(x=>(x.loginName.localeCompare(localStorage.getItem('usernameLogin'))==0))
         // terminal active
         if(this.terminal.status){
+          if(localStorage.getItem('terus')!=null && localStorage.getItem('terpw')!=null &&
+           Number(localStorage.getItem('terky'))==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0))) this.codeValided=true
           // if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
           //   this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
           //     this.truck=data

@@ -36,4 +36,6 @@ public class Terminal implements Serializable {
     
     private String loginName;
     private String password;    
+    
+    private String accepts=""; // all devices accepted
 }
