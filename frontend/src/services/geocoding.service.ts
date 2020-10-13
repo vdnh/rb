@@ -23,7 +23,9 @@ import { Observable } from 'rxjs';
      * @return An observable of GeocoderResult
      */
     geocode(latLng: google.maps.LatLng): Observable<google.maps.GeocoderResult[]> {
-        return Observable.create((observer: Observer<google.maps.GeocoderResult[]>) => {
+        // replaced because of deprecated
+        // return Observable.create((observer: Observer<google.maps.GeocoderResult[]>) => {
+        return new Observable((observer: Observer<google.maps.GeocoderResult[]>) => {
             // Invokes geocode method of Google Maps API geocoding.
             this.geocoder.geocode({ location: latLng }, (
                 (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
@@ -48,7 +50,9 @@ import { Observable } from 'rxjs';
      * @return An observable of GeocoderResult
      */
     codeAddress(address: string): Observable<google.maps.GeocoderResult[]> {
-        return Observable.create((observer: Observer<google.maps.GeocoderResult[]>) => {
+        // replaced because of deprecated
+        // return Observable.create((observer: Observer<google.maps.GeocoderResult[]>) => {
+        return new Observable((observer: Observer<google.maps.GeocoderResult[]>) => {
             // Invokes geocode method of Google Maps API geocoding.
             this.geocoder.geocode({ address: address }, (
                 (results: google.maps.GeocoderResult[], status: google.maps.GeocoderStatus) => {
@@ -60,7 +64,8 @@ import { Observable } from 'rxjs';
                             'Geocoding service: geocode was not successful for the following reason: '
                             + status
                         );
-                        alert("Ne pas trouver cette endroit. Veuillez verifier, SVP!" )
+                        alert("Can not locate this address. Verify it, please!" )
+                        // alert("Ne pas trouver cette endroit. Veuillez verifier, SVP!" )
                         //observer.error(status);
                         observer.complete();
                     }

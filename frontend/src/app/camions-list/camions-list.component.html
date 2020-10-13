@@ -535,7 +535,7 @@
                     <input type="text" placeholder="Endroit Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
                     (focus)="onFocusOrigin()" class="form-control" list="defaultTemplates">
                     <datalist id="defaultTemplates">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom }}</option>
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom + ", " + r.address}}</option>
                         <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
@@ -581,7 +581,7 @@
                     <input type="text" placeholder="Endroit Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
                     (focus)="onFocusDestination()" class="form-control" list="defaultTemplates01">
                     <datalist id="defaultTemplates01">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom}}</option>
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom + ", " + r.address}}</option>
                         <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
@@ -592,8 +592,16 @@
                 </td>
                 
                 
-                <td style="width: 42%;">
-                    <span>Rayon Recherche: </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()"><span>km</span> 
+                <td style="width: 25%;">
+                    <span>Rayon(km): </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()">
+                    <!-- <span>km</span>  -->
+                </td>
+                <td style="width: 17%;">
+                   <!-- <button class="btn btn-link">
+                    JoindreImage
+                   </button>  -->
+                    <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoindreImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+                    <button *ngIf="itiner.imgUrl!=null&&itiner.imgUrl.length>0" (click)="itiner.imgUrl=''" class="btn btn-link">DeleteImage</button>
                 </td>
             </tr>
             <tr>
@@ -608,7 +616,7 @@
                 </td>
                 <td *ngIf="camionItinersFind(itiner.idCamion)!=null && camionItinersFind(itiner.idCamion).length>0" style="width: 22%;">
                     <!-- <input style="width: 100%;" type="text" [(ngModel)]="itiner.idRouteFather" placeholder="Itineraire Avant"> -->
-                    <span>Itineraire devant:&nbsp; </span><select [(ngModel)]="itiner.idRouteFather" (ngModelChange)="onselectRouteFather($event)">
+                    <span>Suite d'Itineraire:&nbsp; </span><select [(ngModel)]="itiner.idRouteFather" (ngModelChange)="onselectRouteFather($event)">
                         <option [ngValue]="null"> </option>
                         <option *ngFor="let iti of camionItinersFind(itiner.idCamion); let i = index" [ngValue]="iti.id">
                             <!-- {{"#"+c.unite + ' - ' + c.marque +'  ' +c.modele}} -->
@@ -1661,7 +1669,7 @@
                     <input type="text" placeholder="Local Pick: " [(ngModel)]="itiner.origin" (change)="originChange()" 
                     (focus)="onFocusOrigin()" class="form-control" list="defaultTemplates">
                     <datalist id="defaultTemplates">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom }}</option>
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom + ", " + r.address}}</option>
                         <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
@@ -1707,7 +1715,7 @@
                     <input type="text" placeholder="Local Drop: " [(ngModel)]="itiner.destination" (change)="destinationChange()"
                     (focus)="onFocusDestination()" class="form-control" list="defaultTemplates01">
                     <datalist id="defaultTemplates01">
-                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom}}</option>
+                        <option *ngFor="let r of reps" [ngValue]="r">{{r.nom + ", " + r.address}}</option>
                         <!-- <option *ngFor="let r of reps" [ngValue]="r">{{r.nom +', '+r.address}}</option> -->
                     </datalist>
                 </td>
@@ -1718,8 +1726,16 @@
                 </td>
                 
                 
-                <td style="width: 42%;">
-                    <span>Search Radius: </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()"><span>km</span> 
+                <td style="width: 25%;">
+                    <span>Radius(km): </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()">
+                    <!-- <span>km</span>  -->
+                </td>
+                <td style="width: 17%;">
+                    <!-- <button class="btn btn-link">
+                     JoindImage
+                    </button> -->
+                    <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoinImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+                    <button *ngIf="itiner.imgUrl!=null&&itiner.imgUrl.length>0" (click)="itiner.imgUrl=''" class="btn btn-link">DeleteImage</button>
                 </td>
             </tr>
             <tr>

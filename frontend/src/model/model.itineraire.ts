@@ -45,4 +45,5 @@ export class Itineraire{
     fini=false; //Itineraire finished, false by default
     cancelled=false; //Itineraire cancelled, false by default
     archive=false; // Itineraire archived after finished, false by default
+    imgUrl="";
 }

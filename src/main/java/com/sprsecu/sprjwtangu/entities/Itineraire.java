@@ -74,4 +74,5 @@ public class Itineraire  implements Serializable{
     private boolean fini; //Itineraire fini
     private boolean cancelled; //Itineraire cancelled
     private boolean archive; // Itineraire archived after finished, false by default
+    private String imgUrl="";
 }

@@ -1427,16 +1427,18 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     
   }
   onFocusOrigin(){
-    if(this.latLngOrigin!=null){
-      this.map.setCenter(new google.maps.LatLng(this.latLngOrigin.lat(), this.latLngOrigin.lng()));
+    // this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
+    if(this.itiner!=null && this.itiner.originLat!=0.00){
+      this.map.setCenter(new google.maps.LatLng(this.itiner.originLat, this.itiner.originLong));
       //alert('this.map.zoom: '+ this.map.getZoom())
       this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
     }
   }
 
   onFocusDestination(){
-    if(this.latLngDestination!=null){
-      this.map.setCenter(new google.maps.LatLng(this.latLngDestination.lat(), this.latLngDestination.lng()));
+    // this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
+    if(this.itiner!=null && this.itiner.destLat!=0.00){
+      this.map.setCenter(new google.maps.LatLng(this.itiner.destLat, this.itiner.destLong));
       //alert('this.map.zoom: '+ this.map.getZoom())
       this.map.setZoom(9) // Zoom actuel : 15  - Level 1->20 de petit a plus grand
     }
@@ -1889,7 +1891,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     
     //return this.camionsSurMap; //camionsFiltre
   }
-  
+
+  onFileUpLoadRoute(event){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{this.itiner.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else this.itiner.imgUrl='';
+  }
+
   onFileUpLoad(event){
     let selectedFile : File=event.target.files[0];
     if(selectedFile){
