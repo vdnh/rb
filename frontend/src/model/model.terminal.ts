@@ -4,6 +4,7 @@ export class Terminal{
     idTruck:number; // id camion go with this terminal
     idDriver:number;
     name:string=""; //name
+    unitTruck:string=""; //truck unit or we can take the name detail of truck, or more info truck
     
     latitude:number;
     longitude:number;

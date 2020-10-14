@@ -24,6 +24,7 @@ public class Terminal implements Serializable {
     private Long idTruck;
     private Long idDriver;
     private String name; //name
+    private String unitTruck; //truck unit or we can take the name detail of truck, or more info truck
     
     private Double latitude;
     private Double longitude;

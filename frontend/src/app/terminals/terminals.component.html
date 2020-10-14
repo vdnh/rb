@@ -1,8 +1,8 @@
 <div>
    <br> <strong style="text-underline-position: below;">Terminals List</strong><br>
     <select [(ngModel)]="terminal" (ngModelChange)="showMap()">
-        <option *ngFor="let tk of terminals" [ngValue]="tk">
-            {{tk.name}}
+        <option *ngFor="let ter of terminals" [ngValue]="ter">
+            {{ter.name + ((ter.idTruck!=null&&ter.idTruck>0)?" - #"+ter.unitTruck:"")}}
         </option>
     </select>
     <br>

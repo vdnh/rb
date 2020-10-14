@@ -32,6 +32,7 @@ export class AppComponent implements OnInit{
   private ipRegex = new RegExp(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/);
   title = 'CTS';
   usernameLogin='';
+  unit='';  // this is to keep unit of truck if the teminal hooks with truck
   entrepriseNom='';
   mode:number=0;  // 0: to control password, 1: to wrong password, 2: to bad url or bad domain
   role:string="";

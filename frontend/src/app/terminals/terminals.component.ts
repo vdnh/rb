@@ -144,6 +144,7 @@ export class TerminalsComponent implements OnInit {
       if(this.terminal.idTruck!=null && this.terminal.idTruck>0)
         this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
           this.truckHooked=data
+          this.truck=data; // set 2 truck and truckhooked to data
         },
         err=>{console.log(err)})
       else this.truckHooked=null;
@@ -210,8 +211,15 @@ export class TerminalsComponent implements OnInit {
 
   onSelectTruck(){
     if(this.truck!=null) 
+    {
       this.terminal.idTruck=this.truck.id; // assign idtruck for this terminal
-    else this.terminal.idTruck=null
+      this.terminal.unitTruck=this.truck.unite
+    }
+    else 
+    {
+      this.terminal.idTruck=null
+      this.terminal.unitTruck=""
+    }
     // console.log('this.terminal.idTruck when select: '+this.terminal.idTruck)
   }
 
@@ -274,18 +282,28 @@ export class TerminalsComponent implements OnInit {
     this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
       this.terminal=data;
       // console.log('this.terminal.idTruck after modify: '+this.terminal.idTruck)
+      // Truck in not null, there are 2 ways : existed before or just being choosen
       if(this.truck!=null){
-        this.truck.idTerminal=this.terminal.id; // set this terminal for the truck
-        this.truck.nameTerminal=this.terminal.name
-        this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-          this.truckHooked=data  // it means this truck hook terminal now
-          this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
-            this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
-              !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
-            ));
-          }, err=>{console.log(err)});
-        })
+        // do nothing if this truck hooked already with terminal
+        if(this.truck.idTerminal==this.terminal.id){
+          // do nothing
+           console.log("Truck hooked already with Terminal. Just modify terminal in case infos changed")
+        }
+        // if truck is not hooked with terminal and just being choosen we must set and save the choice
+        else{
+          this.truck.idTerminal=this.terminal.id; // set this terminal for the truck
+          this.truck.nameTerminal=this.terminal.name
+          this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+            this.truckHooked=data  // it means this truck hook terminal now
+            this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+              this.trucks=data.sort((a,b)=>Number(a.unite)-Number(b.unite)).filter(x=>(
+                !x.trailer && x.status && (x.idTerminal==null || x.idTerminal<=0)
+              ));
+            }, err=>{console.log(err)});
+          })
+        }
       }
+      // in case truck is null, if already null it is mean  truckhooked is null, if just choose set truckhooked to null
       else{
         if(this.truckHooked!=null){
           this.truckHooked.idTerminal=null;

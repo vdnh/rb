@@ -15,7 +15,7 @@ import { Subscription, interval } from 'rxjs';
 import { TerminalsService } from 'src/services/terminals.service';
 import { Terminal } from 'src/model/model.terminal';
 import { GeocodingService } from 'src/services/geocoding.service';
-import { DatePipe } from '@angular/common';
+import { Clipboard} from '@angular/cdk/clipboard';
 
 declare var Fingerprint2: any;
 
@@ -42,9 +42,13 @@ export class TerminalComponent implements OnInit {
     public varsGlobal:VarsGlobal,
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, 
-    private reperesService:ReperesService,) {
+    private reperesService:ReperesService,
+    private clipboard : Clipboard,) 
+    {
       new Fingerprint2().get((result, components) => {
         this.hash = result;
+        // document.execCommand('copy', false, this.hash)
+        this.clipboard.copy(this.hash)
         // console.log(result); //a hash, representing your device fingerprint
         //console.log(components); // an array of FP components
       });
@@ -83,6 +87,7 @@ export class TerminalComponent implements OnInit {
       localStorage.setItem('terus',this.terminal.loginName)
       localStorage.setItem('terpw',this.terminal.password)
       localStorage.setItem('terky',this.codeValidation.toString())
+      localStorage.setItem('unit',this.truck.unite)
     }
     else
     {
@@ -95,6 +100,11 @@ export class TerminalComponent implements OnInit {
       }
       
     }
+  }
+
+  // use to copy to clipboard this hash id
+  copyHash(){ 
+    this.clipboard.copy(this.hash)
   }
 
   wait10seconds(){
@@ -132,7 +142,7 @@ export class TerminalComponent implements OnInit {
                 this.terminal.latitude=position.coords.latitude 
                 this.terminal.longitude=position.coords.longitude
                 this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-                  this.terminalTemp = data;
+                  this.terminal= this.terminalTemp = data;
                   console.log("Set terminalTemp to the actual position")
                   // and then find the truck and update his location then showMap()
                   if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
@@ -279,7 +289,7 @@ export class TerminalComponent implements OnInit {
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-        this.terminalTemp = data;
+        this.terminal=this.terminalTemp = data;
         if(this.truck!=null && !this.truck.gps){
           this.truck.timeStop=null; // in moving the timeStop is null
           this.truck.latitude=this.terminal.latitude;
@@ -299,13 +309,15 @@ export class TerminalComponent implements OnInit {
               }
             ).then(()=>{
               console.log('this.countTime: '+ this.countTime)
-              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
-              ,err=>{console.log(err)})
+              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                this.truck=data
+              },err=>{console.log(err)})
             })
           }
           else{
-            this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
-            ,err=>{console.log(err)})
+            this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+              this.truck=data
+            },err=>{console.log(err)})
           }
         }
         if (this.countTime>8640) this.countTime=0;  // if countTime last more than 1 day reset countTime
@@ -334,7 +346,7 @@ export class TerminalComponent implements OnInit {
         this.stopped=true; // set teminal stop
         this.terminal.speed=0; // set speed to 0
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-          this.terminalTemp = data;
+          this.terminal= this.terminalTemp = data;
           if(this.truck!=null && !this.truck.gps){
             this.truck.speed=0
             this.truck.timeStop=this.terminal.timeStop
@@ -348,8 +360,9 @@ export class TerminalComponent implements OnInit {
                 this.truck.location=results[0].formatted_address;
               }
             ).then(()=>{
-              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{}
-              ,err=>{console.log(err)})
+              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                this.truck=data
+              },err=>{console.log(err)})
             })
           }
         }, err=>{console.log(err)})
@@ -396,7 +409,13 @@ export class TerminalComponent implements OnInit {
     const intervalCSM = interval(10000); //intervel 10 seconds for update data terminal on the map
     // if this truck no-gps, get the GPS of terminal
     this.subscription=intervalCSM.subscribe(val=>{
-      this.onSaveTerminal();
+      if(this.codeValidation==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0))){
+        this.onSaveTerminal();
+      }
+      else{
+        localStorage.clear()
+        location.reload();
+      }
     })
     const intervalItiners = interval(20000); //intervel 20 seconds for update itineraires/routes
     this.subscription2=intervalItiners.subscribe(val=>{
@@ -517,6 +536,11 @@ export class TerminalComponent implements OnInit {
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
 
+  onSaveTruck(){
+    this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+      this.truck=data
+    },err=>{console.log(err)})
+  }
 }
 
 export class CamionItinersList{
