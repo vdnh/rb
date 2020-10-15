@@ -45,13 +45,29 @@ export class TerminalComponent implements OnInit {
     private reperesService:ReperesService,
     private clipboard : Clipboard,) 
     {
-      new Fingerprint2().get((result, components) => {
-        this.hash = result;
-        // document.execCommand('copy', false, this.hash)
+      // new Fingerprint2().get((result, components)   // this is deprecated
+      // Fingerprint2().get((result, components) => {
+      //   this.hash = result;
+      //   // document.execCommand('copy', false, this.hash)
+      //   this.clipboard.copy(this.hash)
+      //   // console.log(result); //a hash, representing your device fingerprint
+      //   //console.log(components); // an array of FP components
+      // });
+      // var options = {}
+      // Fingerprint2.get(options, function (components) {
+      //   var values = components.map(function (component) { return component.value })
+      //   //var murmur
+      //   this.hash = Fingerprint2.x64hash128(values.join(''), 31)
+      //  this.clipboard.copy(this.hash)
+      // })
+      Fingerprint2.get(async () => {
+        const components = await Fingerprint2.getPromise();
+        const values = components.map(component => component.value);
+        const murmur = Fingerprint2.x64hash128(values.join(""), 31);
+        console.log('fingerprint:', murmur);
+        this.hash=murmur;
         this.clipboard.copy(this.hash)
-        // console.log(result); //a hash, representing your device fingerprint
-        //console.log(components); // an array of FP components
-      });
+      })
      }
 
   truck:Camion;
@@ -68,11 +84,12 @@ export class TerminalComponent implements OnInit {
 
   subscription : Subscription;
   subscription2 : Subscription
+  subscription3 : Subscription
   countTime=0;  // for each time call function saveTerminal
   countTimeNoWrite=0; // for each time no write
   stopped = false; // at beginning the terminal is in working
 
-  codeValided=false;
+  codeValided=true; //false;
   codeValidation:number;
   timeTried=0;
   onCodeValidation(){
@@ -115,7 +132,8 @@ export class TerminalComponent implements OnInit {
   }
   ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
-    if(this.subscription2!=null) this.subscription2.unsubscribe()
+    if(this.subscription2!=null) this.subscription2.unsubscribe();
+    if(this.subscription3!=null) this.subscription3.unsubscribe();
   }
 
   ngOnInit(){
@@ -378,6 +396,7 @@ export class TerminalComponent implements OnInit {
   showMap() {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe();
+    if(this.subscription3!=null) this.subscription3.unsubscribe();
     if(this.marker!=null) this.marker.setMap(null)
     let mapProp = {
       center: new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude),
@@ -406,30 +425,63 @@ export class TerminalComponent implements OnInit {
     });
     // centrer la carte
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
-    const intervalCSM = interval(10000); //intervel 10 seconds for update data terminal on the map
+    const intervalCSM = interval(15000); //intervel 15 seconds for update data terminal on the map
     // if this truck no-gps, get the GPS of terminal
     this.subscription=intervalCSM.subscribe(val=>{
-      if(this.codeValidation==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0))){
-        this.onSaveTerminal();
-      }
-      else{
-        localStorage.clear()
-        location.reload();
-      }
+      this.onSaveTerminal();
+      // if(this.codeValidation==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0)))
+      // if(this.terminal.accepts!=null&&this.terminal.accepts.includes(this.hash))
+      // {
+      //   this.onSaveTerminal();
+      // }
+      // else{
+      //   localStorage.clear()
+      //   location.reload();
+      // }
     })
-    const intervalItiners = interval(20000); //intervel 20 seconds for update itineraires/routes
+    const intervalItiners = interval(30000); //intervel 30 seconds for update itineraires/routes
     this.subscription2=intervalItiners.subscribe(val=>{
       if(this.truck!=null && this.truck.id!=null){ // always check truck do nothing if it is null
         this.itiners=null // set the itiners to null
         this.itinersFinis=null // set the itinersFinis to null
         this.itinerairesService.itinerairesDeCamion(this.truck.id).
         subscribe((data:Array<Itineraire>)=>{
-          this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
-          this.itinersFinis=data.filter(x=>(x.fini))
+          if(data!=null){
+            let itinersTemp:Array<Itineraire>=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+            this.itinersFinis=data.filter(x=>(x.fini))
+            if(itinersTemp!=null){
+              this.compareListRoutes(this.itiners, itinersTemp)
+              this.itiners=itinersTemp
+            }
+            else{
+              this.itiners=null
+              // this.listRoutesChanged=false
+            }
+          }
         }, err=>{console.log(err)})                                            
       }
     })
-    
+    // check autorisation terminal each 50 seconds
+    this.subscription3=interval(50000).subscribe(val=>{
+      this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+        if(data!=null){
+          if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+          {
+            // it is good, do nothing
+          }
+          else{ //  if no more autorisation, clear memo and reload
+            this.subscription3.unsubscribe()
+            localStorage.clear()
+            location.reload();
+          }
+        }
+        else{ // data = null
+          // do nothing - perhaps they have problem acces data this time
+          // when we were here the sure is having terminal already
+          // just wait for the next test
+        }        
+      })
+    })
 
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());
@@ -481,7 +533,7 @@ export class TerminalComponent implements OnInit {
     },
     {
       timeout: 2000, // 2 second before the request errors out
-      maximumAge: 3000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
+      maximumAge: 2000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
       enableHighAccuracy: true  // require a position with highest level of accuracy possible
     })//*/
   }
@@ -514,6 +566,26 @@ export class TerminalComponent implements OnInit {
     return duration;
   }
 
+  listRoutesChanged=false; // each time list routes change => listRoutesChanged=true, terminal will play sound "Message Received"
+  compareListRoutes(ls1:Array<Itineraire>, ls2:Array<Itineraire>){
+    if(ls1!=null&&ls2!=null&&ls1.length==ls2.length){
+      ls1.forEach((r1,index1)=>{
+        r1;
+        ls2.forEach((r2,index2)=>{
+          r2;
+          if(r1.id===r2.id){
+            this.listRoutesChanged=false
+          }
+          else{
+            this.listRoutesChanged=true
+          }
+        })
+      })
+    }
+    else{
+      this.listRoutesChanged=true
+    }
+  }
   movingTerminal() {
     if(this.marker!=null) this.marker.setMap(null) 
     this.marker = new google.maps.Marker({

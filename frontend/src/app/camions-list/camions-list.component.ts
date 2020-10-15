@@ -1765,7 +1765,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       // this.itinersTemp= this.itiners;
       this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
         if(data!=null) {
-          this.itinersTemp=data
+          this.itinersTemp=data.filter(x=>(!x.cancelled&&!x.fini))
           //let itinersFitre:Array<Itineraire>=[];
           // get radius search - by defaut 50km - 50000m
           let radius = (this.itiner.radiusSearch>0?(this.itiner.radiusSearch*1000):50000)

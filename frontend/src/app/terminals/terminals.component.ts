@@ -318,7 +318,7 @@ export class TerminalsComponent implements OnInit {
           })
         }
       }
-      this.truck=null;
+      // this.truck=null;
       alert("Ok, it's modified")
         // this.router.navigate(['/terminals']);  //this.mode=2;
     }, err=>{

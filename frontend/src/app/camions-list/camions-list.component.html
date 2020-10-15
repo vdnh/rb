@@ -50,7 +50,9 @@
             <small *ngFor="let camion of camionsSurMap">
                 <strong class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="onClickCamionId(camion.id)">
                     <!-- mat-menu-item  -->
-                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+ camion.unite+" "+camion.marque+" "+camion.modele +'  +' +camion.nameTerminal))}}                
+                    {{((camion.foreignName!=null && camion.foreignName.length>0) ? 
+                        (camion.foreignName + ((camion.nameTerminal!=null&&camion.nameTerminal.length>0) ? ('  +' +camion.nameTerminal) : "")) 
+                    : ("#"+ camion.unite+" "+camion.marque+" "+camion.modele +((camion.nameTerminal!=null&&camion.nameTerminal.length>0) ? ('  +' +camion.nameTerminal) : "")))}}                
                 </strong>
                 <small *ngIf="camion.speed>0" (click)="onClickCamionId(camion.id)"><img [src]="imgArrow" [style.transform]="orientation(camion)">{{camion.speed}} km/h &nbsp;</small>
                 <small *ngIf="camion.location!=null && camion.location.length>0" (click)="onClickCamionId(camion.id)"><u>Emplacement:</u> {{(camion.localName!=null && camion.localName.length>0) ? camion.localName : camion.location}}</small>
@@ -238,8 +240,8 @@
             <tr *ngFor="let c of camionsSurMap">
                 <td style="width: 30%;">
                     <button (click)="onClickCamion(c)" class="btn btn-link">
-                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</strong>
-                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele +'  +' +c.nameTerminal}}</strong>
+                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName + ((c.nameTerminal!=null&&c.nameTerminal.length>0) ? ('  +' +c.nameTerminal) : "")}}</strong>
+                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele + ((c.nameTerminal!=null&&c.nameTerminal.length>0) ? ('  +' +c.nameTerminal) : "")}}</strong>
                     </button>
                     <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
                         {{findRemorque(c.idCarrier)}}
@@ -1384,8 +1386,8 @@
             <tr *ngFor="let c of camionsSurMap">
                 <td style="width: 30%;">
                     <button (click)="onClickCamion(c)" class="btn btn-link">
-                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</strong>
-                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele +'  +' +c.nameTerminal}}</strong>
+                        <strong *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName + ((c.nameTerminal!=null&&c.nameTerminal.length>0) ? ('  +' +c.nameTerminal) : "")}}</strong>
+                        <strong *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele + ((c.nameTerminal!=null&&c.nameTerminal.length>0) ? ('  +' +c.nameTerminal) : "")}}</strong>
                     </button>
                     <small *ngIf="c.idCarrier!=null&&c.idCarrier>0">
                         {{findRemorque(c.idCarrier)}}

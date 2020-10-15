@@ -18,23 +18,23 @@
         <!-- <table class="table table-striped"> -->
   <table border="1">  
     <tr>
-      <th width="15%">Name</th>
+      <th width="19%">Name</th>
       <th width="5%">Active</th>
-      <th width="15%">Latitude</th>
-      <th width="15%">Longitude</th>
-      <th width="15%">Truck</th>
-      <th width="15%">Driver</th>
-      <th width="20%">Code Validation</th>
+      <th width="19%">Latitude</th>
+      <th width="19%">Longitude</th>
+      <th width="19%">Truck</th>
+      <th width="19%">Driver</th>
+      <!-- <th width="20%">Code Validation</th> -->
     </tr>
     <tr>
-      <td width="15%"><input class="form-control" type="text" [(ngModel)]="terminal.name" /></td>
+      <td width="19%"><input class="form-control" type="text" [(ngModel)]="terminal.name" disabled/></td>
       <td width="5%"><input class="form-control" type="checkbox" [(ngModel)]="terminal.status" /></td>
-      <td width="15%"><input class="form-control" type="number" [(ngModel)]="terminal.latitude" /></td>
-      <td width="15%"><input class="form-control" type="number" [(ngModel)]="terminal.longitude" /></td>
+      <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.latitude" /></td>
+      <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.longitude" /></td>
       <!-- <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idTruck" /></td> -->
       <select *ngIf="truckHooked!=null" [(ngModel)]="truck" (ngModelChange)="onSelectTruck()" [disabled]="!terminal.status">
-        
-        <option [ngValue]="null" disabled selected>
+        <!-- <option [ngValue]="null" disabled selected> -->
+        <option [ngValue]="truckHooked" disabled selected>
             {{(truckHooked.foreignName!=null && truckHooked.foreignName.length>0) ? truckHooked.foreignName : (truckHooked.unite+ ' ' +truckHooked.marque+ ' ' +truckHooked.modele)}}
         </option>
         <option [ngValue]="null">&nbsp;</option>
@@ -60,8 +60,8 @@
         </optgroup>
         <!-- end option of group -->
       </select>
-      <td width="15%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
-      <td width="20%">{{terminal.id+(terminal.idTruck>0 ? terminal.idTruck : 0)}}</td>
+      <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
+      <!-- <td width="20%">{{terminal.id+(terminal.idTruck>0 ? terminal.idTruck : 0)}}</td> -->
     </tr>
     <tr>
         <th>Accept IDs </th>
