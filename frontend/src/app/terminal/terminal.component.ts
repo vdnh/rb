@@ -16,6 +16,7 @@ import { TerminalsService } from 'src/services/terminals.service';
 import { Terminal } from 'src/model/model.terminal';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Clipboard} from '@angular/cdk/clipboard';
+import { ViewportScroller } from '@angular/common';
 
 declare var Fingerprint2: any;
 
@@ -43,7 +44,8 @@ export class TerminalComponent implements OnInit {
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, 
     private reperesService:ReperesService,
-    private clipboard : Clipboard,) 
+    private clipboard : Clipboard,
+    private viewportScroller: ViewportScroller,) 
     {
       // new Fingerprint2().get((result, components)   // this is deprecated
       // Fingerprint2().get((result, components) => {
@@ -72,8 +74,8 @@ export class TerminalComponent implements OnInit {
 
   truck:Camion;
   truckTemp:Camion;
-  terminal : Terminal; // terminal to modify detail 
-  terminalTemp : Terminal; // terminal temp to compare gps before update - to save time update null 
+  terminal : Terminal = null; // terminal to modify detail 
+  terminalTemp : Terminal = new Terminal(); // terminal temp to compare gps before update - to save time update null 
   terminals:Terminal[]  // list of terminal
   driver : Chauffeur;
   allDrivers : Chauffeur[];
@@ -113,6 +115,7 @@ export class TerminalComponent implements OnInit {
       alert("Code validation error!!!")
       if(this.timeTried==4){
         localStorage.clear();
+        localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
         location.reload();
       }
       
@@ -125,8 +128,10 @@ export class TerminalComponent implements OnInit {
   }
 
   wait10seconds(){
-    interval(10000).subscribe(val => {
+    this.subscription3 = interval(20000).subscribe(val => {
+      // alert("You haven't Autorisation !!! Contact Admin, please!")
       localStorage.clear();
+      localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
       location.reload();
     });
   }
@@ -142,6 +147,10 @@ export class TerminalComponent implements OnInit {
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
         this.terminals=data.filter(x=>(x.status))
         this.terminal=data.find(x=>(x.loginName.localeCompare(localStorage.getItem('usernameLogin'))==0))
+        // if(this.hash!=null && (this.terminal.accepts==null || !this.terminal.accepts.includes(this.hash)))
+        // {
+        //   this.wait10seconds()
+        // }
         // terminal active
         if(this.terminal.status){
           if(localStorage.getItem('terus')!=null && localStorage.getItem('terpw')!=null &&
@@ -160,7 +169,8 @@ export class TerminalComponent implements OnInit {
                 this.terminal.latitude=position.coords.latitude 
                 this.terminal.longitude=position.coords.longitude
                 this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-                  this.terminal= this.terminalTemp = data;
+                  this.terminal= data; 
+                  this.terminalTemp = data;
                   console.log("Set terminalTemp to the actual position")
                   // and then find the truck and update his location then showMap()
                   if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
@@ -307,39 +317,56 @@ export class TerminalComponent implements OnInit {
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-        this.terminal=this.terminalTemp = data;
-        if(this.truck!=null && !this.truck.gps){
-          this.truck.timeStop=null; // in moving the timeStop is null
-          this.truck.latitude=this.terminal.latitude;
-          this.truck.longtitude=this.terminal.longitude;
-          this.truck.direction=this.terminal.direction
-          this.truck.speed=this.terminal.speed
-
-          if(this.countTime%12==0){ // we locate address 1 time per 12 times saveTerminal ()
-            let geocodingTemp = new GeocodingService()             
-            geocodingTemp.geocode(new google.maps.LatLng(              
-              this.truck.latitude,
-              this.truck.longtitude
-            ))
-            .forEach(
-              (results: google.maps.GeocoderResult[]) => {
-                this.truck.location=results[0].formatted_address;
-              }
-            ).then(()=>{
-              console.log('this.countTime: '+ this.countTime)
+        console.log("Save Terminal when terminalTemp != terminal : ")
+        // alert("Save Terminal when terminalTemp != terminal : ")
+        console.log("this.hash: " + this.hash)
+        console.log("data.status: " + data.status)
+        console.log("data.accepts: " + data.accepts)
+        if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+        {
+          // it is good,
+          this.terminal= data; 
+          this.terminalTemp = data;
+          if(this.truck!=null && !this.truck.gps){
+            this.truck.timeStop=null; // in moving the timeStop is null
+            this.truck.latitude=this.terminal.latitude;
+            this.truck.longtitude=this.terminal.longitude;
+            this.truck.direction=this.terminal.direction
+            this.truck.speed=this.terminal.speed
+  
+            if(this.countTime%12==0){ // we locate address 1 time per 12 times saveTerminal ()
+              let geocodingTemp = new GeocodingService()             
+              geocodingTemp.geocode(new google.maps.LatLng(              
+                this.truck.latitude,
+                this.truck.longtitude
+              ))
+              .forEach(
+                (results: google.maps.GeocoderResult[]) => {
+                  this.truck.location=results[0].formatted_address;
+                }
+              ).then(()=>{
+                console.log('this.countTime: '+ this.countTime)
+                this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                  this.truck=data
+                },err=>{console.log(err)})
+              })
+            }
+            else{
               this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
                 this.truck=data
               },err=>{console.log(err)})
-            })
+            }
           }
-          else{
-            this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-              this.truck=data
-            },err=>{console.log(err)})
-          }
+          if (this.countTime>8640) this.countTime=0;  // if countTime last more than 1 day reset countTime
+          this.movingTerminal();
         }
-        if (this.countTime>8640) this.countTime=0;  // if countTime last more than 1 day reset countTime
-        this.movingTerminal();
+        else{ //  if no more autorisation, clear memo and reload
+          // alert("Reload at terminaltemp != terminal, because of no more autorisation")
+          localStorage.clear()
+          localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
+          location.reload();
+        }
+
       },err=>{})
     }
     else { 
@@ -364,25 +391,42 @@ export class TerminalComponent implements OnInit {
         this.stopped=true; // set teminal stop
         this.terminal.speed=0; // set speed to 0
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-          this.terminal= this.terminalTemp = data;
-          if(this.truck!=null && !this.truck.gps){
-            this.truck.speed=0
-            this.truck.timeStop=this.terminal.timeStop
-            let geocodingTemp = new GeocodingService()             
-            geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
-              this.truck.latitude=this.terminal.latitude,
-              this.truck.longtitude=this.terminal.longitude
-            ))
-            .forEach(
-              (results: google.maps.GeocoderResult[]) => {
-                this.truck.location=results[0].formatted_address;
-              }
-            ).then(()=>{
-              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                this.truck=data
-              },err=>{console.log(err)})
-            })
+          console.log("Save Terminal when terminalTemp == terminal or Gps no change : ")
+          // alert("Save Terminal when terminalTemp == terminal or Gps no change : ")
+          console.log("this.hash: " + this.hash)
+          console.log("data.status: " + data.status)
+          console.log("data.accepts: " + data.accepts)
+          if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+          {
+            // it is good,
+            this.terminal= data; 
+            this.terminalTemp = data;
+            if(this.truck!=null && !this.truck.gps){
+              this.truck.speed=0
+              this.truck.timeStop=this.terminal.timeStop
+              let geocodingTemp = new GeocodingService()             
+              geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+                this.truck.latitude=this.terminal.latitude,
+                this.truck.longtitude=this.terminal.longitude
+              ))
+              .forEach(
+                (results: google.maps.GeocoderResult[]) => {
+                  this.truck.location=results[0].formatted_address;
+                }
+              ).then(()=>{
+                this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                  this.truck=data
+                },err=>{console.log(err)})
+              })
+            }
           }
+          else{ //  if no more autorisation, clear memo and reload
+            // alert("Reload at terminaltemp == terminal or Gps data no change, because of no more autorisation")
+            localStorage.clear()
+            localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
+            location.reload();
+          }
+          
         }, err=>{console.log(err)})
       }
       else if(this.stopped && this.countTimeNoWrite%12==0){
@@ -425,7 +469,7 @@ export class TerminalComponent implements OnInit {
     });
     // centrer la carte
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
-    const intervalCSM = interval(15000); //intervel 15 seconds for update data terminal on the map
+    const intervalCSM = interval(10000); //intervel 10 seconds for update data terminal on the map
     // if this truck no-gps, get the GPS of terminal
     this.subscription=intervalCSM.subscribe(val=>{
       this.onSaveTerminal();
@@ -442,7 +486,7 @@ export class TerminalComponent implements OnInit {
     const intervalItiners = interval(30000); //intervel 30 seconds for update itineraires/routes
     this.subscription2=intervalItiners.subscribe(val=>{
       if(this.truck!=null && this.truck.id!=null){ // always check truck do nothing if it is null
-        this.itiners=null // set the itiners to null
+        // this.itiners=null // set the itiners to null
         this.itinersFinis=null // set the itinersFinis to null
         this.itinerairesService.itinerairesDeCamion(this.truck.id).
         subscribe((data:Array<Itineraire>)=>{
@@ -462,26 +506,26 @@ export class TerminalComponent implements OnInit {
       }
     })
     // check autorisation terminal each 50 seconds
-    this.subscription3=interval(50000).subscribe(val=>{
-      this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
-        if(data!=null){
-          if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
-          {
-            // it is good, do nothing
-          }
-          else{ //  if no more autorisation, clear memo and reload
-            this.subscription3.unsubscribe()
-            localStorage.clear()
-            location.reload();
-          }
-        }
-        else{ // data = null
-          // do nothing - perhaps they have problem acces data this time
-          // when we were here the sure is having terminal already
-          // just wait for the next test
-        }        
-      })
-    })
+    // this.subscription3=interval(50000).subscribe(val=>{
+    //   this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+    //     if(data!=null){
+    //       if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+    //       {
+    //         // it is good, do nothing
+    //       }
+    //       else{ //  if no more autorisation, clear memo and reload
+    //         this.subscription3.unsubscribe()
+    //         localStorage.clear()
+    //         location.reload();
+    //       }
+    //     }
+    //     else{ // data = null
+    //       // do nothing - perhaps they have problem acces data this time
+    //       // when we were here the sure is having terminal already
+    //       // just wait for the next test
+    //     }        
+    //   })
+    // })
 
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());
@@ -568,22 +612,32 @@ export class TerminalComponent implements OnInit {
 
   listRoutesChanged=false; // each time list routes change => listRoutesChanged=true, terminal will play sound "Message Received"
   compareListRoutes(ls1:Array<Itineraire>, ls2:Array<Itineraire>){
-    if(ls1!=null&&ls2!=null&&ls1.length==ls2.length){
-      ls1.forEach((r1,index1)=>{
-        r1;
-        ls2.forEach((r2,index2)=>{
-          r2;
-          if(r1.id===r2.id){
-            this.listRoutesChanged=false
-          }
-          else{
-            this.listRoutesChanged=true
-          }
-        })
+    this.listRoutesChanged=false;
+    if(ls1!=null&&ls2==null)
+      {this.listRoutesChanged=true;
+        // alert("ls1!=null&&ls2==null")
+      }
+    else if(ls1==null&&ls2!=null)
+      {this.listRoutesChanged=true;
+        // alert("ls1==null&&ls2!=null")
+      }
+    else if(ls1!=null&&ls2!=null&&ls1.length!=ls2.length){
+      {this.listRoutesChanged=true;
+        // alert("ls1.length!=ls2.length")
+      }
+    }
+    else if(ls1!=null&&ls2!=null&&ls1.length==ls2.length){
+      ls1.forEach((r)=>{
+        // ls2[1]
+        if(r.id != ls2[ls1.indexOf(r)].id) // If r is not in list ls2 so the list was changed
+        {
+          this.listRoutesChanged=true
+          // alert("It is not same order.")
+        }
       })
     }
     else{
-      this.listRoutesChanged=true
+      this.listRoutesChanged=false
     }
   }
   movingTerminal() {
@@ -613,6 +667,9 @@ export class TerminalComponent implements OnInit {
       this.truck=data
     },err=>{console.log(err)})
   }
+  public gotoAnchorID(elementId: string): void { 
+    this.viewportScroller.scrollToAnchor(elementId);
+}
 }
 
 export class CamionItinersList{
