@@ -168,9 +168,11 @@ export class TerminalComponent implements OnInit {
                 // observer.complete();
                 this.terminal.latitude=position.coords.latitude 
                 this.terminal.longitude=position.coords.longitude
+                this.terminalTemp.latitude=position.coords.latitude 
+                this.terminalTemp.longitude=position.coords.longitude
                 this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
                   this.terminal= data; 
-                  this.terminalTemp = data;
+                  // this.terminalTemp = data;
                   console.log("Set terminalTemp to the actual position")
                   // and then find the truck and update his location then showMap()
                   if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
@@ -189,7 +191,8 @@ export class TerminalComponent implements OnInit {
                         this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
                           this.truck=data
                           console.log("Updated trucks' location and find list itiners and then showMap()")
-                          this.itinerairesService.itinerairesDeCamion(this.truck.id).
+                          // this.itinerairesService.itinerairesDeCamion(this.truck.id).
+                          this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
                           subscribe((data:Array<Itineraire>)=>{
                             this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
                             this.itinersFinis=data.filter(x=>(x.fini))
@@ -307,17 +310,18 @@ export class TerminalComponent implements OnInit {
     // else 
     if( // since now, we know terminalTemp is not equal null
       //this.terminalTemp==null ||
-        (
-        this.terminalTemp.latitude!=this.terminal.latitude || 
+        (this.terminalTemp.latitude!=this.terminal.latitude || 
         this.terminalTemp.longitude!=this.terminal.longitude)
         &&
-        (this.terminal.speed>0 || this.instantMoved>0))
+        (this.terminal.speed>0 ) //  || this.instantMoved>0
+        )
     {
       this.terminal.timeStop=null; // in moving the timeStop is null
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         console.log("Save Terminal when terminalTemp != terminal : ")
+        this.movingTerminal();
         // alert("Save Terminal when terminalTemp != terminal : ")
         console.log("this.hash: " + this.hash)
         console.log("data.status: " + data.status)
@@ -326,7 +330,9 @@ export class TerminalComponent implements OnInit {
         {
           // it is good,
           this.terminal= data; 
-          this.terminalTemp = data;
+          // this.terminalTemp = data;
+          this.terminalTemp.latitude=data.latitude 
+          this.terminalTemp.longitude=data.longitude
           if(this.truck!=null && !this.truck.gps){
             this.truck.timeStop=null; // in moving the timeStop is null
             this.truck.latitude=this.terminal.latitude;
@@ -358,7 +364,7 @@ export class TerminalComponent implements OnInit {
             }
           }
           if (this.countTime>8640) this.countTime=0;  // if countTime last more than 1 day reset countTime
-          this.movingTerminal();
+          // this.movingTerminal();
         }
         else{ //  if no more autorisation, clear memo and reload
           // alert("Reload at terminaltemp != terminal, because of no more autorisation")
@@ -400,7 +406,9 @@ export class TerminalComponent implements OnInit {
           {
             // it is good,
             this.terminal= data; 
-            this.terminalTemp = data;
+            // this.terminalTemp = data;
+            this.terminalTemp.latitude=data.latitude 
+            this.terminalTemp.longitude=data.longitude
             if(this.truck!=null && !this.truck.gps){
               this.truck.speed=0
               this.truck.timeStop=this.terminal.timeStop
@@ -483,12 +491,13 @@ export class TerminalComponent implements OnInit {
       //   location.reload();
       // }
     })
-    const intervalItiners = interval(30000); //intervel 30 seconds for update itineraires/routes
+    const intervalItiners = interval(30000); //intervel 30 seconds for update itineraires/routes leger/light
     this.subscription2=intervalItiners.subscribe(val=>{
       if(this.truck!=null && this.truck.id!=null){ // always check truck do nothing if it is null
         // this.itiners=null // set the itiners to null
         this.itinersFinis=null // set the itinersFinis to null
-        this.itinerairesService.itinerairesDeCamion(this.truck.id).
+        // this.itinerairesService.itinerairesDeCamion(this.truck.id).
+        this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
         subscribe((data:Array<Itineraire>)=>{
           if(data!=null){
             let itinersTemp:Array<Itineraire>=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
@@ -667,6 +676,14 @@ export class TerminalComponent implements OnInit {
       this.truck=data
     },err=>{console.log(err)})
   }
+  
+  onclickRoute(itiner:Itineraire){
+    this.itinerairesService.getDetailItineraire(itiner.id).subscribe((data:Itineraire)=>{
+      this.itiner=data;
+      this.gotoAnchorID('photo')
+    }, err=>{console.log(err)})
+  }
+  
   public gotoAnchorID(elementId: string): void { 
     this.viewportScroller.scrollToAnchor(elementId);
 }

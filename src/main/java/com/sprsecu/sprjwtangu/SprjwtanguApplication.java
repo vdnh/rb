@@ -222,7 +222,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                     }
                     else{
                         truckTersTemp.forEach(truck ->{
-                            if( // if data gps was changed
+                            if( // if data gps was not changed
                                Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
                                 &&
                                Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
@@ -231,6 +231,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                 // and timestop is null ==> must set timestop to current time
                                 if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()== null){
                                     truckTers.get(truckTers.indexOf(truck)).setTimeStop(System.currentTimeMillis());
+                                    truckTers.get(truckTers.indexOf(truck)).setSpeed(0.00);
                                     camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
                                 }
                                 

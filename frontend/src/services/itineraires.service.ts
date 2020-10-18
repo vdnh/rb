@@ -33,6 +33,13 @@ export class ItinerairesService{
         .pipe(map(res => {return res}));
     }
 
+    itinerairesLegerDeCamion(idCamion:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/itinerairesLegerCamion/"+idCamion
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+    
     saveItineraires(itineraire:Itineraire){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/itineraires",itineraire

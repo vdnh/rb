@@ -7,6 +7,8 @@ package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.dao.ItineraireRepository;
 import com.sprsecu.sprjwtangu.entities.Itineraire;
+import com.sprsecu.sprjwtangu.entities.ItineraireLeger;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,6 +39,18 @@ public class ItineraireRestService {
     @RequestMapping(value = "/itinerairesCamion/{idCamion}", method = RequestMethod.GET)
     public List<Itineraire> getItinerairesCamion(@PathVariable Long idCamion){
         return itineraireRepository.findByIdCamion(idCamion);
+    }
+    
+    // All itineraires leger of a truck without image
+    @RequestMapping(value = "/itinerairesLegerCamion/{idCamion}", method = RequestMethod.GET)
+    public List<Itineraire> getItinerairesLegerCamion(@PathVariable Long idCamion){
+        List<Itineraire> temp = new ArrayList<Itineraire>(); 
+        itineraireRepository.findByIdCamion(idCamion).forEach(iti->{
+            iti.setImgUrl("");
+            temp.add(iti);
+        });
+        return temp;
+//        return (<ItineraireLeger>) itineraireRepository.findByIdCamion(idCamion);
     }
     
     @RequestMapping(value = "/itineraires", method = RequestMethod.GET)

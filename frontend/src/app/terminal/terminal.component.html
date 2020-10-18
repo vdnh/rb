@@ -35,7 +35,7 @@
         <!-- <div *ngIf="codeValided==true"> -->
             <strong>List : </strong> 
             <table *ngIf="itiners!=null" border="1">
-                <tr *ngFor="let iti of itiners; let i = index" (click)="itiner=iti; orde=i+1; gotoAnchorID('photo')">
+                <tr *ngFor="let iti of itiners; let i = index" (click)="orde=i+1; onclickRoute(iti);">
                     <!-- (click)="onModify(iti)"  -->
                     <th>&nbsp;{{i+1}}&nbsp;</th>
                     <td>
@@ -85,7 +85,8 @@
         <input type="number" style="width: 12ch;" [(ngModel)]="truck.odometre">
         <button class="btn btn-link" (click)="onSaveTruck()">Update</button>
     </div>
-
+    <label for="" style="font-weight: bold;"> &nbsp; Speed(km/h) &nbsp;</label>
+    <input type="number" style="width: 15%; font-weight: bold;" [(ngModel)]="terminal.speed" disabled>
 </div>
 
 
