@@ -46,6 +46,28 @@ export class CamionsService{
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
+    
+    // camionUpdateFromTerminal  url
+    /*
+    @Param("speed")Double speed,
+    @Param("timeStop")Long timeStop,
+    @Param("latitude")Double latitude,
+    @Param("longtitude")Double longtitude,
+    @Param("location")String location,
+    @Param("direction")Double direction,
+    @Param("odometre")Long odometre
+    */
+    updateCamionFromterminal(id:number, speed:number, timeStop:number, latitude:number,
+        longtitude:number, location:string, direction:number, odometre:number)
+    {
+        this.loadTonken();
+        // ?mc="+motCle+"&size="+size+"&page="+page
+        return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal/?id="+id+"&speed="+speed+"&timeStop="+timeStop+"&latitude="+latitude
+        +"&longtitude="+longtitude+"&location="+location+"&direction="+direction+"&odometre="+odometre, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(
+            map(res => {return res})
+        );
+    }
 
     deleteCamion(id:number){
         this.loadTonken();

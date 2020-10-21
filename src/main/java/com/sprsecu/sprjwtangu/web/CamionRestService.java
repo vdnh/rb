@@ -57,6 +57,39 @@ public class CamionRestService {
         c.setId(id);
         return camionRepository.save(c);
     }    
+    /*
+    @Param("speed")Double speed,
+    @Param("timeStop")Long timeStop,
+    @Param("latitude")Double latitude,
+    @Param("longtitude")Double longtitude,
+    @Param("location")String location,
+    @Param("direction")Double direction,
+    @Param("odometre")Long odometre
+    */
+//    @RequestMapping(value = "/camionUpdateFromTerminal/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/camionUpdateFromTerminal", method = RequestMethod.PATCH)
+    public Boolean updateCamionFromTerminal(
+            @RequestParam(name = "id", defaultValue = "0") Long id,
+//            @PathVariable Long id, 
+            @RequestParam(name = "speed", defaultValue = "0") Double speed,
+//            @RequestBody Double speed,
+            @RequestParam(name = "timeStop", defaultValue = "0") Long timeStop,
+//            @RequestBody Long timeStop,
+            @RequestParam(name = "latitude", defaultValue = "0") Double latitude,
+//            @RequestBody Double latitude,
+            @RequestParam(name = "longtitude", defaultValue = "0") Double longtitude,
+//            @RequestBody Double longtitude,
+            @RequestParam(name = "location", defaultValue = "") String location,
+//            @RequestBody String location,
+            @RequestParam(name = "direction", defaultValue = "0") Double direction,
+//            @RequestBody Double direction,
+            @RequestParam(name = "odometre", defaultValue = "0") Long odometre
+//            @RequestBody Long odometre
+        )
+    {
+        camionRepository.updateCamionFromTerminal(id, speed, timeStop, latitude, longtitude, location, direction, odometre);
+        return true;
+    }
     
     @RequestMapping(value = "/chercherPlaque", method = RequestMethod.GET)
     public Page<Camion> chercherPlaque(

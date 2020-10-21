@@ -632,7 +632,9 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoinImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+                    <!-- <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoinImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg, image/tif,
+                    image/tiff, application/pdf, .tif" multiple placeholder=""> -->
+                    <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoindreImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
                     <img *ngIf="itiner.imgUrl!=null&&itiner.imgUrl.length>0" [src]="itiner.imgUrl" style="width:100px; height: 150px;" alt="">
                     <button *ngIf="itiner.imgUrl!=null&&itiner.imgUrl.length>0" (click)="itiner.imgUrl=''" class="btn btn-link">DeleteImage</button>
                 </td>
@@ -666,29 +668,20 @@
             </tr>
         </table> -->
 
-        <table *ngIf="itiner.origin.length>4 && itiner.destination.length>4" border="1">
+        <!-- <table *ngIf="itiner.origin.length>4 && itiner.destination.length>4" border="1">
             <tr><br></tr>
             <tr>
                 <th colspan="4">
                     <h4>Choisir Camion pour Itineraire</h4>
                 </th>
             </tr>
-            <tr> <!-- because good address has at least 5 characters-->
+            <tr>
                 <th><h5><strong>Camions</strong></h5></th>
                 <th><h5><strong>Dispo</strong></h5></th>
                 <th><h5><strong>Itineraires</strong></h5></th>
                 <th><h5><strong>Emplacement</strong></h5></th>
-                <!-- <th colspan="5"><h6><strong>Itineraires</strong></h6></th> -->
             </tr>
-            <!-- <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
-                <th>Unite</th>
-                <th>ItineraireActuel</th>
-                <th>Disponible</th>
-            </tr> -->
-            <!-- <ng-container> -->
                 <tr *ngFor="let c of camionsFiltre">
-                    <!-- camionsFiltre camionsSurMap  filterCamion(itiner)"> -->
-                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
@@ -706,14 +699,6 @@
                     </td>
 
                     <td style="width: 40%;">
-                        <!-- <table *ngIf="camionItinersFind(c.id).length>0">
-                            <tr *ngFor="let iti of camionItinersFind(c.id)">
-                                <p>
-                                    <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
-                                </p>
-                            </tr>
-                        </table> -->
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
                             <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
@@ -727,8 +712,6 @@
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                     
                 </tr>
-            <!-- </ng-container>
-            <ng-container> -->
                 <tr *ngFor="let c of camionsFreeClose">
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
@@ -757,11 +740,8 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-            
-            <ng-container> -->
                 <tr *ngFor="let c of camionsFreeFar">
-                    <!-- camionsNonFiltre"> -->
+                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
@@ -775,7 +755,7 @@
                     <td style="color: black; background-color:goldenrod; width: 15%;">
                         Loin - Libre
                         <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km
-                         <!-- | number : '1.2' }} -->
+                         
                     </td>
 
                     <td style="width: 40%;">
@@ -790,11 +770,8 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-
-            <ng-container> -->
                 <tr *ngFor="let c of camionsItinersFar">
-                    <!-- camionsNonFiltre"> -->
+                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
@@ -821,14 +798,10 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-            <ng-container> -->
                 <tr *ngFor="let c of camionsNoGPS">
-                    <!-- camionsNonFiltre"> -->
+                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
-                            <!-- <span *ngIf="c.foreignName.length>0">{{c.foreignName}}</span>
-                            <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span> -->
                             <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
                         <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
@@ -850,10 +823,10 @@
                             </p>
                         </ng-container>
                     </td>
-                    <!-- <td style="width: 25%;">{{c.localName.length>0 ? c.localName : c.location}}</td>                     -->
+                    
                 </tr>
-            <!-- </ng-container> -->
-        </table>
+        
+        </table> -->
 
         <div><br></div>
         
@@ -992,6 +965,167 @@
     </div>
 
     <div [hidden]="detailCamion || modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
+        <div *ngIf="itiner.origin.length>4 && itiner.destination.length>4" style="overflow: scroll; height: 650px;">
+            <table border="1">
+                <tr><br></tr>
+                <tr>
+                    <th colspan="4">
+                        <h4>Choisir Camion pour Itineraire</h4>
+                    </th>
+                </tr>
+                <tr> 
+                    <th><h5><strong>Camions</strong></h5></th>
+                    <th><h5><strong>Dispo</strong></h5></th>
+                    <th><h5><strong>Itineraires</strong></h5></th>
+                    <th><h5><strong>Emplacement</strong></h5></th>
+                </tr>
+                
+                    <tr *ngFor="let c of camionsFiltre">
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        
+                        <td style="color: black; background-color:greenyellow; width: 15%;">
+                            Vide
+                            <br>En route
+                        </td>
+    
+                        <td style="width: 40%;">
+                            
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+    
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                        
+                    </tr>
+                    <tr *ngFor="let c of camionsFreeClose">
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        
+                        <td style="color: black; background-color:greenyellow; width: 15%;">
+                            Proche - Libre      
+                            <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km     
+                        </td>
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                    <tr *ngFor="let c of camionsFreeFar">
+                        
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:goldenrod; width: 15%;">
+                            Loin - Libre
+                            <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km
+                             
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                    <tr *ngFor="let c of camionsItinersFar">
+                        
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:red; width: 15%;">
+                            Occupe
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                    <tr *ngFor="let c of camionsNoGPS">
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:dimgrey; width: 15%;">
+                            Sans GPS
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        
+                    </tr>
+            </table>
+        </div>
         <h5 style="margin-top: 0px;">
             <span>(Actualiser automatiquement toutes les 2 minutes) </span>
             <span><button class="btn btn-link" (click)="onClearMap()"> Reset</button></span>
@@ -1797,28 +1931,21 @@
             </tr>
         </table>
 
-        <table *ngIf="itiner.origin.length>4 && itiner.destination.length>4" border="1">
+        <!-- <table *ngIf="itiner.origin.length>4 && itiner.destination.length>4" border="1">
             <tr><br></tr>
             <tr>
                 <th colspan="4">
                     <h4>Select Unit for Route</h4>
                 </th>
             </tr>
-            <tr> <!-- because good address has at least 5 characters-->
+            <tr>
                 <th><h5><strong>Unit</strong></h5></th>
                 <th><h5><strong>Dispo</strong></h5></th>
                 <th><h5><strong>Routes</strong></h5></th>
                 <th><h5><strong>Location</strong></h5></th>
-                <!-- <th colspan="5"><h6><strong>Itineraires</strong></h6></th> -->
+                
             </tr>
-            <!-- <tr *ngIf="itiner.origin.length>0 && itiner.destination.length>0">
-                <th>Unite</th>
-                <th>ItineraireActuel</th>
-                <th>Disponible</th>
-            </tr> -->
-            <!-- <ng-container> -->
                 <tr *ngFor="let c of camionsFiltre">
-                    <!-- camionsFiltre camionsSurMap  filterCamion(itiner)"> -->
                     
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
@@ -1837,14 +1964,7 @@
                     </td>
 
                     <td style="width: 40%;">
-                        <!-- <table *ngIf="camionItinersFind(c.id).length>0">
-                            <tr *ngFor="let iti of camionItinersFind(c.id)">
-                                <p>
-                                    <strong>Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
-                                </p>
-                            </tr>
-                        </table> -->
+                       
                         <ng-container  *ngIf="camionItinersFind(c.id)!=null">
                             <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                             
@@ -1858,8 +1978,6 @@
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                     
                 </tr>
-            <!-- </ng-container>
-            <ng-container> -->
                 <tr *ngFor="let c of camionsFreeClose">
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
@@ -1888,11 +2006,8 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-            
-            <ng-container> -->
                 <tr *ngFor="let c of camionsFreeFar">
-                    <!-- camionsNonFiltre"> -->
+                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
@@ -1906,7 +2021,7 @@
                     <td style="color: black; background-color:goldenrod; width: 15%;">
                         Far - Free
                         <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km
-                         <!-- | number : '1.2' }} -->
+                         
                     </td>
 
                     <td style="width: 40%;">
@@ -1921,11 +2036,9 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-
-            <ng-container> -->
+            
                 <tr *ngFor="let c of camionsItinersFar">
-                    <!-- camionsNonFiltre"> -->
+                    
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
                             <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
@@ -1952,14 +2065,9 @@
                     </td>
                     <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
                 </tr>
-            <!-- </ng-container>
-            <ng-container> -->
                 <tr *ngFor="let c of camionsNoGPS">
-                    <!-- camionsNonFiltre"> -->
                     <td style="width: 20%;">
                         <button (click)="onSelectCamion(c)" class="btn btn-link">
-                            <!-- <span *ngIf="c.foreignName.length>0">{{c.foreignName}}</span>
-                            <span *ngIf="c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span> -->
                             <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
                         </button>
                         <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
@@ -1981,10 +2089,9 @@
                             </p>
                         </ng-container>
                     </td>
-                    <!-- <td style="width: 25%;">{{c.localName.length>0 ? c.localName : c.location}}</td>                     -->
+                    
                 </tr>
-            <!-- </ng-container> -->
-        </table>
+        </table> -->
 
         <div><br></div>
         
@@ -2123,6 +2230,169 @@
     </div>
 
     <div [hidden]="detailCamion || modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;"> 
+        <div *ngIf="itiner.origin.length>4 && itiner.destination.length>4"  style="overflow: scroll; height: 650px;">
+            <table border="1">
+                <tr><br></tr>
+                <tr>
+                    <th colspan="4">
+                        <h4>Select Unit for Route</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th><h5><strong>Unit</strong></h5></th>
+                    <th><h5><strong>Dispo</strong></h5></th>
+                    <th><h5><strong>Routes</strong></h5></th>
+                    <th><h5><strong>Location</strong></h5></th>
+                    
+                </tr>
+                    <tr *ngFor="let c of camionsFiltre">
+                        
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        
+                        <td style="color: black; background-color:greenyellow; width: 15%;">
+                            Empty
+                            <br>On the way
+                        </td>
+    
+                        <td style="width: 40%;">
+                           
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+    
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                        
+                    </tr>
+                    <tr *ngFor="let c of camionsFreeClose">
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        
+                        <td style="color: black; background-color:greenyellow; width: 15%;">
+                            Close - Free      
+                            <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km     
+                        </td>
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                    <tr *ngFor="let c of camionsFreeFar">
+                        
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:goldenrod; width: 15%;">
+                            Far - Free
+                            <br>{{(calculateDistance(c.latitude, c.longtitude, itiner.originLat, itiner.originLong)/1000).toFixed(0)}} km
+                             
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                
+                    <tr *ngFor="let c of camionsItinersFar">
+                        
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span *ngIf="c.foreignName!=null && c.foreignName.length>0">{{c.foreignName}}</span>
+                                <span *ngIf="c.foreignName==null || c.foreignName.length==0">{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:red; width: 15%;">
+                            Busy
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        <td style="width: 25%;">{{(c.localName!=null && c.localName.length>0) ? c.localName : c.location}}</td>                    
+                    </tr>
+                    <tr *ngFor="let c of camionsNoGPS">
+                        <td style="width: 20%;">
+                            <button (click)="onSelectCamion(c)" class="btn btn-link">
+                                <span>{{c.unite + ' - ' + c.marque +'  ' +c.modele}}</span>
+                            </button>
+                            <small *ngIf="(c.idCarrier!=null && c.idCarrier>0)">
+                                {{findRemorque(c.idCarrier)}}
+                                  <br> <span *ngIf="trailerTemp!=null">{{trailerTemp.unite + ' - ' + trailerTemp.marque +'  ' +trailerTemp.modele}}</span> 
+                            </small>
+                        </td>
+                        <td style="color: black; background-color:dimgrey; width: 15%;">
+                            No-GPS
+                        </td>
+    
+                        <td style="width: 40%;">
+                            <ng-container  *ngIf="camionItinersFind(c.id)!=null">
+                                <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
+                                
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                                    
+                                </p>
+                            </ng-container>
+                        </td>
+                        
+                    </tr>
+            </table>
+        </div>
         <h5 style="margin-top: 0px;">
             <span>(Refresh every 2 minutes) </span>
             <span><button class="btn btn-link" (click)="onClearMap()"> Reset</button></span>

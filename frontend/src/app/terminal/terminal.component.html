@@ -68,7 +68,10 @@
         <br><strong>{{orde +". "}}Image/PO/Order</strong>
         <img [src]="itiner.imgUrl" alt="image join" class="img-responsive" width="100%">
         <br>
-        <button class="btn btn-link" (click)="itiner=null"><strong>CloseImage</strong></button>
+        <!-- <iframe class="e2e-iframe-trusted-src" [src]="imgtUrlTrust" width="100%"></iframe> -->
+        <!-- width=200 height=200  -->
+        <!-- <br> -->
+        <button class="btn btn-link" (click)="itiner=null"><strong>Close Image</strong></button>
         <br>
     </div>
     <div [hidden]="this.terminal.accepts==null || !this.terminal.accepts.includes(this.hash)" #gmap style="width:100%;height:400px" ></div>

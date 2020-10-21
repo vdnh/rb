@@ -1,4 +1,4 @@
-import { ViewChild } from '@angular/core';
+import { HostListener, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { Camion } from 'src/model/model.camion';
 import { Chauffeur } from 'src/model/model.chauffeur';
@@ -17,8 +17,9 @@ import { Terminal } from 'src/model/model.terminal';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { ViewportScroller } from '@angular/common';
-
-declare var Fingerprint2: any;
+import { DomSanitizer } from '@angular/platform-browser';
+import FingerprintJS  from '@fingerprintjs/fingerprintjs';
+// declare var Fingerprint2: any;
 
 @Component({
   selector: 'app-terminal',
@@ -45,7 +46,8 @@ export class TerminalComponent implements OnInit {
     private itinerairesService:ItinerairesService, 
     private reperesService:ReperesService,
     private clipboard : Clipboard,
-    private viewportScroller: ViewportScroller,) 
+    private viewportScroller: ViewportScroller,
+    private sanitizer: DomSanitizer) 
     {
       // new Fingerprint2().get((result, components)   // this is deprecated
       // Fingerprint2().get((result, components) => {
@@ -62,13 +64,18 @@ export class TerminalComponent implements OnInit {
       //   this.hash = Fingerprint2.x64hash128(values.join(''), 31)
       //  this.clipboard.copy(this.hash)
       // })
-      Fingerprint2.get(async () => {
-        const components = await Fingerprint2.getPromise();
-        const values = components.map(component => component.value);
-        const murmur = Fingerprint2.x64hash128(values.join(""), 31);
-        console.log('fingerprint:', murmur);
-        this.hash=murmur;
-        this.clipboard.copy(this.hash)
+      // Fingerprint2.get(async () => {
+      //   const components = await Fingerprint2.getPromise();
+      //   const values = components.map(component => component.value);
+      //   const murmur = Fingerprint2.x64hash128(values.join(""), 31);
+      //   console.log('fingerprint:', murmur);
+      //   this.hash=murmur;
+      //   this.clipboard.copy(this.hash)
+      // })
+      FingerprintJS.load().then(fp=>{
+        fp.get().then(result=>{
+          this.hash=result.visitorId
+        })
       })
      }
 
@@ -135,10 +142,58 @@ export class TerminalComponent implements OnInit {
       location.reload();
     });
   }
-  ngOnDestroy(): void {
+  
+  @HostListener('window:beforeunload')
+  async ngOnDestroy() {
+  // ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe();
     if(this.subscription3!=null) this.subscription3.unsubscribe();
+    // alert("Stopping terminal by logout.")
+    if(!this.stopped){
+      if(this.terminal.timeStop!=null){
+        // this terminal is stopping
+        // do nothing
+      }
+      else{
+        // this terminal is stopped by user (logout) while running
+        this.terminal.timeStop = new Date().getTime();
+        // console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
+        // let dt= new Date(this.terminal.timeStop)
+        // console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
+        // console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
+      }
+      // this.stopped=true; // set teminal stop
+      this.terminal.speed=0; // set speed to 0
+      await this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+        // alert("Stopping terminal by logout, saved already terminal before stop.")        
+        // if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+        // {          
+          // this.terminal= data; 
+          // this.terminalTemp.latitude=data.latitude 
+          // this.terminalTemp.longitude=data.longitude
+          if(this.truck!=null && !this.truck.gps){
+            this.truck.speed=0
+            this.truck.timeStop=this.terminal.timeStop
+            let geocodingTemp = new GeocodingService()             
+            geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+              this.truck.latitude=this.terminal.latitude,
+              this.truck.longtitude=this.terminal.longitude
+            ))
+            .forEach(
+              (results: google.maps.GeocoderResult[]) => {
+                this.truck.location=results[0].formatted_address;
+              }
+            ).then(()=>{
+              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                // this.truck=data
+                // alert("Stopping terminal by logout, saved already truck before stop.")
+              },err=>{console.log(err)})
+            })
+          }
+        //}        
+      }, err=>{console.log(err)})
+    }
   }
 
   ngOnInit(){
@@ -316,12 +371,12 @@ export class TerminalComponent implements OnInit {
         (this.terminal.speed>0 ) //  || this.instantMoved>0
         )
     {
+      this.movingTerminal(); // move marker if data gps change
       this.terminal.timeStop=null; // in moving the timeStop is null
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         console.log("Save Terminal when terminalTemp != terminal : ")
-        this.movingTerminal();
         // alert("Save Terminal when terminalTemp != terminal : ")
         console.log("this.hash: " + this.hash)
         console.log("data.status: " + data.status)
@@ -480,16 +535,8 @@ export class TerminalComponent implements OnInit {
     const intervalCSM = interval(10000); //intervel 10 seconds for update data terminal on the map
     // if this truck no-gps, get the GPS of terminal
     this.subscription=intervalCSM.subscribe(val=>{
-      this.onSaveTerminal();
-      // if(this.codeValidation==(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0)))
-      // if(this.terminal.accepts!=null&&this.terminal.accepts.includes(this.hash))
-      // {
-      //   this.onSaveTerminal();
-      // }
-      // else{
-      //   localStorage.clear()
-      //   location.reload();
-      // }
+      // this.movingTerminal();
+      this.onSaveTerminal(); // in onSaveTerminal will move marker if data gps change
     })
     const intervalItiners = interval(30000); //intervel 30 seconds for update itineraires/routes leger/light
     this.subscription2=intervalItiners.subscribe(val=>{
@@ -571,6 +618,7 @@ export class TerminalComponent implements OnInit {
         this.terminal.speed = Math.round(position.coords.speed*3.6) //distanceMetter*4*60/1000; // => kmh (15s*4=1minute, minute*60=hour, m/1000=km)
         this.terminal.direction = position.coords.heading
         this.instantMoved = calculateDistance(oldPoint, newPoint)
+        // this.movingTerminal();
         // let degree = Math.round(position.coords.heading);
         //this.bearing(oldPoint.lat(), oldPoint.lng(), newPoint.lat(), newPoint.lng())
         // if(oldPoint!=null)
@@ -666,7 +714,7 @@ export class TerminalComponent implements OnInit {
         strokeWeight: 3,
         strokeColor: "#008088", //"#FFFFFF",//"red",
       },
-      title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
+      title: this.terminal.name //+ this.calculateStopTime(this.terminal.timeStop)
     });
     this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
   }
@@ -677,9 +725,11 @@ export class TerminalComponent implements OnInit {
     },err=>{console.log(err)})
   }
   
+  imgtUrlTrust:any
   onclickRoute(itiner:Itineraire){
     this.itinerairesService.getDetailItineraire(itiner.id).subscribe((data:Itineraire)=>{
       this.itiner=data;
+      this.imgtUrlTrust =this.sanitizer.bypassSecurityTrustResourceUrl(this.itiner.imgUrl)
       this.gotoAnchorID('photo')
     }, err=>{console.log(err)})
   }
