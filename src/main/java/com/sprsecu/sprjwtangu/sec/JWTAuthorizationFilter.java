@@ -1,7 +1,9 @@
 package com.sprsecu.sprjwtangu.sec;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,21 +43,39 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
             if(jwt==null || !jwt.startsWith(SecurityConstants.TOKEN_PREFIX)){
             filterChain.doFilter(request, response); return;
             }
-            Claims claims=Jwts.parser()
+            
+            try{
+                Claims claims=Jwts.parser()
                     .setSigningKey(SecurityConstants.SECRET)
                     .parseClaimsJws(jwt.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getBody();
             //System.out.println("JWTAuthorizationFilter.class - claims info : "+claims.toString());
-            String username = claims.getSubject();
-            ArrayList<Map<String, String>> roles= (ArrayList<Map<String, String>>) claims.get("roles");
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
-            roles.forEach(r ->{
-                authorities.add(new SimpleGrantedAuthority(r.get("authority")));
-            });
-            UsernamePasswordAuthenticationToken authenticatedUser = 
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-            filterChain.doFilter(request, response);
+                String username = claims.getSubject();
+                ArrayList<Map<String, String>> roles= (ArrayList<Map<String, String>>) claims.get("roles");
+                Collection<GrantedAuthority> authorities = new ArrayList<>();
+                roles.forEach(r ->{
+                    authorities.add(new SimpleGrantedAuthority(r.get("authority")));
+                });
+                UsernamePasswordAuthenticationToken authenticatedUser = 
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+                filterChain.doFilter(request, response);
+            }
+            catch (ExpiredJwtException e) {
+//                System.out.println(" Token expired ");
+//                response.sendRedirect("/logout");
+//                filterChain.doFilter(request, response);
+            }
+            catch (SignatureException e) {
+//                System.out.println(" SignatureException ");
+//                response.sendRedirect("/logout");
+//                filterChain.doFilter(request, response);
+            } catch(Exception e){
+//                System.out.println(" Some other exception in JWT parsing ");
+//                response.sendRedirect("/logout");
+//                filterChain.doFilter(request, response);
+            }
+            
         }
         
     }

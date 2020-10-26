@@ -78,7 +78,7 @@ export class TerminalComponent implements OnInit {
         })
       })
      }
-
+  camionForRoute= new CamionForRoute ();
   truck:Camion;
   truckTemp:Camion;
   terminal : Terminal = null; // terminal to modify detail 
@@ -101,6 +101,17 @@ export class TerminalComponent implements OnInit {
   codeValided=true; //false;
   codeValidation:number;
   timeTried=0;
+
+  transferDaoToDtoTruck(){
+    this.camionForRoute.id= this.truck.id;
+    this.camionForRoute.odometre= this.truck.odometre;     
+    this.camionForRoute.longtitude= this.truck.longtitude;
+    this.camionForRoute.latitude=this.truck.latitude;
+    this.camionForRoute.direction=this.truck.direction;  
+    this.camionForRoute.speed=this.truck.speed;
+    this.camionForRoute.timeStop=this.truck.timeStop;
+    this.camionForRoute.location=this.truck.location;
+  }
   onCodeValidation(){
     // console.log("this.codeValidaton entered: "+this.codeValidation)
     // console.log("this.codeValidaton must be: "+(this.terminal.id + (this.terminal.idTruck>0 ? this.terminal.idTruck : 0)))
@@ -150,50 +161,51 @@ export class TerminalComponent implements OnInit {
     if(this.subscription2!=null) this.subscription2.unsubscribe();
     if(this.subscription3!=null) this.subscription3.unsubscribe();
     // alert("Stopping terminal by logout.")
-    if(!this.stopped){
-      if(this.terminal.timeStop!=null){
-        // this terminal is stopping
-        // do nothing
-      }
-      else{
-        // this terminal is stopped by user (logout) while running
-        this.terminal.timeStop = new Date().getTime();
-        // console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
-        // let dt= new Date(this.terminal.timeStop)
-        // console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
-        // console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
-      }
-      // this.stopped=true; // set teminal stop
-      this.terminal.speed=0; // set speed to 0
-      await this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-        // alert("Stopping terminal by logout, saved already terminal before stop.")        
-        // if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
-        // {          
-          // this.terminal= data; 
-          // this.terminalTemp.latitude=data.latitude 
-          // this.terminalTemp.longitude=data.longitude
-          if(this.truck!=null && !this.truck.gps){
-            this.truck.speed=0
-            this.truck.timeStop=this.terminal.timeStop
-            let geocodingTemp = new GeocodingService()             
-            geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
-              this.truck.latitude=this.terminal.latitude,
-              this.truck.longtitude=this.terminal.longitude
-            ))
-            .forEach(
-              (results: google.maps.GeocoderResult[]) => {
-                this.truck.location=results[0].formatted_address;
-              }
-            ).then(()=>{
-              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                // this.truck=data
-                // alert("Stopping terminal by logout, saved already truck before stop.")
-              },err=>{console.log(err)})
-            })
-          }
-        //}        
-      }, err=>{console.log(err)})
-    }
+    // if(!this.stopped){
+    //   if(this.terminal.timeStop!=null){
+    //     // this terminal is stopping
+    //     // do nothing
+    //   }
+    //   else{
+    //     // this terminal is stopped by user (logout) while running
+    //     this.terminal.timeStop = new Date().getTime();
+    //     // console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
+    //     // let dt= new Date(this.terminal.timeStop)
+    //     // console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
+    //     // console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
+    //   }
+    //   // this.stopped=true; // set teminal stop
+    //   this.terminal.speed=0; // set speed to 0
+    //   await this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+    //     // alert("Stopping terminal by logout, saved already terminal before stop.")        
+    //     // if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
+    //     // {          
+    //       // this.terminal= data; 
+    //       // this.terminalTemp.latitude=data.latitude 
+    //       // this.terminalTemp.longitude=data.longitude
+    //       if(this.truck!=null && !this.truck.gps){
+    //         this.truck.speed=0
+    //         this.truck.timeStop=this.terminal.timeStop
+    //         let geocodingTemp = new GeocodingService()             
+    //         geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+    //           this.truck.latitude=this.terminal.latitude,
+    //           this.truck.longtitude=this.terminal.longitude
+    //         ))
+    //         .forEach(
+    //           (results: google.maps.GeocoderResult[]) => {
+    //             this.truck.location=results[0].formatted_address;
+    //           }
+    //         ).then(()=>{
+    //           this.transferDaoToDtoTruck()
+    //           this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+    //             // this.truck=data
+    //             // alert("Stopping terminal by logout, saved already truck before stop.")
+    //           },err=>{console.log(err)})
+    //         })
+    //       }
+    //     //}        
+    //   }, err=>{console.log(err)})
+    // }
   }
 
   ngOnInit(){
@@ -243,8 +255,11 @@ export class TerminalComponent implements OnInit {
                           this.truck.location=results[0].formatted_address;
                         }
                       ).then(()=>{
-                        this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                          this.truck=data
+                        this.transferDaoToDtoTruck()
+                        // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                        //   this.truck=data
+                        this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:Camion)=>{
+                          // this.truck=data
                           console.log("Updated trucks' location and find list itiners and then showMap()")
                           // this.itinerairesService.itinerairesDeCamion(this.truck.id).
                           this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
@@ -407,6 +422,7 @@ export class TerminalComponent implements OnInit {
                 }
               ).then(()=>{
                 console.log('this.countTime: '+ this.countTime)
+                this.transferDaoToDtoTruck()
                 this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
                   this.truck=data
                 },err=>{console.log(err)})
@@ -477,6 +493,7 @@ export class TerminalComponent implements OnInit {
                   this.truck.location=results[0].formatted_address;
                 }
               ).then(()=>{
+                this.transferDaoToDtoTruck()
                 this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
                   this.truck=data
                 },err=>{console.log(err)})
@@ -552,11 +569,35 @@ export class TerminalComponent implements OnInit {
             if(itinersTemp!=null){
               this.compareListRoutes(this.itiners, itinersTemp)
               this.itiners=itinersTemp
+              if(this.listRoutesChanged) 
+              // if the listRoutes changed, the route selected to find image must change the position
+              {
+                this.itiner=null; 
+              }
+              if(this.itiner!=null&&this.itiner.id!=null&&this.itiner.id>0) {
+                let itiTemp:Itineraire=null;
+                this.itiners.forEach(x=>{
+                  if(x.id==this.itiner.id)
+                  {
+                    itiTemp=x;
+                    // alert("found itiTemp.id: "+itiTemp.id)
+                  }
+                  // else{
+                  //   this.itiner=null;
+                  // }
+                })
+                if(itiTemp==null) this.itiner=null;
+              }  
             }
             else{
               this.itiners=null
+              this.itiner=null
               // this.listRoutesChanged=false
             }
+          }
+          else{// data==null
+            this.itiners=null
+            this.itiner=null
           }
         }, err=>{console.log(err)})                                            
       }
@@ -720,6 +761,7 @@ export class TerminalComponent implements OnInit {
   }
 
   onSaveTruck(){
+    this.transferDaoToDtoTruck()
     this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
       this.truck=data
     },err=>{console.log(err)})
@@ -742,4 +784,14 @@ export class TerminalComponent implements OnInit {
 export class CamionItinersList{
   camionId:number
   itiners:Array<Itineraire>
+}
+export class CamionForRoute {
+  id:number;
+  odometre:number;     
+  longtitude:number;
+  latitude:number;
+  direction:number; // 0.00 - 359.99 -- north-east-south-west;    
+  speed:number;
+  timeStop:number; // the time when terminal stopped;  new Date().getTime()
+  location:string; // address in AVL
 }

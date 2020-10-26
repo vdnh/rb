@@ -37,6 +37,8 @@ public class Camion implements Serializable{
     private Long odometre; 
     @Temporal(TemporalType.DATE)
     private Date inspect6m; // jj-mmm,  On fait l'inspection 2 fois chaque annee
+    @Temporal(TemporalType.DATE)
+    private Date vignetteSaaq; // jj-mmm,  On demande la vignette 1 fois chaque annee
     //private Date inspect02; // jj-mmm
     private Long ent1 = 25000l;
     private Long ent2 = 50000l;

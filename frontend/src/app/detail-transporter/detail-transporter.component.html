@@ -344,6 +344,10 @@
                 <th>Inspect-6mois</th>                
                 <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurInspect(camion.inspect6m)}}" [disabled]="disableButtonInspect(camion.inspect6m)" (click)="onInspect6(camion)">{{codeTextInspect(camion.inspect6m)}}</button></th>
             </tr>
+            <tr>
+                <th>VignetteSAAQ</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurVignette(camion.vignetteSaaq)}}" [disabled]="disableButtonVignette(camion.vignetteSaaq)" (click)="onVignette(camion)">{{codeTextVignette(camion.vignetteSaaq)}}</button></th>
+            </tr>
         </table>     
         <br>
         <h4 *ngIf="modeTableau==1"><u>Autres Entretiens</u></h4>

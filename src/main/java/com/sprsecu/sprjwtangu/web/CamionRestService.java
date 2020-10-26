@@ -2,6 +2,7 @@ package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.dao.CamionRepository;
 import com.sprsecu.sprjwtangu.entities.Camion;
+import java.io.Serializable;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,38 +58,22 @@ public class CamionRestService {
         c.setId(id);
         return camionRepository.save(c);
     }    
-    /*
-    @Param("speed")Double speed,
-    @Param("timeStop")Long timeStop,
-    @Param("latitude")Double latitude,
-    @Param("longtitude")Double longtitude,
-    @Param("location")String location,
-    @Param("direction")Double direction,
-    @Param("odometre")Long odometre
-    */
+    
 //    @RequestMapping(value = "/camionUpdateFromTerminal/{id}", method = RequestMethod.PUT)
     @RequestMapping(value = "/camionUpdateFromTerminal", method = RequestMethod.PATCH)
-    public Boolean updateCamionFromTerminal(
-            @RequestParam(name = "id", defaultValue = "0") Long id,
-//            @PathVariable Long id, 
-            @RequestParam(name = "speed", defaultValue = "0") Double speed,
-//            @RequestBody Double speed,
-            @RequestParam(name = "timeStop", defaultValue = "0") Long timeStop,
-//            @RequestBody Long timeStop,
-            @RequestParam(name = "latitude", defaultValue = "0") Double latitude,
-//            @RequestBody Double latitude,
-            @RequestParam(name = "longtitude", defaultValue = "0") Double longtitude,
-//            @RequestBody Double longtitude,
-            @RequestParam(name = "location", defaultValue = "") String location,
-//            @RequestBody String location,
-            @RequestParam(name = "direction", defaultValue = "0") Double direction,
-//            @RequestBody Double direction,
-            @RequestParam(name = "odometre", defaultValue = "0") Long odometre
-//            @RequestBody Long odometre
-        )
+    public Boolean updateCamionFromTerminal(@RequestBody CamionForRoute cFR) // cFR : camion for route
     {
-        camionRepository.updateCamionFromTerminal(id, speed, timeStop, latitude, longtitude, location, direction, odometre);
-        return true;
+        Camion c = camionRepository.getOne(cFR.id);
+        cFR.transferData(c); // transfer data from DTO CamionForRoute to DAO Camion
+        try{
+            camionRepository.save(c);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
+        
+//        return new CamionForRoute (camionRepository.save(c));
     }
     
     @RequestMapping(value = "/chercherPlaque", method = RequestMethod.GET)
@@ -111,5 +96,37 @@ public class CamionRestService {
             @RequestParam(name = "monitor", defaultValue = "-1" ) String monitor) 
     {
         return camionRepository.camionMonitoring(uniteMonitor, monitor);
+    }
+}
+
+class CamionForRoute  implements Serializable{
+    Long id;
+    Long odometre;     
+    Double longtitude;
+    Double latitude;
+    Double direction; // 0.00 - 359.99 -- north-east-south-west;    
+    Double speed;
+    Long timeStop; // the time when terminal stopped;  new Date().getTime()
+    String location; // address in AVL
+    
+    public CamionForRoute(Camion c){
+        this.id=c.getId();
+        this.odometre=c.getOdometre();     
+        this.longtitude=c.getLongtitude();
+        this.latitude=c.getLatitude();
+        this.direction=c.getDirection();  
+        this.speed=c.getSpeed();
+        this.timeStop=c.getTimeStop();
+        this.location=c.getLocation();
+    }
+    
+    public void transferData(Camion c){
+        c.setOdometre(odometre);     
+        c.setLatitude(this.latitude);
+        c.setLongtitude(this.longtitude);
+        c.setSpeed(this.speed);
+        c.setDirection(this.direction);
+        c.setTimeStop(this.timeStop);
+        c.setLocation(this.location);
     }
 }

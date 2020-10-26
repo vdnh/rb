@@ -733,6 +733,19 @@ export class DetailTransporterComponent implements OnInit {
       return "";
   }
   //*/
+  codeCouleurVignette(vignetteSaaq:Date){
+    if(vignetteSaaq==null)
+      return '';    
+    let date = new Date();
+    let days = (date.getTime() - new Date(vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return "btn-success";
+    if (days>=334 && days<364)
+      return "btn-warning";
+    if (days>=364)
+      return "btn-danger";      
+    return ""
+  }
   codeCouleurInspect(inspect6m:Date){
     if(inspect6m==null)
       return '';    
@@ -800,6 +813,23 @@ export class DetailTransporterComponent implements OnInit {
       return "urgent";
     return "";
   }
+  
+  codeTextVignette(vignetteSaaq:Date){
+    if(vignetteSaaq==null)
+    {
+      return 'pas_data';
+    }
+    let date = new Date();
+    let days = (date.getTime() - new Date(vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return "bon-etat";
+    if (days>=334 && days<364)
+      return "attention";
+    if (days>=364)
+      return "urgent";      
+    return ""
+  }
+
   codeTextInspect(inspect6m:Date){
     if(inspect6m==null)
     {
@@ -880,6 +910,19 @@ export class DetailTransporterComponent implements OnInit {
     return false;
   }
   //
+
+  disableButtonVignette(vignetteSaaq:Date) : boolean{
+    ///*
+    if(vignetteSaaq==null)
+      return true;
+    let date = new Date();
+    let days = (date.getTime() - new Date(vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return true;
+    return false;//*/
+    //return true;
+  }
+
   disableButtonInspect(inspect6m:Date) : boolean{
     ///*
     if(inspect6m==null)
@@ -1030,20 +1073,12 @@ export class DetailTransporterComponent implements OnInit {
     });//*/
     this.gotoDetailCamion(camion.id)
   }
+  
+  onVignette(camion:Camion){
+    this.gotoDetailCamion(camion.id)
+  }
 
   onInspect6(camion:Camion){
-    /*
-    alert("Inspection aux 6 mois.");
-    camion.inspect6m=new Date();
-    this.camionsService.saveCamions(camion).subscribe(data=>{
-      this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-        this.camions=data;
-      }, err=>{
-        console.log();
-      });
-    }, err=>{
-      console.log(err);
-    });//*/
     this.gotoDetailCamion(camion.id)
   }
   async autreEntretiens(camion:Camion){

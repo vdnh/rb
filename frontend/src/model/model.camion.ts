@@ -12,6 +12,7 @@ export class Camion{
     massNet:string;
     odometre:number; //=0; 
     inspect6m:Date; // jj-mmm,  On fait l'inspection 2 fois chaque annee
+    vignetteSaaq:Date; // jj-mmm,  On demande la vignette 1 fois chaque annee
     ent1:number=25000;
     ent2:number=50000;
     ent3:number=100000;

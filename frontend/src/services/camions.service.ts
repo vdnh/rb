@@ -57,13 +57,11 @@ export class CamionsService{
     @Param("direction")Double direction,
     @Param("odometre")Long odometre
     */
-    updateCamionFromterminal(id:number, speed:number, timeStop:number, latitude:number,
-        longtitude:number, location:string, direction:number, odometre:number)
+    updateCamionFromterminal(camionForRoute:CamionForRoute)
     {
         this.loadTonken();
         // ?mc="+motCle+"&size="+size+"&page="+page
-        return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal/?id="+id+"&speed="+speed+"&timeStop="+timeStop+"&latitude="+latitude
-        +"&longtitude="+longtitude+"&location="+location+"&direction="+direction+"&odometre="+odometre, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(
             map(res => {return res})
         );
@@ -75,4 +73,15 @@ export class CamionsService{
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
+}
+
+export class CamionForRoute {
+    id:number;
+    odometre:number;     
+    longtitude:number;
+    latitude:number;
+    direction:number; // 0.00 - 359.99 -- north-east-south-west;    
+    speed:number;
+    timeStop:number; // the time when terminal stopped;  new Date().getTime()
+    location:string; // address in AVL
 }

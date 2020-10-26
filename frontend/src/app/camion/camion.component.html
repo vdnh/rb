@@ -64,14 +64,15 @@
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
             <tr>
-              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th><th>Vignette SAAQ</th>
             </tr>
             <tr>
               <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-              <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+              <td><input class="form-control" type="date" [(ngModel)]="camion.vignetteSaaq" /></td>
             </tr>
             <tr>
                 <th>Annee</th><th>Type</th><th>Odometre</th><th>Mass Net</th><th colspan="2">Derniere l'Inspection aux 6 mois</th>

@@ -87,7 +87,6 @@ import { ConfirmTransportService } from 'src/services/confirmTransport.service';
 //import { Reparation } from 'src/model/model.reparation';
 //import { ReparationsService } from 'src/services/reparation.service';
 //import { MapComponent } from './map/map.component';
-//import { LogoutComponent } from './logout/logout.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatListModule } from '@angular/material/list';
@@ -97,9 +96,11 @@ import { TerminalFollowComponent } from './terminal-follow/terminal-follow.compo
 import { NewTerminalComponent } from './new-terminal/new-terminal.component';
 import { TerminalsComponent } from './terminals/terminals.component';
 import { TerminalsService } from 'src/services/terminals.service';
+import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
+  {path:"logout", component:LogoutComponent},
   {path:"appUsers", component:AppUsersComponent},
   {path:"propos", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},
@@ -207,6 +208,7 @@ const appRoutes:Routes=[
     TerminalFollowComponent,
     NewTerminalComponent,
     TerminalsComponent,
+    LogoutComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

@@ -188,6 +188,15 @@ export class AppComponent implements OnInit{
     if(localStorage.getItem("entrepriseNom"))
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
     //*
+    if(location.href.includes("/logout")){
+      let langTemp = localStorage.getItem('language');
+      localStorage.clear();
+      localStorage.setItem('language', langTemp);
+      // this.router.navigateByUrl("");  
+      location.href=location.href.split("logout")[0]
+      location.reload();
+    }
+    //*
     if(location.href.includes("/remorquage-client/"))
     {
       //this.mode=2 // show the message for bad url
