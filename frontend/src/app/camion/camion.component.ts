@@ -72,6 +72,7 @@ export class CamionComponent implements OnInit {
   couleur07:string="btn-success";
   couleur08:string="btn-warning";
   couleur09:string="btn-success";
+  couleur10:string="btn-success";
 
   //fiche:FichePhysiqueEntretien=new FichePhysiqueEntretien();
   //ficheCont:FichePhysiqueEntretienCont=new FichePhysiqueEntretienCont();
@@ -155,6 +156,7 @@ export class CamionComponent implements OnInit {
       this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission)
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
       this.couleur09=this.codeCouleurInspect();
+      this.couleur10=this.codeCouleurVignette();
       this.fiche.idCamion=this.camion.id;
       this.ficheCont.idCamion=this.camion.id;
       //this.bonDeTravail.idCamion=this.id;
@@ -415,6 +417,7 @@ export class CamionComponent implements OnInit {
       this.couleur07=this.codeCouleur(this.camion.odo7Fait, this.camion.huileTransmission)
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
       this.couleur09=this.codeCouleurInspect();
+      this.couleur10=this.codeCouleurVignette();
     //*
     }, err=>{
       console.log(err);
@@ -517,6 +520,20 @@ export class CamionComponent implements OnInit {
       return "";
   }
   //*/
+  codeCouleurVignette(){
+    if(this.camion.vignetteSaaq==null)
+      return '';    
+    let date = new Date();
+    let days = (date.getTime() - new Date(this.camion.vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return "btn-success";
+    if (days>=334 && days<364)
+      return "btn-warning";
+    if (days>=364)
+      return "btn-danger";      
+    return ""
+  }
+
   codeCouleurInspect(){
     if(this.camion.inspect6m==null)
       return '';    
@@ -585,6 +602,23 @@ export class CamionComponent implements OnInit {
       return "urgent";
     return "";
   }
+
+  codeTextVignette(){
+    if(this.camion.vignetteSaaq==null)
+    {
+      return 'pas-data';
+    }
+    let date = new Date();
+    let days = (date.getTime() - new Date(this.camion.vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return "bon-etat";
+    if (days>=334 && days<364)
+      return "attention";
+    if (days>=364)
+      return "urgent";      
+    return ""
+  }
+
   codeTextInspect(){
     if(this.camion.inspect6m==null)
     {
@@ -634,6 +668,17 @@ export class CamionComponent implements OnInit {
       return true;
     return false;
   }
+  
+  disableButtonVignette() : boolean{
+    if(this.camion.vignetteSaaq==null)
+      return true;
+    let date = new Date();
+    let days = (date.getTime() - new Date(this.camion.vignetteSaaq).getTime())/24/60/60/1000;
+    if (days<334)
+      return true;
+    return false;
+  }
+
   disableButtonInspect() : boolean{
     if(this.camion.inspect6m==null)
       return true;
@@ -803,22 +848,20 @@ export class CamionComponent implements OnInit {
     });//*/
   }
 
+  onVignette(){
+    alert('Vignette SAAQ 1 fois par an.');
+    this.reparation.reparationEffectuer= 'Vignette SAAQ'
+    this.camion.vignetteSaaq=new Date();
+    this.couleur10=this.codeCouleurVignette();
+  }
+
   onInspect6(){
     alert('Inspection aux 6 mois.');
-    // let rep:Reparation=new Reparation();
-    // rep.reparationEffectuer= "Inspection aux 6 mois."; 
-    // this.reparations.push(rep)
     this.reparation.reparationEffectuer= 'Inspection aux 6 mois.'
     this.camion.inspect6m=new Date();
     this.couleur09=this.codeCouleurInspect();
-    /*
-    this.camion.inspect6m=new Date();
-    this.camionsService.saveCamions(this.camion).subscribe(data=>{
-      this.couleur09=this.codeCouleurInspect();
-    }, err=>{
-      console.log(err);
-    });//*/
   }
+
   onAutreEntretien(entretien:AutreEntretien){
     alert("Entretien - "+entretien.nom);
     // let rep:Reparation=new Reparation();
