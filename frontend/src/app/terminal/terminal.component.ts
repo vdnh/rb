@@ -256,10 +256,9 @@ export class TerminalComponent implements OnInit {
                         }
                       ).then(()=>{
                         this.transferDaoToDtoTruck()
+                        this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
                         // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
                         //   this.truck=data
-                        this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:Camion)=>{
-                          // this.truck=data
                           console.log("Updated trucks' location and find list itiners and then showMap()")
                           // this.itinerairesService.itinerairesDeCamion(this.truck.id).
                           this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
@@ -423,14 +422,17 @@ export class TerminalComponent implements OnInit {
               ).then(()=>{
                 console.log('this.countTime: '+ this.countTime)
                 this.transferDaoToDtoTruck()
-                this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                  this.truck=data
+                this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
+                // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                //   this.truck=data
                 },err=>{console.log(err)})
               })
             }
             else{
-              this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                this.truck=data
+              this.transferDaoToDtoTruck()
+              this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
+              // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+              //   this.truck=data
               },err=>{console.log(err)})
             }
           }
@@ -494,8 +496,9 @@ export class TerminalComponent implements OnInit {
                 }
               ).then(()=>{
                 this.transferDaoToDtoTruck()
-                this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                  this.truck=data
+                this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
+                // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                //   this.truck=data
                 },err=>{console.log(err)})
               })
             }
@@ -762,8 +765,9 @@ export class TerminalComponent implements OnInit {
 
   onSaveTruck(){
     this.transferDaoToDtoTruck()
-    this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-      this.truck=data
+    this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
+    // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+    //   this.truck=data
     },err=>{console.log(err)})
   }
   

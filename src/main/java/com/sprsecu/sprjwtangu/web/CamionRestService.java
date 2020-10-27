@@ -1,6 +1,7 @@
 package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.dao.CamionRepository;
+import com.sprsecu.sprjwtangu.dto.CamionForRoute;
 import com.sprsecu.sprjwtangu.entities.Camion;
 import java.io.Serializable;
 import java.util.List;
@@ -60,20 +61,25 @@ public class CamionRestService {
     }    
     
 //    @RequestMapping(value = "/camionUpdateFromTerminal/{id}", method = RequestMethod.PUT)
-    @RequestMapping(value = "/camionUpdateFromTerminal", method = RequestMethod.PATCH)
-    public Boolean updateCamionFromTerminal(@RequestBody CamionForRoute cFR) // cFR : camion for route
+//    @RequestMapping(value = "/camionUpdateFromTerminal", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/camionUpdateFromTerminal", method = RequestMethod.POST)
+    public CamionForRoute updateCamionFromTerminal(@RequestBody CamionForRoute cFR) // cFR : camion for route
     {
-        Camion c = camionRepository.getOne(cFR.id);
+        
+        System.out.println("I'm in camionUpdateFromTerminal : "+cFR.getId());
+        Camion c = camionRepository.getOne(cFR.getId());
+        System.out.println("I got Camion : "+c.getId());
         cFR.transferData(c); // transfer data from DTO CamionForRoute to DAO Camion
         try{
             camionRepository.save(c);
-            return true;
+            System.out.println("Saved light truck");
+            return cFR;
         }
         catch(Exception e){
-            return false;
+            System.out.println("Can't save light truck");
+            System.out.println(e.toString());
+            return null;
         }
-        
-//        return new CamionForRoute (camionRepository.save(c));
     }
     
     @RequestMapping(value = "/chercherPlaque", method = RequestMethod.GET)
@@ -99,34 +105,34 @@ public class CamionRestService {
     }
 }
 
-class CamionForRoute  implements Serializable{
-    Long id;
-    Long odometre;     
-    Double longtitude;
-    Double latitude;
-    Double direction; // 0.00 - 359.99 -- north-east-south-west;    
-    Double speed;
-    Long timeStop; // the time when terminal stopped;  new Date().getTime()
-    String location; // address in AVL
-    
-    public CamionForRoute(Camion c){
-        this.id=c.getId();
-        this.odometre=c.getOdometre();     
-        this.longtitude=c.getLongtitude();
-        this.latitude=c.getLatitude();
-        this.direction=c.getDirection();  
-        this.speed=c.getSpeed();
-        this.timeStop=c.getTimeStop();
-        this.location=c.getLocation();
-    }
-    
-    public void transferData(Camion c){
-        c.setOdometre(odometre);     
-        c.setLatitude(this.latitude);
-        c.setLongtitude(this.longtitude);
-        c.setSpeed(this.speed);
-        c.setDirection(this.direction);
-        c.setTimeStop(this.timeStop);
-        c.setLocation(this.location);
-    }
-}
+//class CamionForRoute  implements Serializable{
+//    public Long id;
+//    public Long odometre;     
+//    public Double longtitude;
+//    public Double latitude;
+//    public Double direction; // 0.00 - 359.99 -- north-east-south-west;    
+//    public Double speed;
+//    public Long timeStop; // the time when terminal stopped;  new Date().getTime()
+//    public String location; // address in AVL
+//    
+//    public CamionForRoute(Camion c){
+//        this.id=c.getId();
+//        this.odometre=c.getOdometre();     
+//        this.longtitude=c.getLongtitude();
+//        this.latitude=c.getLatitude();
+//        this.direction=c.getDirection();  
+//        this.speed=c.getSpeed();
+//        this.timeStop=c.getTimeStop();
+//        this.location=c.getLocation();
+//    }
+//    
+//    public void transferData(Camion c){
+//        c.setOdometre(this.odometre);     
+//        c.setLatitude(this.latitude);
+//        c.setLongtitude(this.longtitude);
+//        c.setSpeed(this.speed);
+//        c.setDirection(this.direction);
+//        c.setTimeStop(this.timeStop);
+//        c.setLocation(this.location);
+//    }
+//}

@@ -61,7 +61,9 @@ export class CamionsService{
     {
         this.loadTonken();
         // ?mc="+motCle+"&size="+size+"&page="+page
-        return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        // return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.post(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(
             map(res => {return res})
         );
