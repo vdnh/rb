@@ -94,6 +94,7 @@ export class TerminalComponent implements OnInit {
   subscription : Subscription;
   subscription2 : Subscription
   subscription3 : Subscription
+  subscription4 : Subscription
   countTime=0;  // for each time call function saveTerminal
   countTimeNoWrite=0; // for each time no write
   stopped = false; // at beginning the terminal is in working
@@ -160,6 +161,7 @@ export class TerminalComponent implements OnInit {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe();
     if(this.subscription3!=null) this.subscription3.unsubscribe();
+    if(this.subscription4!=null) this.subscription4.unsubscribe();
     // alert("Stopping terminal by logout.")
     // if(!this.stopped){
     //   if(this.terminal.timeStop!=null){
@@ -605,27 +607,12 @@ export class TerminalComponent implements OnInit {
         }, err=>{console.log(err)})                                            
       }
     })
-    // check autorisation terminal each 50 seconds
-    // this.subscription3=interval(50000).subscribe(val=>{
-    //   this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
-    //     if(data!=null){
-    //       if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
-    //       {
-    //         // it is good, do nothing
-    //       }
-    //       else{ //  if no more autorisation, clear memo and reload
-    //         this.subscription3.unsubscribe()
-    //         localStorage.clear()
-    //         location.reload();
-    //       }
-    //     }
-    //     else{ // data = null
-    //       // do nothing - perhaps they have problem acces data this time
-    //       // when we were here the sure is having terminal already
-    //       // just wait for the next test
-    //     }        
-    //   })
-    // })
+    
+    // we load tonken every minute+2' - 62000 - to test, 
+    //reality  every 22 hours - 60000*60*22
+    this.subscription4 = interval(60000*60*22).subscribe(val => {
+      this.terminalsService.loadTonken();
+    });
 
     function calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
       let dLat = toRadians(p2.lat() - p1.lat());

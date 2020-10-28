@@ -47,6 +47,8 @@ export class AppComponent implements OnInit{
   roleUsernameLogin='';
   eligible=true;
 
+  timeStart:number;
+
   //nombreMessages: number=this.varsGlobal.nombreMessages;
 
   form:FormGroup;  // use for chauffeur
@@ -189,12 +191,14 @@ export class AppComponent implements OnInit{
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
     //*
     if(location.href.includes("/logout")){
-      let langTemp = localStorage.getItem('language');
-      localStorage.clear();
-      localStorage.setItem('language', langTemp);
+      // let langTemp = localStorage.getItem('language');
+      // localStorage.clear();
+      // localStorage.setItem('language', langTemp);
       // this.router.navigateByUrl("");  
-      location.href=location.href.split("logout")[0]
-      location.reload();
+      this.logout();
+      // location.href=location.href.split("logout")[0]
+      // this.router.navigate(['/logout/'], {skipLocationChange: true});
+      // location.reload();
     }
     //*
     if(location.href.includes("/remorquage-client/"))
@@ -524,6 +528,8 @@ export class AppComponent implements OnInit{
         localStorage.setItem('usernameLogin', this.usernameLogin)
         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
         localStorage.setItem('eligible',this.roleUsernameLogin) 
+        this.timeStart = new Date().getTime(); // in millisecond
+        localStorage.setItem('timeStart',this.timeStart.toString())  
         //console.log('res.idTransporter : '+res.idTransporter)
         
         if(res.idTransporter != undefined) {
@@ -717,7 +723,7 @@ export class AppComponent implements OnInit{
     //console.log('One more time, Role is : '+this.role)
   }
 
-  async logout(){
+  public async logout(){
     this.modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
     if(this.varsGlobal.userLogs.loginTime!=null){
       this.varsGlobal.userLogs.logoutTime=new Date();

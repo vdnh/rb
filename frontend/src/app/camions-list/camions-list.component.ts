@@ -211,11 +211,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     //this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     //this.itiner.dateDrop.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     this.camionsSurMap=[];
-    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(async(data:Transporter)=>{
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
       this.transporter=data;
-     
       // get list itineraires and then sort ithem
-      await this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
         if(data!=null) {
           this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
             (a,b)=>(a.id-b.id)).sort(
@@ -230,16 +229,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           this.itinersCancels=data.filter(x=>x.cancelled==true).sort(
             (b,a)=>(a.id-b.id))          
         }
+        //get list reperes
+        this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
+          if(data!=null) this.reps=data
+          this.onPress(); // show carte right now
+          // alert("Attendre 2 secondes, on loade la carte, SVP!")
+        }, err=>{console.log(err)})
       },err=>{console.log(err)})
-      
-      //get list reperes
-      await this.reperesService.reperesTransporter(this.transporter.id).subscribe((data:Array<Repere>)=>{
-        if(data!=null) this.reps=data
-      }, err=>{console.log(err)})
-      
-      this.onPress(); // show carte right now
-      // alert("Attendre 2 secondes, on loade la carte, SVP!")
-      
     }, err=>{
       console.log(err);
     });
@@ -1596,6 +1592,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
     this.drawOrigin();
     this.drawDest();
+    //this.onClearMap()
   }
 
   onGoingToItineraire(it:Itineraire){
@@ -1612,6 +1609,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itiners.splice(this.itiners.indexOf(it))
       this.makeCIsLList()
     },err=>{console.log(err)})
+    this.onClearMap()
   }
 
   itinerArchive(it: Itineraire){
@@ -1629,6 +1627,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itiners.splice(this.itiners.indexOf(it))
       this.makeCIsLList()
     },err=>{console.log(err)})
+    this.onClearMap()
   }
 
   itinerResumes(it: Itineraire){
@@ -1638,6 +1637,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itinersCancels.splice(this.itinersCancels.indexOf(it))
       this.makeCIsLList();
     },err=>{console.log(err)})
+    this.onClearMap()
   }
 
   onSelectCamion(c:Camion){
@@ -1892,6 +1892,11 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     //return this.camionsSurMap; //camionsFiltre
   }
 
+  showDateLocal(d:Date){
+    d=new Date(d);
+    let dateLocal= new Date(d.getTime() + d.getTimezoneOffset()*60000)
+    return dateLocal;
+  }
   onFileUpLoadRoute(event){
     let selectedFile : File=event.target.files[0];
     if(selectedFile){
