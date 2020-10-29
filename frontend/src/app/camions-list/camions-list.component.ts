@@ -210,6 +210,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //this.itiner.datePick.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     //this.itiner.dateDrop.setFullYear(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    console.log('new Date().getTimezoneOffset(): '+new Date().getTimezoneOffset())
     this.camionsSurMap=[];
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
       this.transporter=data;
@@ -899,13 +900,14 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
 
   pickDateChange(event){
-    let tempString:string[] = event.target.value.toString().split('-');
-    this.itiner.yPick=tempString[0]
-    this.itiner.mPick=tempString[1]
-    this.itiner.dPick=tempString[2]
-    this.itiner.datePick=new Date();
+    this.itiner.datePick=event.target.value;
+    // let tempString:string[] = event.target.value.toString().split('-');
+    // this.itiner.yPick=tempString[0]
+    // this.itiner.mPick=tempString[1]
+    // this.itiner.dPick=tempString[2]
+    // this.itiner.datePick=new Date();
     
-    this.itiner.datePick.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
+    // this.itiner.datePick.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
     this.todaySuite = this.itiner.datePick
     if(this.itiner.dateDrop<this.todaySuite) 
       {
@@ -921,12 +923,13 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
   }
   dropDateChange(ev){
-    let tempString:string[] = ev.target.value.toString().split('-');
-    this.itiner.yDrop=tempString[0]
-    this.itiner.mDrop=tempString[1]
-    this.itiner.dDrop=tempString[2]
-    this.itiner.dateDrop=new Date();
-    this.itiner.dateDrop.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
+    this.itiner.dateDrop=ev.target.value
+    // let tempString:string[] = ev.target.value.toString().split('-');
+    // this.itiner.yDrop=tempString[0]
+    // this.itiner.mDrop=tempString[1]
+    // this.itiner.dDrop=tempString[2]
+    // this.itiner.dateDrop=new Date();
+    // this.itiner.dateDrop.setFullYear(Number(tempString[0]),Number(tempString[1])-1, Number(tempString[2]))
     this.filterCamion();
     //console.log('event.target.value.toString(): '+ event.target.value.toString()) 
     // console.log('this.itiner.dateDrop.toString(): '+this.itiner.dateDrop.toString())
@@ -1894,7 +1897,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
   showDateLocal(d:Date){
     d=new Date(d);
-    let dateLocal= new Date(d.getTime() + d.getTimezoneOffset()*60000)
+    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
     return dateLocal;
   }
   onFileUpLoadRoute(event){

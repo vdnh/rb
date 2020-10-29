@@ -17,4 +17,5 @@ export class Terminal{
     loginName:string;
     password:string;
     accepts:string=""; // all devices accepted    
+    tempora:string=""; // to write something temporary
 }

@@ -35,6 +35,22 @@ public class TerminalRestService {
     
     @RequestMapping(value = "/terminals", method = RequestMethod.POST)
     public Terminal save(@RequestBody Terminal t){
+        // set the field accepts of terminal to 'savingfromterminal', then save the infos have just been changed
+        if(t.getTempora()!=null && t.getTempora().length()>0 && t.getTempora().compareToIgnoreCase("savingfromterminal")==0){
+            System.out.println("We are in: savingfromterminal");
+            Terminal temp = terminalRepository.getOne(t.getId());
+            System.out.println("Then, We got the infos origin of terminal");
+            temp.setDirection(t.getDirection());
+            temp.setLatitude(t.getLatitude());
+            temp.setLongitude(t.getLongitude());
+            temp.setSpeed(t.getSpeed());
+            temp.setStopDuration(t.getStopDuration());
+            temp.setTimeStop(t.getTimeStop());
+            System.out.println("Then, We finish update the infos changed");
+            return terminalRepository.save(temp);
+        }
+        
+        System.out.println("Saving Terminal from Dispatch.");
         return terminalRepository.save(t);
     }
     

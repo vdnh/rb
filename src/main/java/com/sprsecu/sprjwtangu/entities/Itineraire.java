@@ -31,9 +31,9 @@ public class Itineraire  implements Serializable{
     private String origin="";
     private String destination="";
     
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date datePick;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateDrop;
     
     private Float longueur;

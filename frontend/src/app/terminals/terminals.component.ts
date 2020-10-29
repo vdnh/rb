@@ -285,7 +285,7 @@ export class TerminalsComponent implements OnInit {
       // Truck in not null, there are 2 ways : existed before or just being choosen
       if(this.truck!=null){
         // do nothing if this truck hooked already with terminal
-        if(this.truck.idTerminal==this.terminal.id){
+        if(this.truck.idTerminal!=null && this.truck.idTerminal==this.terminal.id){
           // do nothing
            console.log("Truck hooked already with Terminal. Just modify terminal in case infos changed")
         }
@@ -320,6 +320,11 @@ export class TerminalsComponent implements OnInit {
       }
       // this.truck=null;
       alert("Ok, it's modified")
+      //
+      this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
+        this.terminals=data
+      }, err=>{console.log(err)})
+      //
         // this.router.navigate(['/terminals']);  //this.mode=2;
     }, err=>{
       console.log(err);

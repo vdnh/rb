@@ -156,58 +156,12 @@ export class TerminalComponent implements OnInit {
   }
   
   @HostListener('window:beforeunload')
-  async ngOnDestroy() {
-  // ngOnDestroy(): void {
+  // async ngOnDestroy() {
+  ngOnDestroy(): void {
     if(this.subscription!=null) this.subscription.unsubscribe();
     if(this.subscription2!=null) this.subscription2.unsubscribe();
     if(this.subscription3!=null) this.subscription3.unsubscribe();
     if(this.subscription4!=null) this.subscription4.unsubscribe();
-    // alert("Stopping terminal by logout.")
-    // if(!this.stopped){
-    //   if(this.terminal.timeStop!=null){
-    //     // this terminal is stopping
-    //     // do nothing
-    //   }
-    //   else{
-    //     // this terminal is stopped by user (logout) while running
-    //     this.terminal.timeStop = new Date().getTime();
-    //     // console.log('this.terminal.timeStop: '+ this.terminal.timeStop)
-    //     // let dt= new Date(this.terminal.timeStop)
-    //     // console.log(dt.getHours() +" - " + dt.getDate() +" - " + (dt.getMonth()+1) +" - " + dt.getFullYear())
-    //     // console.log(dt.getUTCHours() +" - " + dt.getUTCDate() +" - " + (dt.getUTCMonth()+1) +" - " + dt.getUTCFullYear())
-    //   }
-    //   // this.stopped=true; // set teminal stop
-    //   this.terminal.speed=0; // set speed to 0
-    //   await this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-    //     // alert("Stopping terminal by logout, saved already terminal before stop.")        
-    //     // if(data.status&&data.accepts!=null&&data.accepts.includes(this.hash))
-    //     // {          
-    //       // this.terminal= data; 
-    //       // this.terminalTemp.latitude=data.latitude 
-    //       // this.terminalTemp.longitude=data.longitude
-    //       if(this.truck!=null && !this.truck.gps){
-    //         this.truck.speed=0
-    //         this.truck.timeStop=this.terminal.timeStop
-    //         let geocodingTemp = new GeocodingService()             
-    //         geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
-    //           this.truck.latitude=this.terminal.latitude,
-    //           this.truck.longtitude=this.terminal.longitude
-    //         ))
-    //         .forEach(
-    //           (results: google.maps.GeocoderResult[]) => {
-    //             this.truck.location=results[0].formatted_address;
-    //           }
-    //         ).then(()=>{
-    //           this.transferDaoToDtoTruck()
-    //           this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-    //             // this.truck=data
-    //             // alert("Stopping terminal by logout, saved already truck before stop.")
-    //           },err=>{console.log(err)})
-    //         })
-    //       }
-    //     //}        
-    //   }, err=>{console.log(err)})
-    // }
   }
 
   ngOnInit(){
@@ -239,6 +193,8 @@ export class TerminalComponent implements OnInit {
                 this.terminal.longitude=position.coords.longitude
                 this.terminalTemp.latitude=position.coords.latitude 
                 this.terminalTemp.longitude=position.coords.longitude
+                // set the field accepts of terminal to 'savingfromterminal', Server will recognize and save infos just been changed
+                this.terminal.tempora= "savingfromterminal";
                 this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
                   this.terminal= data; 
                   // this.terminalTemp = data;
@@ -391,7 +347,34 @@ export class TerminalComponent implements OnInit {
       this.terminal.timeStop=null; // in moving the timeStop is null
       this.countTimeNoWrite=0;  // reset time no write eache time we can write
       this.stopped = false; // eache time write, we reset stopped to false, teminal in working
+      // set the field accepts of terminal to 'savingfromterminal', Server will recognize and save infos just been changed
+      this.terminal.tempora= "savingfromterminal";
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+        // if no truck hooked with this terminal, set this.truck to null
+        if(data.idTruck==null || data.idTruck==0){
+          // let langTemp = localStorage.getItem('language');
+          // localStorage.clear();
+          // localStorage.setItem('language', langTemp);
+          // // location.href=location.href.split("logout")[0]
+          // location.reload();
+          this.truck==null;
+          this.itiners=null;
+          this.itinersFinis=null;
+          this.itiner=null
+        }
+        else{
+          if(this.truck==null){
+            this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+              this.truck=data
+              this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+              subscribe((data:Array<Itineraire>)=>{
+                this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+                this.itinersFinis=data.filter(x=>(x.fini))
+                this.showMap()  
+              }, err=>{console.log(err)})
+            }, err=>{console.log(err)})
+          }
+        }
         console.log("Save Terminal when terminalTemp != terminal : ")
         // alert("Save Terminal when terminalTemp != terminal : ")
         console.log("this.hash: " + this.hash)
@@ -471,7 +454,35 @@ export class TerminalComponent implements OnInit {
         }
         this.stopped=true; // set teminal stop
         this.terminal.speed=0; // set speed to 0
+        // set the field accepts of terminal to 'savingfromterminal', Server will recognize and save infos just been changed
+        this.terminal.tempora= "savingfromterminal";
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+          // if no truck hooked with this terminal, set this.truck to null
+          if(data.idTruck==null || data.idTruck==0){
+            // let langTemp = localStorage.getItem('language');
+            // localStorage.clear();
+            // localStorage.setItem('language', langTemp);
+            // // location.href=location.href.split("logout")[0]
+            // location.reload();
+            this.truck==null;
+            this.itiners=null;
+            this.itinersFinis=null;
+            this.itiner=null
+            this.terminal=data;
+          }
+          else{
+            if(this.truck==null){
+              this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+                this.truck=data
+                this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+                subscribe((data:Array<Itineraire>)=>{
+                  this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+                  this.itinersFinis=data.filter(x=>(x.fini))
+                  this.showMap()  
+                }, err=>{console.log(err)})
+              }, err=>{console.log(err)})
+            }
+          }
           console.log("Save Terminal when terminalTemp == terminal or Gps no change : ")
           // alert("Save Terminal when terminalTemp == terminal or Gps no change : ")
           console.log("this.hash: " + this.hash)
@@ -514,9 +525,37 @@ export class TerminalComponent implements OnInit {
           
         }, err=>{console.log(err)})
       }
-      else if(this.stopped && this.countTimeNoWrite%12==0){
-        let duration = new Date().getTime() - this.terminal.timeStop
-        console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+      else if(this.stopped && this.countTimeNoWrite%12==0){ 
+        // each 2 minutes check if there is truck hooked with this terminal, set this.truck==null
+        // let duration = new Date().getTime() - this.terminal.timeStop
+        // console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+        this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+          this.terminal=data
+          if(data.idTruck==null || data.idTruck==0){
+            // let langTemp = localStorage.getItem('language');
+            // localStorage.clear();
+            // localStorage.setItem('language', langTemp);
+            // // location.href=location.href.split("logout")[0]
+            // location.reload();
+            this.truck==null;
+            this.itiners=null;
+            this.itinersFinis=null;
+            this.itiner=null
+          }
+          else{
+            if(this.truck==null){
+              this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+                this.truck=data
+                this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+                subscribe((data:Array<Itineraire>)=>{
+                  this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+                  this.itinersFinis=data.filter(x=>(x.fini))
+                  this.showMap()  
+                }, err=>{console.log(err)})
+              }, err=>{console.log(err)})
+            }
+          }
+        })
       }
     }
   }
