@@ -35,6 +35,17 @@ public class ItineraireRestService {
         return itineraireRepository.findByIdTransporter(idTransporter);
     }
     
+    // All itineraires leger of un transporter
+    @RequestMapping(value = "/itinerairesLegerTransporter/{idTransporter}", method = RequestMethod.GET)
+    public List<Itineraire> getItinerairesLegerTransporter(@PathVariable Long idTransporter){
+        List<Itineraire> temp = new ArrayList<>();
+        itineraireRepository.findByIdTransporter(idTransporter).forEach(iti->{
+            iti.setImgUrl("");
+            temp.add(iti);
+        });
+        return temp;
+    }
+    
     // All itineraires of a truck
     @RequestMapping(value = "/itinerairesCamion/{idCamion}", method = RequestMethod.GET)
     public List<Itineraire> getItinerairesCamion(@PathVariable Long idCamion){
@@ -44,7 +55,7 @@ public class ItineraireRestService {
     // All itineraires leger of a truck without image
     @RequestMapping(value = "/itinerairesLegerCamion/{idCamion}", method = RequestMethod.GET)
     public List<Itineraire> getItinerairesLegerCamion(@PathVariable Long idCamion){
-        List<Itineraire> temp = new ArrayList<Itineraire>(); 
+        List<Itineraire> temp = new ArrayList<>(); 
         itineraireRepository.findByIdCamion(idCamion).forEach(iti->{
             iti.setImgUrl("");
             temp.add(iti);
@@ -70,6 +81,27 @@ public class ItineraireRestService {
     
     @RequestMapping(value = "/itineraires", method = RequestMethod.POST)
     public Itineraire save(@RequestBody Itineraire i){
+        // if itiner/route in body already existe and image data no here
+        // we keep the image of orinal itiner/route, if origanl have image
+        if(i.getId()!=null && i.getId()>0 && 
+            (i.getImgUrl()==null || i.getImgUrl().length()<5))
+        {
+            // get origin itineraire/route
+            Itineraire temp = itineraireRepository.getOne(i.getId());
+            // check data image of original
+            if(temp.getImgUrl()!=null && temp.getImgUrl().length()>5)
+            {
+                i.setImgUrl(temp.getImgUrl());
+                System.out.println("Itiner/Route original has image");
+            }
+            else{
+                System.out.println("Itiner/Route original no image");
+            }
+            
+            System.out.println("Itineraire/Route existed and no image in body");
+            return itineraireRepository.save(i);
+        }
+        System.out.println("A new Itineraire/Route - Or - Itiner/Route contains image in body");
         return itineraireRepository.save(i);
     }
     

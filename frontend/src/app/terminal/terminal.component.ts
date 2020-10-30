@@ -351,30 +351,32 @@ export class TerminalComponent implements OnInit {
       this.terminal.tempora= "savingfromterminal";
       this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
         // if no truck hooked with this terminal, set this.truck to null
-        if(data.idTruck==null || data.idTruck==0){
+        if(this.truck!=null && (data.idTruck==null || data.idTruck==0)){
           // let langTemp = localStorage.getItem('language');
           // localStorage.clear();
           // localStorage.setItem('language', langTemp);
-          // // location.href=location.href.split("logout")[0]
-          // location.reload();
-          this.truck==null;
-          this.itiners=null;
-          this.itinersFinis=null;
-          this.itiner=null
+          location.reload();
+
         }
-        else{
-          if(this.truck==null){
-            this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-              this.truck=data
-              this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
-              subscribe((data:Array<Itineraire>)=>{
-                this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
-                this.itinersFinis=data.filter(x=>(x.fini))
-                this.showMap()  
-              }, err=>{console.log(err)})
-            }, err=>{console.log(err)})
-          }
+        if(this.truck==null && (data.idTruck!=null && data.idTruck>0)){
+          // let langTemp = localStorage.getItem('language');
+          // localStorage.clear();
+          // localStorage.setItem('language', langTemp);
+          location.reload();
         }
+        // else{
+        //   if(this.truck==null){
+        //     this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+        //       this.truck=data
+        //       this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+        //       subscribe((data:Array<Itineraire>)=>{
+        //         this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+        //         this.itinersFinis=data.filter(x=>(x.fini))
+        //         this.showMap()  
+        //       }, err=>{console.log(err)})
+        //     }, err=>{console.log(err)})
+        //   }
+        // }
         console.log("Save Terminal when terminalTemp != terminal : ")
         // alert("Save Terminal when terminalTemp != terminal : ")
         console.log("this.hash: " + this.hash)
@@ -458,31 +460,31 @@ export class TerminalComponent implements OnInit {
         this.terminal.tempora= "savingfromterminal";
         this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
           // if no truck hooked with this terminal, set this.truck to null
-          if(data.idTruck==null || data.idTruck==0){
-            // let langTemp = localStorage.getItem('language');
-            // localStorage.clear();
-            // localStorage.setItem('language', langTemp);
-            // // location.href=location.href.split("logout")[0]
-            // location.reload();
-            this.truck==null;
-            this.itiners=null;
-            this.itinersFinis=null;
-            this.itiner=null
-            this.terminal=data;
-          }
-          else{
-            if(this.truck==null){
-              this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-                this.truck=data
-                this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
-                subscribe((data:Array<Itineraire>)=>{
-                  this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
-                  this.itinersFinis=data.filter(x=>(x.fini))
-                  this.showMap()  
-                }, err=>{console.log(err)})
-              }, err=>{console.log(err)})
-            }
-          }
+          // if(data.idTruck==null || data.idTruck==0){
+          //   // let langTemp = localStorage.getItem('language');
+          //   // localStorage.clear();
+          //   // localStorage.setItem('language', langTemp);
+          //   // // location.href=location.href.split("logout")[0]
+          //   // location.reload();
+          //   this.truck==null;
+          //   this.itiners=null;
+          //   this.itinersFinis=null;
+          //   this.itiner=null
+          //   this.terminal=data;
+          // }
+          // else{
+          //   if(this.truck==null){
+          //     this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+          //       this.truck=data
+          //       this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+          //       subscribe((data:Array<Itineraire>)=>{
+          //         this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+          //         this.itinersFinis=data.filter(x=>(x.fini))
+          //         this.showMap()  
+          //       }, err=>{console.log(err)})
+          //     }, err=>{console.log(err)})
+          //   }
+          // }
           console.log("Save Terminal when terminalTemp == terminal or Gps no change : ")
           // alert("Save Terminal when terminalTemp == terminal or Gps no change : ")
           console.log("this.hash: " + this.hash)
@@ -527,35 +529,35 @@ export class TerminalComponent implements OnInit {
       }
       else if(this.stopped && this.countTimeNoWrite%12==0){ 
         // each 2 minutes check if there is truck hooked with this terminal, set this.truck==null
-        // let duration = new Date().getTime() - this.terminal.timeStop
-        // console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
-        this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
-          this.terminal=data
-          if(data.idTruck==null || data.idTruck==0){
-            // let langTemp = localStorage.getItem('language');
-            // localStorage.clear();
-            // localStorage.setItem('language', langTemp);
-            // // location.href=location.href.split("logout")[0]
-            // location.reload();
-            this.truck==null;
-            this.itiners=null;
-            this.itinersFinis=null;
-            this.itiner=null
-          }
-          else{
-            if(this.truck==null){
-              this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-                this.truck=data
-                this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
-                subscribe((data:Array<Itineraire>)=>{
-                  this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
-                  this.itinersFinis=data.filter(x=>(x.fini))
-                  this.showMap()  
-                }, err=>{console.log(err)})
-              }, err=>{console.log(err)})
-            }
-          }
-        })
+        let duration = new Date().getTime() - this.terminal.timeStop
+        console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
+        // this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
+        //   this.terminal=data
+        //   if(data.idTruck==null || data.idTruck==0){
+        //     // let langTemp = localStorage.getItem('language');
+        //     // localStorage.clear();
+        //     // localStorage.setItem('language', langTemp);
+        //     // // location.href=location.href.split("logout")[0]
+        //     // location.reload();
+        //     this.truck==null;
+        //     this.itiners=null;
+        //     this.itinersFinis=null;
+        //     this.itiner=null
+        //   }
+        //   else{
+        //     if(this.truck==null){
+        //       this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+        //         this.truck=data
+        //         this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+        //         subscribe((data:Array<Itineraire>)=>{
+        //           this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+        //           this.itinersFinis=data.filter(x=>(x.fini))
+        //           this.showMap()  
+        //         }, err=>{console.log(err)})
+        //       }, err=>{console.log(err)})
+        //     }
+        //   }
+        // })
       }
     }
   }

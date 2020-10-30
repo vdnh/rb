@@ -215,7 +215,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
       this.transporter=data;
       // get list itineraires and then sort ithem
-      this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      this.itinerairesService.itinerairesLegerDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
         if(data!=null) {
           this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
             (a,b)=>(a.id-b.id)).sort(
@@ -496,7 +497,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           this.subscription=intervalIsCs.subscribe(val=>{
             if(!this.detailCamion){// We refresh just in mode show map
               //get list itineraires and then sort ithem
-              this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+              // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+                this.itinerairesService.itinerairesLegerDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
                 if(data!=null) {
                   this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
                     (a,b)=>(a.id-b.id)).sort(
@@ -1307,7 +1309,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     })
 
     //get list itineraires and then sort ithem
-    this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+    // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+    this.itinerairesService.itinerairesLegerDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
       if(data!=null) {
         this.itiners=data.filter(x=>(x.fini==false&&x.cancelled==false)).sort(
           (a,b)=>(a.id-b.id)).sort(
@@ -1586,10 +1589,14 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
   onModify(it:Itineraire){
     if(this.itineraire==true){
-      this.itiner=it;
-      this.originFound = this.destFound = true;
-      this.filterCamion();
-      this.gotoAnchorID('truck'); // goto the table of detail Itineraire
+      // get this itiner with all infos (it's means with image)
+      this.itinerairesService.getDetailItineraire(it.id).subscribe((data:Itineraire)=>{
+        // this.itiner=it;
+        this.itiner=data;
+        this.originFound = this.destFound = true;
+        this.gotoAnchorID('truck'); // goto the table of detail Itineraire
+        this.filterCamion();
+      })
     }
     this.latLngOrigin=new google.maps.LatLng(it.originLat, it.originLong)
     this.latLngDestination=new google.maps.LatLng(it.destLat, it.destLong)
@@ -1611,8 +1618,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itinersFinis.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
       this.makeCIsLList()
+      this.onClearMap()
     },err=>{console.log(err)})
-    this.onClearMap()
+    // this.onClearMap()
   }
 
   itinerArchive(it: Itineraire){
@@ -1629,8 +1637,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itinersCancels.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
       this.makeCIsLList()
+      this.onClearMap()
     },err=>{console.log(err)})
-    this.onClearMap()
+    // this.onClearMap()
   }
 
   itinerResumes(it: Itineraire){
@@ -1639,8 +1648,9 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       this.itiners.push(it)
       this.itinersCancels.splice(this.itinersCancels.indexOf(it))
       this.makeCIsLList();
+      this.onClearMap()
     },err=>{console.log(err)})
-    this.onClearMap()
+    // this.onClearMap()
   }
 
   onSelectCamion(c:Camion){
@@ -1766,7 +1776,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     if(this.originFound && this.destFound){
       //var itinersTemp: Array<Itineraire> = [];
       // this.itinersTemp= this.itiners;
-      this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      // this.itinerairesService.itinerairesDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
+      this.itinerairesService.itinerairesLegerDeTransporter(this.transporter.id).subscribe((data:Array<Itineraire>)=>{
         if(data!=null) {
           this.itinersTemp=data.filter(x=>(!x.cancelled&&!x.fini))
           //let itinersFitre:Array<Itineraire>=[];
