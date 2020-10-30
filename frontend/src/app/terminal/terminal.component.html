@@ -40,8 +40,8 @@
                     <th>&nbsp;{{i+1}}&nbsp;</th>
                     <td>
                         <!-- <p> -->
-                        <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{iti.datePick | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                        <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{iti.dateDrop | date: 'dd-MM-yyyy'}}
+                        <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                        <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
                             <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                             <!-- &nbsp;&nbsp; 
                         <button class="btn btn-link"><small>OnRoute</small></button> &nbsp;&nbsp;  

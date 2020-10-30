@@ -283,8 +283,8 @@ export class TerminalComponent implements OnInit {
         if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
           // if b is not father F1 of a
           if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
-          // if b is father F1 of a
-          else  return (a.id-b.id);
+          // if b is father F1 of a => b (father) is always before a
+          else  return 1 //(a.id-b.id);
         }
         // If a has father and b has father
         if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
@@ -294,8 +294,8 @@ export class TerminalComponent implements OnInit {
         }
         // If a is lonely and b has father
         if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
-          // if a is father F1 of b
-          if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+          // if a is father F1 of b then a (father) is always front of b
+          if(a.id==b.idRouteFatherF1) return -1; //(a.id-b.id);
           // if a is not father of b
           else  return (a.id-b.idRouteFatherF1);
         }
@@ -810,7 +810,14 @@ export class TerminalComponent implements OnInit {
   
   public gotoAnchorID(elementId: string): void { 
     this.viewportScroller.scrollToAnchor(elementId);
-}
+  }
+
+  showDateLocal(d:Date){
+    d=new Date(d);
+    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
+    return dateLocal;
+  }
+
 }
 
 export class CamionItinersList{

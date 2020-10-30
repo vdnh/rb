@@ -967,8 +967,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
         // if b is not father F1 of a
         if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
-        // if b is father F1 of a
-        else  return (a.id-b.id);
+        // if b is father F1 of a then b (father) is always before a
+        else  return 1; //(a.id-b.id);
       }
       // If a has father and b has father
       if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
@@ -978,8 +978,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }
       // If a is lonely and b has father
       if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
-        // if a is father F1 of b
-        if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+        // if a is father F1 of b then a (father) is always before b
+        if(a.id==b.idRouteFatherF1) return -1; //(a.id-b.id);
         // if a is not father of b
         else  return (a.id-b.idRouteFatherF1);
       }
@@ -991,36 +991,36 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
     if(cIsL!=null)
     {
-      cIsL.itiners.sort((a,b)=>{
-        // (a.id-b.id)
+      // cIsL.itiners.sort((a,b)=>{
+      //   // (a.id-b.id)
 
-        // If a and b are lonely
-        if(a.idRouteFatherF1==null && b.idRouteFatherF1==null){
-          return (a.id-b.id);
-        }
-        // If a has father and b is lonely
-        if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
-          // if b is not father F1 of a
-          if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
-          // if b is father F1 of a
-          else  return (a.id-b.id);
-        }
-        // If a has father and b has father
-        if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
-          // if they have same father F1
-          if(a.idRouteFatherF1==b.idRouteFatherF1) return (a.idRouteFather-b.idRouteFather);
-          else  return (a.idRouteFatherF1-b.idRouteFatherF1);
-        }
-        // If a is lonely and b has father
-        if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
-          // if a is father F1 of b
-          if(a.id==b.idRouteFatherF1) return (a.id-b.id);
-          // if a is not father of b
-          else  return (a.id-b.idRouteFatherF1);
-        }
-        return 0;
-      }) 
-      return cIsL.itiners
+      //   // If a and b are lonely
+      //   if(a.idRouteFatherF1==null && b.idRouteFatherF1==null){
+      //     return (a.id-b.id);
+      //   }
+      //   // If a has father and b is lonely
+      //   if(a.idRouteFatherF1!=null && b.idRouteFatherF1==null){
+      //     // if b is not father F1 of a
+      //     if(a.idRouteFatherF1!=b.id) return (a.idRouteFatherF1-b.id);
+      //     // if b is father F1 of a
+      //     else  return (a.id-b.id);
+      //   }
+      //   // If a has father and b has father
+      //   if(a.idRouteFatherF1!=null && b.idRouteFatherF1!=null){
+      //     // if they have same father F1
+      //     if(a.idRouteFatherF1==b.idRouteFatherF1) return (a.idRouteFather-b.idRouteFather);
+      //     else  return (a.idRouteFatherF1-b.idRouteFatherF1);
+      //   }
+      //   // If a is lonely and b has father
+      //   if(a.idRouteFatherF1==null && b.idRouteFatherF1!=null){
+      //     // if a is father F1 of b
+      //     if(a.id==b.idRouteFatherF1) return (a.id-b.id);
+      //     // if a is not father of b
+      //     else  return (a.id-b.idRouteFatherF1);
+      //   }
+      //   return 0;
+      // }) 
+      return this.sortItiners(cIsL.itiners)
     }
     else return null
   }
@@ -2468,19 +2468,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
   }
 
   routeSonNowTemp : Itineraire = null; // to obtain the route son temporaey
-  onselectRouteFather(itinerFatherId){
-    if(itinerFatherId==null){
+  onselectRouteFather(event){
+    if(this.itiner.idRouteFather==null){
       // reconfirm null for idRrouteFather and idRrouteFatherF1
       this.itiner.idRouteFather = null
       this.itiner.idRouteFatherF1 = null
       console.log("set null for idRouteFather and idRoutefatherF1")
     }
-    else{
-      let routeFather = this.itiners.find(x=>(x.id == itinerFatherId))
+    else{  // it means selected father
+      // find infos route father
+      let routeFather = this.itiners.find(x=>(x.id == this.itiner.idRouteFather))
       // must find if this father has already a son
-      this.routeSonNowTemp = this.itiners.find(x=>(x.id == itinerFatherId))
+      this.routeSonNowTemp = this.itiners.find(x=>(x.idRouteFather == this.itiner.idRouteFather))
       if(this.routeSonNowTemp!=null){ // found son 
-        this.routeSonNowTemp.idRouteFather=null // set null his father
+        this.routeSonNowTemp.idRouteFather=this.itiner.id //null // set null his father
         // routeSonNowTemp.idRouteFather=this.itiner.id // this.itiner become his father
         // here we put a call back, it will be called when this.itiner is addad/ajoute
         // this is in onAjouter()
@@ -2497,7 +2498,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
         this.itiner.idRouteFatherF1 = routeFather.idRouteFatherF1
       else // if route father hasn't origin, then it is th origin
         this.itiner.idRouteFatherF1 = this.itiner.idRouteFather
-      console.log("id route father: " + itinerFatherId)
+      console.log("id route father: " + this.itiner.idRouteFather)
     }
   }
 
