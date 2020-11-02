@@ -97,6 +97,7 @@ import { NewTerminalComponent } from './new-terminal/new-terminal.component';
 import { TerminalsComponent } from './terminals/terminals.component';
 import { TerminalsService } from 'src/services/terminals.service';
 import { LogoutComponent } from './logout/logout.component';
+import { TransportExpressVisitorComponent } from './transport-express-visitor/transport-express-visitor.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -209,6 +210,7 @@ const appRoutes:Routes=[
     NewTerminalComponent,
     TerminalsComponent,
     LogoutComponent,
+    TransportExpressVisitorComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

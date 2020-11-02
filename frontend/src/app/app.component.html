@@ -97,7 +97,8 @@
                 
                 <p style="background-color: whitesmoke;">
                   <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
-                  <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span>
+                  <!-- <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span> -->
+                  <app-transport-express-visitor id="TPEX" *ngIf="modeExpress==2">Loading ...</app-transport-express-visitor>
                   <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
                   
                 </p>
@@ -484,7 +485,8 @@
                 
                 <p style="background-color: whitesmoke;">
                   <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
-                  <span id="TPEX" *ngIf="modeExpress==2">Freight Express - Coming soon ...</span>
+                  <app-transport-express-visitor id="TPEX" *ngIf="modeExpress==2">Loading ...</app-transport-express-visitor>
+                  <!-- <span id="TPEX" *ngIf="modeExpress==2">Freight Express - Coming soon ...</span> -->
                   <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
                   
                 </p>
