@@ -127,12 +127,12 @@
                   <span *ngIf="pagePresent!=2">Client</span>
                 </button></th>
                 <th><button class="btn btn-link" (click)="onPage3()">
-                  <strong *ngIf="pagePresent==3">From</strong>
-                  <span *ngIf="pagePresent!=3">From</span>
+                  <strong *ngIf="pagePresent==3">Pick</strong>
+                  <span *ngIf="pagePresent!=3">Pick</span>
                 </button></th>
                 <th><button class="btn btn-link" (click)="onPage4()">
-                  <strong *ngIf="pagePresent==4">To</strong>
-                  <span *ngIf="pagePresent!=4">To</span>
+                  <strong *ngIf="pagePresent==4">Drop</strong>
+                  <span *ngIf="pagePresent!=4">Drop</span>
                 </button></th>
                 <th><button class="btn btn-link" (click)="onPage5()">
                   <strong *ngIf="pagePresent==5">Loads</strong>
@@ -150,6 +150,10 @@
                   <strong *ngIf="pagePresent==8">Join PO/Order...</strong>
                   <span *ngIf="pagePresent!=8">Join PO/Order...</span>
                 </button></th>
+                <!-- <th *ngIf="checkValidDemand()"><button class="btn btn-link" (click)="onPage9()">
+                    <strong *ngIf="pagePresent==9">Carrier Potential</strong>
+                    <span *ngIf="pagePresent!=9">Carrier Potential</span>
+                </button></th> -->
               </tr>
             </table>
             <br>
@@ -384,7 +388,7 @@
                 </tr>           
               </table>
             </div>
-            <div *ngIf="pagePresent==5" class="row">
+            <div *ngIf="loadDetails!=null && loadDetails.length>0 && pagePresent==5" class="row">
               <div class="col-sm-12 col-md-2 col-lg-2">
                 <div class="form-group">
                   <label *ngIf="mode==1">Total Length(ft)</label>
@@ -470,6 +474,10 @@
                 </a>
               </div>
             </div>
+            <!-- <div *ngIf="checkValidDemand() && pagePresent==9">
+                <button class="btn btn-link">SOS Prestige 450-974-9111 sosprestige@gmail.com Address: 520 Guindon, St Eustache, QC</button> <br>
+                <button class="btn btn-link">Group Extreme groupextrem@gmail.com</button> <br>
+            </div> -->
           </div>
         </div>
       </div>

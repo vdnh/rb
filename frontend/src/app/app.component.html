@@ -59,6 +59,7 @@
                         <div class="form-group">
                           <button type="submit" class="btn btn-link">Login</button>
                           <button type="reset" (click)="alertComingSoon()" class="btn btn-link">Devenir membre</button>
+                          <!-- <button type="reset" class="btn btn-link" (click)="modeExpress=4;gotoAnchorID('NETR')">Devenir membre</button> -->
                         </div>
                       </form> </h4>
                     </div>
@@ -95,12 +96,13 @@
                 </div>
                 
                 
-                <p style="background-color: whitesmoke;">
+                <p style="background-color: whitesmoke; margin-left: 10px; margin-top: 10px;">
                   <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
                   <!-- <span id="TPEX" *ngIf="modeExpress==2">Transport Express - Coming soon ...</span> -->
                   <app-transport-express-visitor id="TPEX" *ngIf="modeExpress==2">Loading ...</app-transport-express-visitor>
                   <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
-                  
+                  <!-- new transprter -->
+                  <app-new-transporter id="NETR" *ngIf="modeExpress==4" style="align-items: center;">Loading ...</app-new-transporter>
                 </p>
                 <div class="row">
                   <div class="col-sm-12 col-md-12 col-lg-12">
@@ -275,7 +277,9 @@
               </div>
 
               <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
-                <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
+                <!-- <button routerLink="/terminal" class="btn btn-link"> -->
+                  <b>Terminal</b> 
+                <!-- </button>  -->
                 <!-- <button routerLink="/terminal-follow" class="btn btn-link">SuivreTerminal</button>     -->
                 <button (click)="logout()" class="btn btn-link">Logout</button>
                 <br>      
@@ -283,23 +287,25 @@
               <!-- <hr style="border: 2px solid lightgray"/> -->
             </div>
             <div class="row; noprint" *ngIf="ressource && role=='DISPATCH'" style="margin-left: 10pt;">
-              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+              <!-- <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
-                <!-- routerLink="/new-shipper"  -->
                 Ajout Client
-              </button> 
+              </button>  -->
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/shippers', {skipLocationChange: true})">
                 <!-- routerLink="/shippers"  -->
                 Clients
               </button>
-              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+              <!-- <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/new-terminal', {skipLocationChange: true})">
                 Ajout Terminal
-              </button> 
+              </button>  -->
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/terminals', {skipLocationChange: true})"
                 >Terminaux
+              </button>
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                >Techniciens
               </button>
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
@@ -447,6 +453,7 @@
                         <div class="form-group">
                           <button type="submit" class="btn btn-link">Login</button>
                           <button type="reset" (click)="alertComingSoon()" class="btn btn-link">SignUp</button>
+                          <!-- <button type="reset" class="btn btn-link" (click)="modeExpress=4;gotoAnchorID('NETR')">SignUp</button> -->
                         </div>
                       </form> </h4>
                     </div>
@@ -483,12 +490,13 @@
                 </div>
                 
                 
-                <p style="background-color: whitesmoke;">
+                <p style="background-color: whitesmoke; margin-left: 10px; margin-top: 10px;">
                   <app-appel-express-visitor id="RMEX" *ngIf="modeExpress==1">Loading ...</app-appel-express-visitor>
                   <app-transport-express-visitor id="TPEX" *ngIf="modeExpress==2">Loading ...</app-transport-express-visitor>
                   <!-- <span id="TPEX" *ngIf="modeExpress==2">Freight Express - Coming soon ...</span> -->
                   <app-suivi-rapide id="SURA" *ngIf="modeExpress==3" style="align-items: center;">Loading ...</app-suivi-rapide>
-                  
+                  <!-- new transprter -->
+                  <app-new-transporter id="NETR" *ngIf="modeExpress==4" style="align-items: center;">Loading ...</app-new-transporter>
                 </p>
                 <div class="row">
                   <div class="col-sm-12 col-md-12 col-lg-12">
@@ -663,7 +671,9 @@
               </div>
 
               <div class="panel panel-primary" *ngIf="role=='TERMINAL'">     
-                <button routerLink="/terminal" class="btn btn-link">Terminal</button> 
+                <!-- <button routerLink="/terminal" class="btn btn-link"> -->
+                  <b>Terminal</b>
+                <!-- </button>  -->
                 <!-- <button routerLink="/terminal-follow" class="btn btn-link">FollowTerminal</button>     -->
                 <button (click)="logout()" class="btn btn-link">Logout</button>
                 <br>      
@@ -674,23 +684,25 @@
               <!-- <button routerLink="/new-shipper" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Add Client</button> 
               <button routerLink="/shippers" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">List Clients</button> 
               <button routerLink="/chauffeurs" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Drivers</button> -->
-              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+              <!-- <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
-                <!-- routerLink="/new-shipper"  -->
                 Add Client
-              </button> 
+              </button>  -->
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/shippers', {skipLocationChange: true})">
                 <!-- routerLink="/shippers"  -->
                 Clients
               </button> 
-              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+              <!-- <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/new-terminal', {skipLocationChange: true})">
                 Add Terminal
-              </button> 
+              </button>  -->
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/terminals', {skipLocationChange: true})"
                 >Terminals
+              </button>
+              <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
+                >Technicians
               </button>
               <button class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')" 
                 (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">

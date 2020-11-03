@@ -6,9 +6,9 @@ import { Itineraire } from 'src/model/model.itineraire';
 import { Transporter } from 'src/model/model.transporter';
 import { CamionsService } from 'src/services/camions.service';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
-import { GeolocationService } from 'src/services/geolocation.service';
-import { ItinerairesService } from 'src/services/itineraires.service';
-import { ReperesService } from 'src/services/reperes.service';
+// import { GeolocationService } from 'src/services/geolocation.service';
+// import { ItinerairesService } from 'src/services/itineraires.service';
+// import { ReperesService } from 'src/services/reperes.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { Subscription, interval } from 'rxjs';
@@ -16,6 +16,7 @@ import { TerminalsService } from 'src/services/terminals.service';
 import { Terminal } from 'src/model/model.terminal';
 import { AppUser } from 'src/model/model.appUser';
 import { AuthenticationService } from 'src/services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-terminals',
@@ -34,9 +35,10 @@ export class TerminalsComponent implements OnInit {
     public transportersService:TransportersService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
-    private geolocation : GeolocationService,
-    private itinerairesService:ItinerairesService, 
-    private reperesService:ReperesService,
+    // private geolocation : GeolocationService,
+    // private itinerairesService:ItinerairesService, 
+    // private reperesService:ReperesService,
+    public router:Router,
     public camionsService:CamionsService, 
     public authenticationService:AuthenticationService, ) { }
 

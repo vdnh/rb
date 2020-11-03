@@ -347,7 +347,7 @@ export class TransportExpressVisitorComponent implements OnInit {
   }
   //*/  End of control of surfer
   onNew(){
-    this.back=0;
+    this.back=1;
     this.pagePresent=this.back+1;
     this.forward=this.back+2;
     // this.onSave();
@@ -358,8 +358,8 @@ export class TransportExpressVisitorComponent implements OnInit {
       this.transport.nomContact!=null && this.transport.nomContact.length>0 &&
       ((this.transport.telContact!=null && this.transport.telContact.length>4) ||
       (this.transport.emailContact!=null && this.transport.emailContact.length>4)) &&
-      this.transport.originAdresse.length>4 &&
-      this.transport.destAdresse.length>4 &&
+      this.transport.origin.length>4 &&
+      this.transport.destination.length>4 &&
       this.loadDetails!=null && this.loadDetails.length>0
       )
     {
@@ -372,7 +372,7 @@ export class TransportExpressVisitorComponent implements OnInit {
       var r = confirm("Do you want to cancel this load ?")
     else var r = confirm("Etes vous sur d'annuler cet appel ?")
     if(r) {
-      this.back=0;
+      this.back=1;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
       if(this.transport.id!=null){
@@ -455,7 +455,7 @@ export class TransportExpressVisitorComponent implements OnInit {
     const user=this.form.value;
     this.authService.loginDefaultDriver(user).subscribe(resp=> {
       let jwtToken=resp.headers.get('Authorization');
-      // by default we choose owner of cts-transportation is 8
+      this.authService.saveTonken(jwtToken);
       this.transportersService.getDetailTransporter(8)
       .subscribe((data:Transporter)=>{
         this.transporter=data;
@@ -979,19 +979,21 @@ prixCalculWithHorsTax(){
   }
 
   contactChange(){
-    let strings:Array<string>=this.transport.nomContact.split("Id.");
-    let conId:number =  Number(strings[1])
-    this.contacts.forEach(con=>{
-      if(con.id==conId) 
-      {
-        this.transport.nomContact=con.prenom
-        this.transport.telContact=con.tel.toString()
-        this.transport.emailContact=con.email
-      }
-    })
+    // let strings:Array<string>=this.transport.nomContact.split("Id.");
+    // let conId:number =  Number(strings[1])
+    // this.contacts.forEach(con=>{
+    //   if(con.id==conId) 
+    //   {
+    //     this.transport.nomContact=con.prenom
+    //     this.transport.telContact=con.tel.toString()
+    //     this.transport.emailContact=con.email
+    //   }
+    // })
   }
 
   async onSaveWithMessage(){  // will save with message confirmation
+    if(this.transporter!=null && this.transporter.id>0) // if there are transporter, assign id of transporter to transport
+      this.transport.idTransporter=this.transporter.id
     if(this.transport.id==null){
       this.transport.dateDepart=new Date()
       this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
@@ -1017,7 +1019,7 @@ prixCalculWithHorsTax(){
         })
         this.loadDetails=new Array<LoadDetail>();
         this.templateName='';
-        this.back=0;
+        this.back=1;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
         this.transport=new Transport(); 
@@ -1047,7 +1049,7 @@ prixCalculWithHorsTax(){
         })
         this.loadDetails=new Array<LoadDetail>();
         this.templateName='';
-        this.back=0;
+        this.back=1;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
         this.transport=new Transport();      
@@ -1233,7 +1235,7 @@ prixCalculWithHorsTax(){
       })
     }
     else {
-      this.back=0;
+      this.back=1;
       this.pagePresent=this.back+1
       this.forward=this.back+2
       
@@ -1241,22 +1243,23 @@ prixCalculWithHorsTax(){
   }
   
   onEnvoyer(){
-    let stringsd:string[]=location.href.split('/transport-pro')
+    // let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest=myGlobals.emailPrincipal; 
-    if(this.varsGlobal.language.includes('English'))
+    // if(this.varsGlobal.language.includes('English'))
       this.em.titre= this.transport.nomEntreprise +" - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
       ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
-    else this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
-      ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
+    // else this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
+    //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
-    + this.transport.id   //1733  // replace by Number of Bon Transport
-    +"'><h4>Detail</h4></a>" +" </p></div>"    
+    // " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
+    // + this.transport.id   //1733  // replace by Number of Bon Transport
+    // +"'><h4>Detail</h4></a>" +
+    " </p></div>"    
     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
       {
         if(this.varsGlobal.language.includes('English'))
           alert("This load was sent")
-        else alert("Ce load a ete envoye.")
+        else alert("It's sent.")
       }
       //*/ Also App send confirmation email to client professionnel
       if(this.transport.emailContact.length>10){
@@ -1287,7 +1290,9 @@ prixCalculWithHorsTax(){
       //*/
       this.onSaveWithMessage();
       this.transport = new Transport() // declare one new case
-      this.back=0;
+      this.loadDetail=new LoadDetail();
+      this.loadDetails=new Array<LoadDetail>();
+      this.back=1;
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
     }, err=>{
@@ -1364,6 +1369,15 @@ prixCalculWithHorsTax(){
     this.forward=this.pagePresent+1
   }
 
+  onPage9(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      // this.onSave();
+    }
+    this.pagePresent=9;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
 }
 
 interface marker {

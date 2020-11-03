@@ -1,6 +1,15 @@
 <div *ngIf="varsGlobal.language.includes('Francais')">
-  <button *ngIf='role.includes("ADMIN")' routerLink="/new-shipper" class="btn btn-info">Nouveau</button>&nbsp;&nbsp;&nbsp;
+  <div>
+    <button *ngIf='role.includes("ADMIN")' routerLink="/new-shipper" class="btn btn-info">
+      Nouveau
+    </button>&nbsp;&nbsp;&nbsp;
   
+    <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
+      (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
+      Ajout Client
+    </button> 
+  </div>
+
   <div class="panel panel-primary">
     <!-- <div><button class="btn btn-link" (click)="gotoDetailShipperParticulier(1)"><h3>Gerer Prix Particulier</h3></button></div> -->
     <div class="panel-heading; row"><h3>Liste de Clients</h3> 
@@ -44,7 +53,16 @@
 </div>
 
 <div *ngIf="varsGlobal.language.includes('English')">
-  <button *ngIf='role.includes("ADMIN")' routerLink="/new-shipper" class="btn btn-info">New</button>&nbsp;&nbsp;&nbsp;
+  <div>
+    <button *ngIf='role.includes("ADMIN")' routerLink="/new-shipper" class="btn btn-info">
+      New
+    </button>&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
+      (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
+      Add Client
+    </button> 
+  </div>
+  
   
   <div class="panel panel-primary">
     <!-- <div><button class="btn btn-link" (click)="gotoDetailShipperParticulier(1)"><h3>Gerer Prix Particulier</h3></button></div> -->

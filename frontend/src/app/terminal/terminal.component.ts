@@ -74,7 +74,7 @@ export class TerminalComponent implements OnInit {
       // })
       FingerprintJS.load().then(fp=>{
         fp.get().then(result=>{
-          this.hash=result.visitorId
+          this.clipboard.copy(this.hash=result.visitorId)
         })
       })
      }
