@@ -156,7 +156,7 @@
                 </button></th> -->
               </tr>
             </table>
-            <br>
+            <!-- <br> -->
             <div class="row" *ngIf="pagePresent==1">
               <div class="col-md-3 col-sm-3 col-lg-3">
                 <label for=""><strong>FilledModeles (if there has)</strong></label>
@@ -263,7 +263,7 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="pagePresent==3"><label style="text-decoration-line: underline">Contact & Address Origin</label></div>
+            <div *ngIf="pagePresent==3"><label style="text-decoration-line: underline">Contact & Address Pick</label></div>
             <div *ngIf="pagePresent==3" class="row">
               <div class="col-sm-12 col-md-2 col-lg-2">
                 <div class="form-group">
@@ -303,7 +303,7 @@
               </div>
             </div>
     
-            <div *ngIf="pagePresent==4"><label style="text-decoration-line: underline">Contact & Address Destination</label></div>
+            <div *ngIf="pagePresent==4"><label style="text-decoration-line: underline">Contact & Address Drop</label></div>
             <div *ngIf="pagePresent==4" class="row">
               <div class="col-sm-12 col-md-2 col-lg-2">
                 <div class="form-group">
@@ -349,8 +349,10 @@
                 <!-- <span><button class="btn btn-link" (click)="changeUnite()" style="text-decoration-line: underline">Changer Unite Mesure</button></span> -->
               </h5>
             </div>
-            <div *ngIf="pagePresent==5" class="row">
-              <table class="table table-striped table-sm table-responsive">
+            <div *ngIf="pagePresent==5">
+             <!-- class="row"> -->
+              <!-- <table class="table table-striped table-sm table-responsive"> -->
+              <table>
                 <tr *ngIf="mode==1">
                   <th>Quantity</th><th>Description</th><th>Length(ft)</th><th>Width(ft)</th><th>Height(ft)</th><th>Weight(lb)</th>                        
                 </tr>
@@ -421,9 +423,10 @@
                   <label style="text-decoration-line: underline;" class="control-label">EquipmentType : </label>
                   <input type="text" [(ngModel)]="transport.typeCamion" name="typeCamion" class="form-control"/>
             </div>
-            <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
+            <!-- <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px"> -->
+                <div *ngIf="pagePresent==6">
                   <form [formGroup]="formGroup" >
-                    <table border="1px">
+                    <table class="table table-responsive">
                       <ng-container formArrayName="camionTypes" *ngFor="let camionType of formGroup.controls.camionTypes['controls']; let i = index" >      
                         <tr *ngIf="(i % 9 === 0 && i<18)">
                           <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7,i+8]">  
@@ -440,9 +443,10 @@
               <label style="text-decoration-line: underline;" class="control-label">Options : </label>
               <input type="text" [(ngModel)]="transport.optionDemande" name="optionDemande" class="form-control"/>
             </div>
-            <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px">
+            <!-- <div *ngIf="pagePresent==6" class="container" style="margin-left: 20px; margin-bottom: 10px"> -->
+            <div *ngIf="pagePresent==6">
               <form [formGroup]="formGroup" >
-                <table border="1px">
+                <table class="table table-responsive">
                   <ng-container formArrayName="optionTypes" *ngFor="let optionType of formGroup.controls.optionTypes['controls']; let i = index" >      
                     <tr *ngIf="i % 8 === 0 && i<16">
                       <td style="font-size: 7; font-style: italic" *ngFor="let x of [i,i+1,i+2,i+3,i+4,i+5,i+6,i+7]">  

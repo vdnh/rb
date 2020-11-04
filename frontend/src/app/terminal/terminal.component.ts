@@ -799,11 +799,11 @@ export class TerminalComponent implements OnInit {
     },err=>{console.log(err)})
   }
   
-  imgtUrlTrust:any
+  // imgtUrlTrust:any
   onclickRoute(itiner:Itineraire){
     this.itinerairesService.getDetailItineraire(itiner.id).subscribe((data:Itineraire)=>{
       this.itiner=data;
-      this.imgtUrlTrust =this.sanitizer.bypassSecurityTrustResourceUrl(this.itiner.imgUrl)
+      // this.imgtUrlTrust =this.sanitizer.bypassSecurityTrustResourceUrl(this.itiner.imgUrl)
       this.gotoAnchorID('photo')
     }, err=>{console.log(err)})
   }
