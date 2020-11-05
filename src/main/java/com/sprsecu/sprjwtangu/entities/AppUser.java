@@ -32,9 +32,13 @@ public class AppUser  implements Serializable{
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<AppRole> roles = new ArrayList<>();
-    // to identify what shipper or what transporter  when we know his role
-    private Long idUser;
+    
+    // to identify what shipper or what transporter  when we know his role, 
+    // use this 2 variables to switch between transporter and shipper
+    // but now, we always use transporter, then shipper is client pros of transorter
+    private Long idUser; // 
     private Long idSecond; // to second role
+    
     private String roleSimple; // add for adapte with angular
     private String entrepriseNom; // name of principal entreprise
     private String fullName=""; // full name of user

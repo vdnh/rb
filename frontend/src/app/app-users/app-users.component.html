@@ -1,7 +1,7 @@
 
 <!--hr style="border: 1px dotted black"/-->
 <!--div class="container"-->
-<h3>Creer user pour application</h3>
+<h3>Create User</h3>
 <hr style="border: 1px dotted black"/>
 <div class="panel-body">
   <div class="row">
@@ -23,7 +23,7 @@
     </div>
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
-        <label >Confirmer Password</label>
+        <label >Confirm Password</label>
         <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
         class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
       <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
@@ -82,7 +82,7 @@
   </div>
 </div>
 <hr style="border: 1px dotted black"/>
-<h3>Modifier un user</h3>
+<h3>Modify User</h3>
 <hr style="border: 1px dotted black"/>
 <div class="row">
     <div class="col-sm-12 col-md-2 col-lg-2">
@@ -91,11 +91,6 @@
         <select type="text" class="form-control" [(ngModel)]="appUserToMod">
           <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
         </select>
-        <!--input type="text" [(ngModel)]="appUserToMod.username"
-              name="usernameToMod" (change)="usernameToModChange()" class="form-control" list="listAppUsers">
-         <datalist id="listAppUsers">
-           <option *ngFor="let a of listAppUsers" [ngValue]="a" >{{a.username}}</option>
-         </datalist-->
       </div>
     </div>
     <div class="col-sm-12 col-md-2 col-lg-2">
@@ -110,7 +105,7 @@
     </div>
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
-        <label >Confirmer Password</label>
+        <label >Confirm Password</label>
         <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
         class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
       <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
@@ -154,7 +149,7 @@
     </div>
   </div>
   <div class="form-group">
-    <button [disabled]="!(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!='')" (click)="onModifyUser()">Modifier</button>
+    <button [disabled]="!(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!='')" (click)="onModifyUser()">Modify</button>
     <span>&nbsp;&nbsp;</span>
     <button (click)="onDeleteUser()">Delete</button>
   </div>

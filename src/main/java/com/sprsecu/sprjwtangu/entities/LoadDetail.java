@@ -25,4 +25,5 @@ public class LoadDetail implements Serializable{
     private Float largeur;
     private Float hauteur;
     private Float poids;
+    private Float price;
 }

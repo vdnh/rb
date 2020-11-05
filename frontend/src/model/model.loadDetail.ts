@@ -7,4 +7,5 @@ export class LoadDetail{
     largeur:number;
     hauteur:number;
     poids:number;
+    price:number;
 }

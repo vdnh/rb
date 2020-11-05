@@ -56,30 +56,51 @@
           </table>                      
           
           <table border="1">
-            <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
+            <tr><td colspan="2"><strong>Contact principal</strong></td></tr>
             <tr>
               <th width="14%">Nom</th><th width="14%">Prenom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
             </tr>
+            <tr *ngFor="let ct of contacts">
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
+                <input type="tel" [(ngModel)]="ct.tel" name="telContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="ct.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.extTel" /></td> 
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
+                <input type="tel" [(ngModel)]="ct.fax" name="faxContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="ct.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
+            </tr>     
             <tr>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
-              <td width="16%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
               <td width="14%">
-                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
-                <input type="tel" [(ngModel)]="contact.tel" name="telContact"
+                <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.tel" /> -->
+                <input type="tel" [(ngModel)]="contact.tel" name="telAddContact"
                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                   (focusout)="contact.tel=reformTelEvent($event)" required>
               </td>
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td> 
-              <td width="14%">
-                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
-                <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
+              <td width="8%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.fax" /> -->
+                <input type="tel" [(ngModel)]="contact.fax" name="faxAddContact"
                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                   (focusout)="contact.fax=reformTelEvent($event)" required>
               </td>
-              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
-            </tr>     
+              <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
+              <td width="7%"><button class="btn btn-link" (click)="addContact()">Add</button></td>
+            </tr> 
             <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
             <tr>
               <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
@@ -98,6 +119,30 @@
           </table>
           <br>                    
           <table border="1">
+            <tr><td colspan="3"><strong>Prix de Transport</strong></td></tr>     
+            <tr>
+              <th>Nom</th>
+              <th>PriceBase</th>
+              <th>$/Km(moins100km)</th>
+              <th>$/Km(plus100km)</th>
+              <th>PriceMinimum</th>
+            </tr>
+            <tr *ngFor="let lf of loadFrequents">
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceBase" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType1" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType2" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceMinimum" /></td>
+            </tr>
+            <tr>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceBase" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType1" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceMinimum" /></td>
+              <td width="10%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+            </tr>
+
             <tr><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
             <tr>
               <th width="9%">Type</th>
@@ -349,26 +394,47 @@
             <tr>
               <th width="14%">LastName</th><th width="14%">FirstName</th><th width="14%">Function</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
             </tr>
+            <tr *ngFor="let ct of contacts">
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
+              <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
+                <input type="tel" [(ngModel)]="ct.tel" name="telContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="ct.tel=reformTelEvent($event)" required>
+              </td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.extTel" /></td> 
+              <td width="14%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
+                <input type="tel" [(ngModel)]="ct.fax" name="faxContact"
+                  class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                  (focusout)="ct.fax=reformTelEvent($event)" required>
+              </td>
+              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
+            </tr>  
             <tr>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
-              <td width="16%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
               <td width="14%">
-                <!-- <input class="form-control" type="text" [(ngModel)]="contact.tel" /> -->
-                <input type="tel" [(ngModel)]="contact.tel" name="telContact"
+                <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.tel" /> -->
+                <input type="tel" [(ngModel)]="contact.tel" name="telAddContact"
                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                   (focusout)="contact.tel=reformTelEvent($event)" required>
               </td>
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td> 
-              <td width="14%">
-                <!-- <input class="form-control" type="text" [(ngModel)]="contact.fax" /> -->
-                <input type="tel" [(ngModel)]="contact.fax" name="faxContact"
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
+              <td width="8%">
+                <!-- <input class="form-control" type="text" [(ngModel)]="addcontact.fax" /> -->
+                <input type="tel" [(ngModel)]="contact.fax" name="faxAddContact"
                   class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
                   (focusout)="contact.fax=reformTelEvent($event)" required>
               </td>
-              <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
-            </tr>     
+              <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
+              <td width="7%"><button class="btn btn-link" (click)="addContact()">Add</button></td>
+            </tr>    
             <!-- <tr><td colspan="2"><strong>Prix de Remorquage</strong></td></tr>     
             <tr>
               <th>PB1</th><th>PK1</th><th>Incl1</th><th>PB2</th><th>PK2</th><th>Incl2</th><th>PB3</th><th>PK3</th><th>Incl3</th>
@@ -387,6 +453,31 @@
           </table>
           <br>                    
           <table border="1">
+
+            <tr><td colspan="3"><strong>Freight Price</strong></td></tr>     
+            <tr>
+              <th>Name</th>
+              <th>PriceBase</th>
+              <th>$/Km(less100km)</th>
+              <th>$/Km(more100km)</th>
+              <th>PriceMinimum</th>
+            </tr>
+            <tr *ngFor="let lf of loadFrequents">
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceBase" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType1" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType2" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceMinimum" /></td>
+            </tr>
+            <tr>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceBase" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType1" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+              <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceMinimum" /></td>
+              <td width="10%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+            </tr>
+
             <tr><td colspan="3"><strong>Towing Price</strong></td></tr>     
             <tr>
               <th width="9%">Type</th>

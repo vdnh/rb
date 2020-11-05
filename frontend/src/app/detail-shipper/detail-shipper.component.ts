@@ -13,6 +13,8 @@ import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { LoadFrequent } from 'src/model/model.loadFrequent';
+import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 
 @Component({
   selector: 'app-detail-shipper',
@@ -29,12 +31,16 @@ export class DetailShipperComponent implements OnInit {
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   appUser: AppUser;
+  loadFrequent= new LoadFrequent();
+  loadFrequents: Array<LoadFrequent>=[];
+  
   constructor(public authenticationService:AuthenticationService, 
     public activatedRoute:ActivatedRoute, 
     public shippersService:ShippersService, 
     public contactsService:ContactsService,
     public adressesService:AdressesService, 
     public varsGlobal:VarsGlobal,
+    public loadFrequentService:LoadFrequentsService,
     public router:Router){    
     this.id=activatedRoute.snapshot.params['id'];
     //this.id=Number(localStorage.getItem('userId'))
@@ -109,6 +115,12 @@ export class DetailShipperComponent implements OnInit {
         });    
         this.adresses.forEach(obj => {
           this.adressesService.saveAdresses(obj).subscribe(data=>{
+          }, err=>{
+            console.log(err)
+          })
+        });
+        this.loadFrequents.forEach(obj => {
+          this.loadFrequentService.saveLoadFrequent(obj).subscribe(data=>{
           }, err=>{
             console.log(err)
           })

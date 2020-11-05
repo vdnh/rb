@@ -89,6 +89,12 @@ public class UserRestService {
     public List<AppUser> getAllUsers(){
         return accountService.getAllUsers();
     }
+    
+    @RequestMapping(value = "/users/{idUser}", method = RequestMethod.GET)
+    public List<AppUser> getAllUsersByIdUser(@PathVariable Long idUser){
+        return accountService.getAllUsersByIdUser(idUser);
+    }
+    
     /*
         Stream.of("admin","user","manager").forEach(u -> {
             accountService.saveUser(new AppUser(null, u, u, null));

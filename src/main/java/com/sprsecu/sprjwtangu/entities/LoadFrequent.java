@@ -19,11 +19,16 @@ public class LoadFrequent implements Serializable{
     @Id @GeneratedValue
     private Long id;
     private Long idTransporter;
-    //private Integer quantity;
+    private Long idShipper;
     private String nom;
     private String description;
     private Float longueur;
     private Float largeur;
     private Float hauteur;
     private Float poids;
+    
+    private Float priceBase;
+    private Float priceMinimum;
+    private Float priceKmType1; // <=100 kms
+    private Float priceKmType2; // >100 kms
 }

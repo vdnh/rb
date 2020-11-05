@@ -10,6 +10,8 @@ import { AppUser } from 'src/model/model.appUser';
 import { Router } from '@angular/router';
 import * as myGlobals from 'src/services/globals';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { LoadFrequent } from 'src/model/model.loadFrequent';
+import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 
 @Component({
   selector: 'app-new-shipper',
@@ -21,6 +23,10 @@ export class NewShipperComponent implements OnInit {
   mode:number=1;
   contact:Contact=new Contact();
   adresse:Adresse=new Adresse();
+  contacts:Array<Contact>=[];
+  adresses:Array<Adresse>=[];
+  loadFrequent= new LoadFrequent();
+  loadFrequents: Array<LoadFrequent>=[];
   appUser : AppUser = new AppUser();
   role:string="";
   //listAppUsers : Array<AppUser> = [];
@@ -59,6 +65,7 @@ export class NewShipperComponent implements OnInit {
     public adressesService:AdressesService, 
     public authenticationService:AuthenticationService, 
     public varsGlobal:VarsGlobal,
+    public loadFrequentService:LoadFrequentsService,
     public router:Router) { }
 
   ngOnInit() {
@@ -127,7 +134,25 @@ export class NewShipperComponent implements OnInit {
   onNameChange(){
     this.shipper.loginName=this.shipper.nom.trim().replace(/\s/g,"").toLowerCase();
   }
+
+  addLoadFrequent(){
+    this.loadFrequents.push(this.loadFrequent)
+    this.loadFrequent=new LoadFrequent()
+  }
   
+  addContact(){
+    this.contacts.push(this.contact)
+    this.contact=new Contact()
+    // this.addcontact.id_shipper=this.id;
+    // this.contactsService.saveContacts(this.addcontact).subscribe((data:Contact)=>{
+    //   //alert("Adresse added.");
+    //   this.contacts.push(data)
+    //   this.addcontact=new Contact()
+    // }, err=>{
+    //   console.log(err)
+    // })
+  }
+
   onCreateUser(){
     this.appUser.username=this.shipper.loginName
     this.appUser.password=this.shipper.password
@@ -169,10 +194,11 @@ export class NewShipperComponent implements OnInit {
         // this.mode=2;
         this.shipper=data;
         this.onCreateUser();
-        this.contact.id_shipper=this.shipper.id;
+         this.contact.id_shipper=this.shipper.id;
         this.adresse.id_shipper=this.shipper.id;
         this.signUpContact();
         this.signUpAdresse();
+        this.signUpLoadFrequent();
         if(this.role.includes('DISPATCH')) this.router.navigate(['']);
         else this.router.navigate(['/shippers']);  //this.mode=2;
       }, err=>{
@@ -182,15 +208,30 @@ export class NewShipperComponent implements OnInit {
   }
 
   signUpContact(){
-    this.contactsService.signupContact(this.contact).subscribe((data:Contact)=>{
-    }, err=>{
-      console.log(err);
-    })    
+    if(this.contacts.length>0)
+      this.contacts.forEach(ct=>{
+        ct.id_shipper=this.shipper.id;
+        this.contactsService.signupContact(ct).subscribe((data:Contact)=>{}, 
+        err=>{console.log(err);})   
+      })  
+  }
+
+  signUpLoadFrequent(){
+    if(this.loadFrequents.length>0)
+      this.loadFrequents.forEach(lf=>{
+        lf.idTransporter=Number(localStorage.getItem('idTransporter'))
+        lf.idShipper=this.shipper.id;
+        this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{}, 
+        err=>{console.log(err);})   
+      })  
   }
 
   signUpAdresse(){
+    if(this.adresses.length>0)
+      this.adresses.forEach(ad=>{
+        this.adresse.id_shipper=this.shipper.id;
+      })
     this.adressesService.signUpAdresse(this.adresse).subscribe((data:Adresse)=>{
-
     }, err=>{
       console.log(err);
     })

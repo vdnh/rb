@@ -120,6 +120,31 @@
               </table>
               <br>                    
               <table border="1">  
+
+                <tr><td colspan="3"><strong>Prix de Transport</strong></td></tr>     
+                <tr>
+                  <th>Nom</th>
+                  <th>PriceBase</th>
+                  <th>$/Km(moins100km)</th>
+                  <th>$/Km(plus100km)</th>
+                  <th>PriceMinimum</th>
+                </tr>
+                <tr *ngFor="let lf of loadFrequents">
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceBase" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType1" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType2" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceMinimum" /></td>
+                </tr>
+                <tr>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceBase" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType1" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceMinimum" /></td>
+                  <td width="10%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+                </tr>
+
                 <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Prix de Remorquage</strong></td></tr>     
                 <tr *ngIf='!role.includes("SHIPPER")'>
                     <th width="9%">Type</th>
@@ -481,6 +506,31 @@
               </table>
               <br>                    
               <table border="1">  
+
+                <tr><td colspan="3"><strong>Freight Price</strong></td></tr>     
+                <tr>
+                  <th>Name</th>
+                  <th>PriceBase</th>
+                  <th>$/Km(less100km)</th>
+                  <th>$/Km(more100km)</th>
+                  <th>PriceMinimum</th>
+                </tr>
+                <tr *ngFor="let lf of loadFrequents">
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceBase" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType1" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceKmType2" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="lf.priceMinimum" /></td>
+                </tr>
+                <tr>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceBase" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType1" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+                  <td width="18%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.priceMinimum" /></td>
+                  <td width="10%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+                </tr>
+
                 <tr *ngIf='!role.includes("SHIPPER")'><td colspan="3"><strong>Towing Price</strong></td></tr>     
                 <tr *ngIf='!role.includes("SHIPPER")'>
                     <th width="9%">Type</th>

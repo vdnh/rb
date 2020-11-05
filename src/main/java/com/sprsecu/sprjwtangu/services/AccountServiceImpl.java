@@ -55,6 +55,14 @@ public class AccountServiceImpl implements AccountService{
     }
     
     @Override
+    public List<AppUser> getAllUsersByIdUser(Long  idUser) {
+        //System.out.println("Before of find user by username");
+        List<AppUser> users= userRepository.getAllUsersByIdUser(idUser); 
+        //System.out.println("Later of find user by username : "+user.getPassword());
+        return users;
+    }
+    
+    @Override
     public List<AppUser> getAllUsers(){
         return userRepository.findAll();
     }

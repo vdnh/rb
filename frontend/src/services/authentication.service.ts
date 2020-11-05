@@ -30,7 +30,14 @@ export class AuthenticationService{
           return resp;
       }))
     }
-    
+    getAllUsersByIdUser(idUser:number){
+      this.loadTonken();
+      return this.http.get(this.host+"/users", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(resp =>{
+          return resp;
+      }))
+    }
+
     modifyAppUser(appUser:AppUser){
       this.loadTonken();
       return this.http.post(this.host+"/userModify",appUser
