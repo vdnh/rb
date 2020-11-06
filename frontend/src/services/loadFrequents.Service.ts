@@ -19,11 +19,17 @@ export class LoadFrequentsService{
     
     loadFrequentsDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadFrequentsDeTransport?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8080/loadFrequentsDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
-
+    
+    loadFrequentsDeShipper(idShipper:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/loadFrequentsDeShipper?idShipper="+idShipper
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
     saveLoadFrequent(loadFrequent:LoadFrequent){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/loadFrequents", loadFrequent

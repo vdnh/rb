@@ -60,4 +60,10 @@ public class LoadFrequentRestService {
     {
         return loadFrequentRepository.findByIdTransporter(idTransporter);
     }    
+    
+    @RequestMapping(value = "/loadFrequentsDeShipper", method = RequestMethod.GET)
+    public List<LoadFrequent> chercherLFS(@RequestParam(name = "idShipper", defaultValue = "-1" ) Long idShipper) 
+    {
+        return loadFrequentRepository.findByIdShipper(idShipper);
+    }
 }

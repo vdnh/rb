@@ -236,4 +236,8 @@ export class NewShipperComponent implements OnInit {
       console.log(err);
     })
   }
+
+  deleteLoadFrequent(lf:LoadFrequent){
+    this.loadFrequents.splice(this.loadFrequents.indexOf(lf),1)
+  }
 }

@@ -8,4 +8,5 @@ export class LoadDetail{
     hauteur:number;
     poids:number;
     price:number;
+    idLoadFrequent:number;
 }

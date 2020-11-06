@@ -90,9 +90,14 @@ public class UserRestService {
         return accountService.getAllUsers();
     }
     
-    @RequestMapping(value = "/users/{idUser}", method = RequestMethod.GET)
+    @RequestMapping(value = "/usersByIdUser/{idUser}", method = RequestMethod.GET)
     public List<AppUser> getAllUsersByIdUser(@PathVariable Long idUser){
         return accountService.getAllUsersByIdUser(idUser);
+    }
+    
+    @RequestMapping(value = "/usersByIdTransporter/{idTransporter}", method = RequestMethod.GET)
+    public List<AppUser> getAllUsersByIdTransporter(@PathVariable Long idTransporter){
+        return accountService.getAllUsersByIdTransporter(idTransporter);
     }
     
     /*

@@ -14,6 +14,7 @@ public interface AccountService {
     public void addRoleToUser(String username, String roleName);
     public AppUser findUserByUsername(String username);
     public List<AppUser> getAllUsersByIdUser(Long idUser);
+    public List<AppUser> getAllUsersByIdTransporter(Long idTransporter);
     public List<AppUser> getAllUsers();
     public void delUser(AppUser user);
 }

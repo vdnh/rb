@@ -15,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface LoadFrequentRepository  extends JpaRepository<LoadFrequent, Long>{
     public List<LoadFrequent> findByIdTransporter(Long idTransporter);
+    public List<LoadFrequent> findByIdShipper(Long idShipper);
 }

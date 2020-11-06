@@ -26,8 +26,8 @@ export class DetailShipperComponent implements OnInit {
   shipper:Shipper=new Shipper();
   id:number; // this is the id of shipper
   mode:number=1;
-  contacts:Array<Contact>;
-  adresses:Array<Adresse>;
+  contacts:Array<Contact>=[];
+  adresses:Array<Adresse>=[];
   addcontact:Contact=new Contact(); // to add more contact
   addadresse:Adresse=new Adresse(); // to add more adresse
   appUser: AppUser;
@@ -76,6 +76,14 @@ export class DetailShipperComponent implements OnInit {
     });
     this.adressesService.adressesDeShipper(this.id).subscribe((data:Array<Adresse>)=>{
       this.adresses=data;
+      // this.adresses.forEach(a=>{
+      //   console.log("Adress : "+a.num+" "+a.rue )
+      // })
+    }, err=>{
+      console.log();
+    });
+    this.loadFrequentService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
+      this.loadFrequents=data;
       // this.adresses.forEach(a=>{
       //   console.log("Adress : "+a.num+" "+a.rue )
       // })
@@ -181,14 +189,34 @@ export class DetailShipperComponent implements OnInit {
     })
   }
 
+  addLoadFrequent(){
+    this.loadFrequent.idShipper=this.id;
+    this.loadFrequentService.saveLoadFrequent(this.loadFrequent).subscribe((data:LoadFrequent)=>{
+      alert("LoadFrequent added.");
+      this.loadFrequents.push(data)
+      this.loadFrequent=new LoadFrequent();
+    }, err=>{
+      console.log(err)
+    })
+  }
+
   deleteAdresse(id:number){
     this.adressesService.deleteAdresse(id).subscribe((data:Adresse)=>{
-      alert("Adresse : "+this.addadresse.num+" a ete supprime.");
+      alert("Adresse : "+data.num+" a ete supprime.");
       this.adresses.splice(this.adresses.indexOf(data),1)
     }, err=>{
       console.log(err);
     });
   }  
+
+  deleteLoadFrequent(id:number){
+    this.loadFrequentService.deleteLoadFrequent(id).subscribe((data:LoadFrequent)=>{
+      alert("LoadFrequent : "+data.nom+" a ete supprime.");
+      this.loadFrequents.splice(this.loadFrequents.indexOf(data),1)
+    }, err=>{
+      console.log(err);
+    });
+  }
 
   onModifyUser(){
     if(this.shipper.password.length<4)

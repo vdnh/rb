@@ -32,7 +32,15 @@ export class AuthenticationService{
     }
     getAllUsersByIdUser(idUser:number){
       this.loadTonken();
-      return this.http.get(this.host+"/users", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      return this.http.get(this.host+"/usersByIdUser/"+idUser, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+      .pipe(map(resp =>{
+          return resp;
+      }))
+    }
+
+    getAllUsersByIdTransporter(idTransporter:number){
+      this.loadTonken();
+      return this.http.get(this.host+"/usersByIdTransporter/"+idTransporter, {headers:new HttpHeaders({'Authorization':this.jwToken})})
       .pipe(map(resp =>{
           return resp;
       }))

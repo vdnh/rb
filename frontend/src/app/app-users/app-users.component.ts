@@ -31,8 +31,8 @@ export class AppUsersComponent implements OnInit {
   passwordCheckToMod=''
   disabledIdUser=false;
   disabledIdSecond=false;
-  listShippers: any[];
-  listTrans: any[];
+  listShippers: Array<Shipper>=[];
+  listTrans: Array<Transporter>=[];
   listPros: any[];
   listPros2em: any[];
   //listUser: Array<AppUser>;
@@ -107,12 +107,13 @@ export class AppUsersComponent implements OnInit {
 
   ngOnInit() {
     this.appUser.roleSimple=this.roleTypes[0];
-    this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
+    // getShippersTransporter
+    // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
+    this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
       this.listShippers=data;
-      await this.transporterservice.getAllTransporters().subscribe((data:Array<Transporter>)=>{
-        this.listTrans=data;
-        //this.listPros.push(this.listShippers)
-        //this.listPros.push(this.listTrans)
+      // this.transporterservice.getAllTransporters().subscribe((data:Array<Transporter>)=>{
+      this.transporterservice.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+        this.listTrans.push(data);
         this.typeRoleChange(this.roleTypes[0]);
       }, err=>{
         console.log(err)
@@ -120,12 +121,28 @@ export class AppUsersComponent implements OnInit {
     }, err=>{
       console.log(err)
     })
-    this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
-      this.listAppUsers=data;
-    },
-    err=>{
-      console.log(err)
-    })
+    
+    if(localStorage.getItem('idTransporter')!=null){
+      this.roleTypes = [
+        "DISPATCH", 
+        "TECHNICIEN", 
+      ];
+      this.authenticationService.getAllUsersByIdTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<AppUser>)=>{
+        this.listAppUsers=data;
+      },
+      err=>{
+        console.log(err)
+      })
+    }
+    else{
+      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+        this.listAppUsers=data;
+      },
+      err=>{
+        console.log(err)
+      })
+    }
+    
   }
   
   idUserChange(){
