@@ -11,6 +11,6 @@ export class LoadFrequent{
 
     priceBase:number;
     priceMinimum:number;
-    priceKmType1:number; // <=100 kms
-    priceKmType2:number; // >100 kms
+    priceKmType1:number; // <=100 kms // actually, we need this to calculate price
+    priceKmType2:number; // >100 kms // actually, we don't need the 2nd type
 }

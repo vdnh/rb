@@ -485,7 +485,8 @@
               </tr>
               <tr>
                 <td>
-                  <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" placeholder="quantite"/>
+                  <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" 
+                  (change)="priceLoad(loadDetail, loadFrequent)" placeholder="quantite"/>
                 </td>
                 <td>
                   <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="this.loadDetail.description" 
@@ -498,11 +499,12 @@
                 <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.price"/></td>
                 <td><button class="btn btn-link" (click)="addLoadDetail()">Ajouter</button></td>
               </tr>         
-              <tr>
+              <tr *ngIf="loadFrequents.length>0">
                 <td>Select Loads Frequent</td>
                 <td>
-                  <select type="text" class="form-control" [(ngModel)]="loadFrequent"
+                  <select class="form-control" [(ngModel)]="loadFrequent"
                   (ngModelChange)="loadFrequentChange()">
+                    <option [ngValue]="null"> </option>
                     <option *ngFor="let lf of loadFrequents" [ngValue]="lf">{{lf.nom}}</option>
                   </select>
                 </td>
@@ -543,12 +545,18 @@
               <div class="form-group">
                 <label *ngIf="mode==1">Distance(mile)</label>
                 <label *ngIf="mode==2">Distance(km)</label>
-                <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control" disabled/>
+                <input type="number" [(ngModel)]="transport.distance" name="distance" disabled
+                (change)="priceLoad(loadDetail, loadFrequent);calculTotalpoints()" class="form-control"/>
+                <span>{{(showKm(this.transport.distance)+ " kms")}}</span>
               </div>
+              <!-- <div class="form-group">
+                <label>(km)</label>
+                <input {{Math.round(this.transport.distance / 0.621371)}} name="kms" class="form-control" disabled/>
+              </div> -->
             </div>
             <div class="col-sm-12 col-md-2 col-lg-2">
               <div class="form-group">
-                <label >Total FraisLoads($)</label>
+                <label >Total Frais($)</label>
                 <input type="number" [(ngModel)]="transport.loadsFee" (change)="prixCalcul()" class="form-control"/>
               </div>
             </div>
@@ -1806,7 +1814,8 @@
               </tr>
               <tr>
                 <td>
-                  <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" placeholder="quantity"/>
+                  <input type="number" class="form-control" [(ngModel)]="this.loadDetail.quantity" 
+                  (change)="priceLoad(loadDetail, loadFrequent)" placeholder="quantite" placeholder="quantity"/>
                 </td>
                 <td>
                   <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="this.loadDetail.description" 
@@ -1822,8 +1831,18 @@
                 <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.largeur" placeholder="width"/></td>
                 <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.hauteur" placeholder="height"/></td>
                 <td><input type="number" class="form-control" [(ngModel)]="this.loadDetail.poids" placeholder="weight"/></td>
-                <td><button class="btn btn-link" (click)="addLoadDetail()">Ajouter</button></td>
-              </tr>           
+                <td><button class="btn btn-link" (click)="addLoadDetail()">Add</button></td>
+              </tr>   
+              <tr *ngIf="loadFrequents.length>0">
+                <td>Select Loads Frequent</td>
+                <td>
+                  <select class="form-control" [(ngModel)]="loadFrequent"
+                  (ngModelChange)="loadFrequentChange()">
+                    <option [ngValue]="null"> </option>
+                    <option *ngFor="let lf of loadFrequents" [ngValue]="lf">{{lf.nom}}</option>
+                  </select>
+                </td>
+              </tr>        
             </table>
           </div>
           <div *ngIf="pagePresent==5" class="row">
@@ -1861,11 +1880,12 @@
                 <label *ngIf="mode==1">Distance(mile)</label>
                 <label *ngIf="mode==2">Distance(km)</label>
                 <input type="number" [(ngModel)]="transport.distance" name="distance" (change)="calculTotalpoints()" class="form-control" disabled/>
+                <span>{{(showKm(this.transport.distance)+ " kms")}}</span>
               </div>
             </div>
             <div class="col-sm-12 col-md-2 col-lg-2">
               <div class="form-group">
-                <label >FeesLoads($)</label>
+                <label >Total Fees($)</label>
                 <input type="number" [(ngModel)]="transport.loadsFee" (change)="prixCalcul()" class="form-control"/>
               </div>
             </div>

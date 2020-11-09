@@ -96,13 +96,13 @@ import { TerminalFollowComponent } from './terminal-follow/terminal-follow.compo
 import { NewTerminalComponent } from './new-terminal/new-terminal.component';
 import { TerminalsComponent } from './terminals/terminals.component';
 import { TerminalsService } from 'src/services/terminals.service';
-import { LogoutComponent } from './logout/logout.component';
+// import { LogoutComponent } from './logout/logout.component';
 import { TransportExpressVisitorComponent } from './transport-express-visitor/transport-express-visitor.component';
 import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
-  {path:"logout", component:LogoutComponent},
+  // {path:"logout", component:LogoutComponent},
   {path:"appUsers", component:AppUsersComponent},
   {path:"propos", component:TasksComponent},
   {path:"new-task", component:NewTaskComponent},
@@ -210,7 +210,7 @@ const appRoutes:Routes=[
     TerminalFollowComponent,
     NewTerminalComponent,
     TerminalsComponent,
-    LogoutComponent,
+    // LogoutComponent,
     TransportExpressVisitorComponent,
     //MapComponent,
   ],

@@ -135,4 +135,6 @@ export class Transport{
     loadsFee:number=0.00;   // 
 
     taxProvince="";  // province where apply tax for this towing
+
+    tyeDoc:number; // Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
 }

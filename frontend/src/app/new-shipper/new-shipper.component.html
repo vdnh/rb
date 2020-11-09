@@ -59,11 +59,11 @@
           <table border="1">
             <tr><td colspan="2"><strong>Contact principal</strong></td></tr>
             <tr>
-              <th width="14%">Nom</th><th width="14%">Prenom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+              <th width="14%">Prenom</th><th width="14%">Nom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
             </tr>
             <tr *ngFor="let ct of contacts">
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
               <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
               <td width="14%">
@@ -124,15 +124,15 @@
             <tr>
               <th>Nom</th>
               <th>PriceBase</th>
-              <th>$/Km(moins100km)</th>
-              <th>$/Km(plus100km)</th>
+              <th>$/Km</th>
+              <!-- <th>$/Km(plus100km)</th> -->
               <th>PriceMinimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td>
+              <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
               <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
             </tr>
@@ -140,7 +140,7 @@
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceBase" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType1" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+              <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceMinimum" /></td>
               <td width="14%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
             </tr>
@@ -287,13 +287,17 @@
       <tr></tr>
       <tr><td colspan="3"><strong>Prix de Transport</strong></td></tr>     
       <tr>
-        <th>Load</th><th>PriceBase</th><th>$/km(moins100km)</th><th>$/km(plus100km)</th><th>PriceMinimum</th>
+        <th>Load</th>
+        <th>PriceBase</th>
+        <th>$/km</th>
+        <!-- <th>$/km(plus100km)</th> -->
+        <th>PriceMinimum</th>
       </tr>
       <tr *ngFor="let lf of loadFrequents">
         <td>{{lf.nom}}</td>
         <td>{{lf.priceBase}}</td>
         <td>{{lf.priceKmType1}}</td>
-        <td>{{lf.priceKmType2}}</td>
+        <!-- <td>{{lf.priceKmType2}}</td> -->
         <td>{{lf.priceMinimum}}</td>
       </tr>
       <tr></tr>
@@ -412,11 +416,11 @@
           <table border="1">
             <tr><td colspan="2"><strong>Contact</strong></td></tr>
             <tr>
-              <th width="14%">LastName</th><th width="14%">FirstName</th><th width="14%">Function</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+              <th width="14%">FirstName</th><th width="14%">LastName</th><th width="14%">Function</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
             </tr>
             <tr *ngFor="let ct of contacts">
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+              <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
               <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
               <td width="14%">
@@ -477,15 +481,15 @@
             <tr>
               <th>Name</th>
               <th>PriceBase</th>
-              <th>$/Km(less100km)</th>
-              <th>$/Km(more100km)</th>
+              <th>$/Km</th>
+              <!-- <th>$/Km(more100km)</th> -->
               <th>PriceMinimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td>
+              <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
               <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
             </tr>
@@ -493,7 +497,7 @@
               <td width="14%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceBase" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType1" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td>
+              <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceMinimum" /></td>
               <td width="14%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
             </tr>
@@ -640,13 +644,17 @@
       <tr></tr>
       <tr><td colspan="3"><strong>Freight Price</strong></td></tr>     
       <tr>
-        <th>Load</th><th>PriceBase</th><th>$/km(less100km)</th><th>$/km(more100km)</th><th>PriceMinimum</th>
+        <th>Load</th>
+        <th>PriceBase</th>
+        <th>$/km</th>
+        <!-- <th>$/km(more100km)</th> -->
+        <th>PriceMinimum</th>
       </tr>
       <tr *ngFor="let lf of loadFrequents">
         <td>{{lf.nom}}</td>
         <td>{{lf.priceBase}}</td>
         <td>{{lf.priceKmType1}}</td>
-        <td>{{lf.priceKmType2}}</td>
+        <!-- <td>{{lf.priceKmType2}}</td> -->
         <td>{{lf.priceMinimum}}</td>
       </tr>
       <tr></tr>

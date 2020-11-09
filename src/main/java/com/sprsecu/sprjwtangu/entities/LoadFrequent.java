@@ -29,6 +29,6 @@ public class LoadFrequent implements Serializable{
     
     private Float priceBase;
     private Float priceMinimum;
-    private Float priceKmType1; // <=100 kms
-    private Float priceKmType2; // >100 kms
+    private Float priceKmType1; // <=100 kms // actually, we need this to calculate price
+    private Float priceKmType2; // >100 kms // actually, we don't need the 2nd type
 }

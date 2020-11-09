@@ -26,6 +26,8 @@ import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
+import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
+import { LoadFrequent } from 'src/model/model.loadFrequent';
 
 
 @Component({
@@ -41,6 +43,9 @@ export class TransportProComponent implements OnInit {
 
   loadDetail:LoadDetail=new LoadDetail();
   loadDetails:Array<LoadDetail>=new Array<LoadDetail>();
+
+  loadFrequent:LoadFrequent=new LoadFrequent();
+  loadFrequents:Array<LoadFrequent>=new Array<LoadFrequent>();
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -243,6 +248,7 @@ export class TransportProComponent implements OnInit {
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
+    public loadFrequentsService:LoadFrequentsService,
     public transportersService:TransportersService
     ) { 
       this.id = Number (localStorage.getItem("userId"));
@@ -383,14 +389,28 @@ export class TransportProComponent implements OnInit {
     //this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
   }
+  // addLoadDetail(){
+  //   let load:LoadDetail=new LoadDetail();
+  //   load=this.loadDetail
+  //   this.loadDetails.push(load)
+  //   this.dimensionResume()
+    
+  //   this.loadDetail=new LoadDetail();
+  // }
+
   addLoadDetail(){
     let load:LoadDetail=new LoadDetail();
     load=this.loadDetail
     this.loadDetails.push(load)
+    
+    this.prixBase(this.transport.totalpoints)
+
+    this.loadDetail=new LoadDetail(); // after added set equal new
+    this.loadFrequent=null; // after added set to null
     this.dimensionResume()
     
-    this.loadDetail=new LoadDetail();
   }
+  
   dimensionResume(){
     this.transport.longueur=0;
     this.transport.poids=0;
@@ -424,6 +444,9 @@ export class TransportProComponent implements OnInit {
       this.transport.idEntreprise=this.id
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
+        this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
+          this.loadFrequents=data;
+        }, err=>{console.log(err)})
         this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
           this.templates = data; // just for test
           this.templates.forEach((t:Transport)=>{
@@ -653,9 +676,66 @@ export class TransportProComponent implements OnInit {
   }
 
   // prix base
-  prixBase(totalPoints:number){
-    this.transport.prixBase = 250.00;
+  // prixBase(totalPoints:number){
+  //   this.transport.prixBase = 250.00;
+  // }
+  loadFrequentChange(){
+    // if(this.loadFrequent==null) 
+    this.loadDetail=new LoadDetail()
+    if(this.loadFrequent!=null){
+      this.loadDetail.description=this.loadFrequent.nom
+      this.loadDetail.idLoadFrequent=this.loadFrequent.id
+      this.priceLoad(this.loadDetail, this.loadFrequent)
+    }
+    
   }
+
+  showKm(distance){
+    return Math.round(distance / 0.621371)
+  }
+  priceLoad(loadDetail: LoadDetail, loadFrequent : LoadFrequent){
+    if(loadDetail!=null && loadFrequent!=null){
+      // let loadFrequent : LoadFrequent
+      // loadFrequent=this.loadFrequents.find(x=>(x.id=load.idLoadFrequent))
+      // load.price
+      let distance : number;
+      if(this.mode==1){ // if en mile change distance to km to calculate
+        distance = Math.round(this.transport.distance / 0.621371);
+      }
+      else{ // if already in km, no change
+        distance = this.transport.distance;
+      }
+      let quantity =(loadDetail.quantity>0?loadDetail.quantity:1)
+      let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
+      let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distance)
+      priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
+      loadDetail.price=quantity*priceLoadFrequent
+    }
+  }
+
+  prixBase(totalPoints:number){
+    this.transport.prixBase =0.00;
+
+    this.transport.loadsFee=0.00;
+    let tempLoadsFee=0.00;
+    this.loadDetails.forEach(ld=>{
+      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
+      tempLoadsFee+=ld.price
+    })
+    this.transport.prixBase=this.transport.loadsFee=Math.round(tempLoadsFee*100)/100
+    this.prixCalcul()
+    // this.loadDetails.forEach(load=>{
+    //   //this.priceLoad(load)
+    // })
+
+    this.transport.waitingPrice=0.00;
+    this.transport.waitingTime=0.00;
+    this.transport.ptoPrice=0.00;
+    this.transport.ptoTime=0.00;
+    this.transport.ptoFee=0.00;
+    this.transport.waitingFee=0.00;
+  }
+
   prixDistance(totalPoints:number){
     
     return 250.00;
@@ -852,6 +932,7 @@ async prixCalcul(){
   if((this.transport.distance-this.transport.inclus)>0){
     this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
+  this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
   if(this.transport.taxable){
     this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
     this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
@@ -1235,6 +1316,9 @@ async showMap() {
         this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
       }
       else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
+      // calculate price load actual and total price after distance
+      this.priceLoad(this.loadDetail, this.loadFrequent)
+      this.prixBase(this.transport.totalpoints)
     });  
   }
 

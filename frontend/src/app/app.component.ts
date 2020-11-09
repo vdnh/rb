@@ -191,14 +191,7 @@ export class AppComponent implements OnInit{
       this.entrepriseNom=localStorage.getItem("entrepriseNom")
     //*
     if(location.href.includes("/logout")){
-      // let langTemp = localStorage.getItem('language');
-      // localStorage.clear();
-      // localStorage.setItem('language', langTemp);
-      // this.router.navigateByUrl("");  
       this.logout();
-      // location.href=location.href.split("logout")[0]
-      // this.router.navigate(['/logout/'], {skipLocationChange: true});
-      // location.reload();
     }
     //*
     if(location.href.includes("/remorquage-client/"))
@@ -725,7 +718,7 @@ export class AppComponent implements OnInit{
 
   public async logout(){
     this.modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
-    if(this.varsGlobal.userLogs.loginTime!=null){
+    if(this.varsGlobal!=null&&this.varsGlobal.userLogs!=null&&this.varsGlobal.userLogs.loginTime!=null){
       this.varsGlobal.userLogs.logoutTime=new Date();
       this.varsGlobal.userLogs.loginTime=new Date(this.varsGlobal.userLogs.loginTime);
       //console.log("this.varsGlobal.userLogs.logoutTime.getTime() : "+this.varsGlobal.userLogs.logoutTime.getTime());
@@ -752,9 +745,9 @@ export class AppComponent implements OnInit{
     this.modeSignUp=0;
     this.textSign="Nouveau Transporter ou Shipper"
     this.userId="";
-    this.varsGlobal.nombreMessages=0;
-    this.varsGlobal.session='no'; 
-    this.varsGlobal.pro='no';
+    // this.varsGlobal.nombreMessages=0;
+    // this.varsGlobal.session='no'; 
+    // this.varsGlobal.pro='no';
     this.roleUsernameLogin='';
     await this.router.navigateByUrl("");
     // console.log('location.host : '+location.host)
