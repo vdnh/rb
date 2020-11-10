@@ -2,10 +2,15 @@
   <h2>On progress test for new form</h2>
   <button (click)="transport.typeDoc=1" [disabled]="transport.typeDoc==2">Evaluater un Taux</button>
   <button (click)="transport.typeDoc=2" [disabled]="transport.typeDoc==1">Placer une Commande</button>
-  <button (click)="transport.typeDoc=0; loadFrequent=null;">Reset</button>
+  <button (click)="resetSimple()" [disabled]="transport.typeDoc==0">Reset</button>
   <table *ngIf="transport.typeDoc!=0">
     <tr>
-      <th *ngFor="let lf of loadFrequents"><button (click)="loadFrequent=lf">{{lf.nom}}</button></th>
+      <th *ngFor="let lf of loadFrequents">
+        <button (click)="loadFrequent=lf; loadFrequentChange(); 
+        loadDetails=[]; addLoadSimpleDetail();">
+          {{lf.nom}}
+        </button>
+      </th>
     </tr>
   </table>
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
@@ -13,7 +18,52 @@
     <span *ngIf="transport.typeDoc==1">Nous sommes dans mode Evaluation</span>
     <span *ngIf="transport.typeDoc==2">Nous sommes dans mode Commande</span>
   </div>
+<!-- </div>
+<div> -->
+  <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
+    <span>Address Depart </span>
+    <span><input type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()"></span>
+  </div>
+  <div *ngIf="transport.origin.length>8">
+    <span>Address Livraison </span> 
+    <span><input type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()"></span>
+  </div>
+  <div *ngIf="transport.origin.length>8 && transport.destination.length>8">
+    <span>Prix </span>
+    <span *ngIf="transport.loadsFee!=null && transport.distance!=null">{{transport.loadsFee}}</span>
+    <!-- <br> -->
+    <span *ngIf="transport.loadsFee==null">en estimation</span>
+    <!-- <label>Distance(mile)</label>
+    <input type="number" [(ngModel)]="transport.distance" 
+    style="width: 10pc;" class="form-control" disabled/>
+    <span>{{(showKm(this.transport.distance)+ " kms")}}</span> -->
+  </div>
+  <div *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
+    <button (click)="saveSimple()">Save</button>
+    <button *ngIf="transport.typeDoc==1 && transport.id>0" (click)="printBonDeTransport('printevaluation')">Print</button>
+    <button *ngIf="transport.typeDoc==2 && transport.id>0" (click)="printBonDeTransport('printcommand')">Print</button>
+  </div>
 </div>
+
+<div id="printevaluation" hidden
+  *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
+  <h3><span *ngIf="transport.id!=null">{{transport.id}} &nbsp;</span> 
+    Evaluation {{loadFrequent.nom}}</h3>
+  <h4>De </h4>
+  <h4>A </h4>
+  <h4>Date </h4>
+  <h4>Prix </h4>
+</div>
+<div id="printcommand" hidden
+  *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
+  <h3><span *ngIf="transport.id!=null">{{transport.id}} &nbsp;</span> 
+    Commande {{loadFrequent.nom}}</h3>
+  <h4>De </h4>
+  <h4>A </h4>
+  <h4>Date </h4>
+  <h4>Prix </h4>
+</div>
+
 <div *ngIf="varsGlobal.language.includes('Francais')">
   <h4 style="text-align: left; font: bold">
     Transport<span>&nbsp;&nbsp;&nbsp;</span>

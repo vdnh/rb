@@ -56,7 +56,7 @@ export class Transport{
     valid=false; // valid=true after save bon
     imgUrl="";
     //
-    distance:number=0.00;
+    distance:number;
     origin:string="";
     originAdresse="";
     originVille="";
@@ -128,13 +128,13 @@ export class Transport{
     waitingFee:number=0.00;   // = waitingTime * waitingPrice
 
     // PTO time and price
-    ptoTime:number=0.00;
-    ptoPrice:number=0.00; // per hours
-    ptoFee:number=0.00;   // = ptoTime * ptoPrice
+    ptoTime:number;
+    ptoPrice:number; // per hours
+    ptoFee:number;   // = ptoTime * ptoPrice
     
-    loadsFee:number=0.00;   // 
+    loadsFee:number;   // 
 
     taxProvince="";  // province where apply tax for this towing
 
-    tyeDoc:number; // Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
+    typeDoc:number=0; // 0 at initial, Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
 }

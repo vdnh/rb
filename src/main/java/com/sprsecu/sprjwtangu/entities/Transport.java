@@ -166,7 +166,7 @@ public class Transport implements Serializable{
     
     private String taxProvince;  // province where apply tax for this transport
     
-    private Integer tyeDoc; // Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
+    private Integer typeDoc; // Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

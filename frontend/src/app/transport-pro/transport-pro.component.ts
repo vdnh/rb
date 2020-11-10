@@ -398,6 +398,14 @@ export class TransportProComponent implements OnInit {
   //   this.loadDetail=new LoadDetail();
   // }
 
+  addLoadSimpleDetail(){
+    let load:LoadDetail=new LoadDetail();
+    load=this.loadDetail
+    this.loadDetails.push(load)
+    this.prixBase(this.transport.totalpoints)
+    this.loadDetail=new LoadDetail(); // after added set equal new
+  }
+
   addLoadDetail(){
     let load:LoadDetail=new LoadDetail();
     load=this.loadDetail
@@ -478,6 +486,11 @@ export class TransportProComponent implements OnInit {
     //*/
   }
   
+  resetSimple(){
+    this.transport = new Transport(); 
+    this.loadFrequent=new LoadFrequent();
+  }
+
   chauffeurChange(){
     let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
     let chId:number =  Number(strings[1])
@@ -693,6 +706,7 @@ export class TransportProComponent implements OnInit {
   showKm(distance){
     return Math.round(distance / 0.621371)
   }
+
   priceLoad(loadDetail: LoadDetail, loadFrequent : LoadFrequent){
     if(loadDetail!=null && loadFrequent!=null){
       // let loadFrequent : LoadFrequent
@@ -719,7 +733,7 @@ export class TransportProComponent implements OnInit {
     this.transport.loadsFee=0.00;
     let tempLoadsFee=0.00;
     this.loadDetails.forEach(ld=>{
-      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
+      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id==ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
     this.transport.prixBase=this.transport.loadsFee=Math.round(tempLoadsFee*100)/100
@@ -752,7 +766,61 @@ export class TransportProComponent implements OnInit {
     
     return 0.00;
   }
-//*
+
+  async originSimpleChange(){
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.transport.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngOrigin= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()                            
+                this.transport.originLat = results[0].geometry.location.lat(),
+                this.transport.originLong = results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Can not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
+    });//*/
+    if(this.transport.destination!=null && this.transport.destination.length>0){
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      //await this.showMap()
+      //this.typeServiceChange(this.remorquage.typeService)
+    }
+  }
+
+  async destinationSimpleChange(){
+    let geocoding = new GeocodingService()
+    await geocoding.codeAddress(this.transport.destination).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngDestination= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()     
+                this.transport.destLat = results[0].geometry.location.lat(),
+                this.transport.destLong = results[0].geometry.location.lng()                                                   
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+            {
+              if(this.varsGlobal.language.includes('English'))
+                alert("Can not locate this destination")
+              else alert("Ne pas trouver de coordonnees de cet destination")
+            }
+    });//*/
+    if(this.transport.origin!=null && this.transport.origin.length>0){
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      //await this.showMap()
+      //this.typeServiceChange(this.remorquage.typeService)
+    }
+  }
+  //*
 async originChange(){
   //*
   if(this.transport.originProvince!=null){
@@ -906,6 +974,39 @@ onRefresh(){
       else if (tr.sent) this.listTrsSent.push(tr)
       else if (tr.valid) this.listTrs.push(tr)//*/
     })
+  }, err=>{
+    console.log(err)
+  })
+}
+
+saveSimple(){
+  this.transport.valid = true; // valid this transport ing saving
+  this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+    this.transport=data;
+    this.loadDetails.forEach(load=>{
+      load.idTransport=data.id;
+      this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+        load.id = d.id;
+      }, err=>{
+        console.log(err);
+      })
+    })
+    // if(data.id>0){
+    //   alert("this.transport.id : "+ this.transport.id)
+    //   const printContent = document.getElementById(cmpId);  
+    //   const WindowPrt = window.open();
+    //   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    //   WindowPrt.document.write(printContent.innerHTML);
+    //   WindowPrt.document.close();
+    //   WindowPrt.focus();
+    //   WindowPrt.print();
+    //   WindowPrt.close();
+    //   this.resetSimple();
+    // }
+    // else{
+    //   alert("Don't find Id of this transport")
+    // }
+    
   }, err=>{
     console.log(err)
   })
@@ -1307,6 +1408,8 @@ async showMap() {
 
   //* calculer distance travel en kms
   setDistanceTravel(address1: string, address2:string) { // in km
+    this.transport.distance=null; // set distance to null, before calculate
+    this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
     service.getDistanceMatrix({
