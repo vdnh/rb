@@ -217,10 +217,15 @@ export class TransportProComponent implements OnInit {
 
   today=new Date();
   modeHistoire: number=-1;
+  modeListEvalue=false;
+  modeListCommande=false;
   listTrs: Transport[]; // appels waitting
   listTrsSent: Transport[]; // appels sent
   listTrsFini: Transport[]; // appels finished
   listTrsAnnule: Transport[]; // appels annules
+  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports commandes
+  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports evalues
+  // test:[{transport:Transport; loadDetail:LoadDetail}]
   contacts: Contact[];
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
@@ -383,6 +388,11 @@ export class TransportProComponent implements OnInit {
     }
   }
 
+  getLoadDetail(id:number){ // we use idTransport to find loaddetail in transport
+    this.loadDetailsService.getDetailLoadDetail(id).subscribe((data:LoadDetail)=>{
+
+    })
+  }
 
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
@@ -486,7 +496,21 @@ export class TransportProComponent implements OnInit {
     //*/
   }
   
+  onListEvalue(){
+    this.modeListEvalue=true 
+    this.modeListCommande=false
+    this.onRefresh()
+  }
+
+  onListCommande(){
+    this.modeListEvalue=false 
+    this.modeListCommande=true
+    this.onRefresh()
+  }
+
   resetSimple(){
+    this.modeListEvalue=false
+    this.modeListCommande=false
     this.transport = new Transport(); 
     this.loadFrequent=new LoadFrequent();
   }
@@ -960,6 +984,8 @@ onRefresh(){
     this.listTrsSent=[]
     this.listTrsFini=[]
     this.listTrsAnnule=[]
+    this.listTrsCommande=[]
+    this.listTrsEvalue=[]
     //*
     data.sort((b, a)=>{
       if(a.id>b.id)
@@ -969,7 +995,17 @@ onRefresh(){
       return 0;
     })//*/
     data.forEach(tr=>{
-      if(tr.fini) this.listTrsFini.push(tr)
+      if(tr.typeDoc==1) {
+        this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
+        })        
+      }
+      else if(tr.typeDoc==2) {
+        this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+         if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
+        })
+      }
+      else if(tr.fini) this.listTrsFini.push(tr)
       else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
       else if (tr.sent) this.listTrsSent.push(tr)
       else if (tr.valid) this.listTrs.push(tr)//*/
@@ -977,6 +1013,16 @@ onRefresh(){
   }, err=>{
     console.log(err)
   })
+}
+
+showDateLocal(d:Date){
+  d=new Date(d);
+  let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
+  return dateLocal;
+}
+
+pickDateChange(event){
+  this.transport.dateReserve=event.target.value;
 }
 
 saveSimple(){
@@ -991,6 +1037,7 @@ saveSimple(){
         console.log(err);
       })
     })
+    alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
     // if(data.id>0){
     //   alert("this.transport.id : "+ this.transport.id)
     //   const printContent = document.getElementById(cmpId);  
@@ -1013,7 +1060,7 @@ saveSimple(){
 }
 
 printBonDeTransport(cmpId){
-  let envoy = document.getElementById('toprint').innerHTML;
+  // let envoy = document.getElementById('toprint').innerHTML;
   //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);
@@ -1026,6 +1073,7 @@ printBonDeTransport(cmpId){
   WindowPrt.focus();
   WindowPrt.print();
   WindowPrt.close();
+  this.resetSimple();
 }
 
 async prixCalcul(){
