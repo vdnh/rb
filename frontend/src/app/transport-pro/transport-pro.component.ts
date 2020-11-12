@@ -1025,6 +1025,36 @@ pickDateChange(event){
   this.transport.dateReserve=event.target.value;
 }
 
+// trEvTemp:{transport:Transport, loadDetail:LoadDetail}
+onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
+  var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
+  if(r){
+    this.transport = trEv.transport
+    this.transport.typeDoc = trEv.transport.typeDoc = 2; // 
+    this.transport.dateReserve = new Date();
+    this.modeListEvalue=false; 
+    this.modeListCommande=false
+    this.loadFrequentsService.getDetailLoadFrequent(trEv.loadDetail.idLoadFrequent)
+    .subscribe((data:LoadFrequent)=>{
+      if(data!=null) {
+        this.loadFrequent=data
+        alert("Ne pas oublier de donner la date de transport, SVP!")
+      }
+      else {alert("Ne pas trouver ce type transport, faire une nouvelle commande, SVP!")}
+    })
+  }
+}
+
+onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+  this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+    this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+      this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+    }, err=>{console.log(err)})
+  }, err=>{
+    console.log()
+  })
+}
+
 saveSimple(){
   this.transport.valid = true; // valid this transport ing saving
   this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{

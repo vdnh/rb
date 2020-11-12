@@ -13,8 +13,10 @@
 
   <!-- list commandes -->
   <div *ngIf="modeListCommande">
-    <table class="table-responsive" border="1">
-      <tr><strong>List Commandes</strong></tr>
+    <table border="1">
+      <tr>
+        <th colspan="7">List Commandes</th>
+      </tr>
       <tr>
         <th>#Num</th>
         <th>Type de Transport</th>        
@@ -22,6 +24,7 @@
         <th>Prix</th>
         <th>De</th>
         <th>A</th>
+        <th>Status</th>
       </tr>
       <tr *ngFor="let trCo of listTrsCommande">
         <td>{{trCo.transport.id}}</td>
@@ -30,14 +33,15 @@
         <td>{{trCo.transport.loadsFee}}</td>
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
+        <td>&nbsp;</td>
       </tr>
     </table>
   </div>
   
   <!-- list evalues -->
   <div *ngIf="modeListEvalue">
-    <table class="table-responsive" border="1">
-      <tr><strong>List Evalues</strong></tr>
+    <table border="1">
+      <tr><th colspan="7">List Evalues</th></tr>
       <tr>
         <th>#Num</th>
         <th>Type de Transport</th>        
@@ -45,6 +49,8 @@
         <th>Prix</th>
         <th>De</th>
         <th>A</th>
+        <th>Commander</th>
+        <th>Delete</th>
       </tr>
       <tr *ngFor="let trEv of listTrsEvalue">
         <td>{{trEv.transport.id}}</td>
@@ -53,7 +59,8 @@
         <td>{{trEv.transport.loadsFee}}</td>
         <td>{{trEv.transport.origin}}</td>
         <td>{{trEv.transport.destination}}</td>
-
+        <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td>
+        <td><span class="btn btn-link" (click)="onDeleteEvalue(trEv)">Delete</span></td>
       </tr>
     </table>
   </div>
