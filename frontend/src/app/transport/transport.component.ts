@@ -513,7 +513,9 @@ export class TransportComponent implements OnInit {
     //await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
     await this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data;
+      this.listShipper=this.filteredShippers=data.sort((a, b)=>{
+        return a.nom.localeCompare(b.nom)
+      });
       /*this.listShipper.forEach((sh:Shipper)=>{
         console.log('Shipper nom : '+ sh.nom)
       })
@@ -867,11 +869,26 @@ export class TransportComponent implements OnInit {
       this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
       .subscribe((data:Array<LoadFrequent>)=>{
         this.loadFrequents=data
+        this.onRefresh()
       })
     }
     else{
       this.loadFrequents=[]
+      this.onRefresh()
     }
+  }
+
+  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
+    let modulo_10 = price%10;
+    // console.log('modulo_10 of '+price+': '+modulo_10)
+    if(modulo_10>0 && modulo_10<=5){
+      price = (price - modulo_10) + 5
+    }
+    if(modulo_10>5 && modulo_10<10){
+      price = (price - modulo_10) + 10
+    }
+    // console.log('price after rounded: '+price)
+    return price;
   }
 
   onListEvalue(){
@@ -966,8 +983,21 @@ export class TransportComponent implements OnInit {
     }
   }
 
+  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+      }, err=>{console.log(err)})
+    }, err=>{
+      console.log()
+    })
+  }
+
   saveSimple(){
     this.transport.valid = true; // valid this transport ing saving
+    
+    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0)
+      this.transport.idEntreprise=this.shipper.id // add id shipper if there is
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
       this.loadDetails.forEach(load=>{
@@ -1027,7 +1057,7 @@ export class TransportComponent implements OnInit {
       this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
-    this.transport.prixBase=this.transport.loadsFee=Math.round(tempLoadsFee*100)/100
+    this.transport.prixBase=this.transport.loadsFee=Math.round(this.roundPrice(tempLoadsFee)*100)/100
     this.prixCalcul()
     // this.loadDetails.forEach(load=>{
     //   //this.priceLoad(load)
@@ -1199,7 +1229,7 @@ onSortDate(data:Array<Transport>){
   })
 }
 onRefresh(){
-  if(this.shipper.id!=null && this.shipper.id>0){
+  if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
     this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe((data:Array<Transport>)=>{
       this.listTrsCommande=[]
       this.listTrsEvalue=[]
@@ -1270,7 +1300,7 @@ onRefresh(){
 }
 
 printBonDeTransport(cmpId){
-  let envoy = document.getElementById('toprint').innerHTML;
+  // let envoy = document.getElementById('toprint').innerHTML;
   //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
   //console.log(envoy)
   const printContent = document.getElementById(cmpId);

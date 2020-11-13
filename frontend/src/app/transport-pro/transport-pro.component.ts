@@ -439,11 +439,11 @@ export class TransportProComponent implements OnInit {
       //this.transport.largeur=this.transport.largeur+load.largeur
     })
   }
-  // on focus windows
-  @HostListener('window:focus', ['$event'])
-  onfocus(event:any):void {
-    this.onRefresh()
-  }
+  // // on focus windows
+  // @HostListener('window:focus', ['$event'])
+  // onfocus(event:any):void {
+  //   this.onRefresh()
+  // }
   
   async ngOnInit() {    
     //*
@@ -747,7 +747,7 @@ export class TransportProComponent implements OnInit {
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
       let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distance)
       priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
-      loadDetail.price=quantity*priceLoadFrequent
+      loadDetail.price=Math.round(quantity*priceLoadFrequent*100)/100
     }
   }
 
@@ -760,8 +760,10 @@ export class TransportProComponent implements OnInit {
       this.priceLoad(ld, this.loadFrequents.find(x=>(x.id==ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
-    this.transport.prixBase=this.transport.loadsFee=Math.round(tempLoadsFee*100)/100
-    this.prixCalcul()
+    this.transport.prixBase=this.transport.loadsFee=Math.round(this.roundPrice(tempLoadsFee)*100)/100
+  
+    this.prixCalcul()  // deactive temporary
+  
     // this.loadDetails.forEach(load=>{
     //   //this.priceLoad(load)
     // })
@@ -1015,6 +1017,19 @@ onRefresh(){
   })
 }
 
+roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
+  let modulo_10 = price%10;
+  // console.log('modulo_10 of '+price+': '+modulo_10)
+  if(modulo_10>0 && modulo_10<=5){
+    price = (price - modulo_10) + 5
+  }
+  if(modulo_10>5 && modulo_10<10){
+    price = (price - modulo_10) + 10
+  }
+  // console.log('price after rounded: '+price)
+  return price;
+}
+
 showDateLocal(d:Date){
   d=new Date(d);
   let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
@@ -1106,10 +1121,10 @@ printBonDeTransport(cmpId){
   this.resetSimple();
 }
 
-async prixCalcul(){
+prixCalcul(){
   this.transport.horstax=this.transport.prixBase
   if((this.transport.distance-this.transport.inclus)>0){
-    this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+    this.transport.horstax =this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
   }
   this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
   if(this.transport.taxable){
@@ -1498,8 +1513,9 @@ async showMap() {
       }
       else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       // calculate price load actual and total price after distance
-      this.priceLoad(this.loadDetail, this.loadFrequent)
+      //this.priceLoad(this.loadDetail, this.loadFrequent)
       this.prixBase(this.transport.totalpoints)
+      //return;
     });  
   }
 
