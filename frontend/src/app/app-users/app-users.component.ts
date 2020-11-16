@@ -108,27 +108,48 @@ export class AppUsersComponent implements OnInit {
   ngOnInit() {
     this.appUser.roleSimple=this.roleTypes[0];
     // getShippersTransporter
-    // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
-    this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
-      this.listShippers=data;
-      // this.transporterservice.getAllTransporters().subscribe((data:Array<Transporter>)=>{
-      this.transporterservice.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
-        this.listTrans.push(data);
-        this.typeRoleChange(this.roleTypes[0]);
+    if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0){
+      // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
+      this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+        this.listShippers=data;
+        // this.transporterservice.getAllTransporters().subscribe((data:Array<Transporter>)=>{
+        this.transporterservice.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+          this.listTrans.push(data);
+          // this.listTrans = data;
+          this.typeRoleChange(this.roleTypes[0]);
+        }, err=>{
+          console.log(err)
+        })
       }, err=>{
         console.log(err)
       })
-    }, err=>{
-      console.log(err)
-    })
+    }
+    else{
+      this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
+        // this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+          this.listShippers=data;
+          this.transporterservice.getAllTransporters().subscribe((data:Array<Transporter>)=>{
+          // this.transporterservice.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Transporter)=>{
+            // this.listTrans.push(data);
+            this.listTrans = data;
+            this.typeRoleChange(this.roleTypes[0]);
+          }, err=>{
+            console.log(err)
+          })
+        }, err=>{
+          console.log(err)
+        })
+    }
+    
     
     if(localStorage.getItem('idTransporter')!=null){
       this.roleTypes = [
         "DISPATCH", 
         "TECHNICIEN", 
+        // "TERMINAL"
       ];
       this.authenticationService.getAllUsersByIdTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<AppUser>)=>{
-        this.listAppUsers=data;
+        this.listAppUsers=data.filter(x=>(!x.roleSimple.includes("TERMINAL")));
       },
       err=>{
         console.log(err)
@@ -165,12 +186,13 @@ export class AppUsersComponent implements OnInit {
       //this.passwordCheckToMod='';
       alert('User was modified.')
       console.log('User was modified.')
-      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
-        this.listAppUsers=data;
-      },
-      err=>{
-        console.log(err)
-      })
+      this.ngOnInit()
+      // this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+      //   this.listAppUsers=data;
+      // },
+      // err=>{
+      //   console.log(err)
+      // })
     }, err=>{
       console.log(err);
     });
@@ -182,12 +204,13 @@ export class AppUsersComponent implements OnInit {
       //this.passwordCheckToMod='';
       alert('User was deleted.')
       console.log('User was deleted.')
-      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
-        this.listAppUsers=data;
-      },
-      err=>{
-        console.log(err)
-      })
+      this.ngOnInit()
+      // this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+      //   this.listAppUsers=data;
+      // },
+      // err=>{
+      //   console.log(err)
+      // })
     }, err=>{
       console.log(err);
     });

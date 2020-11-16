@@ -97,10 +97,30 @@
   </div>
   
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
-    <strong>Date du Transport </strong>
+    <table>
+      <tr>
+        <th>Date du depart</th>
+        <th>Heure</th>
+      </tr>
+      <tr>
+        <td>
+          <input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
+          name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)"
+          style="width: 11pc;">
+        </td>
+        <td>
+          <input type="time" [(ngModel)]="transport.timeResrvation"
+            name="timeResrvation" class="form-control" style="width: 7pc;">
+        </td>
+      </tr>
+    </table>
+    <!-- <strong>Date du Transport </strong>
     <span><input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
         name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)"
         style="width: 11pc;"></span>
+    <label for="">Heure</label>
+    <input type="time" [(ngModel)]="transport.timeResrvation"
+          name="timeResrvation" class="form-control"> -->
   </div>
 
   <div *ngIf="transport.origin.length>8 && transport.destination.length>8">
@@ -141,7 +161,7 @@
     Commande {{loadFrequent.nom}}</h3>
     <h4>De {{transport.origin}}</h4>
     <h4>A {{transport.destination}}</h4>
-    <h4>Date du Transport {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}}</h4>
+    <h4>Date du Transport {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</h4>
     <h4>Prix {{transport.loadsFee}}</h4>
 </div>
 <br><br>

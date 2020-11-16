@@ -29,7 +29,7 @@
       <th width="19%">Latitude</th>
       <th width="19%">Longitude</th>
       <th width="19%">Truck</th>
-      <th width="19%">Driver</th>
+      <th width="19%">Password</th>
       <!-- <th width="20%">Code Validation</th> -->
     </tr>
     <tr>
@@ -66,7 +66,7 @@
         </optgroup>
         <!-- end option of group -->
       </select>
-      <td width="19%"><input class="form-control" type="number" [(ngModel)]="terminal.idDriver" /></td>
+      <td width="19%"><input class="form-control" type="text" [(ngModel)]="terminal.password" disabled /></td>
       <!-- <td width="20%">{{terminal.id+(terminal.idTruck>0 ? terminal.idTruck : 0)}}</td> -->
     </tr>
     <tr>

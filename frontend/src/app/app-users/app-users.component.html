@@ -1,6 +1,5 @@
 
-<!--hr style="border: 1px dotted black"/-->
-<!--div class="container"-->
+
 <h3>Create User</h3>
 <hr style="border: 1px dotted black"/>
 <div class="panel-body">
@@ -41,27 +40,34 @@
         </select>
       </div>
     </div>
-    <div class="col-sm-12 col-md-1 col-lg-1">
-      <div class="form-group">
-        <label >IdUser(Sh/Tr)</label>
-        <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
-              class="form-control" [disabled]="disabledIdUser"/-->
-        <input type="text" [(ngModel)]="appUser.idUser"
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <!-- <div class="form-group"> -->
+        <!-- <label >IdUser(Sh/Tr)</label> -->
+        <label class="control-label">For </label>
+        <select class="form-control" [(ngModel)]="appUser.idUser">
+          <option [disabled]="appUser.roleSimple.includes('TRANSPORTER')  
+          || appUser.roleSimple.includes('TECHNICIEN') || appUser.roleSimple.includes('TERMINAL')" 
+           *ngFor="let e of listShippers" [ngValue]="e.id" >{{e.nom}}
+          </option>
+          <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
+          *ngFor="let e of listTrans" [ngValue]="e.id" >{{e.nom}}</option>
+        </select>
+        <!-- <input type="text" [(ngModel)]="appUser.idUser"
               name="idUser" (change)="idUserChange()" class="form-control" list="defaultPros"
               [disabled]="disabledIdUser">
          <datalist id="defaultPros">
-           <option [disabled]="appUser.roleSimple.includes('TRANSPORTER')" 
+           <option [disabled]="appUser.roleSimple.includes('TRANSPORTER') || appUser.roleSimple.includes('DISPATCH') || appUser.roleSimple.includes('TECHNICIAN')" 
            *ngFor="let e of listShippers" [ngValue]="e" >Ship {{e.id}} {{e.nom}}
           </option>
-           <option [disabled]="appUser.roleSimple.includes('SHIPPER')" *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
-         </datalist>
-      </div>
+           <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
+           *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
+         </datalist> -->
+      <!-- </div> -->
     </div>
-    <div class="col-sm-12 col-md-1 col-lg-1">
+    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdSecond(Sh/Tr)</label>
-        <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
-              class="form-control" [disabled]="disabledIdSecond || appUser.idUser==''"/-->
+        
         <input type="text" [(ngModel)]="appUser.idSecond"
           name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
           [disabled]="disabledIdSecond || appUser.idUser==''"/>
@@ -69,7 +75,7 @@
            <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
          </datalist>
       </div>
-    </div>
+    </div> -->
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
         <label >Full Name</label>
@@ -123,24 +129,22 @@
         </select>
       </div>
     </div>
-    <div class="col-sm-12 col-md-1 col-lg-1">
+    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
-        <label >IdUser(Sh/Tr)</label>
-        <!--input type="text"  [(ngModel)]="appUser.idUser" name="idUser"
-              class="form-control" [disabled]="disabledIdUser"/-->
+        <label >For</label>
+        
         <input type="text" [(ngModel)]="appUserToMod.idUser"
               name="idUserToMod" class="form-control" disabled>
       </div>
-    </div>
-    <div class="col-sm-12 col-md-1 col-lg-1">
+    </div> -->
+    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
       <div class="form-group">
         <label >IdSecond(Sh/Tr)</label>
-        <!--input type="text"  [(ngModel)]="appUser.idSecond" name="idSecond"
-              class="form-control" [disabled]="disabledIdSecond || appUser.idUser==''"/-->
+        
         <input type="text" [(ngModel)]="appUserToMod.idSecond"
           name="idSecondToMod" class="form-control" disabled/>
       </div>
-    </div>
+    </div> -->
     <div class="col-sm-12 col-md-2 col-lg-2">
       <div class="form-group">
         <label >Full Name</label>
@@ -154,4 +158,4 @@
     <button (click)="onDeleteUser()">Delete</button>
   </div>
 <hr style="border: 1px dotted black"/>
-<!--/div-->
+

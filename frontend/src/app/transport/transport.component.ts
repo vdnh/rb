@@ -865,7 +865,11 @@ export class TransportComponent implements OnInit {
   }
 
   shipperChange(){
+    // this.transport=new Transport()
     if(this.shipper!=null){
+      // this.transport=new Transport()
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.shipper.id
       this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
       .subscribe((data:Array<LoadFrequent>)=>{
         this.loadFrequents=data
@@ -873,6 +877,8 @@ export class TransportComponent implements OnInit {
       })
     }
     else{
+      this.transport.nomEntreprise=''
+      this.transport.idEntreprise=null
       this.loadFrequents=[]
       this.onRefresh()
     }
@@ -1313,6 +1319,7 @@ printBonDeTransport(cmpId){
   WindowPrt.focus();
   WindowPrt.print();
   WindowPrt.close();
+  this.resetSimple();
 }
 
 async prixCalcul(){

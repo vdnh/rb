@@ -31,6 +31,7 @@
       </tr>
       <tr>
         <th>#Num</th>
+        <th>Client</th>
         <th>Type de Transport</th>        
         <th>Date Transport</th>
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
@@ -41,6 +42,7 @@
       </tr>
       <tr *ngFor="let trCo of listTrsCommande">
         <td>{{trCo.transport.id}}</td>
+        <td>{{trCo.transport.nomEntreprise}}</td>
         <td>{{trCo.loadDetail.description}}</td>        
         <td>{{showDateLocal(trCo.transport.dateReserve) | date: 'dd-MMM-yyyy'}}</td>
         <td style="text-align: right;">{{trCo.transport.loadsFee}} $</td>
@@ -58,6 +60,7 @@
       <tr><th colspan="7">List Evalues</th></tr>
       <tr>
         <th>#Num</th>
+        <th>Client</th>
         <th>Type de Transport</th>        
         <th>Date Evaluation</th>
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
@@ -68,6 +71,7 @@
       </tr>
       <tr *ngFor="let trEv of listTrsEvalue">
         <td>{{trEv.transport.id}}</td>
+        <td>{{trEv.transport.nomEntreprise}}</td>
         <td>{{trEv.loadDetail.description}}</td>
         <td>{{showDateLocal(trEv.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <td style="text-align: right;">{{trEv.transport.loadsFee}} $</td>
