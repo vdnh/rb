@@ -33,6 +33,7 @@ export class DetailShipperComponent implements OnInit {
   appUser: AppUser;
   loadFrequent= new LoadFrequent();
   loadFrequents: Array<LoadFrequent>=[];
+  shippers: Array<Shipper>=[];
   
   constructor(public authenticationService:AuthenticationService, 
     public activatedRoute:ActivatedRoute, 
@@ -90,6 +91,18 @@ export class DetailShipperComponent implements OnInit {
     }, err=>{
       console.log();
     });
+    
+    // get the list shippers if idTransporter > 0
+    if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0)
+    this.shippersService.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+      this.shippers=data;
+      // sort list of shippers
+      this.shippers.sort((a, b)=>{
+        return a.nom.localeCompare(b.nom)
+      })
+    }, err=>{
+      console.log(err);
+    })
   }
 
   printPriceList(cmpId){
@@ -209,10 +222,10 @@ export class DetailShipperComponent implements OnInit {
     });
   }  
 
-  deleteLoadFrequent(id:number){
-    this.loadFrequentService.deleteLoadFrequent(id).subscribe((data:LoadFrequent)=>{
-      alert("LoadFrequent : "+data.nom+" a ete supprime.");
-      this.loadFrequents.splice(this.loadFrequents.indexOf(data),1)
+  deleteLoadFrequent(lf:LoadFrequent){
+    this.loadFrequentService.deleteLoadFrequent(lf.id).subscribe((data:LoadFrequent)=>{
+      // alert("LoadFrequent : "+lf.nom+" a ete supprime.");
+      this.loadFrequents.splice(this.loadFrequents.indexOf(lf),1)
     }, err=>{
       console.log(err);
     });
@@ -234,5 +247,29 @@ export class DetailShipperComponent implements OnInit {
 
   refresh(): void {
     //window.location.reload();
+  }
+
+  shipperCopy:Shipper
+  shipperCopyChange(){
+    if(this.shipperCopy!=null){
+      var r = confirm('Copy Transport price of ' + this.shipperCopy.nom + ' ?' )
+      if(r) 
+        this.loadFrequentService.loadFrequentsDeShipper(this.shipperCopy.id).subscribe((data:Array<LoadFrequent>)=>{
+          data.forEach(lf=>{
+            lf.id=null; // modify to null in order to create new load frequent for this shipper
+            lf.idShipper=this.id;
+            this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
+              this.loadFrequents.push(data)
+            }, err=>{
+              console.log(err)
+            })
+          })
+        }, err=>{
+          console.log();
+        });
+      else{this.shipperCopy=null}
+    }
+    else {this.shipperCopy=null}
+    
   }
 }

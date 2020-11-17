@@ -60,6 +60,8 @@ export class NewShipperComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 
+  shippers: Array<Shipper>=[];
+
   constructor(public shippersService:ShippersService, 
     public contactsService:ContactsService, 
     public adressesService:AdressesService, 
@@ -84,8 +86,44 @@ export class NewShipperComponent implements OnInit {
 
     }, err=>{console.log(err)})
 
+    // get the list shippers if idTransporter > 0
+    if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0)
+    this.shippersService.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+      this.shippers=data;
+      // sort list of shippers
+      this.shippers.sort((a, b)=>{
+        return a.nom.localeCompare(b.nom)
+      })
+    }, err=>{
+      console.log(err);
+    })
+
   }
 
+  shipperCopy:Shipper
+  shipperCopyChange(){
+    if(this.shipperCopy!=null){
+      var r = confirm('Copy Transport price of ' + this.shipperCopy.nom + ' ?' )
+      if(r) 
+        this.loadFrequentService.loadFrequentsDeShipper(this.shipperCopy.id).subscribe((data:Array<LoadFrequent>)=>{
+          data.forEach(lf=>{
+            lf.id=null; // modify to null in order to create new load frequent for this shipper
+            lf.idShipper=null;
+            this.loadFrequents.push(lf)
+            // this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
+            //   this.loadFrequents.push(data)
+            // }, err=>{
+            //   console.log(err)
+            // })
+          })
+        }, err=>{
+          console.log();
+        });
+      else{this.shipperCopy=null}
+    }
+    else{this.shipperCopy=null}
+  }
+  
   async villeChange(){
     //*
     if(this.adresse.province!=null){

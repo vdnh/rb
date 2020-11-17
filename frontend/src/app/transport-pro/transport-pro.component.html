@@ -25,6 +25,7 @@
         <th>De</th>
         <th>A</th>
         <th>Status</th>
+        <th>print</th>
       </tr>
       <tr *ngFor="let trCo of listTrsCommande">
         <td>{{trCo.transport.id}}</td>
@@ -34,6 +35,7 @@
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
         <td>&nbsp;</td>
+        <td><span class="btn btn-link" (click)="printTransportSelected(trCo)">print</span></td>
       </tr>
     </table>
   </div>
@@ -150,19 +152,38 @@
   *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
   <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
     Evaluation {{loadFrequent.nom}}</h3>
-  <h4>De {{transport.origin}}</h4>
-  <h4>A {{transport.destination}}</h4>
-  <h4>Date Evaluation {{showDateLocal(transport.dateDepart) | date: 'dd-MMM-yyyy'}}</h4>
-  <h4>Prix {{transport.loadsFee}}</h4>
+  <h4>De: {{transport.origin}}</h4>
+  <h4>A: {{transport.destination}}</h4>
+  <h4>Date Evaluation: {{showDateLocal(transport.dateDepart) | date: 'dd-MMM-yyyy'}}</h4>
+  <h4>Prix: {{transport.loadsFee}}</h4>
 </div>
 <div id="printcommand" hidden
   *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
   <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
     Commande {{loadFrequent.nom}}</h3>
-    <h4>De {{transport.origin}}</h4>
-    <h4>A {{transport.destination}}</h4>
-    <h4>Date du Transport {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} - {{transport.timeResrvation}}</h4>
-    <h4>Prix {{transport.loadsFee}}</h4>
+  <h4>De: {{transport.origin}}</h4>
+  <h4>A: {{transport.destination}}</h4>
+  <h4>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h4>
+  <h4>Prix: {{transport.loadsFee}}</h4>
+</div>
+
+<div id="printevalueselected" hidden
+  *ngIf="transportSelected!=null && loadDetailSelected!=null">
+  <h3><span *ngIf="transportSelected.id!=null">#{{transportSelected.id}} &nbsp;</span> 
+    Evaluation {{loadDetailSelected.description}}</h3>
+  <h4>De: {{transportSelected.origin}}</h4>
+  <h4>A: {{transportSelected.destination}}</h4>
+  <h4>Date Evaluation: {{showDateLocal(transportSelected.dateDepart) | date: 'dd-MMM-yyyy'}}</h4>
+  <h4>Prix: {{transportSelected.loadsFee}}</h4>
+</div>
+<div id="printcommandselected" hidden
+  *ngIf="transportSelected!=null && loadDetailSelected!=null">
+  <h3><span *ngIf="transportSelected.id!=null">#{{transportSelected.id}} &nbsp;</span> 
+    Commande {{loadDetailSelected.nom}}</h3>
+    <h4>De: {{transportSelected.origin}}</h4>
+    <h4>A: {{transportSelected.destination}}</h4>
+    <h4>Date du Transport: {{showDateLocal(transportSelected.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transportSelected.timeResrvation}}</h4>
+    <h4>Prix: {{transportSelected.loadsFee}}</h4>
 </div>
 <br><br>
 <!--

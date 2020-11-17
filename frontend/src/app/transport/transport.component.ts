@@ -1305,6 +1305,44 @@ onRefresh(){
   })
 }
 
+sleep(ms){
+  return new Promise((resolve)=>{
+    setTimeout(resolve, ms);
+  })
+}
+
+transportSelected:Transport
+loadDetailSelected:LoadDetail
+async printTransportSelected(tl:{transport:Transport, loadDetail:LoadDetail}){
+  this.transportSelected=tl.transport
+  this.loadDetailSelected=tl.loadDetail
+  
+  await this.sleep(400)
+
+  if(this.transportSelected.typeDoc==1){
+    // let promise = new Promise(function(resolve, reject){
+    //   setTimeout(function(){
+    //     resolve('Print after 1 seconde')
+    //   },1000);
+    // });
+    // promise.then(function(value){
+    //   console.log('value: ' + value)
+    // });
+    this.printBonDeTransport('printevalueselected')
+  }
+  if(this.transportSelected.typeDoc==2){
+    // let promise = new Promise(function(resolve, reject){
+    //   setTimeout(function(){
+    //     resolve('Print after 1 seconde')
+    //   },1000);
+    // });
+    // promise.then(function(value){
+    //   console.log('value: ' + value)
+    // });
+    this.printBonDeTransport('printcommandselected')
+  }
+}
+
 printBonDeTransport(cmpId){
   // let envoy = document.getElementById('toprint').innerHTML;
   //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
@@ -1319,7 +1357,7 @@ printBonDeTransport(cmpId){
   WindowPrt.focus();
   WindowPrt.print();
   WindowPrt.close();
-  this.resetSimple();
+  // this.resetSimple();
 }
 
 async prixCalcul(){

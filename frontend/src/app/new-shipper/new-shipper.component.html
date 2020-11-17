@@ -120,7 +120,16 @@
           </table>
           <br>
           <table border="1"  class="table table-responsive">
-            <tr><td colspan="3"><strong>Prix de Transport</strong></td></tr>     
+            <tr>
+              <th>Prix de Transport</th>
+              <td *ngIf="shippers.length>0" colspan="3" style="font-style: italic;">
+                Copier & Modifier de 
+                <select [(ngModel)]="shipperCopy" (ngModelChange)="shipperCopyChange()" style="width: 25ch;">
+                  <option [ngValue]="null" selected> </option>
+                  <option *ngFor="let shp of shippers" [ngValue]="shp">{{shp.nom}}</option>
+                </select>
+              </td>
+            </tr>     
             <tr>
               <th>Nom</th>
               <th>PriceBase</th>
@@ -477,7 +486,16 @@
           </table>
           <br>
           <table border="1"  class="table table-responsive">
-            <tr><td colspan="3"><strong>Freight Price</strong></td></tr>     
+            <tr>
+              <th>Freight Price</th>
+              <td *ngIf="shippers.length>0" colspan="3" style="font-style: italic;">
+                Copy & Modify from 
+                <select [(ngModel)]="shipperCopy" (ngModelChange)="shipperCopyChange()" style="width: 25ch;">
+                  <option [ngValue]="null" selected> </option>
+                  <option *ngFor="let shp of shippers" [ngValue]="shp">{{shp.nom}}</option>
+                </select>
+              </td>
+            </tr>     
             <tr>
               <th>Name</th>
               <th>PriceBase</th>

@@ -1104,6 +1104,28 @@ saveSimple(){
   })
 }
 
+sleep(ms){
+  return new Promise((resolve)=>{
+    setTimeout(resolve, ms);
+  })
+}
+
+transportSelected:Transport
+loadDetailSelected:LoadDetail
+async printTransportSelected(tl:{transport:Transport, loadDetail:LoadDetail}){
+  this.transportSelected=tl.transport
+  this.loadDetailSelected=tl.loadDetail
+  
+  await this.sleep(400)
+
+  if(this.transportSelected.typeDoc==1){
+    this.printBonDeTransport('printevalueselected')
+  }
+  if(this.transportSelected.typeDoc==2){
+    this.printBonDeTransport('printcommandselected')
+  }
+}
+
 printBonDeTransport(cmpId){
   // let envoy = document.getElementById('toprint').innerHTML;
   //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
@@ -1772,26 +1794,6 @@ async showMap() {
     this.forward=this.pagePresent+1
   }
 
-  // onEnvoyer(){
-  //   let stringsd:string[]=location.href.split('/transport-client/')
-  //   if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
-  //     this.em.emailDest=this.transport.emailIntervenant
-  //     this.em.titre="Case numero : " + this.transport.id.toString()
-  //     this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-  //     " <br> <a href='"+ stringsd[0] +"/transport-client/"
-  //     + this.transport.id   //1733  // replace by Number of Bon Transport
-  //     +"'><h4>Ouvrir la Facture</h4></a>" +" </p></div>"    
-  //     this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-  //       alert("Le courriel a ete envoye au chauffeur.")
-  //       this.transport.sent=true;
-  //       this.onSaveWithMessage();
-  //     }, err=>{
-  //       console.log()
-  //     })//*/
-  //   }
-  //   else 
-  //     alert("Checkez le courriel de chauffer, SVP!!!")
-  // }
 
   logout(){
     localStorage.clear();
