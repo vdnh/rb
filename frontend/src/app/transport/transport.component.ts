@@ -872,7 +872,7 @@ export class TransportComponent implements OnInit {
       this.transport.idEntreprise=this.shipper.id
       this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
       .subscribe((data:Array<LoadFrequent>)=>{
-        this.loadFrequents=data
+        this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
         this.onRefresh()
       })
     }
@@ -882,6 +882,7 @@ export class TransportComponent implements OnInit {
       this.loadFrequents=[]
       this.onRefresh()
     }
+    this.resetSimple(); // when we change shipper, we must begin from scratch the command/evaluate
   }
 
   roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
@@ -1931,7 +1932,7 @@ async showMap() {
       this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
         this.loadFrequentsService.loadFrequentsDeShipper(ent.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data;
+          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
         }, err=>{console.log(err)})
       }, err=>{
         console.log(err);

@@ -463,7 +463,7 @@ export class TransportProComponent implements OnInit {
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
         this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data;
+          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
         }, err=>{console.log(err)})
         this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
           this.templates = data; // just for test

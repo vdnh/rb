@@ -68,7 +68,7 @@
   </div>
   
   <table *ngIf="transport.typeDoc!=0 && (transport.id==null || transport.id==0)" class="table-responsive">
-    <tr><strong>Type de transport</strong></tr>
+    <tr><th colspan="2">Type Transport</th></tr>
     <tr>
       <th *ngFor="let lf of loadFrequents">
         <button (click)="loadFrequent=lf; loadFrequentChange(); 

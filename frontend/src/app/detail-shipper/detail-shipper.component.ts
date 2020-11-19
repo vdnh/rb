@@ -84,7 +84,7 @@ export class DetailShipperComponent implements OnInit {
       console.log();
     });
     this.loadFrequentService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
-      this.loadFrequents=data;
+      this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
       // this.adresses.forEach(a=>{
       //   console.log("Adress : "+a.num+" "+a.rue )
       // })
@@ -260,6 +260,7 @@ export class DetailShipperComponent implements OnInit {
             lf.idShipper=this.id;
             this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
               this.loadFrequents.push(data)
+              this.loadFrequents.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
             }, err=>{
               console.log(err)
             })
