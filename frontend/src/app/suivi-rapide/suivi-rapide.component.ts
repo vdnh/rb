@@ -8,6 +8,8 @@ import { AuthenticationService } from 'src/services/authentication.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { LoadDetail } from 'src/model/model.loadDetail';
+import { LoadDetailsService } from 'src/services/loadDetails.Service';
 
 //import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 
@@ -18,12 +20,14 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 })
 export class SuiviRapideComponent implements OnInit {
   transporter: Transporter = new Transporter();
+  loadDetails: LoadDetail[]=[];
 
   constructor(private transportService: TransportsService, 
     private remorquageService: RemorquagesService,
     private authService:AuthenticationService,
     private fb:FormBuilder,
     public transportersService:TransportersService,
+    public loadDetailsService:LoadDetailsService,
     public varsGlobal:VarsGlobal) 
   {
     this.form = fb.group({
@@ -109,13 +113,24 @@ export class SuiviRapideComponent implements OnInit {
           else {
             this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
               if(data!=null){
-                this.textResult(data.sent, data.fini, data.driverNote)
-                if(this.varsGlobal.language.includes('Francais')){
-                  this.result = "Transport #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+                if(data.typeDoc!=1){
+                  this.textResult(data.sent, data.fini, data.driverNote)
+                  if(this.varsGlobal.language.includes('Francais')){
+                    this.result = "Transport #Bon " +this.numBon+ ': ' + this.result + " Connectez-vous pour le detail."
+                  }
+                  if(this.varsGlobal.language.includes('English')){
+                    this.result = "Freight #Num " +this.numBon+ ': ' + this.result + " Login for details."
+                  }
                 }
-                if(this.varsGlobal.language.includes('English')){
-                  this.result = "Freight #Num " +this.numBon+ ': ' + this.result + " Login for details."
+                if(data.typeDoc==1){
+                  if(this.varsGlobal.language.includes('Francais')){
+                    this.result = " C'est une evaluation."
+                  }
+                  if(this.varsGlobal.language.includes('English')){
+                    this.result = " It's an evaluation."
+                  }
                 }
+                
                 localStorage.clear()
               }
               else{
@@ -157,6 +172,11 @@ export class SuiviRapideComponent implements OnInit {
         else{
           this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
             if(data!=null){
+              this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
+                this.loadDetails=lds;
+              }, err=>{
+                console.log(err)
+              })
               this.transport=data;
               this.textResult(data.sent, data.fini, data.driverNote)
               if(this.varsGlobal.language.includes('Francais')){
@@ -238,6 +258,11 @@ export class SuiviRapideComponent implements OnInit {
       else{  // in case don't find out remorquage
         this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
           if(data!=null){
+            this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
+              this.loadDetails=lds;
+            }, err=>{
+              console.log(err)
+            })
             if(data.idTransporter==Number(localStorage.getItem('idTransporter')))
           {
             if(localStorage.getItem('userId')!=undefined){ // si c'est dispatch-pro - parce userId pas null

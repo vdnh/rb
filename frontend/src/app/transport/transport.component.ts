@@ -915,6 +915,10 @@ export class TransportComponent implements OnInit {
     this.modeListCommande=false
     this.transport = new Transport(); 
     this.loadFrequent=new LoadFrequent();
+    if(this.shipper!=null) {
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.shipper.id
+    }
   }
 
   loadFrequentChange(){

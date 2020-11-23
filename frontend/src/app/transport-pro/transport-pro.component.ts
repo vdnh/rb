@@ -512,6 +512,8 @@ export class TransportProComponent implements OnInit {
     this.modeListEvalue=false
     this.modeListCommande=false
     this.transport = new Transport(); 
+    this.transport.nomEntreprise=this.shipper.nom
+    this.transport.idEntreprise=this.id
     this.loadFrequent=new LoadFrequent();
   }
 
@@ -996,7 +998,7 @@ onRefresh(){
         return -1;
       return 0;
     })//*/
-    data.forEach(tr=>{
+    data.filter(transport=>(transport.valid)).forEach(tr=>{
       if(tr.typeDoc==1) {
         this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
           if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
@@ -1522,7 +1524,7 @@ async showMap() {
   }
 
   //* calculer distance travel en kms
-  setDistanceTravel(address1: string, address2:string) { // in km
+  async setDistanceTravel(address1: string, address2:string) { // in km
     this.transport.distance=null; // set distance to null, before calculate
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
@@ -1536,9 +1538,23 @@ async showMap() {
       else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       // calculate price load actual and total price after distance
       //this.priceLoad(this.loadDetail, this.loadFrequent)
-      this.prixBase(this.transport.totalpoints)
+      // this.prixBase(this.transport.totalpoints)
       //return;
     });  
+    await this.sleep(2000);
+    this.prixBase(this.transport.totalpoints)
+    // save 
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+      this.loadDetails.forEach(load=>{
+        load.idTransport=data.id;
+        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          load.id = d.id;
+        }, err=>{
+          console.log(err);
+        })
+      })
+    }, err=>{console.log(err)})
   }
 
   // dateChange(event){

@@ -98,7 +98,7 @@ export class Transport{
 
     // the name of the model usually used
     modelName="";
-    taxable=true;
+    taxable=false; // by default no tax between 2 enterprises
     idVoyage:number;  // to identify the voyage he belong
     idCamion:number;
     idTrailer1:number;
