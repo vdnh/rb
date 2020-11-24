@@ -50,7 +50,21 @@
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
         <td>{{trCo.transport.camionAttribue}}</td>
-        <td>&nbsp;</td>
+        <td>
+          <span *ngIf="trCo.transport.fini" style="color: red; background-color: whitesmoke"
+          >Finished</span>
+          <span *ngIf="trCo.transport.driverNote.includes('!!Cancelled!!')" 
+          style="color: blue; background-color: whitesmoke"
+          >Cancelled</span>
+          <span *ngIf="trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+            !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')" 
+            style="color: orange; background-color: whitesmoke"
+            >Schedule</span>
+          <span *ngIf="(trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
+            !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')" 
+            style="color: green; background-color: whitesmoke"
+            >Waiting List</span>
+        </td>
         <td><span class="btn btn-link" (click)="printTransportSelected(trCo)">print</span></td>
       </tr>
     </table>
@@ -119,10 +133,27 @@
   </div>
   
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
-    <strong>Date du Transport </strong>
+    <!-- <strong>Date du Transport </strong>
     <span><input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
         name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)"
-        style="width: 11pc;"></span>
+        style="width: 11pc;"></span> -->
+    <table>
+      <tr>
+        <th>Date du Transport</th>
+        <th>Heure</th>
+      </tr>
+      <tr>
+        <td>
+          <input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
+          name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)"
+          style="width: 11pc;">
+        </td>
+        <td>
+          <input type="time" [(ngModel)]="transport.timeResrvation"
+            name="timeResrvation" class="form-control" style="width: 8pc;">
+        </td>
+      </tr>
+    </table>
   </div>
 
   <div *ngIf="transport.origin.length>8 && transport.destination.length>8">

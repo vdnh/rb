@@ -47,6 +47,7 @@ public class ItineraireLeger  implements Serializable{
     private Long idRouteFatherF1; // to find route father F1 if there is
 
     private Long idEntreprise;  // bientot id de Shipper
+    private String nomEntreprise="";  // bientot nom de Shipper
     private Long idTransporter;  // id de Transporter
     private Float distance=0.00f;
     

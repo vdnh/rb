@@ -28,6 +28,8 @@ import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
 import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { LoadFrequent } from 'src/model/model.loadFrequent';
+import { Itineraire } from 'src/model/model.itineraire';
+import { ItinerairesService } from 'src/services/itineraires.service';
 
 
 @Component({
@@ -254,6 +256,7 @@ export class TransportProComponent implements OnInit {
     public chauffeursService:ChauffeursService,
     public varsGlobal:VarsGlobal,
     public loadFrequentsService:LoadFrequentsService,
+    private itinerairesService:ItinerairesService,
     public transportersService:TransportersService
     ) { 
       this.id = Number (localStorage.getItem("userId"));
@@ -514,6 +517,9 @@ export class TransportProComponent implements OnInit {
     this.transport = new Transport(); 
     this.transport.nomEntreprise=this.shipper.nom
     this.transport.idEntreprise=this.id
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
     this.loadFrequent=new LoadFrequent();
   }
 
@@ -977,47 +983,82 @@ onSortDate(data:Array<Transport>){
     return 0;
   })
 }
-onRefresh(){
-  this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
-    // refresh the templates
-    this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
-      this.templates = data; // just for test
-    },err=>{console.log(err)})
+  async onRefresh(){
+    this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      // refresh the templates
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+        this.templates = data; // just for test
+      },err=>{console.log(err)})
 
-    this.listTrs=[]  //data;
-    this.listTrsSent=[]
-    this.listTrsFini=[]
-    this.listTrsAnnule=[]
-    this.listTrsCommande=[]
-    this.listTrsEvalue=[]
-    //*
-    data.sort((b, a)=>{
-      if(a.id>b.id)
-        return 1;
-      if(a.id<b.id)
-        return -1;
-      return 0;
-    })//*/
-    data.filter(transport=>(transport.valid)).forEach(tr=>{
-      if(tr.typeDoc==1) {
-        this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-          if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
-        })        
-      }
-      else if(tr.typeDoc==2) {
-        this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-         if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
-        })
-      }
-      else if(tr.fini) this.listTrsFini.push(tr)
-      else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
-      else if (tr.sent) this.listTrsSent.push(tr)
-      else if (tr.valid) this.listTrs.push(tr)//*/
+      this.listTrs=[]  //data;
+      this.listTrsSent=[]
+      this.listTrsFini=[]
+      this.listTrsAnnule=[]
+      this.listTrsCommande=[]
+      this.listTrsEvalue=[]
+      //*
+      data.sort((b, a)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      })//*/
+      data.filter(transport=>(transport.valid)).forEach(tr=>{
+        if(tr.typeDoc==1) {
+          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
+          })        
+        }
+        else if(tr.typeDoc==2) {
+          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
+          })
+        }
+        else if(tr.fini) this.listTrsFini.push(tr)
+        else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
+        else if (tr.sent) this.listTrsSent.push(tr)
+        else if (tr.valid) this.listTrs.push(tr)//*/
+      })
+    }, err=>{
+      console.log(err)
     })
-  }, err=>{
-    console.log(err)
+
+    await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+    this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
+  }
+
+// sort listTrsCommande by status
+listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
+listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
+listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
+listTrsCommandeWaiting: {transport:Transport, loadDetail:LoadDetail}[];
+onSortStatuslistTrsCommande(){
+  this.listTrsCommandeFini = []; 
+  this.listTrsCommandeCancelled = [];
+  this.listTrsCommandeSchedule = [];
+  this.listTrsCommandeWaiting = [];
+  this.listTrsCommande.forEach(trCo=>{
+    if(trCo.transport.fini){
+      this.listTrsCommandeFini.push(trCo)
+    }
+    if(trCo.transport.driverNote.includes('!!Cancelled!!')){
+      this.listTrsCommandeCancelled.push(trCo)
+    }
+    if(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+      !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
+      this.listTrsCommandeSchedule.push(trCo)
+    }
+    if((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
+    !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
+      this.listTrsCommandeWaiting.push(trCo)
+    }
   })
+  this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+    this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+      this.listTrsCommandeFini)))
 }
+
 
 roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
   let modulo_10 = price%10;
@@ -1085,6 +1126,27 @@ saveSimple(){
       })
     })
     alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
+    // after create order then create itineraire
+    let route = new Itineraire();
+    route.idEntreprise = this.transport.idEntreprise
+    route.nomEntreprise = this.transport.nomEntreprise
+    route.idTransport = this.transport.id
+    route.idTransporter = this.transport.idTransporter
+
+    route.datePick = this.transport.dateReserve
+    route.timeResrvation = this.transport.timeResrvation
+    route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
+    
+    route.destLat = this.transport.destLat
+    route.destLong = this.transport.destLong
+    route.destination = this.transport.destination
+    
+    route.origin = this.transport.origin
+    route.originLat = this.transport.originLat
+    route.originLong = this.transport.originLong
+    this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
+      route=data;
+    }, err=>{console.log()})
     // if(data.id>0){
     //   alert("this.transport.id : "+ this.transport.id)
     //   const printContent = document.getElementById(cmpId);  

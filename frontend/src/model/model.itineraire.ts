@@ -18,6 +18,7 @@ export class Itineraire{
     idRouteFatherF1; // to find route father F1 if there is
 
     idEntreprise:number;  // bientot id de Shipper
+    nomEntreprise="";  // bientot nom de Shipper
     idTransporter:number;  // id de Transporter
     distance:number=0.00;
     

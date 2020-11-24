@@ -550,7 +550,11 @@
                     <input type="date" placeholder="Pick date" [ngModel]="showDateLocal(itiner.datePick) | date: 'yyyy-MM-dd'" 
                     name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
                 </td>
-
+                
+                <td style="width: 15%;">
+                    <input type="time" placeholder="Time" [(ngModel)]="itiner.timeResrvation"
+                        name="timeResrvation" class="form-control" style="width: 8pc;">
+                </td>
                 <!-- <td colspan="2">
                     <label for="">Unite &nbsp;</label>
                     <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange(); 
@@ -560,7 +564,7 @@
                 </td> -->
 
                 <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
-                <td style="width: 34%;">
+                <td style="width: 19%;">
                     <span>Longueur:&nbsp; </span><input style="width: 8ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="" [(ngModel)]="itiner.longueur" (change)="calculeDispoReste()">ft
                 </td>
                 <!-- <td style="width: 10%;"><button class="btn btn-link" (click)="onAjouter()"
@@ -590,9 +594,12 @@
                 </td>
                 
                 
-                <td style="width: 25%;">
+                <td>
                     <span>Rayon(km): </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()">
                     <!-- <span>km</span>  -->
+                </td>
+                <td>
+                    <span>{{itiner.nomEntreprise}}</span>
                 </td>
                 <!-- <td style="width: 17%;">
                     <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoindreImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
@@ -852,7 +859,8 @@
 
                 <td style="width: 40%" (click)="onGoingToItineraire(it)">
                     <p>
-                        <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
+                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise}} <br></span>
+                        <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
                         <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
                     </p>
                 </td>
@@ -1830,7 +1838,11 @@
                     <input type="date" placeholder="Pick date" [ngModel]="showDateLocal(itiner.datePick) | date: 'yyyy-MM-dd'" 
                     name="datePick" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)">
                 </td>
-
+                
+                <td style="width: 15%;">
+                    <input type="time" placeholder="Time" [(ngModel)]="itiner.timeResrvation"
+                        name="timeResrvation" class="form-control" style="width: 8pc;">
+                </td>
                 <!-- <td colspan="2">
                     <label for="">Unite &nbsp;</label>
                     <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange(); 
@@ -1840,8 +1852,8 @@
                 </td> -->
 
                 <!-- <td colspan="2"><input type="text" [(ngModel)]="itiner.camionAttribue" placeholder="Unite Camion"></td> -->
-                <td style="width: 34%;">
-                    <span>Lenght:&nbsp; </span><input style="width: 8ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="" [(ngModel)]="itiner.longueur" (change)="calculeDispoReste()">ft
+                <td style="width: 19%;">
+                    <span>Length:&nbsp; </span><input style="width: 8ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" placeholder="" [(ngModel)]="itiner.longueur" (change)="calculeDispoReste()">ft
                 </td>
                 <!-- <td style="width: 10%;"><button class="btn btn-link" (click)="onAjouter()"
                         [disabled]="itiner.origin.length<4 || itiner.destination.length<4 || itiner.camionAttribue.length==0"
@@ -1870,9 +1882,12 @@
                 </td>
                 
                 
-                <td style="width: 25%;">
+                <td>
                     <span>Radius(km): </span><input style="width: 7ch; text-align: right; border: none; border-width: 0; box-shadow:none;  background-color: transparent;" type="number" [(ngModel)]="itiner.radiusSearch" (change)="filterCamion()">
                     <!-- <span>km</span>  -->
+                </td>
+                <td>
+                    <span>{{itiner.nomEntreprise}}</span>
                 </td>
                 <!-- <td style="width: 17%;">
                     <input *ngIf="itiner.imgUrl==null||itiner.imgUrl.length==0" class="form-control" type="file" title="JoinImage " (change)="onFileUpLoadRoute($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
@@ -2117,7 +2132,8 @@
 
                 <td style="width: 40%" (click)="onGoingToItineraire(it)">
                     <p>
-                        <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
+                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise}} <br></span>
+                        <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
                         <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
                     </p>
                 </td>

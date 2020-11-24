@@ -24,7 +24,7 @@ import { Subscription, timer, interval, from, Observable, fromEvent } from 'rxjs
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { Itineraire } from 'src/model/model.itineraire';
-import { async } from '@angular/core/testing';
+// import { async } from '@angular/core/testing';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { GeolocationService } from 'src/services/geolocation.service';
 import { Repere } from 'src/model/model.repere';
@@ -34,6 +34,8 @@ import { ViewportScroller } from '@angular/common';
 import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
 import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { TransportsService } from 'src/services/transports.service';
+import { Transport } from 'src/model/model.transport';
 
 
 @Component({
@@ -194,6 +196,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     private geolocation : GeolocationService,
     private itinerairesService:ItinerairesService, private reperesService:ReperesService,
     private viewportScroller: ViewportScroller,
+    public transportsService : TransportsService,
     public varsGlobal:VarsGlobal,
     ){    
     // this.numbersArray=Array(100).map((x,i)=>i)
@@ -1062,7 +1065,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }, err=>{console.log(err)})
     }
     else{ // modify one itineraire
-      this.itinerairesService.saveItineraires(this.itiner).subscribe((data:Itineraire)=>{
+      let tempTransport : Transport;
+      this.itinerairesService.saveItineraires(this.itiner).subscribe(async (data:Itineraire)=>{
+        if(this.itiner.idTransport!=null && this.itiner.idTransport>0){
+          this.transportsService.getDetailTransport(this.itiner.idTransport).subscribe((tr:Transport)=>{
+            tempTransport=tr;
+            // set camion to transport
+            tempTransport.camionAttribue = this.itiner.camionAttribue
+            tempTransport.idCamion = this.itiner.idCamion
+            tempTransport.imgUrl = this.itiner.imgUrl
+            // save transport just set camion
+            this.transportsService.saveTransports(tempTransport).subscribe(dt=>{}, err=>{console.log(err)})
+          }, err=>{console.log(err)})
+          await this.sleep(1000) // wait 1 second before add camion unique to transport
+        }
         // this.itiners.forEach(x=>{
         //   if(x.id==data.id) x=data
         // })
@@ -1086,6 +1102,12 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       }, err=>{console.log(err)})
     }
     
+  }
+
+  sleep(ms){
+    return new Promise((resolve)=>{
+      setTimeout(resolve, ms);
+    })
   }
 
   camionTemp:Camion=new Camion(); // this is camion temporaire for list itineraires 
@@ -1612,8 +1634,19 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.drawDest();
   }
 
-  itinerFini(it: Itineraire){
+  async itinerFini(it: Itineraire){
     it.fini=true;
+    let tempTransport: Transport
+    if(it.idTransport!=null && it.idTransport>0){
+      this.transportsService.getDetailTransport(it.idTransport).subscribe((tr:Transport)=>{
+        tempTransport=tr;
+        // set camion to transport
+        tempTransport.fini = it.fini
+        // save transport just set camion
+        this.transportsService.saveTransports(tempTransport).subscribe(dt=>{}, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+      await this.sleep(1000) // wait 1 second before add camion unique to transport
+    }
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itinersFinis.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
@@ -1631,8 +1664,20 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     },err=>{console.log(err)})
   }
 
-  itinerCancel(it: Itineraire){
+  async itinerCancel(it: Itineraire){
     it.cancelled=true;
+    let tempTransport: Transport
+    if(it.idTransport!=null && it.idTransport>0){
+      this.transportsService.getDetailTransport(it.idTransport).subscribe((tr:Transport)=>{
+        tempTransport=tr;
+        // set camion to transport
+        // tempTransport.fini = it.fini
+        tempTransport.driverNote ="!!Cancelled!!"; //.includes("!!Cancelled!!")
+        // save transport just set camion
+        this.transportsService.saveTransports(tempTransport).subscribe(dt=>{}, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+      await this.sleep(1000) // wait 1 second before add camion unique to transport
+    }
     this.itinerairesService.saveItineraires(it).subscribe((data:Itineraire)=>{
       this.itinersCancels.push(it)
       this.itiners.splice(this.itiners.indexOf(it))
