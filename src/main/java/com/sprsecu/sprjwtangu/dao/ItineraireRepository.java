@@ -18,5 +18,6 @@ public interface ItineraireRepository extends JpaRepository<Itineraire, Long>{
     public List<Itineraire> findByIdTransporter(Long idTransporter);
     public List<Itineraire> findByIdEntreprise(Long idEntreprise);
     public List<Itineraire> findByIdCamion(Long idCamion);
+    public Itineraire findByIdTransport(Long idTransport);
 //    public List<ItineraireLeger> findByIdCamionItileger(Long idCamion);
 }

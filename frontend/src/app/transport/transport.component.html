@@ -49,7 +49,29 @@
         <td style="text-align: right;">{{trCo.transport.loadsFee}} $</td>
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
-        <td>{{trCo.transport.camionAttribue}}</td>
+        <!-- <td>{{trCo.transport.camionAttribue}}</td> -->
+        <td>
+          <input type="text" [(ngModel)]="trCo.transport.camionAttribue" 
+          name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCo.transport)"
+          [disabled]="trCo.transport.fini || trCo.transport.driverNote.includes('!!Cancelled!!')">
+              <!-- (change)="camionChange()"  -->
+          <datalist id="defaultCamions">
+                  
+                    <option value=" "><strong>Unites avec GPS</strong></option>
+                    
+                    <option *ngFor="let c of camionsGps" [ngValue]="c">
+                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+                      
+                    </option>
+                    
+                    <option value=" "><strong>Unites no-GPS</strong></option>
+                    <option *ngFor="let c of camions" [ngValue]="c">
+                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+                      
+                    </option>
+                    
+                </datalist>
+        </td>
         <td>
           <span *ngIf="trCo.transport.fini" style="color: red; background-color: whitesmoke"
           >Finished</span>
@@ -131,7 +153,7 @@
     <strong>Address Livraison </strong> 
     <span><input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()"></span>
   </div>
-  
+  <br>
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
     <!-- <strong>Date du Transport </strong>
     <span><input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
@@ -141,6 +163,7 @@
       <tr>
         <th>Date du Transport</th>
         <th>Heure</th>
+        <th>Camion</th>
       </tr>
       <tr>
         <td>
@@ -152,9 +175,25 @@
           <input type="time" [(ngModel)]="transport.timeResrvation"
             name="timeResrvation" class="form-control" style="width: 8pc;">
         </td>
+        <td>
+          <input type="text" [(ngModel)]="transport.camionAttribue" 
+              name="camionAttribue" list="defaultCamions" (change)="camionChange()" class="form-control">
+          <datalist id="defaultCamions">
+            <option value=" "><strong>Unites avec GPS</strong></option>
+              <option *ngFor="let c of camionsGps" [ngValue]="c">
+                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+              </option>
+            <option value=" "><strong>Unites no-GPS</strong></option>
+              <option *ngFor="let c of camions" [ngValue]="c">
+                {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+              </option>
+          </datalist>
+        </td>
       </tr>
     </table>
   </div>
+  
+  <br>
 
   <div *ngIf="transport.origin.length>8 && transport.destination.length>8">
     <strong>Prix </strong>

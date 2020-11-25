@@ -277,6 +277,7 @@
                             <!-- <table border="1" style="border-color: blue;"> -->
                                 <p>
                                     <!-- <td> -->
+                                        <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                         <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                     <!-- </td> -->
                                 <!-- </tr> -->
@@ -342,7 +343,8 @@
                         <tr *ngFor="let iti of camionItinersFind(c.id); let i = index" (click)="onModify(iti)">
 
                                 <p>
-                                        <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                    <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>    
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
                                         <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
@@ -859,7 +861,7 @@
 
                 <td style="width: 40%" (click)="onGoingToItineraire(it)">
                     <p>
-                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise}} <br></span>
+                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
                         <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
                     </p>
@@ -1564,6 +1566,7 @@
                             <!-- itineraire=true; camionsList=false;  -->
                             <!-- <table border="1" style="border-color: blue;"> -->
                                 <p>
+                                    <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                     <!-- <td> -->
                                         <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                                     <!-- </td> -->
@@ -1630,7 +1633,9 @@
                         <tr *ngFor="let iti of camionItinersFind(c.id); let i = index" (click)="onModify(iti)">
 
                                 <p>
-                                        <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                        
+                                    <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
+                                    <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
                                         <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
@@ -2132,7 +2137,7 @@
 
                 <td style="width: 40%" (click)="onGoingToItineraire(it)">
                     <p>
-                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise}} <br></span>
+                        <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
                         <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
                     </p>

@@ -499,8 +499,9 @@ export class TransportComponent implements OnInit {
           this.remorques.push(camion)
         if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
         {
-          if(!camion.gps) this.camions.push(camion)
-          if(camion.gps) this.camionsGps.push(camion)
+          if(!camion.gps && (camion.idTerminal==null || camion.idTerminal==0)) this.camions.push(camion)
+          //if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
+          if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)) this.camionsGps.push(camion)
         }          
       })
       this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
@@ -581,6 +582,41 @@ export class TransportComponent implements OnInit {
         }
     }  
     else this.chauffeur=null;
+  }
+
+  subCamionChange(transport:Transport){
+    let camion: Camion;
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
+    let strings:Array<string>=transport.camionAttribue.split(".Id.");
+    if(strings.length>1){
+      let string0 :string = strings[0]
+      let cId:number =  Number(strings[1])
+      allCamions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          camion=c;
+          transport.camionAttribue= string0.trim();
+          transport.idCamion=c.id
+        }
+      })
+      if(camion!=null){
+        let r = confirm("Voulez vous changer le camion ?")
+        if(r)
+        {
+          this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+            this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+              if(it!=null){
+                it.camionAttribue = transport.camionAttribue
+                it.idCamion = transport.idCamion
+                this.itinerairesService.saveItineraires(it).subscribe(data=>{}, err=>{console.log(err)})
+              }
+            }, err=>{console.log(err)})
+          }, err=>{console.log(err)})    
+        }
+      }
+    }
+    else camion=null;    
   }
 
   camionChange(){
@@ -1047,6 +1083,10 @@ export class TransportComponent implements OnInit {
       route.origin = this.transport.origin
       route.originLat = this.transport.originLat
       route.originLong = this.transport.originLong
+
+      route.camionAttribue = this.transport.camionAttribue //= string0.trim(); //this.camion.unite
+      route.idCamion = this.transport.idCamion //=this.camion.id
+
       this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
         route=data;
       }, err=>{console.log()})

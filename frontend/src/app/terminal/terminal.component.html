@@ -40,7 +40,7 @@
                     <th>&nbsp;{{i+1}}&nbsp;</th>
                     <td>
                         <!-- <p> -->
-                        <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                        <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;{{(iti.timeResrvation.length>0)?iti.timeResrvation:" "}}&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                         <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
                             <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                             <!-- &nbsp;&nbsp; 

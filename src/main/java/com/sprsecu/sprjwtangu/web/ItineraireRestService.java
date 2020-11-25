@@ -29,6 +29,12 @@ public class ItineraireRestService {
     @Autowired
     private ItineraireRepository itineraireRepository;
     
+    // itineraire of a transport if thereis
+    @RequestMapping(value = "/itineraireTransport/{idTransport}", method = RequestMethod.GET)
+    public Itineraire getItineraireTransport(@PathVariable Long idTransport){
+        return itineraireRepository.findByIdTransport(idTransport);
+    }
+    
     // All itineraires of un transporter
     @RequestMapping(value = "/itinerairesTransporter/{idTransporter}", method = RequestMethod.GET)
     public List<Itineraire> getItinerairesTransporter(@PathVariable Long idTransporter){

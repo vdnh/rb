@@ -18,7 +18,14 @@ export class ItinerairesService{
     loadTonken(){
         this.jwToken=localStorage.getItem('tonken');
     }
-    
+    // itineraireTransport
+    itineraireDeTransport(idTransport:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/itineraireTransport/"+idTransport
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+
     itinerairesDeTransporter(idTransporter:number){
         this.loadTonken();
         return this.http.get(this.adServer+":8080/itinerairesTransporter/"+idTransporter
