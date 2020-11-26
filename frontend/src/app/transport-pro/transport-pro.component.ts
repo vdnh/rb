@@ -225,8 +225,8 @@ export class TransportProComponent implements OnInit {
   listTrsSent: Transport[]; // appels sent
   listTrsFini: Transport[]; // appels finished
   listTrsAnnule: Transport[]; // appels annules
-  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports commandes
-  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports evalues
+  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
+  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
   // test:[{transport:Transport; loadDetail:LoadDetail}]
   contacts: Contact[];
   chauffeurs: Chauffeur[];
@@ -1028,274 +1028,279 @@ onSortDate(data:Array<Transport>){
     this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
-// sort listTrsCommande by status
-listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
-listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
-listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
-listTrsCommandeWaiting: {transport:Transport, loadDetail:LoadDetail}[];
-onSortStatuslistTrsCommande(){
-  this.listTrsCommandeFini = []; 
-  this.listTrsCommandeCancelled = [];
-  this.listTrsCommandeSchedule = [];
-  this.listTrsCommandeWaiting = [];
-  this.listTrsCommande.forEach(trCo=>{
-    if(trCo.transport.fini){
-      this.listTrsCommandeFini.push(trCo)
-    }
-    if(trCo.transport.driverNote.includes('!!Cancelled!!')){
-      this.listTrsCommandeCancelled.push(trCo)
-    }
-    if(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
-      !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
-      this.listTrsCommandeSchedule.push(trCo)
-    }
-    if((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
-    !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
-      this.listTrsCommandeWaiting.push(trCo)
-    }
-  })
-  this.listTrsCommande = this.listTrsCommandeSchedule.concat(
-    this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
-      this.listTrsCommandeFini)))
-}
-
-
-roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
-  let modulo_10 = price%10;
-  // console.log('modulo_10 of '+price+': '+modulo_10)
-  if(modulo_10>0 && modulo_10<=5){
-    price = (price - modulo_10) + 5
-  }
-  if(modulo_10>5 && modulo_10<10){
-    price = (price - modulo_10) + 10
-  }
-  // console.log('price after rounded: '+price)
-  return price;
-}
-
-showDateLocal(d:Date){
-  d=new Date(d);
-  let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
-  return dateLocal;
-}
-
-pickDateChange(event){
-  this.transport.dateReserve=event.target.value;
-}
-
-// trEvTemp:{transport:Transport, loadDetail:LoadDetail}
-onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
-  var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
-  if(r){
-    this.transport = trEv.transport
-    this.transport.typeDoc = trEv.transport.typeDoc = 2; // 
-    this.transport.dateReserve = new Date();
-    this.modeListEvalue=false; 
-    this.modeListCommande=false
-    this.loadFrequentsService.getDetailLoadFrequent(trEv.loadDetail.idLoadFrequent)
-    .subscribe((data:LoadFrequent)=>{
-      if(data!=null) {
-        this.loadFrequent=data
-        alert("Ne pas oublier de donner la date de transport, SVP!")
-      }
-      else {alert("Ne pas trouver ce type transport, faire une nouvelle commande, SVP!")}
-    })
-  }
-}
-
-onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
-  this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-    this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-      this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-    }, err=>{console.log(err)})
-  }, err=>{
-    console.log()
-  })
-}
-
-saveSimple(){
-  this.transport.valid = true; // valid this transport ing saving
-  this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-    this.transport=data;
-    this.loadDetails.forEach(load=>{
-      load.idTransport=data.id;
-      this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-        load.id = d.id;
-      }, err=>{
-        console.log(err);
+  // sort listTrsCommande by status
+  listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
+  listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
+  listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
+  listTrsCommandeWaiting: {transport:Transport, loadDetail:LoadDetail}[];
+  onSortStatuslistTrsCommande(){
+    this.listTrsCommandeFini = []; 
+    this.listTrsCommandeCancelled = [];
+    this.listTrsCommandeSchedule = [];
+    this.listTrsCommandeWaiting = [];
+    if(this.listTrsCommande.length>0) {
+      this.listTrsCommande.forEach(trCo=>{
+        if(trCo.transport.fini){
+          this.listTrsCommandeFini.push(trCo)
+        }
+        if(trCo.transport.driverNote.includes('!!Cancelled!!')){
+          this.listTrsCommandeCancelled.push(trCo)
+        }
+        if(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+          !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
+          this.listTrsCommandeSchedule.push(trCo)
+        }
+        if((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
+        !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
+          this.listTrsCommandeWaiting.push(trCo)
+        }
       })
-    })
-    alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
-    // after create order then create itineraire
-    let route = new Itineraire();
-    route.idEntreprise = this.transport.idEntreprise
-    route.nomEntreprise = this.transport.nomEntreprise
-    route.idTransport = this.transport.id
-    route.idTransporter = this.transport.idTransporter
-
-    route.datePick = this.transport.dateReserve
-    route.timeResrvation = this.transport.timeResrvation
-    route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
-    
-    route.destLat = this.transport.destLat
-    route.destLong = this.transport.destLong
-    route.destination = this.transport.destination
-    
-    route.origin = this.transport.origin
-    route.originLat = this.transport.originLat
-    route.originLong = this.transport.originLong
-    this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
-      route=data;
-    }, err=>{console.log()})
-    // if(data.id>0){
-    //   alert("this.transport.id : "+ this.transport.id)
-    //   const printContent = document.getElementById(cmpId);  
-    //   const WindowPrt = window.open();
-    //   WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
-    //   WindowPrt.document.write(printContent.innerHTML);
-    //   WindowPrt.document.close();
-    //   WindowPrt.focus();
-    //   WindowPrt.print();
-    //   WindowPrt.close();
-    //   this.resetSimple();
-    // }
-    // else{
-    //   alert("Don't find Id of this transport")
-    // }
-    
-  }, err=>{
-    console.log(err)
-  })
-}
-
-sleep(ms){
-  return new Promise((resolve)=>{
-    setTimeout(resolve, ms);
-  })
-}
-
-transportSelected:Transport
-loadDetailSelected:LoadDetail
-async printTransportSelected(tl:{transport:Transport, loadDetail:LoadDetail}){
-  this.transportSelected=tl.transport
-  this.loadDetailSelected=tl.loadDetail
-  
-  await this.sleep(400)
-
-  if(this.transportSelected.typeDoc==1){
-    this.printBonDeTransport('printevalueselected')
-  }
-  if(this.transportSelected.typeDoc==2){
-    this.printBonDeTransport('printcommandselected')
-  }
-}
-
-printBonDeTransport(cmpId){
-  // let envoy = document.getElementById('toprint').innerHTML;
-  //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
-  //console.log(envoy)
-  const printContent = document.getElementById(cmpId);
-   //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
-  //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
-  const WindowPrt = window.open();
-  WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
-  WindowPrt.document.write(printContent.innerHTML);
-  WindowPrt.document.close();
-  WindowPrt.focus();
-  WindowPrt.print();
-  WindowPrt.close();
-  this.resetSimple();
-}
-
-prixCalcul(){
-  this.transport.horstax=this.transport.prixBase
-  if((this.transport.distance-this.transport.inclus)>0){
-    this.transport.horstax =this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
-  }
-  this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
-  if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  }
-  else{
-    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
-    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  }
-}
-
-prixCalculWithHorsTax(){
-  if(this.transport.taxable){
-    this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-    this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  }
-  else{
-    this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
-    this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
-    this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
-  }
-}
-
-async showMap() {
-  let mapProp = {
-    center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
-    zoom: 6,
-    //mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-  var directionsDisplay = new google.maps.DirectionsRenderer; // declare google display
-  var directionsService = new google.maps.DirectionsService; // declare google service
-  /*var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 7,
-    center: {lat: 41.85, lng: -87.65}
-  });//*/
-  directionsDisplay.setMap(this.map); // to see the routes on the map
-  directionsDisplay.setPanel(document.getElementById('right-panel')); // to see the routes just by the text
-
-  this.infoWindow = new google.maps.InfoWindow;
-  let markerOrigin = new google.maps.Marker({
-    position: this.latLngOrigin,
-    map: this.map,
-    //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
-    icon: {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 4
-    },
-    title: this.transport.origin
-  });
-  let markerDestination = new google.maps.Marker({
-    position: this.latLngDestination,
-    map: this.map,
-    icon: {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 4
-    },
-    title: this.transport.destination
-  });
-
-  // centrer la carte
-  var bounds = new google.maps.LatLngBounds();
-  bounds.extend(this.latLngOrigin);
-  bounds.extend(this.latLngDestination);
-  this.map.fitBounds(bounds);
-  //*/
-  //document.getElementById('right-panel').innerHTML=transport.testInnel
-  await directionsService.route({
-    origin: this.transport.origin,
-    destination: this.transport.destination,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, async function(response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      document.getElementById('right-panel').innerHTML="";
-      await directionsDisplay.setDirections(response);
-    } else {
-      window.alert('Directions request failed due to ' + status);
     }
-  });
-  //*/
-}
+    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+      this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+        this.listTrsCommandeFini)))
+  }
+
+  allCommands(){
+    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+      this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+        this.listTrsCommandeFini)))
+  }
+  waitingCommands(){
+    this.listTrsCommande = this.listTrsCommandeWaiting
+  }
+  scheduleCommands(){
+    this.listTrsCommande = this.listTrsCommandeSchedule
+  }
+  finishedCommands(){
+    this.listTrsCommande = this.listTrsCommandeFini
+  }
+  cancelledCommands(){
+    this.listTrsCommande = this.listTrsCommandeCancelled
+  }
+
+  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
+    let modulo_10 = price%10;
+    // console.log('modulo_10 of '+price+': '+modulo_10)
+    if(modulo_10>0 && modulo_10<=5){
+      price = (price - modulo_10) + 5
+    }
+    if(modulo_10>5 && modulo_10<10){
+      price = (price - modulo_10) + 10
+    }
+    // console.log('price after rounded: '+price)
+    return price;
+  }
+
+  showDateLocal(d:Date){
+    d=new Date(d);
+    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
+    return dateLocal;
+  }
+
+  pickDateChange(event){
+    this.transport.dateReserve=event.target.value;
+  }
+
+  // trEvTemp:{transport:Transport, loadDetail:LoadDetail}
+  onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
+    var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
+    if(r){
+      this.transport = trEv.transport
+      this.transport.typeDoc = trEv.transport.typeDoc = 2; // 
+      this.transport.dateReserve = new Date();
+      this.modeListEvalue=false; 
+      this.modeListCommande=false
+      this.loadFrequentsService.getDetailLoadFrequent(trEv.loadDetail.idLoadFrequent)
+      .subscribe((data:LoadFrequent)=>{
+        if(data!=null) {
+          this.loadFrequent=data
+          alert("Ne pas oublier de donner la date de transport, SVP!")
+        }
+        else {alert("Ne pas trouver ce type transport, faire une nouvelle commande, SVP!")}
+      })
+    }
+  }
+
+  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+      }, err=>{console.log(err)})
+    }, err=>{
+      console.log()
+    })
+  }
+
+  saveSimple(){
+    this.transport.valid = true; // valid this transport ing saving
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+      this.loadDetails.forEach(load=>{
+        load.idTransport=data.id;
+        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          load.id = d.id;
+        }, err=>{
+          console.log(err);
+        })
+      })
+      alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
+      // after create order then create itineraire
+      if(this.transport.typeDoc==2){ // if a command, create route
+        let route = new Itineraire();
+        route.idEntreprise = this.transport.idEntreprise
+        route.nomEntreprise = this.transport.nomEntreprise
+        route.idTransport = this.transport.id
+        route.idTransporter = this.transport.idTransporter
+
+        route.datePick = this.transport.dateReserve
+        route.timeResrvation = this.transport.timeResrvation
+        route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
+        
+        route.destLat = this.transport.destLat
+        route.destLong = this.transport.destLong
+        route.destination = this.transport.destination
+        
+        route.origin = this.transport.origin
+        route.originLat = this.transport.originLat
+        route.originLong = this.transport.originLong
+        this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
+          route=data;
+        }, err=>{console.log()}) 
+      }
+    }, err=>{
+      console.log(err)
+    })
+  }
+
+  sleep(ms){
+    return new Promise((resolve)=>{
+      setTimeout(resolve, ms);
+    })
+  }
+
+  transportSelected:Transport
+  loadDetailSelected:LoadDetail
+  async printTransportSelected(tl:{transport:Transport, loadDetail:LoadDetail}){
+    this.transportSelected=tl.transport
+    this.loadDetailSelected=tl.loadDetail
+    
+    await this.sleep(400)
+
+    if(this.transportSelected.typeDoc==1){
+      this.printBonDeTransport('printevalueselected')
+    }
+    if(this.transportSelected.typeDoc==2){
+      this.printBonDeTransport('printcommandselected')
+    }
+  }
+
+  printBonDeTransport(cmpId){
+    // let envoy = document.getElementById('toprint').innerHTML;
+    //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')
+    //console.log(envoy)
+    const printContent = document.getElementById(cmpId);
+    //console.log('printContent.innerHTML : '+printContent.innerHTML+' *** end.')
+    //const WindowPrt = window.open('','','left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
+    const WindowPrt = window.open();
+    WindowPrt.document.write('<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">');
+    WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.close();
+    WindowPrt.focus();
+    WindowPrt.print();
+    WindowPrt.close();
+    this.resetSimple();
+  }
+
+  prixCalcul(){
+    this.transport.horstax=this.transport.prixBase
+    if((this.transport.distance-this.transport.inclus)>0){
+      this.transport.horstax =this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+    }
+    this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
+    if(this.transport.taxable){
+      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+    }
+    else{
+      this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+      this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+    }
+  }
+
+  prixCalculWithHorsTax(){
+    if(this.transport.taxable){
+      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+    }
+    else{
+      this.transport.tps =0.00; //Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
+      this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
+    }
+  }
+
+  async showMap() {
+    let mapProp = {
+      center: new google.maps.LatLng(this.centerCoord.lat, this.centerCoord.lng),
+      zoom: 6,
+      //mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    var directionsDisplay = new google.maps.DirectionsRenderer; // declare google display
+    var directionsService = new google.maps.DirectionsService; // declare google service
+    /*var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 7,
+      center: {lat: 41.85, lng: -87.65}
+    });//*/
+    directionsDisplay.setMap(this.map); // to see the routes on the map
+    directionsDisplay.setPanel(document.getElementById('right-panel')); // to see the routes just by the text
+
+    this.infoWindow = new google.maps.InfoWindow;
+    let markerOrigin = new google.maps.Marker({
+      position: this.latLngOrigin,
+      map: this.map,
+      //icon: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png', //;this.iconBase + this.selectedMarkerType,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 4
+      },
+      title: this.transport.origin
+    });
+    let markerDestination = new google.maps.Marker({
+      position: this.latLngDestination,
+      map: this.map,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 4
+      },
+      title: this.transport.destination
+    });
+
+    // centrer la carte
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(this.latLngOrigin);
+    bounds.extend(this.latLngDestination);
+    this.map.fitBounds(bounds);
+    //*/
+    //document.getElementById('right-panel').innerHTML=transport.testInnel
+    await directionsService.route({
+      origin: this.transport.origin,
+      destination: this.transport.destination,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, async function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        document.getElementById('right-panel').innerHTML="";
+        await directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
+    //*/
+  }
   
   // For input
   filterInputEnt(event) {
@@ -1606,6 +1611,7 @@ async showMap() {
     await this.sleep(2000);
     this.prixBase(this.transport.totalpoints)
     // save 
+    if(this.transport.typeDoc==1) this.transport.valid = true //valid for all evaluating whether save or don't save
     this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
       this.transport=data;
       this.loadDetails.forEach(load=>{

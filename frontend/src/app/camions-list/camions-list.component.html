@@ -63,7 +63,8 @@
                 <li *ngFor="let iti of camionItinersFind(camion.id); let i = index" >
                     <!-- (click)="onModify(iti)" -->
                     <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                    <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                    <br><strong>Drop:</strong> {{iti.destination}}
+                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                     <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
                 </li>
                 <br>
@@ -83,7 +84,8 @@
             <li *ngFor="let iti of camionItinersFind(camionClicked.id); let i = index" >
                 <!-- (click)="onModify(iti)" -->
                 <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                <br><strong>Drop:</strong> {{iti.destination}}
+                 <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                 <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
             </li>
             <!-- <span mat-menu-item class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="refreshCamionsSurMap()">
@@ -283,7 +285,8 @@
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                        <br><strong>Drop</strong> {{iti.destination}}
+                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
                                     <!-- </td> -->
                                 </p>
@@ -346,7 +349,8 @@
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>    
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
-                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                        <br><strong>Drop</strong> {{iti.destination}}
+                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
                                 </p>
                         </tr>
@@ -863,7 +867,8 @@
                     <p>
                         <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -894,7 +899,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -924,7 +930,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -954,7 +961,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -1013,7 +1021,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop: </strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop: </strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -1043,7 +1052,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -1073,7 +1083,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -1101,7 +1112,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -1127,7 +1139,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -1353,7 +1366,8 @@
                 <li *ngFor="let iti of camionItinersFind(camion.id); let i = index" >
                     <!-- (click)="onModify(iti)" -->
                     <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                    <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                    <br><strong>Drop:</strong> {{iti.destination}}
+                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                     <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
                 </li>
                 <br>
@@ -1373,7 +1387,8 @@
             <li *ngFor="let iti of camionItinersFind(camionClicked.id); let i = index" >
                 <!-- (click)="onModify(iti)" -->
                 <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                <br><strong>Drop:</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                <br><strong>Drop:</strong> {{iti.destination}}
+                 <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                 <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
             </li>
             <!-- <span mat-menu-item class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="refreshCamionsSurMap()">
@@ -1573,7 +1588,8 @@
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                        <br><strong>Drop</strong> {{iti.destination}}
+                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
                                     <!-- </td> -->
                                 </p>
@@ -1637,7 +1653,8 @@
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
-                                        <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                        <br><strong>Drop</strong> {{iti.destination}}
+                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                         &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
                                 </p>
                         </tr>
@@ -2139,7 +2156,8 @@
                     <p>
                         <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -2170,7 +2188,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -2200,7 +2219,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -2230,7 +2250,8 @@
                 <td style="width: 40%">
                     <p>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
-                        <br><strong>Drop</strong> {{it.destination}} &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}  
+                        <br><strong>Drop</strong> {{it.destination}}
+                         <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
 
@@ -2290,7 +2311,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -2320,7 +2342,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -2350,7 +2373,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -2379,7 +2403,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>
@@ -2405,7 +2430,8 @@
                                 <p *ngFor="let iti of camionItinersFind(c.id); let i = index">
                                 
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                                    <br><strong>Drop</strong> {{iti.destination}} &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}}
+                                    <br><strong>Drop</strong> {{iti.destination}}
+                                     <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                     
                                 </p>
                             </ng-container>

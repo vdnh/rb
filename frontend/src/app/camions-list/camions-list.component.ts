@@ -1074,6 +1074,12 @@ export class CamionsListComponent implements OnInit, OnDestroy {
             tempTransport.camionAttribue = this.itiner.camionAttribue
             tempTransport.idCamion = this.itiner.idCamion
             tempTransport.imgUrl = this.itiner.imgUrl
+            tempTransport.dateReserve = this.itiner.datePick
+            tempTransport.timeResrvation = this.itiner.timeResrvation
+            /*
+            route.datePick = this.transport.dateReserve
+      route.timeResrvation = this.transport.timeResrvation
+            */
             // save transport just set camion
             this.transportsService.saveTransports(tempTransport).subscribe(dt=>{}, err=>{console.log(err)})
           }, err=>{console.log(err)})

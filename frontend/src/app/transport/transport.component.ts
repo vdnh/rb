@@ -52,8 +52,8 @@ export class TransportComponent implements OnInit {
 
   modeListEvalue=false;
   modeListCommande=false;
-  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports commandes
-  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]; //Transport[]; // Transports evalues
+  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
+  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
 
 
   //* pour checkBox list
@@ -583,40 +583,85 @@ export class TransportComponent implements OnInit {
     }  
     else this.chauffeur=null;
   }
+  
+  // this is to help the datalist show all 
+  tempDatalist="";
+  clickDatalist(transport:Transport){
+    if(this.tempDatalist.length==0) this.tempDatalist=transport.camionAttribue
+    transport.camionAttribue=""
+  }
+  mouseleaveDatalist(transport:Transport){
+    if(transport.camionAttribue.length==0 && this.tempDatalist.length>0){
+      transport.camionAttribue=this.tempDatalist
+    }
+   }
 
   subCamionChange(transport:Transport){
-    let camion: Camion;
-    let allCamions: Array<Camion>=[]
-    allCamions = allCamions.concat(this.camionsGps, this.camions)
-    let strings:Array<string>=transport.camionAttribue.split(".Id.");
-    if(strings.length>1){
-      let string0 :string = strings[0]
-      let cId:number =  Number(strings[1])
-      allCamions.forEach(c=>{
-        if(c.id==cId) 
-        {
-          camion=c;
-          transport.camionAttribue= string0.trim();
-          transport.idCamion=c.id
-        }
-      })
-      if(camion!=null){
-        let r = confirm("Voulez vous changer le camion ?")
+    if(transport.camionAttribue.includes('Waiting')){
+      transport.camionAttribue="";
+      transport.idCamion=null
+      let r = confirm("Voulez vous le placer dans Waiting List ?")
         if(r)
         {
           this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
             this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
               if(it!=null){
-                it.camionAttribue = transport.camionAttribue
-                it.idCamion = transport.idCamion
-                this.itinerairesService.saveItineraires(it).subscribe(data=>{}, err=>{console.log(err)})
+                it.camionAttribue = ""
+                it.idCamion = null
+                this.itinerairesService.saveItineraires(it).subscribe(data=>{
+                  this.onRefresh();
+                }, err=>{console.log(err)})
               }
             }, err=>{console.log(err)})
           }, err=>{console.log(err)})    
         }
-      }
+        else { 
+          this.onRefresh();
+        }
     }
-    else camion=null;    
+    else{ // it is not the text Waiting
+      let camion: Camion;
+      let allCamions: Array<Camion>=[]
+      allCamions = allCamions.concat(this.camionsGps, this.camions)
+      let strings:Array<string>=transport.camionAttribue.split(".Id.");
+      if(strings.length>1){
+        let string0 :string = strings[0]
+        let cId:number =  Number(strings[1])
+        allCamions.forEach(c=>{
+          if(c.id==cId) 
+          {
+            camion=c;
+            transport.camionAttribue= string0.trim();
+            transport.idCamion=c.id
+          }
+        })
+        if(camion!=null){
+          let r = confirm("Voulez vous de prendre "+transport.camionAttribue+" ?")
+          if(r)
+          {
+            this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+              this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+                if(it!=null){
+                  it.camionAttribue = transport.camionAttribue
+                  it.idCamion = transport.idCamion
+                  this.itinerairesService.saveItineraires(it).subscribe(data=>{
+                    this.onRefresh();
+                  }, err=>{console.log(err)})
+                }
+              }, err=>{console.log(err)})
+            }, err=>{console.log(err)})    
+          }
+          else { 
+            this.onRefresh();
+          }
+        }
+        else{ // don't find out truck
+          this.onRefresh();
+        }
+      }
+      else  // name dosen't correspond to truck
+        this.onRefresh();    
+    }    
   }
 
   camionChange(){
@@ -624,7 +669,7 @@ export class TransportComponent implements OnInit {
     allCamions = allCamions.concat(this.camionsGps, this.camions)
     let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
     //let string0 :string = strings[0]
-    // console.log('strings.lenght : '+strings.length);
+    // console.log('strings.length : '+strings.length);
     // console.log('strings[0] : '+strings[0]);
     // console.log('strings[1] : '+strings[1]);
     if(strings.length>1){
@@ -1310,6 +1355,7 @@ onSortDate(data:Array<Transport>){
   })
 }
   async onRefresh(){
+    this.tempDatalist=""; // initial the tempdata of datalist
     if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
       this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe((data:Array<Transport>)=>{
         this.listTrsCommande=[]
@@ -1392,27 +1438,47 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeCancelled = [];
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
-    this.listTrsCommande.forEach(trCo=>{
-      if(trCo.transport.fini){
-        this.listTrsCommandeFini.push(trCo)
-      }
-      if(trCo.transport.driverNote.includes('!!Cancelled!!')){
-        this.listTrsCommandeCancelled.push(trCo)
-      }
-      if(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+    
+    if(this.listTrsCommande.length>0) {
+      this.listTrsCommande.forEach(trCo=>{
+        if(trCo.transport.fini){
+          this.listTrsCommandeFini.push(trCo)
+        }
+        if(trCo.transport.driverNote.includes('!!Cancelled!!')){
+          this.listTrsCommandeCancelled.push(trCo)
+        }
+        if(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+          !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
+          this.listTrsCommandeSchedule.push(trCo)
+        }
+        if((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
         !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
-        this.listTrsCommandeSchedule.push(trCo)
-      }
-      if((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
-      !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!')){
-        this.listTrsCommandeWaiting.push(trCo)
-      }
-    })
+          this.listTrsCommandeWaiting.push(trCo)
+        }
+      })
+    }
     this.listTrsCommande = this.listTrsCommandeSchedule.concat(
       this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
         this.listTrsCommandeFini)))
   }
 
+  allCommands(){
+    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+      this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+        this.listTrsCommandeFini)))
+  }
+  waitingCommands(){
+    this.listTrsCommande = this.listTrsCommandeWaiting
+  }
+  scheduleCommands(){
+    this.listTrsCommande = this.listTrsCommandeSchedule
+  }
+  finishedCommands(){
+    this.listTrsCommande = this.listTrsCommandeFini
+  }
+  cancelledCommands(){
+    this.listTrsCommande = this.listTrsCommandeCancelled
+  }
   sleep(ms){
     return new Promise((resolve)=>{
       setTimeout(resolve, ms);

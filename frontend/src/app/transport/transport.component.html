@@ -27,13 +27,20 @@
   <div *ngIf="modeListCommande">
     <table border="1">
       <tr>
-        <th colspan="7">List Commandes</th>
+        <th colspan="10">
+          List Commandes
+          <span class="btn btn-link" style="color: green; background-color: whitesmoke" (click)="waitingCommands()">Waiting</span>
+          <span class="btn btn-link" style="color: orange; background-color: whitesmoke" (click)="scheduleCommands()">Schedule</span>
+          <span class="btn btn-link" style="color: darkred; background-color: whitesmoke" (click)="finishedCommands()">Finished</span>
+          <span class="btn btn-link" style="color: blue; background-color: whitesmoke" (click)="cancelledCommands()">Cancelled</span>
+          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="allCommands()">All</span>
+        </th>
       </tr>
       <tr>
         <th>#Num</th>
         <th>Client</th>
-        <th>Type de Transport</th>        
-        <th>Date Transport</th>
+        <th>TypeTransport</th>        
+        <th>DateTransport</th>
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
@@ -41,6 +48,8 @@
         <th>Status</th>
         <th>print</th>
       </tr>
+      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">Vide</th></tr>
+
       <tr *ngFor="let trCo of listTrsCommande">
         <td>{{trCo.transport.id}}</td>
         <td>{{trCo.transport.nomEntreprise}}</td>
@@ -52,28 +61,25 @@
         <!-- <td>{{trCo.transport.camionAttribue}}</td> -->
         <td>
           <input type="text" [(ngModel)]="trCo.transport.camionAttribue" 
-          name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCo.transport)"
+          name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCo.transport)" 
+          (click)="clickDatalist(trCo.transport)" (mouseleave)="mouseleaveDatalist(trCo.transport)" 
           [disabled]="trCo.transport.fini || trCo.transport.driverNote.includes('!!Cancelled!!')">
               <!-- (change)="camionChange()"  -->
           <datalist id="defaultCamions">
-                  
-                    <option value=" "><strong>Unites avec GPS</strong></option>
+            <option >Waiting</option>
+            <option value=" "><strong>Unites avec GPS</strong></option>
+            <option *ngFor="let c of camionsGps" [ngValue]="c">
+              {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+            </option>
+            <option value=" "><strong>Unites no-GPS</strong></option>
+            <option *ngFor="let c of camions" [ngValue]="c">
+              {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
+            </option>
                     
-                    <option *ngFor="let c of camionsGps" [ngValue]="c">
-                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
-                      
-                    </option>
-                    
-                    <option value=" "><strong>Unites no-GPS</strong></option>
-                    <option *ngFor="let c of camions" [ngValue]="c">
-                      {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName+'  .Id.'+c.id : ("#"+c.unite+ ' ' +c.marque +' ' +c.modele+'  .Id.'+c.id)}}
-                      
-                    </option>
-                    
-                </datalist>
+          </datalist>
         </td>
         <td>
-          <span *ngIf="trCo.transport.fini" style="color: red; background-color: whitesmoke"
+          <span *ngIf="trCo.transport.fini" style="color: darkred; background-color: whitesmoke"
           >Finished</span>
           <span *ngIf="trCo.transport.driverNote.includes('!!Cancelled!!')" 
           style="color: blue; background-color: whitesmoke"
@@ -95,12 +101,12 @@
   <!-- list evalues -->
   <div *ngIf="modeListEvalue">
     <table border="1">
-      <tr><th colspan="7">List Evalues</th></tr>
+      <tr><th colspan="9">List Evalues</th></tr>
       <tr>
         <th>#Num</th>
         <th>Client</th>
-        <th>Type de Transport</th>        
-        <th>Date Evaluation</th>
+        <th>TypeTransport</th>        
+        <th>DateEvaluation</th>
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
@@ -108,6 +114,7 @@
         <th>print</th>
         <th>Delete</th>
       </tr>
+      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="9">Vide</th></tr>
       <tr *ngFor="let trEv of listTrsEvalue">
         <td>{{trEv.transport.id}}</td>
         <td>{{trEv.transport.nomEntreprise}}</td>
