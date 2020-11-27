@@ -74,7 +74,7 @@ public class Itineraire  implements Serializable{
     private Float total=0.00f;
     private boolean fini; //Itineraire fini
     private boolean cancelled; //Itineraire cancelled
-    private boolean archive; // Itineraire archived after finished, false by default
+    private boolean archive=false; // Itineraire archived after finished, false by default
     private String imgUrl="";
     
     private Long idTransport;

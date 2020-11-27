@@ -1033,14 +1033,19 @@ onSortDate(data:Array<Transport>){
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeWaiting: {transport:Transport, loadDetail:LoadDetail}[];
+  listTrsCommandeArchive: {transport:Transport, loadDetail:LoadDetail}[];
   onSortStatuslistTrsCommande(){
     this.listTrsCommandeFini = []; 
     this.listTrsCommandeCancelled = [];
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
+    this.listTrsCommandeArchive = [];
     if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
-        if(trCo.transport.fini){
+        if(trCo.transport.archive && trCo.transport.fini){
+          this.listTrsCommandeArchive.push(trCo)
+        }
+        if(!trCo.transport.archive && trCo.transport.fini){
           this.listTrsCommandeFini.push(trCo)
         }
         if(trCo.transport.driverNote.includes('!!Cancelled!!')){
@@ -1056,9 +1061,10 @@ onSortDate(data:Array<Transport>){
         }
       })
     }
-    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
-      this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
-        this.listTrsCommandeFini)))
+    this.listTrsCommande = this.listTrsCommandeSchedule
+    // .concat(
+    //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+    //     this.listTrsCommandeFini)))
   }
 
   allCommands(){
@@ -1077,6 +1083,9 @@ onSortDate(data:Array<Transport>){
   }
   cancelledCommands(){
     this.listTrsCommande = this.listTrsCommandeCancelled
+  }
+  archiveCommands(){
+    this.listTrsCommande = this.listTrsCommandeArchive
   }
 
   roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;

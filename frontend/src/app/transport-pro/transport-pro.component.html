@@ -21,7 +21,7 @@
           <span class="btn btn-link" style="color: orange; background-color: whitesmoke" (click)="scheduleCommands()">Schedule</span>
           <span class="btn btn-link" style="color: darkred; background-color: whitesmoke" (click)="finishedCommands()">Finished</span>
           <span class="btn btn-link" style="color: blue; background-color: whitesmoke" (click)="cancelledCommands()">Cancelled</span>
-          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="allCommands()">All</span>
+          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="archiveCommands()">Archived</span>
         </th>
       </tr>
       <tr>
@@ -31,10 +31,15 @@
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
-        <th class="btn btn-link" (click)="onSortStatuslistTrsCommande()">Status</th>
+        <th>Status</th>
         <th>print</th>
       </tr>
-      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="8">Vide</th></tr>
+      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0">
+        <th colspan="8">
+          &nbsp;
+          <!-- Vide -->
+        </th>
+      </tr>
       <tr *ngFor="let trCo of listTrsCommande">
         <td>{{trCo.transport.id}}</td>
         <td>{{trCo.loadDetail.description}}</td>        
@@ -43,7 +48,9 @@
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
         <td>
-          <span *ngIf="trCo.transport.fini" style="color: darkred; background-color: whitesmoke"
+          <span *ngIf="trCo.transport.archive && trCo.transport.fini" style="color: gray; background-color: whitesmoke"
+          >Archived</span>
+          <span *ngIf="!trCo.transport.archive && trCo.transport.fini" style="color: darkred; background-color: whitesmoke"
           >Finished</span>
           <span *ngIf="trCo.transport.driverNote.includes('!!Cancelled!!')" 
           style="color: blue; background-color: whitesmoke"

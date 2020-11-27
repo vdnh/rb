@@ -33,7 +33,7 @@
           <span class="btn btn-link" style="color: orange; background-color: whitesmoke" (click)="scheduleCommands()">Schedule</span>
           <span class="btn btn-link" style="color: darkred; background-color: whitesmoke" (click)="finishedCommands()">Finished</span>
           <span class="btn btn-link" style="color: blue; background-color: whitesmoke" (click)="cancelledCommands()">Cancelled</span>
-          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="allCommands()">All</span>
+          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="archiveCommands()">Archived</span>
         </th>
       </tr>
       <tr>
@@ -48,9 +48,14 @@
         <th>Status</th>
         <th>print</th>
       </tr>
-      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">Vide</th></tr>
-
-      <tr *ngFor="let trCo of listTrsCommande">
+      <!-- <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">Vide</th></tr> -->
+      <tr *ngIf="listTrsCommandeShow==null || listTrsCommandeShow.length==0">
+        <th colspan="10">
+          &nbsp;
+          <!-- Vide -->
+        </th>
+      </tr>
+      <tr *ngFor="let trCo of listTrsCommandeShow">
         <td>{{trCo.transport.id}}</td>
         <td>{{trCo.transport.nomEntreprise}}</td>
         <td>{{trCo.loadDetail.description}}</td>        
@@ -79,7 +84,11 @@
           </datalist>
         </td>
         <td>
-          <span *ngIf="trCo.transport.fini" style="color: darkred; background-color: whitesmoke"
+          <span *ngIf="trCo.transport.archive && trCo.transport.fini" 
+          style="color: gray; background-color: whitesmoke"
+          >Archived</span>
+          <span *ngIf="!trCo.transport.archive && trCo.transport.fini" 
+          style="color: darkred; background-color: whitesmoke"
           >Finished</span>
           <span *ngIf="trCo.transport.driverNote.includes('!!Cancelled!!')" 
           style="color: blue; background-color: whitesmoke"
@@ -94,6 +103,40 @@
             >Waiting List</span>
         </td>
         <td><span class="btn btn-link" (click)="printTransportSelected(trCo)">print</span></td>
+        
+        <td *ngIf="((trCo.transport.idCamion==null || trCo.transport.idCamion==0) &&
+              !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!'))">
+          <span class="btn btn-link" (click)="onCancelTransportInList(trCo.transport)">
+            Cancel
+          </span>
+        </td>
+
+        <td *ngIf="(trCo.transport.idCamion!=null && trCo.transport.idCamion>0 &&
+          !trCo.transport.fini && !trCo.transport.driverNote.includes('!!Cancelled!!'))
+        ">
+          <span class="btn btn-link" (click)="onFinishTransportInList(trCo.transport)">
+            Finish
+          </span>
+          <span class="btn btn-link" (click)="onCancelTransportInList(trCo.transport)">
+            Cancel
+          </span>
+        </td>
+
+        <td *ngIf="trCo.transport.driverNote.includes('!!Cancelled!!')">
+          <span class="btn btn-link" (click)="onResumeTransportInList(trCo.transport)">
+            Resume
+          </span>
+          <span class="btn btn-link" (click)="onDeleteTransportInList(trCo.transport)">
+            Delete
+          </span>
+        </td>
+
+        <td *ngIf="trCo.transport.fini && !trCo.transport.archive">
+          <span class="btn btn-link" (click)="onArchiveTransportInList(trCo.transport)">
+            Archive
+          </span>
+        </td>
+
       </tr>
     </table>
   </div>
@@ -101,7 +144,7 @@
   <!-- list evalues -->
   <div *ngIf="modeListEvalue">
     <table border="1">
-      <tr><th colspan="9">List Evalues</th></tr>
+      <tr><th colspan="10">List Evalues</th></tr>
       <tr>
         <th>#Num</th>
         <th>Client</th>
@@ -110,11 +153,11 @@
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
-        <!-- <th>Commander</th> -->
+        <th>Commander</th>
         <th>print</th>
         <th>Delete</th>
       </tr>
-      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="9">Vide</th></tr>
+      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="10">&nbsp;</th></tr>
       <tr *ngFor="let trEv of listTrsEvalue">
         <td>{{trEv.transport.id}}</td>
         <td>{{trEv.transport.nomEntreprise}}</td>
@@ -124,6 +167,7 @@
         <td>{{trEv.transport.origin}}</td>
         <td>{{trEv.transport.destination}}</td>
         <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td> -->
+        <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td>
         <td><span class="btn btn-link" (click)="printTransportSelected(trEv)">print</span></td>
         <td><span class="btn btn-link" (click)="onDeleteEvalue(trEv)">Delete</span></td>
       </tr>

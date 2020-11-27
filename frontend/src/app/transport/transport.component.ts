@@ -636,7 +636,7 @@ export class TransportComponent implements OnInit {
           }
         })
         if(camion!=null){
-          let r = confirm("Voulez vous de prendre "+transport.camionAttribue+" ?")
+          let r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
           if(r)
           {
             this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
@@ -1429,19 +1429,26 @@ onSortDate(data:Array<Transport>){
   }
 
   // sort listTrsCommande by status
+  numListShow = 1; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
+  listTrsCommandeShow: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeWaiting: {transport:Transport, loadDetail:LoadDetail}[];
+  listTrsCommandeArchive: {transport:Transport, loadDetail:LoadDetail}[];
   onSortStatuslistTrsCommande(){
     this.listTrsCommandeFini = []; 
     this.listTrsCommandeCancelled = [];
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
+    this.listTrsCommandeArchive = [];
     
     if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
-        if(trCo.transport.fini){
+        if(trCo.transport.archive && trCo.transport.fini){
+          this.listTrsCommandeArchive.push(trCo)
+        }
+        if(!trCo.transport.archive && trCo.transport.fini){
           this.listTrsCommandeFini.push(trCo)
         }
         if(trCo.transport.driverNote.includes('!!Cancelled!!')){
@@ -1457,28 +1464,183 @@ onSortDate(data:Array<Transport>){
         }
       })
     }
-    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
-      this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
-        this.listTrsCommandeFini)))
+    // this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+    //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
+    //     this.listTrsCommandeFini)))
+    if(this.numListShow==1) 
+      this.listTrsCommandeShow = this.listTrsCommandeSchedule
+    if(this.numListShow==2) 
+      this.listTrsCommandeShow = this.listTrsCommandeWaiting
+    if(this.numListShow==3) 
+      this.listTrsCommandeShow = this.listTrsCommandeFini
+    if(this.numListShow==4) 
+      this.listTrsCommandeShow = this.listTrsCommandeCancelled
+    if(this.numListShow==5) 
+      this.listTrsCommandeShow = this.listTrsCommandeArchive
   }
 
   allCommands(){
-    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+    this.listTrsCommandeShow = this.listTrsCommandeSchedule.concat(
       this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
         this.listTrsCommandeFini)))
   }
+  
   waitingCommands(){
-    this.listTrsCommande = this.listTrsCommandeWaiting
+    this.listTrsCommandeShow = this.listTrsCommandeWaiting
+    this.numListShow = 2; // 2:waiting
   }
+  
   scheduleCommands(){
-    this.listTrsCommande = this.listTrsCommandeSchedule
+    this.listTrsCommandeShow = this.listTrsCommandeSchedule
+    this.numListShow = 1; // 1:schedule
   }
+  
   finishedCommands(){
-    this.listTrsCommande = this.listTrsCommandeFini
+    this.listTrsCommandeShow = this.listTrsCommandeFini
+    this.numListShow = 3; // 3:finished
   }
+  
   cancelledCommands(){
-    this.listTrsCommande = this.listTrsCommandeCancelled
+    this.listTrsCommandeShow = this.listTrsCommandeCancelled
+    this.numListShow = 4; // 4:cancelled
   }
+
+  archiveCommands(){
+    this.listTrsCommandeShow = this.listTrsCommandeArchive
+    this.numListShow = 5; // 5:archive
+  }
+
+  onCancelTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this freight ?")
+    }
+    else var r = confirm("Etes vous sur d'annuler ce transport ?")
+    if(r==true){
+      transport.driverNote="!!Cancelled!!";  
+      transport.idCamion=null;   
+      transport.camionAttribue=""   
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.cancelled = true
+            it.camionAttribue = ""
+            it.idCamion = null
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onFinishTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure this freight finished ?")
+    }
+    else var r = confirm("Etes vous sur ce transport a fini ?")
+    if(r==true){
+      transport.fini=true;  
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.fini = true
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onResumeTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Do you resume this freight ?")
+    }
+    else var r = confirm("Voulez vous reprendre ce transport ?")
+    if(r==true){
+      transport.driverNote="";  
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            // it.fini = false
+            it.cancelled = false;
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onDeleteTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Would you delete this freight ?")
+    }
+    else var r = confirm("Voulez vous supprimer ce transport ?")
+    if(r==true){
+      this.transportsService.deleteTransport(transport.id).subscribe(data=>{
+        this.loadDetailsService.loadDetailsDeTransport(transport.id).subscribe((lds:Array<LoadDetail>)=>{
+          this.loadDetails=lds;
+          this.loadDetails.forEach(load=>{
+            load.idTransport=this.transport.id;
+            this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
+          })
+        }, err=>{
+          console.log(err)
+        })
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onArchiveTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Would you archive this freight ?")
+    }
+    else var r = confirm("Voulez vous archiver ce transport ?")
+    if(r==true){
+      transport.archive = true;
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.archive = true;
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
+    var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
+    if(r){
+      this.transport = trEv.transport
+      this.transport.typeDoc = trEv.transport.typeDoc = 2; // 
+      this.transport.dateReserve = new Date();
+      this.modeListEvalue=false; 
+      this.modeListCommande=false
+      this.loadFrequentsService.getDetailLoadFrequent(trEv.loadDetail.idLoadFrequent)
+      .subscribe((data:LoadFrequent)=>{
+        if(data!=null) {
+          this.loadFrequent=data
+          alert("Ne pas oublier de donner la date de transport, SVP!")
+        }
+        else {alert("Ne pas trouver ce type transport, faire une nouvelle commande, SVP!")}
+      })
+    }
+  }
+  
   sleep(ms){
     return new Promise((resolve)=>{
       setTimeout(resolve, ms);
