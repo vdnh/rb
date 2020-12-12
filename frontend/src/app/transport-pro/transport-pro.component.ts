@@ -1029,6 +1029,7 @@ onSortDate(data:Array<Transport>){
   }
 
   // sort listTrsCommande by status
+  numListShow = 2; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
   listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
@@ -1062,6 +1063,7 @@ onSortDate(data:Array<Transport>){
       })
     }
     this.listTrsCommande = this.listTrsCommandeSchedule
+    this.numListShow = 2; // to show grand tail button Schedule
     // .concat(
     //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
     //     this.listTrsCommandeFini)))
@@ -1074,18 +1076,23 @@ onSortDate(data:Array<Transport>){
   }
   waitingCommands(){
     this.listTrsCommande = this.listTrsCommandeWaiting
+    this.numListShow = 1;
   }
   scheduleCommands(){
     this.listTrsCommande = this.listTrsCommandeSchedule
+    this.numListShow = 2;
   }
   finishedCommands(){
     this.listTrsCommande = this.listTrsCommandeFini
+    this.numListShow = 3;
   }
   cancelledCommands(){
     this.listTrsCommande = this.listTrsCommandeCancelled
+    this.numListShow = 4;
   }
   archiveCommands(){
     this.listTrsCommande = this.listTrsCommandeArchive
+    this.numListShow = 5;
   }
 
   roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
@@ -1199,7 +1206,10 @@ onSortDate(data:Array<Transport>){
     if(this.transportSelected.typeDoc==1){
       this.printBonDeTransport('printevalueselected')
     }
-    if(this.transportSelected.typeDoc==2){
+    if(this.transportSelected.typeDoc==2&&this.transportSelected.fini){
+      this.printBonDeTransport('toprint')
+    }
+    if(this.transportSelected.typeDoc==2 && !this.transportSelected.fini){
       this.printBonDeTransport('printcommandselected')
     }
   }

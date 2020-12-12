@@ -1666,17 +1666,15 @@ onSortDate(data:Array<Transport>){
       // });
       this.printBonDeTransport('printevalueselected')
     }
-    if(this.transportSelected.typeDoc==2){
-      // let promise = new Promise(function(resolve, reject){
-      //   setTimeout(function(){
-      //     resolve('Print after 1 seconde')
-      //   },1000);
-      // });
-      // promise.then(function(value){
-      //   console.log('value: ' + value)
-      // });
+    if(this.transportSelected.typeDoc==2&&this.transportSelected.fini){
+      this.printBonDeTransport('toprint')
+    }
+    if(this.transportSelected.typeDoc==2 && !this.transportSelected.fini){
       this.printBonDeTransport('printcommandselected')
     }
+    // if(this.transportSelected.typeDoc==2){
+    //   this.printBonDeTransport('printcommandselected')
+    // }
   }
 
   printBonDeTransport(cmpId){
