@@ -1443,7 +1443,7 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeWaiting = [];
     this.listTrsCommandeArchive = [];
     
-    if(this.listTrsCommande.length>0) {
+    if(this.listTrsCommande!=null && this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
         if(trCo.transport.archive && trCo.transport.fini){
           this.listTrsCommandeArchive.push(trCo)

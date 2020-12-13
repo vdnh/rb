@@ -318,13 +318,17 @@
     <h4>Date du Transport: {{showDateLocal(transportSelected.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transportSelected.timeResrvation}}</h4>
     <h4>Prix: {{transportSelected.loadsFee}}</h4>
 </div>
-<div id="toprint" hidden *ngIf="transportSelected!=null && loadDetailSelected!=null">
+<div id="toprint" hidden *ngIf="varsGlobal.language.includes('Francais') && transportSelected!=null && loadDetailSelected!=null">
   <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
     <tr *ngIf="transporter!=null" >
-      <th colspan="5" style="text-align: left;">
+      <th colspan="2" style="text-align: left;">
           <span>{{transporter.nom}}</span>
           <span> <br> Tel: {{transporter.tel}}</span>
           <span><br> Email: {{transporter.email}}</span>
+      </th>
+      <th colspan="3" style="text-align: left;"><span style="text-decoration-line: underline;">Transporteur:</span>
+        <span>&nbsp;{{transportSelected.nomEntreprise}} <br> </span>
+        <span>&nbsp;&nbsp;&nbsp; <u>Command:</u> {{" " + loadDetailSelected.description}}</span>
       </th>
     </tr>
     <tr>
@@ -358,104 +362,20 @@
       <td *ngIf="transportSelected.transfer"> par virement</td>
     </tr>
     <tr>
-      <td colspan="5"><span style="text-decoration-line: underline">Client:</span>
-        <span>&nbsp;{{transportSelected.nomEntreprise}} <br> </span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"Commande par: " + transportSelected.nomContact}}</span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transportSelected.telContact}}</span>
-        <span *ngIf="transportSelected.extTelContact.length>0" style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;{{"Ext: " + transportSelected.extTelContact}}</span>
-      </td>  
-    </tr>
-
-    <tr>
       <td colspan="5">
-          <span style="text-decoration-line: underline">De:</span><span>&nbsp;{{transportSelected.origin}}</span> <br> &nbsp;
-        <span style="font-size: 11pt; font-style: italic">Contact: </span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;{{transportSelected.nomClient}}</span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transportSelected.telClient}}</span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transportSelected.telClient2em}}</span>
+        <span style="text-decoration-line: underline">De:</span><span>&nbsp;{{transportSelected.origin}}</span> <br> &nbsp;
       </td>
     </tr>
     <tr>
       <td colspan="5">
-          <span style="text-decoration-line: underline">A:</span><span>&nbsp;{{transportSelected.destination}}</span> <br> &nbsp;
-        <span style="font-size: 11pt; font-style: italic">Contact: </span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;{{transportSelected.contactDest}}</span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transportSelected.tel1Dest}}</span>
-        <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transportSelected.tel2Dest}}</span>
+        <span style="text-decoration-line: underline">A:</span><span>&nbsp;{{transportSelected.destination}}</span> <br> &nbsp;
       </td>
-    </tr>
-    <tr>
-      <th colspan="5"style="text-align: center; text-anchor: start ">
-          <span>Loads Liste</span>
-      </th>
     </tr>
   </table>
   <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
-    <tr *ngIf="mode==1">
-      <th style="width: 10%">Quantites</th>
-      <th style="width: 50%">Description</th>
-      <td colspan="2" style="width: 30%">
-        <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
-          <tr>
-            <th colspan="3" style="text-align: center">Dimension</th>
-          </tr>
-          <tr>
-            <td style="width: 34%">Long(pi)</td>
-            <td style="width: 33%">Larg(pi)</td>
-            <td style="width: 33%">Haut(pi)</td>
-          </tr>
-        </table>
-      </td>
-      <td style="width: 10%">Poids(lb)</td>                        
-    </tr>
-    <tr *ngIf="mode==2">
-      <th style="width: 10%">Quantites</th>
-      <th style="width: 50%">Description</th>
-      <td colspan="2" style="width: 30%">
-        <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
-          <tr>
-            <th colspan="3" style="text-align: center">Dimension</th>
-          </tr>
-          <tr>
-            <td style="width: 34%">Long(cm)</td>
-            <td style="width: 33%">Larg(cm)</td>
-            <td style="width: 33%">Haut(cm)</td>
-          </tr>
-        </table>
-      </td>
-      <td style="width: 10%">Poids(kg)</td>                        
-    </tr>
-    <!-- <tr *ngFor="let load of loadDetails"> -->
-    <tr>
-      <td style="text-align: center; width: 10%">{{loadDetailSelected.quantity}}</td>
-      <td style="width: 50%">{{loadDetailSelected.description}}</td> 
-      <td colspan="2" style="width: 30%">
-        <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
-          <tr>
-            <td style="width: 34%; text-align: right">{{loadDetailSelected.longueur}}</td>
-            <td style="width: 33%; text-align: right">{{loadDetailSelected.largeur}}</td>
-            <td style="width: 33%; text-align: right">{{loadDetailSelected.hauteur}}</td>      
-          </tr>
-        </table>
-      </td>
-      <td style="text-align: right; width: 10%">{{loadDetailSelected.poids}}</td>
-    </tr>
-    <!-- <tr>
-      <th colspan="2" style="text-align: right; width: 60%">{{"Total longueur et poids : "}}</th> 
-      <td colspan="2" style="width: 30%">
-        <table border='1' style="font-size: 11pt; margin: 0px; width: 57mm">
-          <tr>
-            <th style="width: 34%; text-align: right">{{transportSelected.longueur}}</th>
-            <td style="width: 33%; text-align: center">{{" "}}</td>
-            <td style="width: 33%; text-align: center">{{" "}}</td>      
-          </tr>
-        </table>
-      </td>
-      <th style="text-align: right; width:10%">{{transportSelected.poids}}</th>
-    </tr>  -->
     <tr> 
       <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span style="text-decoration-line: underline">plus infos :</span> <span>&nbsp;{{transportSelected.comments}} <br>&nbsp;</span>
+          <span style="text-decoration-line: underline">Plus infos :</span> <span>&nbsp;{{transportSelected.comments}} <br>&nbsp;</span>
       </td>
     </tr>
     <tr> 
@@ -468,6 +388,81 @@
         <img [src]="transportSelected.signature" height="100" width="250" *ngIf="transportSelected.signature.length>0">
         <span *ngIf="transportSelected.nomSignature.length>0">&nbsp;
           <br>NOM EN LETTRES MOULEES : &nbsp;{{transportSelected.nomSignature}} 
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="toprint" hidden *ngIf="varsGlobal.language.includes('English') && transportSelected!=null && loadDetailSelected!=null">
+  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
+    <tr *ngIf="transporter!=null" >
+      <th colspan="2" style="text-align: left;">
+          <span>{{transporter.nom}}</span>
+          <span> <br> Tel: {{transporter.tel}}</span>
+          <span><br> Email: {{transporter.email}}</span>
+      </th>
+      <th colspan="3" style="text-align: left;"><span style="text-decoration-line: underline;">Carrier:</span>
+        <span>&nbsp;{{transportSelected.nomEntreprise}} <br> </span>
+        <span>&nbsp;&nbsp;&nbsp; <u>Command:</u> {{" " + loadDetailSelected.description}}</span>
+      </th>
+    </tr>
+    <tr>
+      <td style="text-align: center; text-anchor: start; width: 22%">TimeCommand <br> <span>&nbsp;{{transportSelected.dateDepart | date: 'dd-MMM-yyyy'}} - {{transportSelected.timeCall}}</span></td>
+      <td style="text-align: center; text-anchor: start; width: 20%">Dispatch <br> <span>&nbsp;{{transportSelected.nomDispatch}}</span></td>
+      <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray; width: 20%">Driver <br> <span>&nbsp;{{transportSelected.nomIntervenant}}</span></td>
+      <td style="text-align: center; text-anchor: start; width: 20%">#PO <br> <span>&nbsp;{{transportSelected.numPO}}</span></td>
+      <td style="text-align: center; text-anchor: start; width: 18%">#Num <br> <span>&nbsp;{{transportSelected.id}}</span></td>
+    </tr>
+    <tr>
+      <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Reservation <br> {{transportSelected.dateReserve | date : 'dd-MMM-yyyy'}} - {{transportSelected.timeResrvation}}</th>
+      <td style="text-align: center; text-anchor: start; width: 20%">#Truck <br> <span>&nbsp;{{transportSelected.camionAttribue}}</span></td>
+      <td style="text-align: center; text-anchor: start; width: 20%">#Trailer<br> <span>&nbsp;</span>
+        <span *ngIf="trailer1!=null">{{transportSelected.trailer1}}</span>
+        <span *ngIf="trailer2!=null"><br>{{transportSelected.trailer2}}</span>
+      </td>
+      <td style="text-align: center; text-anchor: start; width: 20%">EquipementType<br> <span>&nbsp;{{transportSelected.typeCamion}}</span></td>
+      <td style="text-align: center; text-anchor: start;; width: 20%">$ Rate $ <br> <span>&nbsp;{{transportSelected.total | number : '1.2'}}</span></td>
+    </tr>
+    <tr>
+      <th *ngIf="transportSelected.waitingTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">WaitingTime : {{transportSelected.waitingTime | number : '1.2'}} hours</th>
+      <th *ngIf="transportSelected.ptoTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">PTO-Time : {{transportSelected.ptoTime | number : '1.2'}} hours</th>
+    </tr>
+    <tr style="border: 0px">
+      <td *ngIf="transportSelected.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">Charge to account : {{transportSelected.porterAuCompte}}</td>
+      <th *ngIf="transportSelected.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collect cash : {{transportSelected.collecterArgent | number : '1.2'}}</th>
+      <td *ngIf="transport.byCash" style="text-align: center; text-anchor: start "> Cash </td>
+      <td *ngIf="transport.byCheck" style="text-align: center; text-anchor: start "> Check </td>
+      <td *ngIf="transport.creditCard"> Credit Card </td>
+      <td *ngIf="transport.byInterac"> Interac </td>
+      <td *ngIf="transport.transfer"> Transfer</td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <span style="text-decoration-line: underline">From:</span><span>&nbsp;{{transportSelected.origin}}</span> <br> &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <span style="text-decoration-line: underline">To:</span><span>&nbsp;{{transportSelected.destination}}</span> <br> &nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
+    <tr> 
+      <td colspan="5"style="text-align: left; text-anchor: start ">
+          <span style="text-decoration-line: underline">More infos :</span> <span>&nbsp;{{transportSelected.comments}} <br>&nbsp;</span>
+      </td>
+    </tr>
+    <tr> 
+      <td colspan="5"style="text-align: left; text-anchor: start ">
+          <span style="text-decoration-line: underline">Driver Note:</span> <span>&nbsp;{{transportSelected.driverNote}} <br>&nbsp;</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="5"style="text-align: left; text-anchor: start ">
+        <img [src]="transportSelected.signature" height="100" width="250" *ngIf="transportSelected.signature.length>0">
+        <span *ngIf="transportSelected.nomSignature.length>0">&nbsp;
+          <br>NAME IN BLOCK LETTERS: &nbsp;{{transportSelected.nomSignature}} 
         </span>
       </td>
     </tr>
