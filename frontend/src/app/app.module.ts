@@ -99,6 +99,7 @@ import { TerminalsService } from 'src/services/terminals.service';
 // import { LogoutComponent } from './logout/logout.component';
 import { TransportExpressVisitorComponent } from './transport-express-visitor/transport-express-visitor.component';
 import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
+import { PlanOrderService } from 'src/services/planOrder.service';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -239,7 +240,7 @@ const appRoutes:Routes=[
     AutreEntretiensService, DemandesService, VoyagesService, GeocodingService, GeolocationService, 
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
     RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService,
-    ItinerairesService, ReperesService, ConfirmTransportService, TerminalsService, LoadFrequentsService],
+    ItinerairesService, ReperesService, ConfirmTransportService, TerminalsService, LoadFrequentsService, PlanOrderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

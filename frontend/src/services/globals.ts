@@ -3,7 +3,7 @@
 //
 'use strict'; // with strict mode, we cannot, for example use undeclared variables
 
-export const adServer: string="https://cts.sosprestige.com";//"https://localhost" //"https://cts.sosprestige.com";//"https://192.168.0.131"; // adresse de server java - spring
+export const adServer: string="https://localhost";//"https://localhost" //"https://cts.sosprestige.com";//"https://192.168.0.131"; // adresse de server java - spring
 export const host: string=adServer+":8080"; // adresse de server avec :8080
 export const hostUserInfo: string=host+"/users/"; // adresse de server avec  /users/
 export const emailPrincipal: string = "cts.solution.transport@gmail.com"; // email de cts.solution.transport

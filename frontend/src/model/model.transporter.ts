@@ -17,4 +17,18 @@ export class Transporter{
     codePostal:string="";
     initial:string="";  // example SP, LG, ... in capital
     taxProvince:string="";  // Quebec, Ontario, ....
+
+    evaluation = false; // true = in evaluation
+    alreadyEvaluated = false;
+    beginDateEvaluate : Date;
+    beginDatePlan : Date;
+    endDatePlan : Date;
+    dispatchs=3;
+    technicians=3;
+    trucks:number;
+    clientsPros:number;
+    terminals:number;
+    planActual:string;
+    dateEndTrial:Date;
+    basePrice:number; 
 }

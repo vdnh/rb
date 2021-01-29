@@ -554,7 +554,7 @@ export class AppComponent implements OnInit{
         this.varsGlobal.userLogs.token=jwtToken;
         await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
           this.varsGlobal.userLogs.ipPublic=data['ip'];
-          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+          await this.geolocation.getCurrentPosition().subscribe(async (data)=>{
             //this.varsGlobal.userLogs.longtitude=data.coords.longitude;
             //this.varsGlobal.userLogs.latitude=data.coords.latitude;
             let geocoding = new GeocodingService()
@@ -682,7 +682,7 @@ export class AppComponent implements OnInit{
         this.varsGlobal.userLogs.loginTime=new Date();
         await this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
           this.varsGlobal.userLogs.ipPublic=data['ip'];
-          await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+          await this.geolocation.getCurrentPosition().subscribe(async (data)=>{
             let geocoding = new GeocodingService()
             await geocoding.geocode(new google.maps.LatLng(              
               this.varsGlobal.userLogs.latitude=data.coords.latitude,
@@ -860,6 +860,7 @@ export class AppComponent implements OnInit{
     this.suivi=false;
     this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
+
   onRessource(){
     this.camsItiners=false;
     this.remor=false;
@@ -868,6 +869,7 @@ export class AppComponent implements OnInit{
     this.suivi=false;
     this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
+
   onSuivi(){
     this.camsItiners=false;
     this.remor=false;
@@ -875,6 +877,10 @@ export class AppComponent implements OnInit{
     this.ressource=false;
     this.suivi=true;
     this.varsGlobal.switchLanguage=true;
+  }
+
+  onAccountInfos(){
+    this.router.navigate(['/detail-transporter/'+ this.transporter.id], {skipLocationChange: true});
   }
   alertComingSoon(){
     alert('Coming soon ...')

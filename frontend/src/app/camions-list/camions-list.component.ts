@@ -476,7 +476,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                 //   })})
               })
               this.markers.push(marker)
-              this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+              this.geolocation.getCurrentPosition().subscribe(async (data)=>{
                 this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
                 //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
               })
@@ -1181,7 +1181,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     else{
       this.latLngAddress=null;
       this.drawAddress();
-      this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+      this.geolocation.getCurrentPosition().subscribe(async (data)=>{
         this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
         //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
       })
@@ -1301,7 +1301,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     if(this.markerAdsress){
       this.markerAdsress.setMap(null)
     }
-    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+    this.geolocation.getCurrentPosition().subscribe(async (data)=>{
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
     })
   }
@@ -1331,7 +1331,7 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.itiner.destination=''; 
     this.destinationChange();
 
-    this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+    this.geolocation.getCurrentPosition().subscribe(async (data)=>{
       this.map.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
       //this.itineraire=true; // to display again all fields itineraire, just for refresh data fields
     })

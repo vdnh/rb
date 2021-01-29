@@ -1,5 +1,6 @@
 package com.sprsecu.sprjwtangu.entities;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class Transporter {
+public class Transporter implements Serializable{
     @Id @GeneratedValue
     private Long id;
     private String nom;
@@ -46,6 +47,25 @@ public class Transporter {
     private String codePostal;
     private String initial;  // example SP, LG, ... in capital
     private String taxProvince;  // Quebec, Ontario, ....
+    
+    private Boolean evaluation = false; // true = in evaluation
+    private Boolean alreadyEvaluated = false;
+    @Temporal(TemporalType.DATE)
+    private Date beginDateEvaluate;
+    @Temporal(TemporalType.DATE)
+    private Date beginDatePlan;
+    @Temporal(TemporalType.DATE)
+    private Date endDatePlan;
+    private Long dispatchs;
+    private Long technicians;
+    private Integer trucks;
+    private Integer clientsPros;
+    private Integer terminals;
+    
+    private String planActual;
+    @Temporal(TemporalType.DATE)
+    private Date dateEndTrial;
+    private Float basePrice;
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

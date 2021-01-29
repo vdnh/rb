@@ -21,6 +21,8 @@ import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as myGlobals from 'src/services/globals';
+import { PlanOrder } from 'src/model/model.planOrder';
+import { PlanOrderService } from 'src/services/planOrder.service';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -60,6 +62,8 @@ export class DetailTransporterComponent implements OnInit {
   modeCamions:number=0;
   modeTableau:number=0;
   transporter:Transporter=new Transporter();
+  planOrder:PlanOrder=new PlanOrder();
+  listPlanOrders:Array<PlanOrder>=null;
   id:number;
   mode:number=1;
   contacts:Array<Contact>;
@@ -85,7 +89,7 @@ export class DetailTransporterComponent implements OnInit {
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer)
+    public chauffeursService:ChauffeursService, public planOrderService:PlanOrderService,private sanitizer:DomSanitizer)
   {  
     if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
       this.id = Number(localStorage.getItem('idTransporter'))
@@ -143,9 +147,15 @@ export class DetailTransporterComponent implements OnInit {
     this.adressesService.adressesDeTransporter(this.id).subscribe((data:Array<Adresse>)=>{
       this.adresses=data;
     }, err=>{
-      console.log();
+      console.log(err);
     });    
 
+    this.planOrderService.planOrdersDeTransporter(this.id).subscribe((data:Array<PlanOrder>)=>{
+      this.listPlanOrders=data
+    }, err=>{
+      console.log(err)
+    })
+    
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
       /*/this.camionsSurMap.length=0;
       data.forEach(camion=>{
