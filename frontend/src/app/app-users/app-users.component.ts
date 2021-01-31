@@ -6,6 +6,8 @@ import { Shipper } from 'src/model/model.shipper';
 import { ShippersService } from 'src/services/shippers.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
+import { PlanPrice } from 'src/model/model.planPrice';
+import { PlanPriceService } from 'src/services/planPrice.service';
 
 @Component({
   selector: 'app-app-users',
@@ -23,6 +25,7 @@ export class AppUsersComponent implements OnInit {
     "CHAUFFEUR",
     "TERMINAL"
   ];
+  planPrice : PlanPrice = new PlanPrice();
   appUser : AppUser = new AppUser();
   appUserToMod : AppUser = new AppUser();
   appUserToDel : AppUser = new AppUser();
@@ -101,12 +104,18 @@ export class AppUsersComponent implements OnInit {
   }
   constructor(public authenticationService:AuthenticationService,
     public shipperservice:ShippersService,
-    public transporterservice:TransportersService,) { 
+    public transporterservice:TransportersService,
+    public planPriceService:PlanPriceService) { 
 
     }
 
   ngOnInit() {
     this.appUser.roleSimple=this.roleTypes[0];
+    this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
+      if(data!=null && data.length>0){
+        this.planPrice=data[0]
+      }
+    }, err=>{console.log(err)})
     // getShippersTransporter
     if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0){
       // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
@@ -216,4 +225,10 @@ export class AppUsersComponent implements OnInit {
     });
   }
 
+  setPlanPrice(){
+    this.planPriceService.savePlanPrice(this.planPrice).subscribe((data:PlanPrice)=>{
+      this.planPrice=data
+      alert("Plan Price was set.")
+    }, err=>{console.log(err)})
+  }
 }

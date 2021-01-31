@@ -23,6 +23,8 @@ import { ChauffeursService } from 'src/services/chauffeurs.service';
 import * as myGlobals from 'src/services/globals';
 import { PlanOrder } from 'src/model/model.planOrder';
 import { PlanOrderService } from 'src/services/planOrder.service';
+import { PlanPrice } from 'src/model/model.planPrice';
+import { PlanPriceService } from 'src/services/planPrice.service';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -62,8 +64,13 @@ export class DetailTransporterComponent implements OnInit {
   modeCamions:number=0;
   modeTableau:number=0;
   transporter:Transporter=new Transporter();
+  
   planOrder:PlanOrder=new PlanOrder();
   listPlanOrders:Array<PlanOrder>=null;
+  packsTrucks=0;
+  packsClientsPros=0;
+  packsTerminals=0;
+
   id:number;
   mode:number=1;
   contacts:Array<Contact>;
@@ -85,11 +92,13 @@ export class DetailTransporterComponent implements OnInit {
   //entsAutre:AutreEntretienList=new AutreEntretienList();
 
   infoWindow : any;
+  planPrice: PlanPrice;
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, public planOrderService:PlanOrderService,private sanitizer:DomSanitizer)
+    public chauffeursService:ChauffeursService, public planOrderService:PlanOrderService,
+    public planPriceService:PlanPriceService, private sanitizer:DomSanitizer)
   {  
     if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
       this.id = Number(localStorage.getItem('idTransporter'))
@@ -107,6 +116,11 @@ export class DetailTransporterComponent implements OnInit {
 //*/
 
   ngOnInit() {
+    this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
+      if(data!=null && data.length>0){
+        this.planPrice=data[0]
+      }
+    }, err=>{console.log(err)})
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
       this.quitButton=localStorage.getItem('role')
       this.transporter=data;
@@ -1141,6 +1155,45 @@ export class DetailTransporterComponent implements OnInit {
   }
   onChangeImage(){
     this.transporter.photo=""
+  }
+
+  newOrRenewPlan(){
+    this.planNameChange(); // to sur take the planName and price 
+    if(!this.transporter.evaluation && (this.transporter.trucks==null || this.transporter.trucks==0)){
+      this.planOrder.trucks=this.planPrice.trucks + (this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals=this.planPrice.terminals + (this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros=this.planPrice.clientsPros + (this.packsClientsPros*this.planPrice.clientsPros)
+    }
+    else{
+      this.planOrder.trucks= (this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals= (this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros=(this.packsClientsPros*this.planPrice.clientsPros)
+    }
+    
+  }
+
+  orderPlan(){
+    this.planOrder.idTransporter=this.id
+    this.planOrderService.savePlanOrder(this.planOrder).subscribe((data:PlanOrder)=>{
+      this.planOrder=data;
+    }, err=>{console.log(err)})
+  }
+
+  planNameChange(){
+    if(this.planOrder.planName.includes("3 Months"))
+      {
+        this.planOrder.daysPlan=90; // 3 months
+        this.planOrder.price=this.planPrice.price * 3
+      }
+    if(this.planOrder.planName.includes("1 Year")){
+      this.planOrder.daysPlan=365; // 1 Year
+      this.planOrder.price=this.planPrice.price * 3 * 3
+    }
+      
+    if(this.planOrder.planName.includes("2 Years")){
+      this.planOrder.daysPlan=730; // 2 Years
+      this.planOrder.price=this.planPrice.price * 3 * 5
+    }
   }
 
 }

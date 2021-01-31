@@ -14,7 +14,6 @@ import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 /**
  *
  * @author vdnh
@@ -23,22 +22,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor @NoArgsConstructor
 
-public class PlanOrder implements Serializable{
+public class PlanPrice implements Serializable{
     @Id @GeneratedValue
     private Long id;
-    private Long idTransporter;
-    @Temporal(TemporalType.DATE)
-    private Date dateOrder = Date.from(Instant.now());
-    @Temporal(TemporalType.DATE)
-    private Date dateEnding;
-    @Temporal(TemporalType.DATE)
-    private Date datePayed;
-    private Boolean payed = false;
-    private Integer trucks;
-    private Integer clientsPros;
-    private Integer terminals;
-    private String planName;
-    private Float price;
-    private Float priceBase; // price base principal
-    private Integer daysPlan; // days total of plan name
+    private String plan; // : price base principal
+    private Long price;
+    private String description; // : 3 mois + (10trucks or 10clientspros or 5 terminals)
+    private Integer trucks = 10; // : 10
+    private Integer clientsPros = 10; // : 10
+    private Integer terminals = 5 ; // : 5
 }

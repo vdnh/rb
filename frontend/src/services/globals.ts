@@ -9,6 +9,9 @@ export const hostUserInfo: string=host+"/users/"; // adresse de server avec  /us
 export const emailPrincipal: string = "cts.solution.transport@gmail.com"; // email de cts.solution.transport
 export const telPrincipal: string = "5147283785"; // cellphone de cts.solution.transport
 export const version: string="1.0.0"; 
+export const trucks = 10;
+export const clientsPros = 10;
+export const terminals = 5;
 export const camionTypes = [
     { id: 1, name: 'TiltNLoad6Roues' },
     { id: 2, name: 'TiltNLoad16Roues' },

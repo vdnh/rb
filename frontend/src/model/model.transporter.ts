@@ -31,4 +31,5 @@ export class Transporter{
     planActual:string;
     dateEndTrial:Date;
     basePrice:number; 
+    daysPlan:number; // days total of plan name
 }

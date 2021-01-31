@@ -11,4 +11,6 @@ export class PlanOrder{
     terminals:number;
     planName='';
     price:number; 
+    priceBase:number; // price base principal
+    daysPlan:number; // days total of plan name
 }

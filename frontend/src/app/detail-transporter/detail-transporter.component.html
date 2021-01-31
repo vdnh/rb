@@ -463,13 +463,14 @@
     <!--Use for the case of Dispatch want to add driver-->
     <div class="panel panel-primary" *ngIf="mode==4">
         <div>
-            <h3>Plan Actual</h3>
+            
             <table border="1">
+                <tr>Plan Actual</tr>
                 <tr>
                     <th>Plan</th>
-                    <th>NumberTrucks</th>
-                    <th>NumberClientPros</th>
-                    <th>NumberTerminals</th>
+                    <th>TrucksQuantity</th>
+                    <th>ClientProsQuantity</th>
+                    <th>TerminalsQuantity</th>
                     <th>DateEnding</th>
                 </tr>
                 <tr>
@@ -478,54 +479,59 @@
                     <td>{{transporter.clientsPros}}</td>
                     <td>{{transporter.terminals}}</td>
                     <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
-                    <td><button>Renew/New Plan</button></td>
+                    <td><button (click)="newOrRenewPlan()">Renew/New Plan</button></td>
                     <td><button>Extension</button></td>
                 </tr>
             <!-- </table>
             <table border="1"> -->
-                <tr><th>Plan list</th></tr>
+                <tr></tr>
+                <tr><th>Select Plan</th></tr>
                 <tr>
                     <td>
-                        <select>
+                        <select [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()">
                             <option>3 Months</option>
                             <option>1 Year</option>
                             <option>2 Years</option>
                         </select>
                     </td>
-                    <td>10</td>
-                    <td>10</td>
-                    <td>5</td>
+                    <td>{{planOrder.trucks}}</td>
+                    <td>{{planOrder.clientsPros}}</td>
+                    <td>{{planOrder.terminals}}</td>
                     <td>&nbsp;</td>
-                    <td> $</td>
-                    <td><button>Demand</button></td>
+                    <td>{{planOrder.price}} $</td>
+                    <td><button (click)="orderPlan()">Demand</button></td>
                 </tr>
             </table>
             <table border="1">
-                <tr><td colspan="5">Plans Extension</td></tr>
+                <tr><th colspan="5">Plans Extension</th></tr>
                 <tr>
                     <th>Quantity</th>
-                    <th>Extension</th>
+                    <th>Pack</th>
                     <th>price</th>
                 </tr>
                 <tr>
-                    <th></th>
-                    <th>Pack 10 trucks</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
+                    <th>10 Trucks</th>
                     <th> $</th>
                 </tr>
                 <tr>
-                    <th></th>
-                    <th>Pack 10 ClientPros</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
+                    <th>10 ClientPros</th>
                     <th> $</th>
                 </tr>
                 <tr>
-                    <th></th>
-                    <th>Pack 5 terminals</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
+                    <th>5 Terminals</th>
                     <th> $</th>
                 </tr>
                 <!-- <tr><th><button>OK</button></th></tr> -->
             </table>
-            <h3>History Plans</h3>
+            
             <table border="1">
+                <tr>History Plans</tr>
                 <tr><th>Plan</th><th>NumberTrucks</th><th>NumberClientPros</th><th>NumberTerminals</th><th>DateEnding</th></tr>
                 <tr><td></td><td></td><td></td><td></td><td></td></tr>
             </table>

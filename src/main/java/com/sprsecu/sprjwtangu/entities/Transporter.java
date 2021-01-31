@@ -66,6 +66,7 @@ public class Transporter implements Serializable{
     @Temporal(TemporalType.DATE)
     private Date dateEndTrial;
     private Float basePrice;
+    private Integer daysPlan; // days total of plan name
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
