@@ -1168,6 +1168,8 @@ export class DetailTransporterComponent implements OnInit {
       this.planOrder.trucks= (this.packsTrucks*this.planPrice.trucks)
       this.planOrder.terminals= (this.packsTerminals*this.planPrice.terminals)
       this.planOrder.clientsPros=(this.packsClientsPros*this.planPrice.clientsPros)
+
+      this.planOrder.planName=this.transporter.planActual
     }
     
   }

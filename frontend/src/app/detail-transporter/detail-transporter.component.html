@@ -474,7 +474,7 @@
                     <th>DateEnding</th>
                 </tr>
                 <tr>
-                    <td>Plan</td>
+                    <td>{{transporter.planActual}}</td>
                     <td>{{transporter.trucks}}</td>
                     <td>{{transporter.clientsPros}}</td>
                     <td>{{transporter.terminals}}</td>
@@ -488,11 +488,15 @@
                 <tr><th>Select Plan</th></tr>
                 <tr>
                     <td>
-                        <select [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()">
+                        <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
+                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" >
                             <option>3 Months</option>
                             <option>1 Year</option>
                             <option>2 Years</option>
                         </select>
+                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
+                            {{this.transporter.planActual}}
+                        </span>
                     </td>
                     <td>{{planOrder.trucks}}</td>
                     <td>{{planOrder.clientsPros}}</td>
