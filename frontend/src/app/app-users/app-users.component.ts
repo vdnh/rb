@@ -16,6 +16,7 @@ import { PlanPriceService } from 'src/services/planPrice.service';
 })
 export class AppUsersComponent implements OnInit {
 
+  role = ''; // role of login, localStorage.getItem('role')
   roleTypes = [
     "ADMIN", 
     "SHIPPER", 
@@ -110,6 +111,7 @@ export class AppUsersComponent implements OnInit {
     }
 
   ngOnInit() {
+    this.role = localStorage.getItem('role')
     this.appUser.roleSimple=this.roleTypes[0];
     this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
       if(data!=null && data.length>0){

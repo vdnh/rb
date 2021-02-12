@@ -1158,43 +1158,47 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   newOrRenewPlan(){
-    this.planNameChange(); // to sur take the planName and price 
     if(!this.transporter.evaluation && (this.transporter.trucks==null || this.transporter.trucks==0)){
       this.planOrder.trucks=this.planPrice.trucks + (this.packsTrucks*this.planPrice.trucks)
       this.planOrder.terminals=this.planPrice.terminals + (this.packsTerminals*this.planPrice.terminals)
       this.planOrder.clientsPros=this.planPrice.clientsPros + (this.packsClientsPros*this.planPrice.clientsPros)
     }
     else{
-      this.planOrder.trucks= (this.packsTrucks*this.planPrice.trucks)
-      this.planOrder.terminals= (this.packsTerminals*this.planPrice.terminals)
-      this.planOrder.clientsPros=(this.packsClientsPros*this.planPrice.clientsPros)
+      this.planOrder.trucks= this.transporter.trucks; // (this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals= this.transporter.terminals; // (this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros= this.transporter.clientsPros; // (this.packsClientsPros*this.planPrice.clientsPros)
 
       this.planOrder.planName=this.transporter.planActual
     }
-    
+    this.planNameChange(); // to sur take the planName and price 
   }
 
   orderPlan(){
     this.planOrder.idTransporter=this.id
+    if(this.transporter.trucks>0)// && this.transporter.endDatePlan>new Date())
+      this.planOrder.planName="Extension"
     this.planOrderService.savePlanOrder(this.planOrder).subscribe((data:PlanOrder)=>{
       this.planOrder=data;
+      this.listPlanOrders.push(data)
     }, err=>{console.log(err)})
   }
 
   planNameChange(){
-    if(this.planOrder.planName.includes("3 Months"))
+    if(this.planOrder.planName!=null){
+      if(this.planOrder.planName.includes("3 Months"))
       {
         this.planOrder.daysPlan=90; // 3 months
         this.planOrder.price=this.planPrice.price * 3
       }
-    if(this.planOrder.planName.includes("1 Year")){
-      this.planOrder.daysPlan=365; // 1 Year
-      this.planOrder.price=this.planPrice.price * 3 * 3
-    }
-      
-    if(this.planOrder.planName.includes("2 Years")){
-      this.planOrder.daysPlan=730; // 2 Years
-      this.planOrder.price=this.planPrice.price * 3 * 5
+      if(this.planOrder.planName.includes("1 Year")){
+        this.planOrder.daysPlan=365; // 1 Year
+        this.planOrder.price=this.planPrice.price * 3 * 3
+      }
+        
+      if(this.planOrder.planName.includes("2 Years")){
+        this.planOrder.daysPlan=730; // 2 Years
+        this.planOrder.price=this.planPrice.price * 3 * 5
+      }
     }
   }
 

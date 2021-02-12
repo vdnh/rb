@@ -465,12 +465,11 @@
         <div>
             
             <table border="1">
-                <tr>Plan Actual</tr>
                 <tr>
-                    <th>Plan</th>
-                    <th>TrucksQuantity</th>
-                    <th>ClientProsQuantity</th>
-                    <th>TerminalsQuantity</th>
+                    <th>Plan Actual</th>
+                    <th>Trucks</th>
+                    <th>ClientsPros</th>
+                    <th>Terminals</th>
                     <th>DateEnding</th>
                 </tr>
                 <tr>
@@ -479,7 +478,17 @@
                     <td>{{transporter.clientsPros}}</td>
                     <td>{{transporter.terminals}}</td>
                     <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
-                    <td><button (click)="newOrRenewPlan()">Renew/New Plan</button></td>
+                    <td><button (click)="newOrRenewPlan()">
+                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
+                            Renew
+                        </span> 
+                        <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                            New Plan
+                        </span> 
+                        <span *ngIf="transporter.evaluation">
+                            New Plan
+                        </span>
+                    </button></td>
                     <td><button>Extension</button></td>
                 </tr>
             <!-- </table>
@@ -489,10 +498,13 @@
                 <tr>
                     <td>
                         <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
-                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" >
-                            <option>3 Months</option>
+                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <option value="3 Months" selected="selected">3 Months</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                            <!-- <option selected>3 Months</option>
                             <option>1 Year</option>
-                            <option>2 Years</option>
+                            <option>2 Years</option> -->
                         </select>
                         <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
                             {{this.transporter.planActual}}
@@ -502,42 +514,52 @@
                     <td>{{planOrder.clientsPros}}</td>
                     <td>{{planOrder.terminals}}</td>
                     <td>&nbsp;</td>
-                    <td>{{planOrder.price}} $</td>
+                    <td style="text-align: right;">{{planOrder.price}} $</td>
                     <td><button (click)="orderPlan()">Demand</button></td>
                 </tr>
             </table>
             <table border="1">
-                <tr><th colspan="5">Plans Extension</th></tr>
+                <tr><th colspan="5">Extension</th></tr>
                 <tr>
-                    <th>Quantity</th>
                     <th>Pack</th>
+                    <th>Quantity</th>                    
                     <th>price</th>
                 </tr>
                 <tr>
+                    <th>{{planPrice.trucks}} Trucks</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
-                    <th>10 Trucks</th>
-                    <th> $</th>
+                    <th style="text-align: right;"> $</th>
                 </tr>
                 <tr>
+                    <th>{{planPrice.clientsPros}} ClientPros</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
-                    <th>10 ClientPros</th>
-                    <th> $</th>
+                    
+                    <th style="text-align: right;"> $</th>
                 </tr>
                 <tr>
+                    <th>{{planPrice.terminals}} Terminals</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
-                    <th>5 Terminals</th>
-                    <th> $</th>
+                    
+                    <th style="text-align: right;"> $</th>
                 </tr>
                 <!-- <tr><th><button>OK</button></th></tr> -->
             </table>
             
             <table border="1">
                 <tr>History Plans</tr>
-                <tr><th>Plan</th><th>NumberTrucks</th><th>NumberClientPros</th><th>NumberTerminals</th><th>DateEnding</th></tr>
-                <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr>
+                    <th>Plan</th><th>NumberTrucks</th><th>NumberClientPros</th><th>NumberTerminals</th>
+                    <th>Demande</th><th>Ending</th><th>Price</th><th>Status</th>
+                </tr>
+                <tr *ngFor="let pO of listPlanOrders">
+                    <td>{{pO.planName}}</td><td>{{pO.trucks}}</td><td>{{pO.clientsPros}}</td><td>{{pO.terminals}}</td>
+                    <td>{{pO.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="text-align: right;">{{pO.price}} $</td><td>{{(pO.payed?"Payed":"Waiting")}}</td>
+                </tr>
+                <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
             </table>
         </div>
         <div class="panel-body">

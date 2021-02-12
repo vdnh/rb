@@ -1,29 +1,33 @@
-<h3>Plan Configuration</h3>
-<hr style="border: 1px dotted black"/>
-<div>
-  <table border="1">
-    <tr>
-      <th>Name</th>
-      <th>Price</th>
-      <th>Trucks</th>
-      <th>ClientsPros</th>
-      <th>Terminals</th>
-      <th>Description</th>
-    </tr>
-    <tr>
-      <td><input type="text"  [(ngModel)]="planPrice.plan" style="border: none;"></td>
-      <td><input type="number" [(ngModel)]="planPrice.price" style="width: 10ch; border: none;"></td>
-      <td><input type="number" [(ngModel)]="planPrice.trucks" style="width: 10ch; border: none;"></td>
-      <td><input type="number" [(ngModel)]="planPrice.clientsPros" style="width: 10ch; border: none;"></td>
-      <td><input type="number" [(ngModel)]="planPrice.terminals" style="width: 10ch; border: none;"></td>
-      <td>
-        <!-- <input type="text" [(ngModel)]="planPrice.description" style="border: none;"> -->
-        <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="planPrice.description"></textarea>
-      </td>
-      <td><button (click)="setPlanPrice()">Set Plan Price</button></td>
-    </tr>
-  </table>
+<div *ngIf="role=='ADMIN'">
+  <h3>Plan Configuration</h3>
+  <hr style="border: 1px dotted black"/>
+  <div>
+    <table border="1">
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Trucks</th>
+        <th>ClientsPros</th>
+        <th>Terminals</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><input type="text"  [(ngModel)]="planPrice.plan" style="border: none;"></td>
+        <td><input type="number" [(ngModel)]="planPrice.price" style="width: 10ch; border: none;"></td>
+        <td><input type="number" [(ngModel)]="planPrice.trucks" style="width: 10ch; border: none;"></td>
+        <td><input type="number" [(ngModel)]="planPrice.clientsPros" style="width: 10ch; border: none;"></td>
+        <td><input type="number" [(ngModel)]="planPrice.terminals" style="width: 10ch; border: none;"></td>
+        <td>
+          <!-- <input type="text" [(ngModel)]="planPrice.description" style="border: none;"> -->
+          <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="planPrice.description"></textarea>
+        </td>
+        <td><button (click)="setPlanPrice()">Set Plan Price</button></td>
+      </tr>
+    </table>
+  </div>
 </div>
+
+
 <hr style="border: 1px dotted black"/>
 <h3>Create User</h3>
 <hr style="border: 1px dotted black"/>
