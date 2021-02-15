@@ -354,7 +354,7 @@ export class AppComponent implements OnInit{
     //     console.log(err);  
     //   });//*/
     // }
-    else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("ctstrack.") && !location.href.includes("192.168.0.") )
+    else if( !location.href.includes("sosprestige.com") && !location.href.includes("localhost") && !location.href.includes("ctstrack.") && !location.href.includes("tgsolution.tech") && !location.href.includes("192.168.0.") )
     {
       //location.href='https://cts.sosprestige.com';
       this.mode=2 // show the message for bad url

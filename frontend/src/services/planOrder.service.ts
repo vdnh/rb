@@ -16,6 +16,13 @@ export class PlanOrderService{
         this.jwToken=localStorage.getItem('tonken');
     }
     
+    allPlanOrders(){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/planOrders"
+        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+
     planOrdersDeTransporter(idTransporter:number){
         this.loadTonken();
         return this.http.get(this.adServer+":8080/planOrdersDeTransporter?idTransporter="+idTransporter

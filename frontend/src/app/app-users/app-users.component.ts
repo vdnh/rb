@@ -8,6 +8,8 @@ import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
 import { PlanPrice } from 'src/model/model.planPrice';
 import { PlanPriceService } from 'src/services/planPrice.service';
+import { PlanOrderService } from 'src/services/planOrder.service';
+import { PlanOrder } from 'src/model/model.planOrder';
 
 @Component({
   selector: 'app-app-users',
@@ -41,6 +43,9 @@ export class AppUsersComponent implements OnInit {
   listPros2em: any[];
   //listUser: Array<AppUser>;
   
+  listPlanOrders:Array<PlanOrderTransporter>=[];
+  listPlanOrdersArchived:Array<PlanOrderTransporter>=[];
+
   onCreatUserTest(){
     console.log(this.appUser)
     alert('User a ete cree!!')
@@ -106,18 +111,15 @@ export class AppUsersComponent implements OnInit {
   constructor(public authenticationService:AuthenticationService,
     public shipperservice:ShippersService,
     public transporterservice:TransportersService,
-    public planPriceService:PlanPriceService) { 
+    public planPriceService:PlanPriceService,
+    public planOrderService:PlanOrderService) { 
 
     }
 
   ngOnInit() {
     this.role = localStorage.getItem('role')
     this.appUser.roleSimple=this.roleTypes[0];
-    this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
-      if(data!=null && data.length>0){
-        this.planPrice=data[0]
-      }
-    }, err=>{console.log(err)})
+    
     // getShippersTransporter
     if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0){
       // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
@@ -144,6 +146,36 @@ export class AppUsersComponent implements OnInit {
             // this.listTrans.push(data);
             this.listTrans = data;
             this.typeRoleChange(this.roleTypes[0]);
+            this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
+              if(data!=null && data.length>0){
+                this.planPrice=data[0]
+              }
+              this.planOrderService.allPlanOrders().subscribe((d:Array<PlanOrder>)=>{
+                if(d!=null && d.length>0) d.forEach((po)=>{
+                  // filter the orders didn't pay yet
+                  if(!po.payed) {
+                    let plTr = new PlanOrderTransporter()
+                    plTr.planOrder=po
+                    plTr.transporter=this.listTrans.find(x=>x.id===plTr.planOrder.idTransporter)
+                    // this.camionsGPSAndNoGPS.find(x=>x.id===a.idCamion)
+                    this.listPlanOrders.push(plTr)
+                  }
+                  // filter the orders payed
+                  else {
+                    let plTr = new PlanOrderTransporter()
+                    plTr.planOrder=po
+                    plTr.transporter=this.listTrans.find(x=>x.id===plTr.planOrder.idTransporter)
+                    this.listPlanOrdersArchived.push(plTr)
+                  }
+                })
+                
+                // this.listPlanOrders=data.filter(pl=>(!pl.payed))
+                
+                // this.listPlanOrdersArchived=data.filter(pl=>(pl.payed))
+              }, err=>{
+                console.log(err)
+              })
+            }, err=>{console.log(err)})
           }, err=>{
             console.log(err)
           })
@@ -233,4 +265,28 @@ export class AppUsersComponent implements OnInit {
       alert("Plan Price was set.")
     }, err=>{console.log(err)})
   }
+
+  onValidPlanOrder(pO:PlanOrderTransporter){
+    pO.planOrder.payed=true;
+    if(pO.planOrder.planName.includes("Extension")){  // and then no need update date validation
+      pO.transporter.trucks = pO.transporter.trucks + pO.planOrder.trucks
+      pO.transporter.clientsPros = pO.transporter.clientsPros + pO.planOrder.clientsPros
+      pO.transporter.terminals = pO.transporter.terminals + pO.planOrder.clientsPros
+    }
+    else{ // 3 months, 1 year, 2 years  then update the date validation
+      pO.transporter.trucks = pO.planOrder.trucks
+      pO.transporter.clientsPros = pO.planOrder.clientsPros
+      pO.transporter.terminals = pO.planOrder.clientsPros
+    }
+    this.planOrderService.savePlanOrder(pO.planOrder).subscribe(data=>{}, err=>{console.log(err)})
+    // this.reps.splice(this.reps.indexOf(r),1)
+    this.listPlanOrders.splice(this.listPlanOrders.indexOf(pO), 1)
+    this.listPlanOrdersArchived.push(pO)
+  }
+  
+}
+
+export class PlanOrderTransporter{
+  planOrder:PlanOrder
+  transporter:Transporter
 }

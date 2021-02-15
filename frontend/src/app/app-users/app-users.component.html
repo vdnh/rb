@@ -25,6 +25,37 @@
       </tr>
     </table>
   </div>
+  <table border="1">
+    <tr>Orders Waittings</tr>
+    <tr>
+      <th>Transporter - Infos</th>
+      <th>PlanOrder</th><th>Trucks</th><th>ClientPros</th><th>Terminals</th>
+      <th>Demande</th><th>Ending</th><th>Price</th><th>PayedProof</th><th>Valid</th><th>Invoice</th>
+    </tr>
+    <tr *ngFor="let pO of listPlanOrders">
+      <td>{{pO.transporter.nom + " - " + pO.transporter.tel + " - " + pO.transporter.email}}</td>
+      <td>{{pO.planOrder.planName}}</td><td>{{pO.planOrder.trucks}}</td><td>{{pO.planOrder.clientsPros}}</td><td>{{pO.planOrder.terminals}}</td>
+      <td>{{pO.planOrder.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+      <td style="text-align: right;">{{pO.planOrder.price}} $</td><td><button>LoadProof</button></td>
+      <td><button (click)="onValidPlanOrder(pO)">Valid</button></td><td><button>Invoice</button></td>
+    </tr>
+  </table>
+  <table border="1">
+    <tr>Orders History</tr>
+    <tr>
+      <th>Transporter - Infos</th>
+      <th>PlanOrder</th><th>Trucks</th><th>ClientPros</th><th>Terminals</th>
+      <th>Demande</th><th>Ending</th><th>Price</th><th>PayProof</th><th>Invoice</th>
+    </tr>
+    <tr *ngFor="let pO of listPlanOrdersArchived">
+      <td>{{pO.transporter.nom + " - " + pO.transporter.tel + " - " + pO.transporter.email}}</td>
+      <td>{{pO.planOrder.planName}}</td><td>{{pO.planOrder.trucks}}</td><td>{{pO.planOrder.clientsPros}}</td><td>{{pO.planOrder.terminals}}</td>
+      <td>{{pO.planOrder.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+      <td style="text-align: right;">{{pO.planOrder.price}} $</td><td><button>PayProof</button></td>
+      <td><button>Invoice</button></td>
+    </tr>
+    <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
+</table>
 </div>
 
 
