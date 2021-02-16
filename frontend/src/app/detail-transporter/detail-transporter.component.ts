@@ -70,6 +70,9 @@ export class DetailTransporterComponent implements OnInit {
   packsTrucks=0;
   packsClientsPros=0;
   packsTerminals=0;
+  packsTrucksPrice=0;
+  packsClientsProsPrice=0;
+  packsTerminalsPrice=0;
 
   id:number;
   mode:number=1;
@@ -1157,12 +1160,32 @@ export class DetailTransporterComponent implements OnInit {
     this.transporter.photo=""
   }
 
+  remainRate = 1.00 // this is the rate days reste for extension
+  extensionPlan = false;
+  onExtension(){
+    let today = new Date();
+    this.remainRate = Math.round(((today.getDate() - new Date(this.transporter.endDatePlan).getDate()) / this.transporter.daysPlan)*100)/100
+    console.log("remainRate: " + this.remainRate)
+    this.extensionPlan = !this.extensionPlan
+    if(!this.extensionPlan){
+      this.packsTrucks=0;
+      this.packsClientsPros=0;
+      this.packsTerminals=0;
+      this.planNameChange()
+    }
+  }
+
   newOrRenewPlan(){
+    if(this.packsTrucks<0) this.packsTrucks=0;
+    if(this.packsTerminals<0) this.packsTerminals=0;
+    if(this.packsClientsPros<0) this.packsClientsPros=0;
+    // in the case New Plan
     if(!this.transporter.evaluation && (this.transporter.trucks==null || this.transporter.trucks==0)){
       this.planOrder.trucks=this.planPrice.trucks + (this.packsTrucks*this.planPrice.trucks)
       this.planOrder.terminals=this.planPrice.terminals + (this.packsTerminals*this.planPrice.terminals)
       this.planOrder.clientsPros=this.planPrice.clientsPros + (this.packsClientsPros*this.planPrice.clientsPros)
     }
+    // in the case Renew Plan    
     else{
       this.planOrder.trucks= this.transporter.trucks; // (this.packsTrucks*this.planPrice.trucks)
       this.planOrder.terminals= this.transporter.terminals; // (this.packsTerminals*this.planPrice.terminals)
@@ -1188,16 +1211,28 @@ export class DetailTransporterComponent implements OnInit {
       if(this.planOrder.planName.includes("3 Months"))
       {
         this.planOrder.daysPlan=90; // 3 months
-        this.planOrder.price=this.planPrice.price * 3
+        this.planOrder.price=this.planPrice.price * 3 + 
+          ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price
       }
       if(this.planOrder.planName.includes("1 Year")){
         this.planOrder.daysPlan=365; // 1 Year
-        this.planOrder.price=this.planPrice.price * 3 * 3
+        this.planOrder.price=this.planPrice.price * 3 * 3  + 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 3)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *3
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 3
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 3
       }
         
       if(this.planOrder.planName.includes("2 Years")){
         this.planOrder.daysPlan=730; // 2 Years
-        this.planOrder.price=this.planPrice.price * 3 * 5
+        this.planOrder.price=this.planPrice.price * 3 * 5 + 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 5)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *5
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 5
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 5
       }
     }
   }

@@ -472,7 +472,21 @@
                     <th>Terminals</th>
                     <th>DateEnding</th>
                 </tr>
-                <tr>
+                <tr *ngIf="transporter.evaluation || (!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                    <td colspan="5">
+                        <button (click)="newOrRenewPlan()">
+                            New Plan
+                            <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                                New Plan
+                            </span> 
+                            <span *ngIf="transporter.evaluation">
+                                New Plan
+                            </span> -->
+                        </button></td>
+                    <td><button *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)" (click)="onExtension()">Extension</button></td>
+                </tr>
+
+                <tr *ngIf="(!transporter.evaluation && transporter.trucks!=null && transporter.trucks>0)">
                     <td>{{transporter.planActual}}</td>
                     <td>{{transporter.trucks}}</td>
                     <td>{{transporter.clientsPros}}</td>
@@ -482,20 +496,26 @@
                         <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
                             Renew
                         </span> 
-                        <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                        <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
                             New Plan
                         </span> 
                         <span *ngIf="transporter.evaluation">
                             New Plan
-                        </span>
+                        </span> -->
                     </button></td>
-                    <td><button>Extension</button></td>
+                    <td><button (click)="onExtension()">Extension</button></td>
                 </tr>
             <!-- </table>
             <table border="1"> -->
                 <tr></tr>
-                <tr><th>Select Plan</th></tr>
-                <tr>
+                <tr *ngIf="(planOrder.trucks!=null || planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null || planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null || planOrder.terminals>0)">
+                    <th>Select Plan</th>
+                </tr>
+                <tr *ngIf="(planOrder.trucks!=null || planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null || planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null || planOrder.terminals>0)">
                     <td>
                         <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
                         [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
@@ -518,32 +538,32 @@
                     <td><button (click)="orderPlan()">Demand</button></td>
                 </tr>
             </table>
-            <table border="1">
+            <table border="1" *ngIf="extensionPlan">
                 <tr><th colspan="5">Extension</th></tr>
                 <tr>
                     <th>Pack</th>
                     <th>Quantity</th>                    
-                    <th>price</th>
+                    <th>Price</th>
                 </tr>
                 <tr>
                     <th>{{planPrice.trucks}} Trucks</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
-                    <th style="text-align: right;"> $</th>
+                    <th style="text-align: right;">{{packsTrucksPrice}} $</th>
                 </tr>
                 <tr>
                     <th>{{planPrice.clientsPros}} ClientPros</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
                     
-                    <th style="text-align: right;"> $</th>
+                    <th style="text-align: right;">{{packsClientsProsPrice}} $</th>
                 </tr>
                 <tr>
                     <th>{{planPrice.terminals}} Terminals</th>
                     <th><input type="number" style="width: 6ch; border: none;" 
                         [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
                     
-                    <th style="text-align: right;"> $</th>
+                    <th style="text-align: right;">{{packsTerminalsPrice}} $</th>
                 </tr>
                 <!-- <tr><th><button>OK</button></th></tr> -->
             </table>
