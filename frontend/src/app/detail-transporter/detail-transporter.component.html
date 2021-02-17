@@ -492,7 +492,7 @@
                     <td>{{transporter.clientsPros}}</td>
                     <td>{{transporter.terminals}}</td>
                     <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
-                    <td><button (click)="newOrRenewPlan()">
+                    <td><button (click)="newOrRenewPlan()" [disabled]="extensionPlan">
                         <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
                             Renew
                         </span> 
@@ -503,7 +503,7 @@
                             New Plan
                         </span> -->
                     </button></td>
-                    <td><button (click)="onExtension()">Extension</button></td>
+                    <td><button (click)="onExtension()" [disabled]="disableExtension">Extension</button></td>
                 </tr>
             <!-- </table>
             <table border="1"> -->
@@ -526,14 +526,21 @@
                             <option>1 Year</option>
                             <option>2 Years</option> -->
                         </select>
-                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
-                            {{this.transporter.planActual}}
+                        <select *ngIf=" !extensionPlan && (!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))"
+                            [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <!-- {{this.transporter.planActual}} -->
+                            <option value="3 Months">3 Months</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                        </select>
+                        <span *ngIf="(extensionPlan && !flagNewPlan)">
+                            Extension
                         </span>
                     </td>
                     <td>{{planOrder.trucks}}</td>
                     <td>{{planOrder.clientsPros}}</td>
                     <td>{{planOrder.terminals}}</td>
-                    <td>&nbsp;</td>
+                    <td>{{planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
                     <td style="text-align: right;">{{planOrder.price}} $</td>
                     <td><button (click)="orderPlan()">Demand</button></td>
                 </tr>
