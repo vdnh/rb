@@ -822,6 +822,9 @@ export class TransportProComponent implements OnInit {
               }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
+      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+      ++this.transport.evaluatedTimes;
+      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -849,6 +852,9 @@ export class TransportProComponent implements OnInit {
             }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
+      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+      ++this.transport.evaluatedTimes;
+      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)

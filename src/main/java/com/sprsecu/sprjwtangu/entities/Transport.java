@@ -170,6 +170,10 @@ public class Transport implements Serializable{
     
     private Boolean archive=false; // Transport archived after finished, false by default
     
+    private Integer evaluatedTimes = 0;
+    
+    private String textTimes = "";
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null){

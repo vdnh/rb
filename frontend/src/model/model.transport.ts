@@ -139,4 +139,8 @@ export class Transport{
     typeDoc:number=0; // 0 at initial, Evaluation=1 or Command=2, reserve for another tpydoc 3 4 5 ....
 
     archive=false; // Transport archived after finished, false by default
+
+    evaluatedTimes = 0;
+    
+    textTimes = "";
 }

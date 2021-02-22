@@ -33,6 +33,7 @@ export class AppUsersComponent implements OnInit {
   appUserToMod : AppUser = new AppUser();
   appUserToDel : AppUser = new AppUser();
   listAppUsers : Array<AppUser> = [];
+  listAppUsersAll : Array<AppUser> = []; // to compare if there is already an username
   passwordCheck=''
   passwordCheckToMod=''
   disabledIdUser=false;
@@ -55,7 +56,7 @@ export class AppUsersComponent implements OnInit {
 
   async onCreatUser(){
     let exist=false; // this loginName doesn't exist yet
-    await this.listAppUsers.forEach(aU=>{
+    await this.listAppUsersAll.forEach(aU=>{
       if(aU.username.includes(this.appUser.username)&&(aU.username.length==this.appUser.username.length))
         {
           alert("Username existe deja. Choisir un autre username, SVP!");
@@ -184,7 +185,23 @@ export class AppUsersComponent implements OnInit {
         })
     }
     
+    this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+      this.listAppUsersAll=data;
+      if(localStorage.getItem('idTransporter')!=null){
+        this.roleTypes = [
+          "DISPATCH", 
+          "TECHNICIEN", 
+          // "TERMINAL"
+        ];
+        this.listAppUsers=data.filter(x=>(
+          x.idTransporter==Number(localStorage.getItem('idTransporter')) &&
+          !x.roleSimple.includes("TERMINAL")
+        ));
+      }
+      else this.listAppUsers=data;
+    }, err=>{console.log(err)})
     
+    /*//
     if(localStorage.getItem('idTransporter')!=null){
       this.roleTypes = [
         "DISPATCH", 
@@ -206,7 +223,7 @@ export class AppUsersComponent implements OnInit {
         console.log(err)
       })
     }
-    
+    //*/
   }
   
   idUserChange(){
