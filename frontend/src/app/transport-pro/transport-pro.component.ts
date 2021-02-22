@@ -1031,6 +1031,13 @@ onSortDate(data:Array<Transport>){
     })
 
     await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+    this.listTrsEvalue.sort((b,a)=>{
+      if(a.transport.id>b.transport.id)
+        return 1;
+      if(a.transport.id<b.transport.id)
+        return -1;
+      return 0;
+    });
     this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 

@@ -168,7 +168,13 @@ export class DetailTransporterComponent implements OnInit {
     });    
 
     this.planOrderService.planOrdersDeTransporter(this.id).subscribe((data:Array<PlanOrder>)=>{
-      this.listPlanOrders=data
+      this.listPlanOrders=data.sort((b,a)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      });
     }, err=>{
       console.log(err)
     })
@@ -1323,4 +1329,25 @@ export class DetailTransporterComponent implements OnInit {
     }
   }
 
+  onFileUpLoadPlanOrder(event, po:PlanOrder){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{po.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else po.imgUrl='';
+  }
+
+  onModifyingPlanOrder(po:PlanOrder){
+    this.planOrderService.savePlanOrder(po).subscribe((data:PlanOrder)=>{
+      po=data;
+    }, err=>{console.log(err)})
+  }
+
+  onDeletPlanOrder(pO:PlanOrder){
+    if(pO.id!=null && pO.id>0) this.planOrderService.deletePlanOrder(pO.id).subscribe((data:PlanOrder)=>{
+      this.listPlanOrders.splice(this.listPlanOrders.indexOf(data), 1)
+    }, err=>{console.log()})
+  }
 }

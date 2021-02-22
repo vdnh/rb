@@ -13,4 +13,5 @@ export class PlanOrder{
     price:number; 
     priceBase:number; // price base principal
     daysPlan:number; // days total of plan name
+    imgUrl=""; // proof pay in image
 }
