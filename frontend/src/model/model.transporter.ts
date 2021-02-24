@@ -30,6 +30,7 @@ export class Transporter{
     terminals:number;
     planActual:string;
     dateEndTrial:Date;
+    dateEndTrialMillis:number;
     basePrice:number; 
     daysPlan:number; // days total of plan name
 

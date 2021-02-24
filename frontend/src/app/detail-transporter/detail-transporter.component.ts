@@ -186,6 +186,20 @@ export class DetailTransporterComponent implements OnInit {
           this.camionsSurMap.push(camion)
       })
       //*/
+      // get all trucks or number of truck equal number trucks of this transporter  
+      // from oldest to newest
+      if(data.length>this.transporter.trucks){
+        data.sort((a,b)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        });
+        // remove number trucks excess number trucks of transporter
+        data.splice((this.transporter.trucks-1), (data.length-this.transporter.trucks))
+      }
+      //
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)

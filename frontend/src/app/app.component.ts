@@ -528,6 +528,28 @@ export class AppComponent implements OnInit{
         if(res.idTransporter != undefined) {
           this.transportersService.getDetailTransporter(res.idTransporter).subscribe((tr:Transporter)=>{
             this.transporter = tr;
+            // check plan
+            if(
+              (this.transporter.dateEndTrialMillis!=null && this.transporter.dateEndTrialMillis>new Date().getTime()) 
+              ||
+              (this.transporter.dateEndingMillis!=null && this.transporter.dateEndingMillis>new Date().getTime())
+            )
+            {
+              // do nothing
+            }                 
+            else{
+              // this is dispatch master
+              if(res.roleName.includes('DISPATCH')&& !(this.userId.length>0)){
+                this.router.navigate(['/detail-transporter/'+this.transporter.id], {skipLocationChange: true});
+              }
+              else{
+                this.logout();
+                localStorage.clear();
+                alert("Contact your dispatch, please !")
+                //var r = confirm("Contact your dispatch, please !")
+              }
+            }
+            //
           }, err=>{console.log(err)})
           localStorage.setItem('idTransporter',res.idTransporter.toString())
           localStorage.setItem('entrepriseNom', res.entrepriseNom);

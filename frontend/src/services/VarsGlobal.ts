@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MessagesService } from 'src/services/messages.service';
 import { Message } from 'src/model/model.message';
 import { UserLogs } from 'src/model/model.userLogs';
+import { Transporter } from 'src/model/model.transporter';
 
 @Injectable()
 export class VarsGlobal{
@@ -12,8 +13,27 @@ export class VarsGlobal{
   session='no'; // no mean we are not in session particular
   pro='no'; // no mean we are not in session professionnal
   userLogs : UserLogs = new UserLogs();
+
+  // parameters for check 
+  transporter:Transporter;
+  
+  trucks:number;
+  clientsPros:number;
+  terminals:number;
+  dispatchs=3;
+  technicians=3;
+  planActual:string;
+
+  evaluation = false; // true = in evaluation
+  alreadyEvaluated = false;
+    
+  dateEndingMillis:number;  
+  dateEndTrialMillis:number;
+
+  //
   
   constructor(public messagesService: MessagesService){}
+  
   refreshData(){
     //this.router.navigateByUrl("");
     //this.ngOnInit();
@@ -25,4 +45,9 @@ export class VarsGlobal{
       }
     )
   }
+
+  checkValidation(id:number){
+    
+  }
+
 }
