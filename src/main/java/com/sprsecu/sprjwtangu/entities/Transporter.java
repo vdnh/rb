@@ -67,6 +67,11 @@ public class Transporter implements Serializable{
     private Date dateEndTrial;
     private Float basePrice;
     private Integer daysPlan; // days total of plan name
+
+    // date for plan in milliseconds
+    // private Long dateOrderMillis;
+    private Long dateEndingMillis;
+    // private Long datePayedMillis;
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

@@ -169,7 +169,21 @@ export class AppUsersComponent implements OnInit {
                     this.listPlanOrdersArchived.push(plTr)
                   }
                 })
-                
+                if(this.listPlanOrders!=null) this.listPlanOrders.sort((b,a)=>{
+                  if(a.planOrder.id>b.planOrder.id)
+                    return 1;
+                  if(a.planOrder.id<b.planOrder.id)
+                    return 0;
+                  return 0;
+                })
+
+                if(this.listPlanOrdersArchived!=null) this.listPlanOrdersArchived.sort((b,a)=>{
+                  if(a.planOrder.id>b.planOrder.id)
+                    return 1;
+                  if(a.planOrder.id<b.planOrder.id)
+                    return 0;
+                  return 0;
+                })
                 // this.listPlanOrders=data.filter(pl=>(!pl.payed))
                 
                 // this.listPlanOrdersArchived=data.filter(pl=>(pl.payed))
@@ -284,21 +298,72 @@ export class AppUsersComponent implements OnInit {
   }
 
   onValidPlanOrder(pO:PlanOrderTransporter){
+    /*//
+      // in case renew plan 
+      if(!this.flagNewPlan){ 
+        today = this.planOrder.dateEnding = new Date() ;// new Date(this.transporter.endDatePlan).setHours(today.getHours()+timeLag));
+        this.planOrder.dateEnding.setTime(timeEndDatelan + (timeLag*60*60*1000))
+        today.setTime(timeEndDatelan + (timeLag*60*60*1000))
+        // let heure = today.getHours()
+        // today.setHours(heure)
+        // this.planOrder.dateEnding.setHours(heure)
+        //this.planOrder.dateEnding.setHours(today.getHours()+timeLag);
+      }
+
+    //*/
+    
+     
     pO.planOrder.payed=true;
+    pO.planOrder.datePayed = new Date() // pay day is today
+    pO.planOrder.datePayedMillis = new Date().getTime();
+    pO.planOrder.dateEnding = new Date()
+    pO.planOrder.dateEnding.setTime(pO.planOrder.dateEndingMillis)
+    pO.planOrder.dateOrder = new Date()
+    pO.planOrder.dateOrder.setTime(pO.planOrder.dateOrderMillis)
     if(pO.planOrder.planName.includes("Extension")){  // and then no need update date validation
       pO.transporter.trucks = pO.transporter.trucks + pO.planOrder.trucks
       pO.transporter.clientsPros = pO.transporter.clientsPros + pO.planOrder.clientsPros
-      pO.transporter.terminals = pO.transporter.terminals + pO.planOrder.clientsPros
+      pO.transporter.terminals = pO.transporter.terminals + pO.planOrder.terminals
     }
     else{ // 3 months, 1 year, 2 years  then update the date validation
+      let dayTemp =new Date()
+      let timeZone= new Date().getTimezoneOffset()
+      let timeEndDatePlan = new Date(pO.planOrder.dateEnding).getTime()
+      // console.log('timeZone: '+timeZone)
+      let timeLag = timeZone/60
+      // console.log("timeLag: "+ timeLag )
+      pO.transporter.planActual=pO.planOrder.planName
       pO.transporter.trucks = pO.planOrder.trucks
       pO.transporter.clientsPros = pO.planOrder.clientsPros
       pO.transporter.terminals = pO.planOrder.clientsPros
+      pO.transporter.daysPlan = pO.planOrder.daysPlan
+      
+      dayTemp = new Date(pO.planOrder.dateEnding)
+      dayTemp.setTime(timeEndDatePlan + (timeLag*60*60*1000))
+      pO.transporter.endDatePlan = dayTemp
+      pO.transporter.dateEndingMillis = pO.planOrder.dateEndingMillis
     }
-    this.planOrderService.savePlanOrder(pO.planOrder).subscribe(data=>{}, err=>{console.log(err)})
+    this.planOrderService.savePlanOrder(pO.planOrder).subscribe(data=>{
+      this.transporterservice.saveTransporters(pO.transporter).subscribe((data:Transporter)=>{}, err=>{console.log()})
+    }, err=>{console.log(err)})
     // this.reps.splice(this.reps.indexOf(r),1)
     this.listPlanOrders.splice(this.listPlanOrders.indexOf(pO), 1)
+    if(this.listPlanOrders!=null) this.listPlanOrders.sort((b,a)=>{
+      if(a.planOrder.id>b.planOrder.id)
+        return 1;
+      if(a.planOrder.id<b.planOrder.id)
+        return 0;
+      return 0;
+    })
+
     this.listPlanOrdersArchived.push(pO)
+    if(this.listPlanOrdersArchived!=null) this.listPlanOrdersArchived.sort((b,a)=>{
+      if(a.planOrder.id>b.planOrder.id)
+        return 1;
+      if(a.planOrder.id<b.planOrder.id)
+        return 0;
+      return 0;
+    })
   }
   
 }

@@ -42,4 +42,9 @@ public class PlanOrder implements Serializable{
     private Float priceBase; // price base principal
     private Integer daysPlan; // days total of plan name
     private String imgUrl=""; // proof pay in image
+    
+    // date in milliseconds
+    private Long dateOrderMillis;
+    private Long dateEndingMillis;
+    private Long datePayedMillis;
 }

@@ -32,4 +32,9 @@ export class Transporter{
     dateEndTrial:Date;
     basePrice:number; 
     daysPlan:number; // days total of plan name
+
+    // date in milliseconds
+    // dateOrderMillis:number;
+    dateEndingMillis:number;
+    // datePayedMillis:number;
 }

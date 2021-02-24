@@ -583,10 +583,11 @@
             <table border="1">
                 <tr>History Plans</tr>
                 <tr>
-                    <th>Plan</th><th>Trucks</th><th>ClientPros</th><th>Terminals</th>
+                    <th>#Number</th><th>Plan</th><th>Trucks</th><th>ClientPros</th><th>Terminals</th>
                     <th>Demande</th><th>Ending</th><th>Price</th><th>Status</th><th>PayProof</th>
                 </tr>
                 <tr *ngFor="let pO of listPlanOrders">
+                    <td>{{pO.id}}</td>
                     <td>{{pO.planName}}</td><td>{{pO.trucks}}</td><td>{{pO.clientsPros}}</td><td>{{pO.terminals}}</td>
                     <td>{{pO.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.dateEnding | date: 'dd-MMM-yyyy'}}</td>
                     <td style="text-align: right;">{{pO.price}} $</td><td>{{(pO.payed?"Payed":"Waiting")}}</td>

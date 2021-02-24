@@ -1173,9 +1173,9 @@ export class DetailTransporterComponent implements OnInit {
     if(!this.flagNewPlan && this.extensionPlan){
       this.planOrder.planName="Extension"
       let timeLag = new Date().getTimezoneOffset() / 60 ;
-      let timeEndDatelan = new Date(this.transporter.endDatePlan).getTime()
+      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
       this.planOrder.dateEnding=new Date();
-      this.planOrder.dateEnding.setTime(timeEndDatelan + (timeLag*60*60*1000))
+      this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
       
       let today = new Date();
       // let heure = today.getHours()
@@ -1241,6 +1241,13 @@ export class DetailTransporterComponent implements OnInit {
     this.planOrderService.savePlanOrder(this.planOrder).subscribe((data:PlanOrder)=>{
       this.planOrder=data;
       this.listPlanOrders.push(data)
+      this.listPlanOrders.sort((b,a)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      });
     }, err=>{console.log(err)})
   }
 
@@ -1248,7 +1255,7 @@ export class DetailTransporterComponent implements OnInit {
     if(this.planOrder.planName!=null && !this.planOrder.planName.includes("Extension")){
       let today =new Date()
       let timeZone= new Date().getTimezoneOffset()
-      let timeEndDatelan = new Date(this.transporter.endDatePlan).getTime()
+      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
       console.log('timeZone: '+timeZone)
       let timeLag = timeZone/60
       console.log("timeLag: "+ timeLag )
@@ -1260,8 +1267,8 @@ export class DetailTransporterComponent implements OnInit {
       // in case renew plan 
       if(!this.flagNewPlan){ 
         today = this.planOrder.dateEnding = new Date() ;// new Date(this.transporter.endDatePlan).setHours(today.getHours()+timeLag));
-        this.planOrder.dateEnding.setTime(timeEndDatelan + (timeLag*60*60*1000))
-        today.setTime(timeEndDatelan + (timeLag*60*60*1000))
+        this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
+        today.setTime(timeEndDatePlan + (timeLag*60*60*1000))
         // let heure = today.getHours()
         // today.setHours(heure)
         // this.planOrder.dateEnding.setHours(heure)
@@ -1297,6 +1304,7 @@ export class DetailTransporterComponent implements OnInit {
         this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 5
         this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 5
       }
+      this.planOrder.dateEndingMillis=this.planOrder.dateEnding.getTime();
     }
     else if(this.planOrder.planName!=null && this.planOrder.planName.includes("Extension")){
       

@@ -77,6 +77,7 @@ export class TerminalsComponent implements OnInit {
       
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
         this.terminals=data //.filter(x=>(x.status))
+        if(data!=null) this.showMapInit();
         this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
           //this.listAppUsers=data;
           data.forEach(aU=>{
@@ -137,6 +138,38 @@ export class TerminalsComponent implements OnInit {
     else { 
       // if data no change : do nothing
     }
+  }
+
+  showMapInit(){    
+          let mapProp = {
+            center: new google.maps.LatLng(45.568806, -73.918333),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          let index = 0;
+          this.terminals.forEach(ter=>{
+              let location1 = new google.maps.LatLng(ter.latitude, ter.longitude);          
+              let marker = new google.maps.Marker({
+                position: location1,
+                map: this.map,
+                icon: {
+                  //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  scale:3,
+                  rotation:ter.direction,
+                  fillOpacity: 1,
+                  fillColor: "#008088",
+                  strokeWeight: 3,
+                  strokeColor: "red",
+                },
+                // title: ter.name
+                title: ter.name + this.calculateStopTime(ter.timeStop)
+              });  
+              if(index==0) this.map.setCenter(new google.maps.LatLng(ter.latitude, ter.longitude)); // setcenter map follow first terminal
+              ++ index 
+          })
+          this.map.setZoom(8)
   }
 
   marker : google.maps.Marker
