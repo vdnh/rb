@@ -56,6 +56,14 @@ export class AppUsersComponent implements OnInit {
 
   async onCreatUser(){
     let exist=false; // this loginName doesn't exist yet
+    if(this.appUser.roleSimple.includes('DISPATCH')){
+      let numDisp;
+      let numTech;
+      this.listAppUsers.forEach(apU=>{
+        
+      })
+      this.appUser.idUser=this.listTrans.pop().id.toString();
+    }
     await this.listAppUsersAll.forEach(aU=>{
       if(aU.username.includes(this.appUser.username)&&(aU.username.length==this.appUser.username.length))
         {

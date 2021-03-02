@@ -25,6 +25,7 @@ import { PlanOrder } from 'src/model/model.planOrder';
 import { PlanOrderService } from 'src/services/planOrder.service';
 import { PlanPrice } from 'src/model/model.planPrice';
 import { PlanPriceService } from 'src/services/planPrice.service';
+import { dispatch } from 'rxjs/internal/observable/pairs';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -189,6 +190,7 @@ export class DetailTransporterComponent implements OnInit {
       // get all trucks or number of truck equal number trucks of this transporter  
       // from oldest to newest
       if(data.length>this.transporter.trucks){
+        console.log('camions before splice : ' +data.length)
         data.sort((a,b)=>{
           if(a.id>b.id)
             return 1;
@@ -197,7 +199,8 @@ export class DetailTransporterComponent implements OnInit {
           return 0;
         });
         // remove number trucks excess number trucks of transporter
-        data.splice((this.transporter.trucks-1), (data.length-this.transporter.trucks))
+        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+        console.log('camions after splice : ' +data.length)
       }
       //
       this.listNumberUnite=[] ;// empty the list number unite
@@ -541,6 +544,19 @@ export class DetailTransporterComponent implements OnInit {
   refreshListCamions(){
     this.arrayArrayEnts=[]
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+      if(data.length>this.transporter.trucks){
+        console.log('camions before splice : ' +data.length)
+        data.sort((a,b)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        });
+        // remove number trucks excess number trucks of transporter
+        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+        console.log('camions after splice : ' +data.length)
+      }
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)
@@ -718,8 +734,13 @@ export class DetailTransporterComponent implements OnInit {
     this.camAdd=0;
   }
   onCamAdd(){
-    this.camList=0;
-    this.camAdd=1;
+    if(this.camions.length>=this.transporter.trucks){
+      alert('Contact your dispatch, please !')
+    }
+    else{
+      this.camList=0;
+      this.camAdd=1;
+    }
   }
   codeCouleurEnt1(camion:Camion){
     //if(camion.odo1Fait!=camion.odo2Fait)

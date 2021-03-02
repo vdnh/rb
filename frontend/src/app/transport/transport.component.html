@@ -1,4 +1,10 @@
-
+<!-- <div>
+  <label class="control-label">Select Client</label>
+  <select class="form-control" [(ngModel)]="shipper" (ngModelChange)="shipperChange()" style="width: 25ch;">
+    <option [ngValue]="null">All</option>
+    <option *ngFor="let shp of listShipper" [ngValue]="shp">{{shp.nom}}</option>
+  </select>
+</div> -->
 <div>
   <label class="control-label"><strong>Select Client</strong></label>
   <select class="form-control" [(ngModel)]="shipper" (ngModelChange)="shipperChange()" style="width: 25ch;">
@@ -6,43 +12,58 @@
     <option *ngFor="let shp of listShipper" [ngValue]="shp">{{shp.nom}}</option>
   </select>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">Placer une Commande</button>
-  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">Evaluer un Taux</button>
-  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="resetSimple()" [disabled]="transport.typeDoc==0">Reset/New</button>
-  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <!-- <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">Placer une Commande</button>
+  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>  -->
+  
   <button class="btn btn-link" (click)="onListCommande()" [disabled]="transport.typeDoc!=0">ListCommandes</button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
   <button class="btn btn-link" (click)="onListEvalue()" [disabled]="transport.typeDoc!=0">ListEvalues</button>
+  <span *ngIf="shipper!=null && shipper.id!=null && shipper.id>0">
+    <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">Evaluer un Taux</button>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <button class="btn btn-link" (click)="resetSimple()" [disabled]="transport.typeDoc==0">Reset</button>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  </span>
+  
   <br>
 
   <!-- list commandes -->
   <div *ngIf="modeListCommande">
     <table border="1">
+      <tr><th colspan="10">List Commandes</th></tr>
+      <tr>
+        <th>#Num</th>
+        <th>Client</th>
+        <th>TypeTransport</th>        
+        <th>DateEvaluation</th>
+        <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
+        <th>De</th>
+        <th>A</th>
+        <th>Delete</th>
+      </tr>
+      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">&nbsp;</th></tr>
+      <tr *ngFor="let trCm of listTrsCommande">
+        <td>{{trCm.transport.id}}</td>
+        <td>{{trCm.transport.nomEntreprise}}</td>
+        <td>{{trCm.loadDetail.description}}</td>
+        <td>{{showDateLocal(trCm.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
+        <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td>
+        <td>{{trCm.transport.origin}}</td>
+        <td>{{trCm.transport.destination}}</td>
+        <td><span class="btn btn-link" (click)="onDeleteCommand(trCm)">Delete</span></td>
+      </tr>
+    </table>
+  </div>
+  <!-- <div *ngIf="modeListCommande">
+    <table border="1">
       <tr>
         <th colspan="10">
           List Commandes
-          <span class="btn btn-link" style="color: green; background-color: whitesmoke" (click)="waitingCommands()">
-            <small *ngIf="numListShow!=2">Waiting</small>
-            <strong *ngIf="numListShow==2">Waiting</strong>
-          </span>
-          <span class="btn btn-link" style="color: orange; background-color: whitesmoke" (click)="scheduleCommands()">
-            <small *ngIf="numListShow!=1">Schedule</small>
-            <strong *ngIf="numListShow==1">Schedule</strong>
-          </span>
-          <span class="btn btn-link" style="color: darkred; background-color: whitesmoke" (click)="finishedCommands()">
-            <small *ngIf="numListShow!=3">Finished</small>
-            <strong *ngIf="numListShow==3">Finished</strong>  
-          </span>
-          <span class="btn btn-link" style="color: blue; background-color: whitesmoke" (click)="cancelledCommands()">
-            <small *ngIf="numListShow!=4">Cancelled</small>
-            <strong *ngIf="numListShow==4">Cancelled</strong>  
-          </span>
-          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="archiveCommands()">
-            <small *ngIf="numListShow!=5">Archived</small>
-            <strong *ngIf="numListShow==5">Archived</strong>  
-          </span>
+          <span class="btn btn-link" style="color: green; background-color: whitesmoke" (click)="waitingCommands()">Waiting</span>
+          <span class="btn btn-link" style="color: orange; background-color: whitesmoke" (click)="scheduleCommands()">Schedule</span>
+          <span class="btn btn-link" style="color: darkred; background-color: whitesmoke" (click)="finishedCommands()">Finished</span>
+          <span class="btn btn-link" style="color: blue; background-color: whitesmoke" (click)="cancelledCommands()">Cancelled</span>
+          <span class="btn btn-link" style="color: gray; background-color: whitesmoke" (click)="archiveCommands()">Archived</span>
         </th>
       </tr>
       <tr>
@@ -57,11 +78,9 @@
         <th>Status</th>
         <th>print</th>
       </tr>
-      <!-- <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">Vide</th></tr> -->
       <tr *ngIf="listTrsCommandeShow==null || listTrsCommandeShow.length==0">
         <th colspan="10">
           &nbsp;
-          <!-- Vide -->
         </th>
       </tr>
       <tr *ngFor="let trCo of listTrsCommandeShow">
@@ -72,13 +91,11 @@
         <td style="text-align: right;">{{trCo.transport.loadsFee}} $</td>
         <td>{{trCo.transport.origin}}</td>
         <td>{{trCo.transport.destination}}</td>
-        <!-- <td>{{trCo.transport.camionAttribue}}</td> -->
         <td>
           <input type="text" [(ngModel)]="trCo.transport.camionAttribue" 
           name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCo.transport)" 
           (click)="clickDatalist(trCo.transport)" (mouseleave)="mouseleaveDatalist(trCo.transport)" 
           [disabled]="trCo.transport.fini || trCo.transport.driverNote.includes('!!Cancelled!!')">
-              <!-- (change)="camionChange()"  -->
           <datalist id="defaultCamions">
             <option >Waiting</option>
             <option value=" "><strong>Unites avec GPS</strong></option>
@@ -149,7 +166,7 @@
       </tr>
     </table>
   </div>
-  
+   -->
   <!-- list evalues -->
   <div *ngIf="modeListEvalue">
     <table border="1">
@@ -162,8 +179,8 @@
         <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
-        <th>Commander</th>
-        <th>print</th>
+        <!-- <th>Commander</th>
+        <th>print</th> -->
         <th>Delete</th>
       </tr>
       <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="10">&nbsp;</th></tr>
@@ -176,8 +193,8 @@
         <td>{{trEv.transport.origin}}</td>
         <td>{{trEv.transport.destination}}</td>
         <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td> -->
-        <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td>
-        <td><span class="btn btn-link" (click)="printTransportSelected(trEv)">print</span></td>
+        <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td>
+        <td><span class="btn btn-link" (click)="printTransportSelected(trEv)">print</span></td> -->
         <td><span class="btn btn-link" (click)="onDeleteEvalue(trEv)">Delete</span></td>
       </tr>
     </table>
@@ -204,14 +221,33 @@
   </div>
 <!-- </div>
 <div> -->
-  <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
-    <strong>Address Depart </strong>
+  <!-- <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
+    <strong>Adresse de Depart </strong>
     <span><input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()"></span>
   </div>
 
   <div *ngIf="transport.origin.length>8">
-    <strong>Address Livraison </strong> 
+    <strong>Adresse de Livraison </strong> 
     <span><input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()"></span>
+  </div> -->
+  <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
+    <strong>Adresse de Depart </strong>
+    <span>
+      <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies">
+      <datalist id="adCookies">
+        <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
+      </datalist>
+    </span>
+  </div>
+
+  <div *ngIf="transport.origin.length>8">
+    <strong>Adresse de Livraison </strong> 
+    <span>
+      <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies">
+      <datalist id="adCookies">
+        <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
+      </datalist>
+    </span>
   </div>
   <br>
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
@@ -270,15 +306,15 @@
   </div>
   
   
-  <div *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
-    <!--Save Evaluation-->
+  <!-- <div *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
+    
     <button class="btn btn-link" *ngIf="transport.typeDoc==1" (click)="saveSimple()">Save</button> 
-    <!--Send command-->
+    
     <button class="btn btn-link" *ngIf="transport.typeDoc==2" (click)="saveSimple()">Send</button>
     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <button class="btn btn-link" *ngIf="transport.typeDoc==1 && transport.id>0" (click)="printBonDeTransport('printevaluation')">Print</button>
     <button class="btn btn-link" *ngIf="transport.typeDoc==2 && transport.id>0" (click)="printBonDeTransport('printcommand')">Print</button>
-  </div>
+  </div> -->
 </div>
 
 <div id="printevaluation" hidden
@@ -317,156 +353,6 @@
     <h4>A: {{transportSelected.destination}}</h4>
     <h4>Date du Transport: {{showDateLocal(transportSelected.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transportSelected.timeResrvation}}</h4>
     <h4>Prix: {{transportSelected.loadsFee}}</h4>
-</div>
-<div id="toprint" hidden *ngIf="varsGlobal.language.includes('Francais') && transportSelected!=null && loadDetailSelected!=null">
-  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
-    <tr *ngIf="transporter!=null" >
-      <th colspan="2" style="text-align: left;">
-          <span>{{transporter.nom}}</span>
-          <span> <br> Tel: {{transporter.tel}}</span>
-          <span><br> Email: {{transporter.email}}</span>
-      </th>
-      <th colspan="3" style="text-align: left;"><span style="text-decoration-line: underline;">Transporteur:</span>
-        <span>&nbsp;{{transportSelected.nomEntreprise}} <br> </span>
-        <span>&nbsp;&nbsp;&nbsp; <u>Command:</u> {{" " + loadDetailSelected.description}}</span>
-      </th>
-    </tr>
-    <tr>
-      <td style="text-align: center; text-anchor: start; width: 22%">Heure d'Appel <br> <span>&nbsp;{{transportSelected.dateDepart | date: 'dd-MMM-yyyy'}} - {{transportSelected.timeCall}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%">Repartiteur <br> <span>&nbsp;{{transportSelected.nomDispatch}}</span></td>
-      <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray; width: 20%">Chauffeur <br> <span>&nbsp;{{transportSelected.nomIntervenant}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%"># PO <br> <span>&nbsp;{{transportSelected.numPO}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 18%"># Bon <br> <span>&nbsp;{{transportSelected.id}}</span></td>
-    </tr>
-    <tr>
-      <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Heure Reservation <br> {{transportSelected.dateReserve | date : 'dd-MMM-yyyy'}} - {{transportSelected.timeResrvation}}</th>
-      <td style="text-align: center; text-anchor: start; width: 20%"># Camion <br> <span>&nbsp;{{transportSelected.camionAttribue}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%"># Trailer<br> 
-        <span *ngIf="trailer1!=null">{{transportSelected.trailer1}}</span>
-        <span *ngIf="trailer2!=null"><br>{{transportSelected.trailer2}}</span>
-      </td>
-      <td style="text-align: center; text-anchor: start; width: 20%">Type d'Equipement<br> <span>&nbsp;{{transportSelected.typeCamion}}</span></td>
-      <td style="text-align: center; text-anchor: start;; width: 20%">$ Montant $ <br> <span>&nbsp;{{transportSelected.total | number : '1.2'}}</span></td>
-    </tr>
-    <tr>
-      <th *ngIf="transportSelected.waitingTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Temps d'attente : {{transportSelected.waitingTime | number : '1.2'}} heures</th>
-      <th *ngIf="transportSelected.ptoTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Temps PTO : {{transportSelected.ptoTime | number : '1.2'}} hours</th>
-    </tr>
-    <tr style="border: 0px">
-      <td *ngIf="transportSelected.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">Porter au Compte : {{transportSelected.porterAuCompte}}</td>
-      <th *ngIf="transportSelected.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collecter en argent : {{transportSelected.collecterArgent | number : '1.2'}}</th>
-      <td *ngIf="transportSelected.byCash" style="text-align: center; text-anchor: start "> par cash </td>
-      <td *ngIf="transportSelected.byCheck" style="text-align: center; text-anchor: start "> par cheque </td>
-      <td *ngIf="transportSelected.creditCard"> par carte credit </td>
-      <td *ngIf="transportSelected.byInterac"> par interac </td>
-      <td *ngIf="transportSelected.transfer"> par virement</td>
-    </tr>
-    <tr>
-      <td colspan="5">
-        <span style="text-decoration-line: underline">De:</span><span>&nbsp;{{transportSelected.origin}}</span> <br> &nbsp;
-      </td>
-    </tr>
-    <tr>
-      <td colspan="5">
-        <span style="text-decoration-line: underline">A:</span><span>&nbsp;{{transportSelected.destination}}</span> <br> &nbsp;
-      </td>
-    </tr>
-  </table>
-  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
-    <tr> 
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span style="text-decoration-line: underline">Plus infos :</span> <span>&nbsp;{{transportSelected.comments}} <br>&nbsp;</span>
-      </td>
-    </tr>
-    <tr> 
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span style="text-decoration-line: underline">Note au Chauffeur:</span> <span>&nbsp;{{transportSelected.driverNote}} <br>&nbsp;</span>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-        <img [src]="transportSelected.signature" height="100" width="250" *ngIf="transportSelected.signature.length>0">
-        <span *ngIf="transportSelected.nomSignature.length>0">&nbsp;
-          <br>NOM EN LETTRES MOULEES : &nbsp;{{transportSelected.nomSignature}} 
-        </span>
-      </td>
-    </tr>
-  </table>
-</div>
-<div id="toprint" hidden *ngIf="varsGlobal.language.includes('English') && transportSelected!=null && loadDetailSelected!=null">
-  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
-    <tr *ngIf="transporter!=null" >
-      <th colspan="2" style="text-align: left;">
-          <span>{{transporter.nom}}</span>
-          <span> <br> Tel: {{transporter.tel}}</span>
-          <span><br> Email: {{transporter.email}}</span>
-      </th>
-      <th colspan="3" style="text-align: left;"><span style="text-decoration-line: underline;">Carrier:</span>
-        <span>&nbsp;{{transportSelected.nomEntreprise}} <br> </span>
-        <span>&nbsp;&nbsp;&nbsp; <u>Command:</u> {{" " + loadDetailSelected.description}}</span>
-      </th>
-    </tr>
-    <tr>
-      <td style="text-align: center; text-anchor: start; width: 22%">TimeCommand <br> <span>&nbsp;{{transportSelected.dateDepart | date: 'dd-MMM-yyyy'}} - {{transportSelected.timeCall}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%">Dispatch <br> <span>&nbsp;{{transportSelected.nomDispatch}}</span></td>
-      <td style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray; width: 20%">Driver <br> <span>&nbsp;{{transportSelected.nomIntervenant}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%">#PO <br> <span>&nbsp;{{transportSelected.numPO}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 18%">#Num <br> <span>&nbsp;{{transportSelected.id}}</span></td>
-    </tr>
-    <tr>
-      <th style="text-align: center; text-anchor: start; width: 22%; font-size: 13pt; background-color: darkgray">Reservation <br> {{transportSelected.dateReserve | date : 'dd-MMM-yyyy'}} - {{transportSelected.timeResrvation}}</th>
-      <td style="text-align: center; text-anchor: start; width: 20%">#Truck <br> <span>&nbsp;{{transportSelected.camionAttribue}}</span></td>
-      <td style="text-align: center; text-anchor: start; width: 20%">#Trailer<br> <span>&nbsp;</span>
-        <span *ngIf="trailer1!=null">{{transportSelected.trailer1}}</span>
-        <span *ngIf="trailer2!=null"><br>{{transportSelected.trailer2}}</span>
-      </td>
-      <td style="text-align: center; text-anchor: start; width: 20%">EquipementType<br> <span>&nbsp;{{transportSelected.typeCamion}}</span></td>
-      <td style="text-align: center; text-anchor: start;; width: 20%">$ Rate $ <br> <span>&nbsp;{{transportSelected.total | number : '1.2'}}</span></td>
-    </tr>
-    <tr>
-      <th *ngIf="transportSelected.waitingTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">WaitingTime : {{transportSelected.waitingTime | number : '1.2'}} hours</th>
-      <th *ngIf="transportSelected.ptoTime>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">PTO-Time : {{transportSelected.ptoTime | number : '1.2'}} hours</th>
-    </tr>
-    <tr style="border: 0px">
-      <td *ngIf="transportSelected.porterAuCompte>0" colspan="2" style="text-align: center; text-anchor: start ">Charge to account : {{transportSelected.porterAuCompte}}</td>
-      <th *ngIf="transportSelected.collecterArgent>0" colspan="2" style="text-align: center; text-anchor: start; font-size: 13pt; background-color: darkgray">Collect cash : {{transportSelected.collecterArgent | number : '1.2'}}</th>
-      <td *ngIf="transport.byCash" style="text-align: center; text-anchor: start "> Cash </td>
-      <td *ngIf="transport.byCheck" style="text-align: center; text-anchor: start "> Check </td>
-      <td *ngIf="transport.creditCard"> Credit Card </td>
-      <td *ngIf="transport.byInterac"> Interac </td>
-      <td *ngIf="transport.transfer"> Transfer</td>
-    </tr>
-    <tr>
-      <td colspan="5">
-        <span style="text-decoration-line: underline">From:</span><span>&nbsp;{{transportSelected.origin}}</span> <br> &nbsp;
-      </td>
-    </tr>
-    <tr>
-      <td colspan="5">
-        <span style="text-decoration-line: underline">To:</span><span>&nbsp;{{transportSelected.destination}}</span> <br> &nbsp;
-      </td>
-    </tr>
-  </table>
-  <table border='1' style="font-size: 12pt; margin-inline: 5px; width: 19cm">
-    <tr> 
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span style="text-decoration-line: underline">More infos :</span> <span>&nbsp;{{transportSelected.comments}} <br>&nbsp;</span>
-      </td>
-    </tr>
-    <tr> 
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-          <span style="text-decoration-line: underline">Driver Note:</span> <span>&nbsp;{{transportSelected.driverNote}} <br>&nbsp;</span>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="5"style="text-align: left; text-anchor: start ">
-        <img [src]="transportSelected.signature" height="100" width="250" *ngIf="transportSelected.signature.length>0">
-        <span *ngIf="transportSelected.nomSignature.length>0">&nbsp;
-          <br>NAME IN BLOCK LETTERS: &nbsp;{{transportSelected.nomSignature}} 
-        </span>
-      </td>
-    </tr>
-  </table>
 </div>
 <br><br>
 <!--

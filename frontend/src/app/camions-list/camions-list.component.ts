@@ -315,6 +315,21 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+          // check number of trucks follow plan pay
+          if(data.length>this.transporter.trucks){
+            // console.log('camions before splice : ' +data.length)
+            data.sort((a,b)=>{
+              if(a.id>b.id)
+                return 1;
+              if(a.id<b.id)
+                return -1;
+              return 0;
+            });
+            // remove number trucks excess number trucks of transporter
+            data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+            // console.log('camions after splice : ' +data.length)
+          }
+          //
           this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
           this.listNumberUnite=[]; // empty the list number unite
           data.forEach(camion=>{
@@ -649,6 +664,22 @@ export class CamionsListComponent implements OnInit, OnDestroy {
 
       this.carteText='Fermer la carte'    
         this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+          // check number of trucks follow plan pay
+          if(data.length>this.transporter.trucks){
+            // console.log('camions before splice : ' +data.length)
+            data.sort((a,b)=>{
+              if(a.id>b.id)
+                return 1;
+              if(a.id<b.id)
+                return -1;
+              return 0;
+            });
+            // remove number trucks excess number trucks of transporter
+            data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+            // console.log('camions after splice : ' +data.length)
+          }
+          //
+
           // let tempCamion:Camion=this.camion;
           //this.detailCamion=false // close detail camion, to refresh            
           // this.camionCarrier=null;
@@ -2014,6 +2045,21 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this._remorques=[];// to empty this list
     this._camionsOutService=[];
     this.camionsService.camionsDeTransporter(this.transporter.id).subscribe((data:Array<Camion>)=>{
+      // check number of trucks follow plan pay
+      if(data.length>this.transporter.trucks){
+        // console.log('camions before splice : ' +data.length)
+        data.sort((a,b)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        });
+        // remove number trucks excess number trucks of transporter
+        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+        // console.log('camions after splice : ' +data.length)
+      }
+      //
       this._camions=this.camions=data.sort((a,b)=>Number(a.unite)-Number(b.unite));
       this.listNumberUnite=[] ;// empty the list number unite 
       data.forEach(camion=>{
@@ -2457,9 +2503,16 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     this.onRefresh();
   }
 
-  addCamionButtion(){
-    this.addcamion=new Camion();
-    this.addUnite=!this.addUnite;
+  addCamionButton(){
+    if(this.camions.length>=this.transporter.trucks){
+      alert('Your must extend your plan, please !')
+    }
+    else{
+      this.addcamion=new Camion();
+      this.addUnite=!this.addUnite;
+    }
+    // this.addcamion=new Camion();
+    // this.addUnite=!this.addUnite;
   }
 
   addCamion(){

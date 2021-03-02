@@ -512,6 +512,17 @@ export class TransportProComponent implements OnInit {
   }
 
   resetSimple(){
+    // delete transport if this is type place command but not yet valid
+    if(this.transport!=null && this.transport.id!=null && this.transport.id>0 &&
+      this.transport.typeDoc==2 && !this.transport.valid){
+      this.transportsService.deleteTransport(this.transport.id).subscribe((data:Transport)=>{
+        if(this.loadDetail!=null && this.loadDetail.id!=null && this.loadDetail.id>0){
+          this.loadDetailsService.deleteLoadDetail(this.loadDetail.id).subscribe(data=>{
+            this.loadDetail=new LoadDetail();
+          }, err=>{console.log(err)})
+        }
+      })
+    }
     this.modeListEvalue=false
     this.modeListCommande=false
     this.transport = new Transport(); 
@@ -803,6 +814,7 @@ export class TransportProComponent implements OnInit {
 
   async originSimpleChange(){
     let geocoding = new GeocodingService()
+    let found = false;
     await geocoding.codeAddress(this.transport.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -813,26 +825,49 @@ export class TransportProComponent implements OnInit {
                 this.transport.originLong = results[0].geometry.location.lng()                            
               )
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              found=true;
+              // this.sleep(2000);
+              // if(this.transport.destination!=null && this.transport.destination.length>0){
+              //   // await 
+              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
+              //   //await this.showMap()
+              //   //this.typeServiceChange(this.remorquage.typeService)
+              // }
             }
             else
               {
+                if(this.transport!=null){
+                  found=false;
+                  this.transport.loadsFee=null
+                  this.transport.origin=''
+                }
                 if(this.varsGlobal.language.includes('English'))
                   alert("Can not locate this origin")
                 else alert("Ne pas trouver de coordonnees de ce origin")
               }
     });//*/
-    if(this.transport.destination!=null && this.transport.destination.length>0){
-      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+    if(found && this.transport.destination!=null && this.transport.destination.length>0){
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
+      // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+      //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + '; '
+      //   this.varsGlobal.addressCookieToList.push(this.transport.origin)
+      // }
+    }
+    else{
+      found=false;
+      this.transport.loadsFee=null
+      // this.transport.origin=''
     }
   }
 
   async destinationSimpleChange(){
     let geocoding = new GeocodingService()
+    let found = false;
     await geocoding.codeAddress(this.transport.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -843,21 +878,43 @@ export class TransportProComponent implements OnInit {
                 this.transport.destLong = results[0].geometry.location.lng()                                                   
               )
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              found = true;
+              // this.sleep(2000);
+              // if(this.transport.origin!=null && this.transport.origin.length>0){
+              //   // await 
+              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
+              //   //await this.showMap()
+              //   //this.typeServiceChange(this.remorquage.typeService)
+              // }
             }
             else
             {
+              if(this.transport!=null) {
+                found=false;
+                this.transport.loadsFee=null
+                this.transport.destination=''
+              }
               if(this.varsGlobal.language.includes('English'))
                 alert("Can not locate this destination")
               else alert("Ne pas trouver de coordonnees de cet destination")
             }
     });//*/
-    if(this.transport.origin!=null && this.transport.origin.length>0){
-      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+    if(found && this.transport.origin!=null && this.transport.origin.length>0){
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
+      // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+      //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + '; '
+      //   this.varsGlobal.addressCookieToList.push(this.transport.destination)
+      // }
+    }
+    else{
+      found=false;
+      this.transport.loadsFee=null
+      // this.transport.destination=''
     }
   }
   //*
@@ -914,6 +971,9 @@ async originChange(){
               }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
+      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+      ++this.transport.evaluatedTimes;
+      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -974,6 +1034,9 @@ async destinationChange(){
             }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
+      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
+      ++this.transport.evaluatedTimes;
+      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1031,18 +1094,10 @@ onSortDate(data:Array<Transport>){
     })
 
     await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
-    this.listTrsEvalue.sort((b,a)=>{
-      if(a.transport.id>b.transport.id)
-        return 1;
-      if(a.transport.id<b.transport.id)
-        return -1;
-      return 0;
-    });
     this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
   // sort listTrsCommande by status
-  numListShow = 2; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
   listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
@@ -1054,7 +1109,7 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
     this.listTrsCommandeArchive = [];
-    if(this.listTrsCommande!=null && this.listTrsCommande.length>0) {
+    if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
         if(trCo.transport.archive && trCo.transport.fini){
           this.listTrsCommandeArchive.push(trCo)
@@ -1076,7 +1131,6 @@ onSortDate(data:Array<Transport>){
       })
     }
     this.listTrsCommande = this.listTrsCommandeSchedule
-    this.numListShow = 2; // to show grand tail button Schedule
     // .concat(
     //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
     //     this.listTrsCommandeFini)))
@@ -1089,23 +1143,18 @@ onSortDate(data:Array<Transport>){
   }
   waitingCommands(){
     this.listTrsCommande = this.listTrsCommandeWaiting
-    this.numListShow = 1;
   }
   scheduleCommands(){
     this.listTrsCommande = this.listTrsCommandeSchedule
-    this.numListShow = 2;
   }
   finishedCommands(){
     this.listTrsCommande = this.listTrsCommandeFini
-    this.numListShow = 3;
   }
   cancelledCommands(){
     this.listTrsCommande = this.listTrsCommandeCancelled
-    this.numListShow = 4;
   }
   archiveCommands(){
     this.listTrsCommande = this.listTrsCommandeArchive
-    this.numListShow = 5;
   }
 
   roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
@@ -1196,6 +1245,7 @@ onSortDate(data:Array<Transport>){
         this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
           route=data;
         }, err=>{console.log()}) 
+        if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
       }
     }, err=>{
       console.log(err)
@@ -1219,10 +1269,7 @@ onSortDate(data:Array<Transport>){
     if(this.transportSelected.typeDoc==1){
       this.printBonDeTransport('printevalueselected')
     }
-    if(this.transportSelected.typeDoc==2&&this.transportSelected.fini){
-      this.printBonDeTransport('toprint')
-    }
-    if(this.transportSelected.typeDoc==2 && !this.transportSelected.fini){
+    if(this.transportSelected.typeDoc==2){
       this.printBonDeTransport('printcommandselected')
     }
   }
@@ -1624,6 +1671,14 @@ onSortDate(data:Array<Transport>){
 
   //* calculer distance travel en kms
   async setDistanceTravel(address1: string, address2:string) { // in km
+    if(!this.varsGlobal.addressCookie.includes(address1)){
+      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
+      this.varsGlobal.addressCookieToList.push(address1)
+    }
+    if(!this.varsGlobal.addressCookie.includes(address2)){
+      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
+      this.varsGlobal.addressCookieToList.push(address2)
+    }
     this.transport.distance=null; // set distance to null, before calculate
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
@@ -1650,6 +1705,7 @@ onSortDate(data:Array<Transport>){
         load.idTransport=data.id;
         this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
           load.id = d.id;
+          if(this.transport.typeDoc==2) this.loadDetail = d; // this is just for type place command
         }, err=>{
           console.log(err);
         })
@@ -1836,6 +1892,75 @@ onSortDate(data:Array<Transport>){
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2;
+    }, err=>{
+      console.log()
+    })
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });  // go to top  
+  }
+
+  onEnvoyerWithSaveSimple(){
+    // let stringsd:string[]=location.href.split('/transport-pro')
+    this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
+    if(this.varsGlobal.language.includes('English'))
+      this.em.titre= this.transport.nomEntreprise + " - Command: " + this.loadFrequent.nom 
+      //+
+      // " - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
+      // ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
+    else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.loadFrequent.nom 
+    // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
+    //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
+    this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom+ " - " + 
+    this.shipper.tel + " - " + this.shipper.email + " </h3> <br>"
+    + document.getElementById('sendcommand').innerHTML
+    /*//
+    +
+    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
+    + this.transport.id   //1733  // replace by Number of Bon Transport
+    +"'><h4>Detail</h4></a>" +" </p></div>"    
+    //*/
+    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      // {
+      //   // if(this.varsGlobal.language.includes('English'))
+      //   //   alert("This load was sent")
+      //   // else alert("Ce load a ete envoye.")
+      // }
+      // //*/ Also App send confirmation email to client professionnel
+      // if(this.transport.emailContact.length>10){
+      //   let em:EmailMessage=new EmailMessage();
+      //   em.emailDest=this.transport.emailContact;  // email of professional
+      //   em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
+      //   em.content='<div><p> '+ em.titre + " <br>" + 
+      //     '<div>'+
+      //       '<div><br></div>'+
+      //       '<div>Merci de votre collaboration.</div>'+
+      //       '<div><br></div>'+
+      //       //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+      //       '<div>Dispatch - '+this.transporter.nom+' </div>'+
+      //       '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+      //       '</div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+      //       '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+      //       '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+      //     " </p></div>"
+      //   this.bankClientsService.envoyerMail(em).subscribe(data=>{
+      //     console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+      //   }, err=>{console.log(err)})
+      // }
+      // //*/
+      // this.onSaveWithMessage();
+      // this.transport = new Transport() // declare one new case
+      // this.back=0;
+      // this.pagePresent=this.back+1;
+      // this.forward=this.back+2;
+      this.resetSimple(); // reset/new after sent
     }, err=>{
       console.log()
     })

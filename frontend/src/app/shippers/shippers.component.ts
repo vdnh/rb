@@ -8,6 +8,8 @@ import { AuthenticationService } from 'src/services/authentication.service';
 import { Shipper } from 'src/model/model.shipper';
 import { AppUser } from 'src/model/model.appUser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
+import { Transporter } from 'src/model/model.transporter';
+import { TransportersService } from 'src/services/transporters.service';
 //import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -23,18 +25,33 @@ export class ShippersComponent implements OnInit
   size:number=50;
   pages:Array<number>;  // pour tenir des numeros des pages
   role: string;
+  shippersOfTransporter:Array<Shipper>=[]
+  transporter: Transporter;
   //index=1;
 
   //*/
   constructor(public authenticationService:AuthenticationService, 
-    public shipperservice:ShippersService,
+    public shipperservice:ShippersService, public transportersService:TransportersService,
     public varsGlobal:VarsGlobal, public router:Router) { }
 
   ngOnInit() {
     //this.index=1;
     this.role=localStorage.getItem('role');
     this.doSearch();
-    console.log("this from shippers component")
+    if(localStorage.getItem('idTransporter')!=undefined){
+      // let transporter : Transporter;
+      this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+        if(data!=null){
+          this.shippersOfTransporter=data
+          // console.log("this.shippersOfTransporter.length: "+ this.shippersOfTransporter.length)
+          this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((dt:Transporter)=>{
+            this.transporter=dt;   
+            // console.log("this.transporter.clientsPros: "+this.transporter.clientsPros)     
+          })
+        }
+      })
+    }
+    // console.log("this from shippers component")
   }
 //*
   doSearch(){
@@ -78,6 +95,30 @@ export class ShippersComponent implements OnInit
     //   console.log(err);
     // })
   }
+  
+  addClient(){
+    // if(localStorage.getItem('idTransporter')!=undefined){
+    //   // let transporter : Transporter;
+    //   this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<Shipper>)=>{
+    //     if(data!=null){
+    //       this.shippers=data
+    //       this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((dt:Transporter)=>{
+    //         if(this.shippers.length>=dt.terminals){
+    //           alert('Your must extend your plan, please !')
+    //         }        
+    //       })
+    //     }
+    //   })
+    // }
+    // console.log("this.shippersOfTransporter.length: "+ this.shippersOfTransporter.length)   
+    // console.log("this.transporter.clientsPros: "+this.transporter.clientsPros)     
+    if(this.shippersOfTransporter!=null && this.transporter!=null &&
+      this.shippersOfTransporter.length>=this.transporter.clientsPros){
+        alert('Your must extend your plan, please !')
+    }
+    else this.router.navigateByUrl('/new-shipper', {skipLocationChange: true})
+  }
+
   chercher(){
     this.doSearch();
   }

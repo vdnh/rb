@@ -98,9 +98,15 @@ export class TerminalsComponent implements OnInit {
     },err=>{
       console.log(err)
     }) 
+  }
 
-    
-
+  addTerminal(){
+    if(this.terminals.length>=this.transporter.terminals){
+      alert('Your must extend your plan, please !')
+    }
+    else{
+      this.router.navigateByUrl('/new-terminal', {skipLocationChange: true})
+    }
   }
 
   calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
@@ -176,6 +182,7 @@ export class TerminalsComponent implements OnInit {
   showMap() {
     this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
       this.terminal=data;
+      /*
       if(this.terminal.idTruck!=null && this.terminal.idTruck>0)
         this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
           this.truckHooked=data
@@ -209,8 +216,11 @@ export class TerminalsComponent implements OnInit {
         },
         title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
       });
+      //*/
+
       // centrer la carte
       this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
+      this.map.setZoom(15)
     },err=>{console.log(err)})
 
     // const intervalCSM = interval(30000); //intervel 30 seconds for update data terminal on the map

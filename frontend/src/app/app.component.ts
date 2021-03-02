@@ -164,6 +164,12 @@ export class AppComponent implements OnInit{
     if(localStorage.getItem('language')){
       this.varsGlobal.language=localStorage.getItem('language')
     }
+    if(localStorage.getItem('addressCookie')){
+      this.varsGlobal.addressCookie=localStorage.getItem('addressCookie')
+      // check if cookie don't content this parterm ";;-;; ", set cookie to empty
+      if(!this.varsGlobal.addressCookie.includes(";;-;; ")) this.varsGlobal.addressCookie=""
+      this.varsGlobal.addressCookieToList=this.varsGlobal.addressCookie.split(";;-;; ")
+    }
     if(localStorage.getItem('role')) 
       this.role = localStorage.getItem('role')
     if(localStorage.getItem('role')&&localStorage.getItem('role').includes('CHAUFFEUR'))
@@ -757,7 +763,8 @@ export class AppComponent implements OnInit{
     //this.varsGlobal.userLogs=new UserLogs();
     localStorage.clear();
     localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
-
+    localStorage.setItem('addressCookie', this.varsGlobal.addressCookie)  // keep the addressCookie
+    
     this.role="";
     
     this.usernameLogin='';

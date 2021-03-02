@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ImageService } from 'src/services/image.service';
+import { Subscription, timer, interval, from, Observable, fromEvent } from 'rxjs';
 
 import { } from 'googlemaps';
 
@@ -38,7 +39,7 @@ import { ItinerairesService } from 'src/services/itineraires.service';
   templateUrl: './transport.component.html',
   styleUrls: ['./transport.component.css']
 })
-export class TransportComponent implements OnInit {
+export class TransportComponent implements OnInit, OnDestroy {
 
   //imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -989,12 +990,29 @@ export class TransportComponent implements OnInit {
     this.modeListEvalue=true 
     this.modeListCommande=false
     this.onRefresh()
+    if(this.subscription!=null) this.subscription.unsubscribe();
+    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
+    this.subscription=intervalIsCs.subscribe(val=>{
+      this.onRefresh()
+    })
   }
 
   onListCommande(){
     this.modeListEvalue=false 
     this.modeListCommande=true
     this.onRefresh()
+    if(this.subscription!=null) this.subscription.unsubscribe();
+    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
+    this.subscription=intervalIsCs.subscribe(val=>{
+      this.onRefresh()
+    })
+  }
+
+  ngOnDestroy(): void {
+    if(this.subscription!=null) {
+      console.log('this.subscription.unsubscribe();')
+      this.subscription.unsubscribe();
+    }
   }
 
   resetSimple(){
@@ -1071,9 +1089,6 @@ export class TransportComponent implements OnInit {
                 this.transport.destLat = results[0].geometry.location.lat(),
                 this.transport.destLong = results[0].geometry.location.lng()                                                   
               )
-              // // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
-              // ++this.transport.evaluatedTimes;
-              // this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
@@ -1087,7 +1102,6 @@ export class TransportComponent implements OnInit {
       // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1101,6 +1115,16 @@ export class TransportComponent implements OnInit {
       }, err=>{console.log(err)})
     }, err=>{
       console.log()
+    })
+  }
+
+  onDeleteCommand(trCm:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
+      this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
+        this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
+      }, err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
     })
   }
 
@@ -1364,10 +1388,12 @@ onSortDate(data:Array<Transport>){
     return 0;
   })
 }
+  
+  subscription : Subscription;
   async onRefresh(){
     this.tempDatalist=""; // initial the tempdata of datalist
     if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
-      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe(async (data:Array<Transport>)=>{
         this.listTrsCommande=[]
         this.listTrsEvalue=[]
       //*
@@ -1378,28 +1404,46 @@ onSortDate(data:Array<Transport>){
             return -1;
           return 0;
         })//*/
-        data.filter(transport=>(transport.valid)).forEach(tr=>{
+        data.filter(transport=>(transport.valid)).forEach(async tr=>{
           if(tr.typeDoc==1) {
-            this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
               if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
             })        
           }
           else if(tr.typeDoc==2) {
-            this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
             if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
             })
           }
         })
-      })
+        await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+        // sort list evaluate
+        this.listTrsEvalue.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        // sort list Commands
+        this.listTrsCommande.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        //
+      }, err=>{console.log(err)})
     }
 
     // if shipper null => find all transports
     else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Transport>)=>{
       // refresh the templates
-      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
-        this.templates = data; // just for test
-      },err=>{console.log(err)})
+      // this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      //   this.templates = data; // just for test
+      // },err=>{console.log(err)})
 
       this.listTrs=[]  //data;
       this.listTrsSent=[]
@@ -1407,7 +1451,7 @@ onSortDate(data:Array<Transport>){
       this.listTrsAnnule=[]
       this.listTrsCommande=[]
       this.listTrsEvalue=[]
-      //*
+      /*
       data.sort((b, a)=>{
         if(a.id>b.id)
           return 1;
@@ -1417,32 +1461,53 @@ onSortDate(data:Array<Transport>){
       })//*/
       data.filter(transport=>(transport.valid)).forEach(tr=>{
         if(tr.typeDoc==1) {
-          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
-          })        
+          this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+          // this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          //   if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
+          // })        
         }
         else if(tr.typeDoc==2) {
-          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-          if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
-          })
+          this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+          // this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          // if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
+          // })
         }
-        else if(tr.fini) this.listTrsFini.push(tr)
-        else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
-        else if (tr.sent) this.listTrsSent.push(tr)
-        else if (tr.valid) this.listTrs.push(tr)//*/
+        // else if(tr.fini) this.listTrsFini.push(tr)
+        // else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
+        // else if (tr.sent) this.listTrsSent.push(tr)
+        // else if (tr.valid) this.listTrs.push(tr)//*/
       })
+      //await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+      // sort list evaluate
+      if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      }).forEach(trEv=>{
+        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+        })
+      })
+      // sort list Commands
+      if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      }).forEach(trCm=>{
+        this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+        })
+      })
+    //
     }, err=>{
       console.log(err)
     })
-    await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
-    this.listTrsEvalue.sort((b,a)=>{
-      if(a.transport.id>b.transport.id)
-        return 1;
-      if(a.transport.id<b.transport.id)
-        return -1;
-      return 0;
-    });
-    this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
+    
+    // this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
   // sort listTrsCommande by status
@@ -1460,7 +1525,7 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeWaiting = [];
     this.listTrsCommandeArchive = [];
     
-    if(this.listTrsCommande!=null && this.listTrsCommande.length>0) {
+    if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
         if(trCo.transport.archive && trCo.transport.fini){
           this.listTrsCommandeArchive.push(trCo)
@@ -1683,15 +1748,17 @@ onSortDate(data:Array<Transport>){
       // });
       this.printBonDeTransport('printevalueselected')
     }
-    if(this.transportSelected.typeDoc==2&&this.transportSelected.fini){
-      this.printBonDeTransport('toprint')
-    }
-    if(this.transportSelected.typeDoc==2 && !this.transportSelected.fini){
+    if(this.transportSelected.typeDoc==2){
+      // let promise = new Promise(function(resolve, reject){
+      //   setTimeout(function(){
+      //     resolve('Print after 1 seconde')
+      //   },1000);
+      // });
+      // promise.then(function(value){
+      //   console.log('value: ' + value)
+      // });
       this.printBonDeTransport('printcommandselected')
     }
-    // if(this.transportSelected.typeDoc==2){
-    //   this.printBonDeTransport('printcommandselected')
-    // }
   }
 
   printBonDeTransport(cmpId){
@@ -2195,6 +2262,14 @@ onSortDate(data:Array<Transport>){
 
   //* calculer distance travel en kms
   async setDistanceTravel(address1: string, address2:string) { // in km
+    if(!this.varsGlobal.addressCookie.includes(address1)){
+      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
+      this.varsGlobal.addressCookieToList.push(address1)
+    }
+    if(!this.varsGlobal.addressCookie.includes(address2)){
+      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
+      this.varsGlobal.addressCookieToList.push(address2)
+    }
     this.transport.distance=null; // set distance to null, before calculate
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()

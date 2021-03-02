@@ -12,6 +12,8 @@ export class VarsGlobal{
   nombreMessages:number=0; // number of messages 
   session='no'; // no mean we are not in session particular
   pro='no'; // no mean we are not in session professionnal
+  addressCookie='' // separate by ";;-;; " - semicolon and space
+  addressCookieToList:Array<string>=[]; // reform by varsGlobal.addressCookie.split(";;-;; ")
   userLogs : UserLogs = new UserLogs();
 
   // parameters for check 

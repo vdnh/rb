@@ -4,10 +4,15 @@
       Nouveau
     </button>&nbsp;&nbsp;&nbsp;
   
-    <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
+    <!-- <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
       (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
       Ajout Client
-    </button> 
+    </button>  -->
+    <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
+      (click)="addClient()">
+      <!-- "router.navigateByUrl('/new-shipper', {skipLocationChange: true})"> -->
+      Ajout Client
+    </button>
   </div>
 
   <div class="panel panel-primary">
@@ -58,7 +63,8 @@
       New
     </button>&nbsp;&nbsp;&nbsp;
     <button class="btn btn-link" *ngIf='role.includes("DISPATCH")'
-      (click)="router.navigateByUrl('/new-shipper', {skipLocationChange: true})">
+      (click)="addClient()">
+      <!-- "router.navigateByUrl('/new-shipper', {skipLocationChange: true})"> -->
       Add Client
     </button> 
   </div>
