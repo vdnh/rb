@@ -1,3 +1,4 @@
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
 import { BrowserModule} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { SignaturePadModule } from 'angular2-signaturepad';
@@ -218,6 +219,7 @@ const appRoutes:Routes=[
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]
   imports: [
+    GooglePlaceModule,
     BrowserModule, 
     RouterModule.forRoot(appRoutes, { anchorScrolling: 'enabled'}), 
     FormsModule, HttpClientModule, 

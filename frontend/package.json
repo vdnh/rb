@@ -36,6 +36,7 @@
     "google-maps": "^4.3.3",
     "jquery": "^3.5.1",
     "ngx-contextmenu": "^5.4.0",
+    "ngx-google-places-autocomplete": "^2.0.5",
     "popper.js": "^1.16.1",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.3",

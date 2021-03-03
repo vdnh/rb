@@ -30,6 +30,8 @@ import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { LoadFrequent } from 'src/model/model.loadFrequent';
 import { Itineraire } from 'src/model/model.itineraire';
 import { ItinerairesService } from 'src/services/itineraires.service';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
 
 
 @Component({
@@ -134,6 +136,30 @@ export class TransportProComponent implements OnInit {
     //'canvasWidth': 'auto',
     //'canvasHeight': 'auto',
   };
+
+  @ViewChild("placesRef") placesRef : GooglePlaceDirective;
+  options={
+    types: [],
+    componentRestrictions: { country: ["CA","US"] }
+  }
+  public async handleAddressOriginChange(address: Address, adr:string) {
+    // Do some stuff
+    // let adr:any
+    this.transport.origin= await address.formatted_address;
+    //console.log('adresse: '+adr)
+    // console.log('this.transport.origin: '+ this.transport.origin)
+    this.originSimpleChange()
+  }
+
+  public async handleAddressDestinationChange(address: Address) {
+    // Do some stuff
+    // let adr:any
+    this.transport.destination=await address.formatted_address;
+    //console.log('adresse: '+adr)
+    // console.log('this.transport.destination: '+this.transport.destination)
+    this.destinationSimpleChange()
+  }
+
   disableInsurrance=false;
   disableEquifax=false;
   disableTransCreditCA=false;

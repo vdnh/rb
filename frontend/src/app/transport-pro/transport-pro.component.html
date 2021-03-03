@@ -124,17 +124,30 @@
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
     <strong>Adresse de Depart </strong>
     <span>
-      <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies">
+      <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+      (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
+      (change)="originSimpleChange()" list="adCookies">
+      <!--   -->
       <datalist id="adCookies">
         <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
       </datalist>
     </span>
+    <!-- <span>
+      <input ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+        (onAddressChange)="handleAddressChange($event)" style="width: 50ch;" list="adCookies"/>
+      <datalist id="adCookies">
+        <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
+      </datalist>
+    </span> -->
   </div>
 
   <div *ngIf="transport.origin.length>8">
     <strong>Adresse de Livraison </strong> 
     <span>
-      <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies">
+      <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
+      <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+      (onAddressChange)="handleAddressDestinationChange($event)" type="text" [(ngModel)]="transport.destination" 
+      (change)="destinationSimpleChange()" list="adCookies">
       <datalist id="adCookies">
         <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
       </datalist>
