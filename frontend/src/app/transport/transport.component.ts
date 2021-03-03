@@ -1074,8 +1074,15 @@ export class TransportComponent implements OnInit, OnDestroy {
     this.loadDetail=new LoadDetail(); // after added set equal new
   }
 
+  originSimpleChangeBusy=false;
   async originSimpleChange(){
+    if (this.originSimpleChangeBusy){
+      console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+      await this.sleep(3000);
+      console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    }
     let geocoding = new GeocodingService()
+    this.originSimpleChangeBusy=true
     await geocoding.codeAddress(this.transport.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -1098,14 +1105,23 @@ export class TransportComponent implements OnInit, OnDestroy {
       // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.originSimpleChangeBusy=false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
+    else{this.originSimpleChangeBusy=false}
   }
 
+  destinationSimpleChangeBusy = false
   async destinationSimpleChange(){
+    if (this.destinationSimpleChangeBusy){
+      console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+      await this.sleep(3000);
+      console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    }
     let geocoding = new GeocodingService()
+    this.destinationSimpleChangeBusy = true
     await geocoding.codeAddress(this.transport.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -1128,10 +1144,12 @@ export class TransportComponent implements OnInit, OnDestroy {
       // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.destinationSimpleChangeBusy=false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
+    else{this.destinationSimpleChangeBusy=false}
   }
 
   onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail

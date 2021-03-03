@@ -512,14 +512,14 @@
             <!-- </table>
             <table border="1"> -->
                 <tr></tr>
-                <tr *ngIf="(planOrder.trucks!=null || planOrder.trucks>0)||
-                    (planOrder.clientsPros!=null || planOrder.clientsPros>0)||
-                    (planOrder.terminals!=null || planOrder.terminals>0)">
-                    <th>Select Plan</th>
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
+                    <th>Plan Order</th>
                 </tr>
-                <tr *ngIf="(planOrder.trucks!=null || planOrder.trucks>0)||
-                    (planOrder.clientsPros!=null || planOrder.clientsPros>0)||
-                    (planOrder.terminals!=null || planOrder.terminals>0)">
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
                     <td>
                         <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
                         [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
@@ -579,10 +579,15 @@
                 <!-- <tr><th><button>OK</button></th></tr> -->
             </table>
             <table border="1" *ngIf="planOrder!=null && planOrder.price!=null && planOrder.price>0">
-                <tr><th colspan="2">SOS Prestige, 520 Guindon, Sainte Eustache, QC</th></tr>
-                <tr><th>Mode Paiement</th> <th>Detail</th></tr>
+                <tr>
+                    <th colspan="2">
+                        <span style="text-align: center;">Payement Infos : </span><br>
+                        <span>SOS Prestige, 520 Guindon, Sainte Eustache, QC</span>
+                    </th>
+                </tr>
+                <tr><th>Mode</th> <th>Detail</th></tr>
                 <tr><th>Interac</th><td>sosprestige@gmail.com</td></tr>
-                <tr><th>Carte Credit / Debit</th><td>par telephone 450-974-9111</td></tr>
+                <tr><th>Carte Credit / Debit</th><td>Telephone 450-974-9111</td></tr>
             </table>
             <table border="1">
                 <tr>Plans Historic</tr>

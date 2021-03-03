@@ -838,9 +838,16 @@ export class TransportProComponent implements OnInit {
     return 0.00;
   }
 
+  originSimpleChangeBusy=false;
   async originSimpleChange(){
+    if (this.originSimpleChangeBusy){
+      // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+      await this.sleep(3000);
+      // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    }
     let geocoding = new GeocodingService()
     let found = false;
+    this.originSimpleChangeBusy=true
     await geocoding.codeAddress(this.transport.origin).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -875,8 +882,8 @@ export class TransportProComponent implements OnInit {
     if(found && this.transport.destination!=null && this.transport.destination.length>0){
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.originSimpleChangeBusy=false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
       // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
@@ -887,13 +894,20 @@ export class TransportProComponent implements OnInit {
     else{
       found=false;
       this.transport.loadsFee=null
-      // this.transport.origin=''
+      this.originSimpleChangeBusy=false
     }
   }
 
+  destinationSimpleChangeBusy = false
   async destinationSimpleChange(){
+    if (this.destinationSimpleChangeBusy){
+      // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+      await this.sleep(3000);
+      // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    }
     let geocoding = new GeocodingService()
     let found = false;
+    this.destinationSimpleChangeBusy = true
     await geocoding.codeAddress(this.transport.destination).forEach(
       (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
@@ -928,8 +942,8 @@ export class TransportProComponent implements OnInit {
     if(found && this.transport.origin!=null && this.transport.origin.length>0){
       ++this.transport.evaluatedTimes;
       this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.destinationSimpleChangeBusy=false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
       // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
@@ -940,7 +954,7 @@ export class TransportProComponent implements OnInit {
     else{
       found=false;
       this.transport.loadsFee=null
-      // this.transport.destination=''
+      this.destinationSimpleChangeBusy=false
     }
   }
   //*
