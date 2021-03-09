@@ -126,7 +126,8 @@
     <span>
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
       (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
-      (change)="originSimpleChange()" list="adCookies">
+      (change)="originSimpleChange()" list="adCookies" 
+      [disabled]="(transport.loadsFee!=null && transport.distance!=null)">
       <!--   -->
       <datalist id="adCookies">
         <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
@@ -147,7 +148,8 @@
       <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
       (onAddressChange)="handleAddressDestinationChange($event)" type="text" [(ngModel)]="transport.destination" 
-      (change)="destinationSimpleChange()" list="adCookies">
+      (change)="destinationSimpleChange()" list="adCookies" 
+      [disabled]="(transport.loadsFee!=null && transport.distance!=null)">
       <datalist id="adCookies">
         <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
       </datalist>
@@ -265,15 +267,18 @@
 
 <div id="sendcommand" hidden
   *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
+  <h3>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h3>
   <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
     Commande {{loadFrequent.nom}}</h3>
-  <h4>De: {{transport.origin}}</h4>
-  <h4>A: {{transport.destination}}</h4>
-  <h4>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h4>
   <h4>Prix: {{transport.loadsFee}}</h4>
-  <h4>Contact de Depart: {{transport.nomClient}}</h4>
-  <h4>Contact de Livraison: {{transport.contactDest}}</h4>
-  <h4>Plus Infos: {{transport.comments}}</h4>
+  <h4>De: {{transport.origin}}</h4>
+  <h4 *ngIf="transport.nomClient!=null">Contact de Depart: {{transport.nomClient}}</h4>
+  <h4>A: {{transport.destination}}</h4>
+  <!-- <h4>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h4> -->
+  <!-- <h4>Prix: {{transport.loadsFee}}</h4> -->
+  <!-- <h4>Contact de Depart: {{transport.nomClient}}</h4> -->
+  <h4 *ngIf="transport.contactDest!=null">Contact de Livraison: {{transport.contactDest}}</h4>
+  <h4 *ngIf="transport.comments!=null">Plus Infos: {{transport.comments}}</h4>
 </div>
 <br><br>
 

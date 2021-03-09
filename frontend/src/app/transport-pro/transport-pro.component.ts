@@ -142,22 +142,42 @@ export class TransportProComponent implements OnInit {
     types: [],
     componentRestrictions: { country: ["CA","US"] }
   }
-  public async handleAddressOriginChange(address: Address, adr:string) {
-    // Do some stuff
-    // let adr:any
-    this.transport.origin= await address.formatted_address;
-    //console.log('adresse: '+adr)
-    // console.log('this.transport.origin: '+ this.transport.origin)
-    this.originSimpleChange()
+  public async handleAddressOriginChange(address: Address) {
+    if(this.originSimpleChangeBusy){
+      await this.sleep(1000);
+      this.handleAddressOriginChange(address);
+    }
+    else{
+      // Do some stuff
+      // let adr:any
+      this.transport.origin= await address.formatted_address;
+      if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.origin)
+      }
+      //console.log('adresse: '+adr)
+      // console.log('this.transport.origin: '+ this.transport.origin)
+      this.originSimpleChange()
+    }
   }
 
   public async handleAddressDestinationChange(address: Address) {
-    // Do some stuff
-    // let adr:any
-    this.transport.destination=await address.formatted_address;
-    //console.log('adresse: '+adr)
-    // console.log('this.transport.destination: '+this.transport.destination)
-    this.destinationSimpleChange()
+    if(this.destinationSimpleChangeBusy){
+      await this.sleep(1000)
+      this.handleAddressDestinationChange(address)
+    }
+    else{
+      // Do some stuff
+      // let adr:any
+      this.transport.destination=await address.formatted_address;
+      if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.destination)
+      }
+      //console.log('adresse: '+adr)
+      // console.log('this.transport.destination: '+this.transport.destination)
+      this.destinationSimpleChange()
+    }
   }
 
   disableInsurrance=false;
@@ -840,11 +860,11 @@ export class TransportProComponent implements OnInit {
 
   originSimpleChangeBusy=false;
   async originSimpleChange(){
-    if (this.originSimpleChangeBusy){
-      // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
-      await this.sleep(3000);
-      // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
-    }
+    // if (this.originSimpleChangeBusy){
+    //   // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    // }
     let geocoding = new GeocodingService()
     let found = false;
     this.originSimpleChangeBusy=true
@@ -878,40 +898,42 @@ export class TransportProComponent implements OnInit {
                   alert("Can not locate this origin")
                 else alert("Ne pas trouver de coordonnees de ce origin")
               }
+    }).then(()=>{
+      if(found && this.transport.destination!=null && this.transport.destination.length>0){
+        ++this.transport.evaluatedTimes;
+        this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
+        this.setDistanceTravel(this.transport.origin, this.transport.destination).
+        then(()=>this.originSimpleChangeBusy=false)
+        //await this.showMap()
+        //this.typeServiceChange(this.remorquage.typeService)
+        // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + '; '
+        //   this.varsGlobal.addressCookieToList.push(this.transport.origin)
+        // }
+      }
+      else{
+        found=false;
+        this.transport.loadsFee=null
+        this.originSimpleChangeBusy=false
+      }
     });//*/
-    if(found && this.transport.destination!=null && this.transport.destination.length>0){
-      ++this.transport.evaluatedTimes;
-      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
-      then(()=>this.originSimpleChangeBusy=false)
-      //await this.showMap()
-      //this.typeServiceChange(this.remorquage.typeService)
-      // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
-      //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + '; '
-      //   this.varsGlobal.addressCookieToList.push(this.transport.origin)
-      // }
-    }
-    else{
-      found=false;
-      this.transport.loadsFee=null
-      this.originSimpleChangeBusy=false
-    }
   }
 
   destinationSimpleChangeBusy = false
   async destinationSimpleChange(){
-    if (this.destinationSimpleChangeBusy){
-      // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
-      await this.sleep(3000);
-      // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
-    }
+    // if (this.destinationSimpleChangeBusy){
+    //   // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    // }
     let geocoding = new GeocodingService()
     let found = false;
     this.destinationSimpleChangeBusy = true
     await geocoding.codeAddress(this.transport.destination).forEach(
-      (results: google.maps.GeocoderResult[]) => {
+      async (results: google.maps.GeocoderResult[]) => {
+            console.log("results.length: " + results.length)
             if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= new google.maps.LatLng(
+              this.latLngDestination= await new google.maps.LatLng(
                 //results[0].geometry.location.lat(),
                 //results[0].geometry.location.lng()     
                 this.transport.destLat = results[0].geometry.location.lat(),
@@ -938,24 +960,27 @@ export class TransportProComponent implements OnInit {
                 alert("Can not locate this destination")
               else alert("Ne pas trouver de coordonnees de cet destination")
             }
-    });//*/
-    if(found && this.transport.origin!=null && this.transport.origin.length>0){
-      ++this.transport.evaluatedTimes;
-      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
-      then(()=>this.destinationSimpleChangeBusy=false)
-      //await this.showMap()
-      //this.typeServiceChange(this.remorquage.typeService)
-      // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
-      //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + '; '
-      //   this.varsGlobal.addressCookieToList.push(this.transport.destination)
-      // }
-    }
-    else{
-      found=false;
-      this.transport.loadsFee=null
-      this.destinationSimpleChangeBusy=false
-    }
+            console.log('in forEach() geocoding.codeAddress found equal : ' + found)
+    })//.then(()=>{
+      console.log('destinationSimpleChange() - after geocoding.codeAddress found equal : ' + found)
+      if(found && this.transport.origin!=null && this.transport.origin.length>0){
+        ++this.transport.evaluatedTimes;
+        this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
+        this.setDistanceTravel(this.transport.origin, this.transport.destination).
+        then(()=>this.destinationSimpleChangeBusy=false)
+        //await this.showMap()
+        //this.typeServiceChange(this.remorquage.typeService)
+        // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + '; '
+        //   this.varsGlobal.addressCookieToList.push(this.transport.destination)
+        // }
+      }
+      else{
+        found=false;
+        this.transport.loadsFee=null
+        this.destinationSimpleChangeBusy=false
+      }
+    //});//*/
   }
   //*
 async originChange(){
@@ -1711,46 +1736,58 @@ onSortDate(data:Array<Transport>){
 
   //* calculer distance travel en kms
   async setDistanceTravel(address1: string, address2:string) { // in km
-    if(!this.varsGlobal.addressCookie.includes(address1)){
-      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
-      this.varsGlobal.addressCookieToList.push(address1)
-    }
-    if(!this.varsGlobal.addressCookie.includes(address2)){
-      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
-      this.varsGlobal.addressCookieToList.push(address2)
-    }
+    // if(!this.varsGlobal.addressCookie.includes(address1)){
+    //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
+    //   this.varsGlobal.addressCookieToList.push(address1)
+    // }
+    // if(!this.varsGlobal.addressCookie.includes(address2)){
+    //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
+    //   this.varsGlobal.addressCookieToList.push(address2)
+    // }
+    let okForWriting = false;
     this.transport.distance=null; // set distance to null, before calculate
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
-    }, (results: any) => {    
-      if(this.mode==1){
-        this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+    }, (results: any) => {  
+      if(results.rows[0].elements[0].distance!=undefined)  
+      {
+        okForWriting = true
+        if(this.mode==1){
+          this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+        }
+        else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       }
-      else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
+      else{
+        okForWriting = false;
+      }
+      
       // calculate price load actual and total price after distance
       //this.priceLoad(this.loadDetail, this.loadFrequent)
       // this.prixBase(this.transport.totalpoints)
       //return;
     });  
     await this.sleep(2000);
-    this.prixBase(this.transport.totalpoints)
-    // save 
-    if(this.transport.typeDoc==1) this.transport.valid = true //valid for all evaluating whether save or don't save
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-      this.loadDetails.forEach(load=>{
-        load.idTransport=data.id;
-        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-          load.id = d.id;
-          if(this.transport.typeDoc==2) this.loadDetail = d; // this is just for type place command
-        }, err=>{
-          console.log(err);
+    if(okForWriting){
+      this.prixBase(this.transport.totalpoints)
+      // save 
+      if(this.transport.typeDoc==1) this.transport.valid = true //valid for all evaluating whether save or don't save
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        this.transport=data;
+        this.loadDetails.forEach(load=>{
+          load.idTransport=data.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            if(this.transport.typeDoc==2) this.loadDetail = d; // this is just for type place command
+          }, err=>{
+            console.log(err);
+          })
         })
-      })
-    }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+    
   }
 
   // dateChange(event){
@@ -1945,6 +1982,9 @@ onSortDate(data:Array<Transport>){
   onEnvoyerWithSaveSimple(){
     // let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
+    // check validation of this.shipper.email
+    if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
+      this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
     if(this.varsGlobal.language.includes('English'))
       this.em.titre= this.transport.nomEntreprise + " - Command: " + this.loadFrequent.nom 
       //+

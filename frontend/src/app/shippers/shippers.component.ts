@@ -140,14 +140,19 @@ export class ShippersComponent implements OnInit
   }
 
   deleteShipper(id:number){
-    this.shipperservice.deleteShipper(id).subscribe((shipper:Shipper)=>{
-      this.deleteAppUser(shipper);
-      //this.pageShipper.content.splice(this.pageShipper.content.indexOf(shipper), 1)
-      this.gotoPage(this.currentPage);
-    }, err=>{
-      console.log(err);
-    });
-
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to delete this client ?")
+    }
+    else var r = confirm("Voulez-vous supprimer ce client ?")
+    if(r){
+      this.shipperservice.deleteShipper(id).subscribe((shipper:Shipper)=>{
+        this.deleteAppUser(shipper);
+        //this.pageShipper.content.splice(this.pageShipper.content.indexOf(shipper), 1)
+        this.gotoPage(this.currentPage);
+      }, err=>{
+        console.log(err);
+      });  
+    }
     //this.gotoPage(this.currentPage);
     //alert("Avoir rafraichi apres delete!!");
   }

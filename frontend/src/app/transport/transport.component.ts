@@ -154,21 +154,41 @@ export class TransportComponent implements OnInit, OnDestroy {
     componentRestrictions: { country: ["CA","US"] }
   }
   public async handleAddressOriginChange(address: Address, adr:string) {
-    // Do some stuff
-    // let adr:any
-    this.transport.origin= await address.formatted_address;
-    //console.log('adresse: '+adr)
-    // console.log('this.transport.origin: '+ this.transport.origin)
-    this.originSimpleChange()
+    if(this.originSimpleChangeBusy){
+      await this.sleep(1000)
+      this.handleAddressDestinationChange(address)
+    }
+    else{
+      // Do some stuff
+      // let adr:any
+      this.transport.origin= await address.formatted_address;
+      if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.origin)
+      }
+      //console.log('adresse: '+adr)
+      // console.log('this.transport.origin: '+ this.transport.origin)
+      this.originSimpleChange()
+    }
   }
 
   public async handleAddressDestinationChange(address: Address) {
-    // Do some stuff
-    // let adr:any
-    this.transport.destination=await address.formatted_address;
-    //console.log('adresse: '+adr)
-    // console.log('this.transport.destination: '+this.transport.destination)
-    this.destinationSimpleChange()
+    if(this.destinationSimpleChangeBusy){
+      await this.sleep(1000)
+      this.handleAddressDestinationChange(address)
+    }
+    else{
+      // Do some stuff
+      // let adr:any
+      this.transport.destination=await address.formatted_address;
+      if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.destination)
+      }
+      //console.log('adresse: '+adr)
+      // console.log('this.transport.destination: '+this.transport.destination)
+      this.destinationSimpleChange()
+    }
   }
   
   disableInsurrance=false;
@@ -1076,11 +1096,11 @@ export class TransportComponent implements OnInit, OnDestroy {
 
   originSimpleChangeBusy=false;
   async originSimpleChange(){
-    if (this.originSimpleChangeBusy){
-      console.log("originSimpleChangeBusy, we must sleep 3 seconds")
-      await this.sleep(3000);
-      console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
-    }
+    // if (this.originSimpleChangeBusy){
+    //   console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    // }
     let geocoding = new GeocodingService()
     this.originSimpleChangeBusy=true
     await geocoding.codeAddress(this.transport.origin).forEach(
@@ -1115,11 +1135,11 @@ export class TransportComponent implements OnInit, OnDestroy {
 
   destinationSimpleChangeBusy = false
   async destinationSimpleChange(){
-    if (this.destinationSimpleChangeBusy){
-      console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
-      await this.sleep(3000);
-      console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
-    }
+    // if (this.destinationSimpleChangeBusy){
+    //   console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    // }
     let geocoding = new GeocodingService()
     this.destinationSimpleChangeBusy = true
     await geocoding.codeAddress(this.transport.destination).forEach(
@@ -2306,14 +2326,15 @@ onSortDate(data:Array<Transport>){
 
   //* calculer distance travel en kms
   async setDistanceTravel(address1: string, address2:string) { // in km
-    if(!this.varsGlobal.addressCookie.includes(address1)){
-      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
-      this.varsGlobal.addressCookieToList.push(address1)
-    }
-    if(!this.varsGlobal.addressCookie.includes(address2)){
-      this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
-      this.varsGlobal.addressCookieToList.push(address2)
-    }
+    // if(!this.varsGlobal.addressCookie.includes(address1)){
+    //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address1 + ';;-;; '
+    //   this.varsGlobal.addressCookieToList.push(address1)
+    // }
+    // if(!this.varsGlobal.addressCookie.includes(address2)){
+    //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + address2 + ';;-;; '
+    //   this.varsGlobal.addressCookieToList.push(address2)
+    // }
+    let okForWriting = false;
     this.transport.distance=null; // set distance to null, before calculate
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
@@ -2321,16 +2342,25 @@ onSortDate(data:Array<Transport>){
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
     }, (results: any) => {    
-      if(this.mode==1){
-        this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+      if(results.rows[0].elements[0].distance!=undefined){
+        okForWriting=true
+        if(this.mode==1){
+          this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+        }
+        else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       }
-      else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
+      else{
+        okForWriting=false;
+      }
+      
       // calculate price load actual and total price after distance
       // this.priceLoad(this.loadDetail, this.loadFrequent)
       // this.prixBase(this.transport.totalpoints)
     });  
     await this.sleep(2000);
-    this.prixBase(this.transport.totalpoints)
+    if(okForWriting){
+      this.prixBase(this.transport.totalpoints)
+    }
   }
 
   // dateChange(event){
