@@ -102,6 +102,7 @@ import { TransportExpressVisitorComponent } from './transport-express-visitor/tr
 import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { PlanOrderService } from 'src/services/planOrder.service';
 import { PlanPriceService } from 'src/services/planPrice.service';
+import { AppTestComponent } from './app-test/app-test.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -215,6 +216,7 @@ const appRoutes:Routes=[
     TerminalsComponent,
     // LogoutComponent,
     TransportExpressVisitorComponent,
+    AppTestComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

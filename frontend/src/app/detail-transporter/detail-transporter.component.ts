@@ -1286,6 +1286,16 @@ export class DetailTransporterComponent implements OnInit {
     }, err=>{console.log(err)})
   }
 
+  cancelOrderPlan(){
+    this.packsTrucks=0;
+    this.packsTerminals=0;
+    this.packsClientsPros=0;
+    this.planOrder = new PlanOrder();
+    // this.extensionPlan = !this.extensionPlan
+    this.disableExtension = false
+    this.extensionPlan = false
+  }
+  
   planNameChange(){
     if(this.planOrder.planName!=null && !this.planOrder.planName.includes("Extension")){
       let today =new Date()
@@ -1392,5 +1402,27 @@ export class DetailTransporterComponent implements OnInit {
     if(pO.id!=null && pO.id>0) this.planOrderService.deletePlanOrder(pO.id).subscribe((data:PlanOrder)=>{
       this.listPlanOrders.splice(this.listPlanOrders.indexOf(data), 1)
     }, err=>{console.log()})
+  }
+
+  infosTransporterMode = false;
+  planActualMode = true; // to show plan actual for first view
+  plansHistoricMode = false;
+  
+  onPlanActual(){
+    this.infosTransporterMode = false;
+    this.planActualMode = true;
+    this.plansHistoricMode = false;
+  }
+
+  onInfosTransporter(){
+    this.infosTransporterMode = true;
+    this.planActualMode = false;
+    this.plansHistoricMode = false;
+  }
+
+  onPlansHistoric(){
+    this.infosTransporterMode = false;
+    this.planActualMode = false;
+    this.plansHistoricMode = true;
   }
 }

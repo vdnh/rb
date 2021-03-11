@@ -462,11 +462,11 @@
   </div>
     <!--Use for the case of Dispatch want to add driver-->
     <div class="panel panel-primary" *ngIf="mode==4">
-        <span><button class="btn btn-link">Infos</button></span>
-        <span><button class="btn btn-link">Plan Actual</button></span>
-        <span><button class="btn btn-link">Plans Historic</button></span>
+        <span><button class="btn btn-link" (click)="onInfosTransporter()">Infos</button></span>
+        <span><button class="btn btn-link" (click)="onPlanActual()">Plan Actual</button></span>
+        <span><button class="btn btn-link" (click)="onPlansHistoric()">Plans Historic</button></span>
         <!-- <hr style="border: 1px dotted black"/> -->
-        <div>
+        <div [hidden]="!planActualMode">
             
             <table border="1">
                 <tr>
@@ -547,6 +547,7 @@
                     <td>{{planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
                     <td style="text-align: right;">{{planOrder.price}} $</td>
                     <td><button (click)="orderPlan()">Demand</button></td>
+                    <td><button (click)="cancelOrderPlan()">Annuler</button></td>
                 </tr>
             </table>
             <table border="1" *ngIf="extensionPlan">
@@ -589,6 +590,8 @@
                 <tr><th>Interac</th><td>sosprestige@gmail.com</td></tr>
                 <tr><th>Carte Credit / Debit</th><td>Telephone 450-974-9111</td></tr>
             </table>
+        </div>
+        <div [hidden]="!plansHistoricMode">
             <table border="1">
                 <tr>Plans Historic</tr>
                 <tr>
@@ -620,7 +623,7 @@
                 <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
             </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" [hidden]="!infosTransporterMode">
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
