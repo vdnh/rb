@@ -318,7 +318,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
         });
         
         //envoiMsgThread.start();
-        updateOdoSOSPrestigeThread.start(); 
+        //updateOdoSOSPrestigeThread.start(); 
     }
     
         public void generateAndSendEmail(String emailBody, String email, String uniteCamion) throws AddressException, MessagingException {

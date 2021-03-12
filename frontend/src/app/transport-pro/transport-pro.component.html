@@ -1,8 +1,14 @@
 <div>
   <!-- <h2>On progress test for new form</h2> -->
-  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">Placer une Commande</button>
+  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">
+    <span *ngIf="varsGlobal.language.includes('English')">Order</span>
+    <span  *ngIf="varsGlobal.language.includes('Francais')">Placer une Commande</span>
+  </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">Evaluer un Taux</button>
+  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">
+    <span  *ngIf="varsGlobal.language.includes('English')">Evaluate a Rate</span>
+    <span *ngIf="varsGlobal.language.includes('Francais')">Evaluer un Taux</span>
+  </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
   <button class="btn btn-link" (click)="resetSimple()" [disabled]="transport.typeDoc==0">Reset</button>
   <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -114,15 +120,22 @@
   </table>
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
     <br>
-    <strong *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</strong> 
-    <strong *ngIf="transport.typeDoc==1">Evaluer &nbsp;</strong>
-    <strong *ngIf="transport.typeDoc==2">Commande &nbsp;</strong>
+    <strong *ngIf="transport.typeDoc==1">
+      <span *ngIf="varsGlobal.language.includes('English')">Evaluate &nbsp;</span>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Evaluer &nbsp;</span>
+    </strong>
+    <strong *ngIf="transport.typeDoc==2">
+      <strong *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</strong>
+      <span *ngIf="varsGlobal.language.includes('English')">Order &nbsp;</span>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Commande &nbsp;</span>
+    </strong>
     <strong>{{loadFrequent.nom}}</strong>
   </div>
 <!-- </div>
 <div> -->
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
-    <strong>Adresse de Depart </strong>
+    <strong *ngIf="varsGlobal.language.includes('English')">From </strong>
+    <strong *ngIf="varsGlobal.language.includes('Francais')">Adresse de Depart </strong>
     <span>
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
       (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
@@ -143,7 +156,8 @@
   </div>
 
   <div *ngIf="transport.origin.length>8">
-    <strong>Adresse de Livraison </strong> 
+    <strong *ngIf="varsGlobal.language.includes('English')">To </strong>
+    <strong *ngIf="varsGlobal.language.includes('Francais')">Adresse de Livraison </strong> 
     <span>
       <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
@@ -158,7 +172,11 @@
   
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
     <table>
-      <tr>
+      <tr *ngIf="varsGlobal.language.includes('English')">
+        <th>Transport Date </th>
+        <th>Time </th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('Francais')">
         <th>Date du Transport</th>
         <th>Heure</th>
       </tr>
@@ -184,29 +202,36 @@
   </div>
 
   <div *ngIf="transport.origin.length>8 && transport.destination.length>8">
-    <strong>Prix </strong>
+    <strong *ngIf="varsGlobal.language.includes('English')">Price </strong>
+    <strong *ngIf="varsGlobal.language.includes('Francais')">Prix </strong>
     <strong *ngIf="transport.loadsFee!=null && transport.distance!=null">{{transport.loadsFee}}</strong>
     <!-- <br> -->
-    <span *ngIf="transport.loadsFee==null">en estimation</span>
+    <span *ngIf="transport.loadsFee==null">
+      <span *ngIf="varsGlobal.language.includes('English')">estimating</span>
+      <span *ngIf="varsGlobal.language.includes('Francais')">en estimation</span>
+    </span>
     <!-- <label>Distance(mile)</label>
     <input type="number" [(ngModel)]="transport.distance" 
     style="width: 10pc;" class="form-control" disabled/>
     <span>{{(showKm(this.transport.distance)+ " kms")}}</span> -->
     <div *ngIf="transport.typeDoc==2 && transport.loadsFee!=null && transport.distance!=null">
       <div>  
-        <strong>Contact de Depart </strong>
+        <strong *ngIf="varsGlobal.language.includes('English')">Departures' Contact </strong>
+        <strong *ngIf="varsGlobal.language.includes('Francais')">Contact de Depart </strong>
         <span>
           <input style="width: 100ch;" type="text" [(ngModel)]="transport.nomClient">
         </span>
       </div>
       <div>
-        <strong>Contact de Livraison </strong>
+        <strong *ngIf="varsGlobal.language.includes('English')">Deliverys' Contact </strong>
+        <strong *ngIf="varsGlobal.language.includes('Francais')">Contact de Livraison </strong>
         <span>
           <input style="width: 100ch;" type="text" [(ngModel)]="transport.contactDest">
         </span>
       </div>
       <div>
-        <strong>Plus Infos </strong>
+        <strong *ngIf="varsGlobal.language.includes('English')">More Infos </strong>
+        <strong *ngIf="varsGlobal.language.includes('Francais')">Plus Infos </strong>
         <textarea name="comments" class="form-control" cols="80" rows="2"
           [(ngModel)]="transport.comments"
           style="margin-top: 0px">
@@ -220,7 +245,10 @@
     <!--Save Evaluation-->
     <!-- <button class="btn btn-link" *ngIf="transport.typeDoc==1" (click)="saveSimple()">Save</button>  -->
     <!--Send command-->
-    <button class="btn btn-link" *ngIf="transport.typeDoc==2" (click)="saveSimple()">Envoyer</button>
+    <button class="btn btn-link" *ngIf="transport.typeDoc==2" (click)="saveSimple()">
+      <span *ngIf="varsGlobal.language.includes('English')">Send</span>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Envoyer</span>
+    </button>
     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <!-- <button class="btn btn-link" *ngIf="transport.typeDoc==1 && transport.id>0" (click)="printBonDeTransport('printevaluation')">Print/Close</button>
     <button class="btn btn-link" *ngIf="transport.typeDoc==2 && transport.id>0" (click)="printBonDeTransport('printcommand')">Print/Close</button> -->
@@ -267,18 +295,28 @@
 
 <div id="sendcommand" hidden
   *ngIf="transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
-  <h3>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h3>
-  <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
-    Commande {{loadFrequent.nom}}</h3>
-  <h4>Prix: {{transport.loadsFee}}</h4>
-  <h4>De: {{transport.origin}}</h4>
-  <h4 *ngIf="transport.nomClient!=null">Contact de Depart: {{transport.nomClient}}</h4>
-  <h4>A: {{transport.destination}}</h4>
-  <!-- <h4>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h4> -->
-  <!-- <h4>Prix: {{transport.loadsFee}}</h4> -->
-  <!-- <h4>Contact de Depart: {{transport.nomClient}}</h4> -->
-  <h4 *ngIf="transport.contactDest!=null">Contact de Livraison: {{transport.contactDest}}</h4>
-  <h4 *ngIf="transport.comments!=null">Plus Infos: {{transport.comments}}</h4>
+  <div *ngIf="varsGlobal.language.includes('English')">
+    <h3>Transport Date: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h3>
+    <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
+      Order {{loadFrequent.nom}}</h3>
+    <h4>Price: {{transport.loadsFee}}</h4>
+    <h4>From: {{transport.origin}}</h4>
+    <h4 *ngIf="transport.nomClient!=null">Departures' Contact: {{transport.nomClient}}</h4>
+    <h4>To: {{transport.destination}}</h4>
+    <h4 *ngIf="transport.contactDest!=null">Deliverys' Contact: {{transport.contactDest}}</h4>
+    <h4 *ngIf="transport.comments!=null">More Infos: {{transport.comments}}</h4>
+  </div>
+  <div *ngIf="varsGlobal.language.includes('Francais')">
+    <h3>Date du Transport: {{showDateLocal(transport.dateReserve) | date: 'dd-MMM-yyyy'}} &nbsp; {{transport.timeResrvation}}</h3>
+    <h3><span *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</span> 
+      Commande {{loadFrequent.nom}}</h3>
+    <h4>Prix: {{transport.loadsFee}}</h4>
+    <h4>De: {{transport.origin}}</h4>
+    <h4 *ngIf="transport.nomClient!=null">Contact de Depart: {{transport.nomClient}}</h4>
+    <h4>A: {{transport.destination}}</h4>
+    <h4 *ngIf="transport.contactDest!=null">Contact de Livraison: {{transport.contactDest}}</h4>
+    <h4 *ngIf="transport.comments!=null">Plus Infos: {{transport.comments}}</h4>
+  </div>
 </div>
 <br><br>
 

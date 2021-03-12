@@ -158,6 +158,7 @@ const appRoutes:Routes=[
   {path: 'terminal-follow', component: TerminalFollowComponent},
   {path: 'new-terminal', component:  NewTerminalComponent},
   {path: 'terminals', component:  TerminalsComponent},
+  {path: 'app-test', component: AppTestComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 

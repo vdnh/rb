@@ -1287,7 +1287,8 @@ onSortDate(data:Array<Transport>){
           console.log(err);
         })
       })
-      alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
+      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"It'sent.")
+      if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
       // after create order then create itineraire
       if(this.transport.typeDoc==2){ // if a command, create route
         let route = new Itineraire();
@@ -1986,7 +1987,7 @@ onSortDate(data:Array<Transport>){
     if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
       this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
     if(this.varsGlobal.language.includes('English'))
-      this.em.titre= this.transport.nomEntreprise + " - Command: " + this.loadFrequent.nom 
+      this.em.titre= this.transport.nomEntreprise + " - Order: " + this.loadFrequent.nom 
       //+
       // " - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
       // ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
