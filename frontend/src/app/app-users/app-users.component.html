@@ -1,10 +1,40 @@
 <div *ngIf="role=='ADMIN'">
-  <span><button class="btn btn-link">Users</button></span>
-  <span><button class="btn btn-link">Plan Setting</button></span>
-  <span><button class="btn btn-link">Orders</button></span>
-  <span><button class="btn btn-link">Orders Historic</button></span>
-  <hr style="border: 1px dotted black"/>
-  <div>
+  <span><button class="btn btn-link" (click)="onUsers()">
+    <strong *ngIf="usersMode">Users</strong>
+    <span *ngIf="!usersMode">Users</span>
+  </button></span>
+  <span><button class="btn btn-link" (click)="onPlanSetting()">
+    <strong *ngIf="planSettingMode">Plan Setting</strong>
+    <span *ngIf="!planSettingMode">Plan Setting</span>
+  </button></span>
+  <span><button class="btn btn-link" (click)="onOrders()">
+    <strong *ngIf="ordersMode">Orders</strong>
+    <span *ngIf="!ordersMode">Orders</span>
+  </button></span>
+  <span><button class="btn btn-link" (click)="onOrdersHistoric()">
+    <strong *ngIf="ordersHistoricMode">Orders Historic</strong>
+    <span *ngIf="!ordersHistoricMode">Orders Historic</span>
+  </button></span>
+  
+  <!-- <hr style="border: 1px dotted black"/> -->
+  <!-- 
+    usersMode = false;
+    planSettingMode = false;
+    ordersMode = true;  // to show ordersMode for first view
+    ordersHistoricMode = false;
+   -->
+  
+  <!-- <div [hidden]="!planSettingMode">
+    <span>PlanSettingMode</span>
+  </div>
+  <div [hidden]="!ordersMode">
+    <span>OrdersMode</span>
+  </div>
+  <div [hidden]="!ordersHistoricMode">
+    <span>OrdersHistoricMode</span>
+  </div> -->
+
+  <div [hidden]="!planSettingMode">
     <table border="1">
       <tr>
         <th>Name</th>
@@ -28,7 +58,7 @@
       </tr>
     </table>
   </div>
-  <table border="1">
+  <table border="1" [hidden]="!ordersMode">
     <tr>Orders Waittings</tr>
     <tr>
       <th>#Num</th>
@@ -47,7 +77,7 @@
       <!-- <td><button>Invoice</button></td> -->
     </tr>
   </table>
-  <table border="1">
+  <table border="1" [hidden]="!ordersHistoricMode">
     <tr>Orders History</tr>
     <tr>
       <th>#Num</th>
@@ -67,164 +97,166 @@
 </table>
 </div>
 
-
-<hr style="border: 1px dotted black"/>
-<h3>Create User</h3>
-<hr style="border: 1px dotted black"/>
-<div class="panel-body">
+<div [hidden]="!usersMode">
+  <!-- <span>UserMode</span> -->
+  <hr style="border: 1px dotted black"/>
+  <h3>Create User</h3>
+  <hr style="border: 1px dotted black"/>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Username</label>
+          <input type="text"  [(ngModel)]="appUser.username" name="username" class="form-control"/>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Password</label>
+          <input type="password"  [(ngModel)]="appUser.password" name="password" placeholder="Password" 
+          class="form-control" required #password="ngModel" />
+          <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
+            <div *ngIf="password.errors.required"> Password est denamde required. </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Confirm Password</label>
+          <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
+          class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
+        <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
+          <div *ngIf="confirmpassword.errors.required"> Confirm password is required. </div>
+          <div *ngIf="confirmpassword.errors.pattern"> Password & Confirm Password does not match.</div>
+        </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Role</label>
+          <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
+            (ngModelChange)="typeRoleChange($event)" required>
+            <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2" *ngIf="!appUser.roleSimple.includes('DISPATCH')">
+        <!-- <div class="form-group"> -->
+          <!-- <label >IdUser(Sh/Tr)</label> -->
+          <label class="control-label">For </label>
+          <select class="form-control" [(ngModel)]="appUser.idUser">
+            <option [disabled]="appUser.roleSimple.includes('TRANSPORTER')  
+            || appUser.roleSimple.includes('TECHNICIEN') || appUser.roleSimple.includes('TERMINAL')" 
+            *ngFor="let e of listShippers" [ngValue]="e.id" >{{e.nom}}
+            </option>
+            <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
+            *ngFor="let e of listTrans" [ngValue]="e.id" >{{e.nom}}</option>
+          </select>
+          <!-- <input type="text" [(ngModel)]="appUser.idUser"
+                name="idUser" (change)="idUserChange()" class="form-control" list="defaultPros"
+                [disabled]="disabledIdUser">
+          <datalist id="defaultPros">
+            <option [disabled]="appUser.roleSimple.includes('TRANSPORTER') || appUser.roleSimple.includes('DISPATCH') || appUser.roleSimple.includes('TECHNICIAN')" 
+            *ngFor="let e of listShippers" [ngValue]="e" >Ship {{e.id}} {{e.nom}}
+            </option>
+            <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
+            *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
+          </datalist> -->
+        <!-- </div> -->
+      </div>
+      <!-- <div class="col-sm-12 col-md-1 col-lg-1">
+        <div class="form-group">
+          <label >IdSecond(Sh/Tr)</label>
+          
+          <input type="text" [(ngModel)]="appUser.idSecond"
+            name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
+            [disabled]="disabledIdSecond || appUser.idUser==''"/>
+          <datalist id="defaultPros2em">
+            <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
+          </datalist>
+        </div>
+      </div> -->
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Full Name</label>
+          <input type="text" [(ngModel)]="appUser.fullName" name="fullName"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button [disabled]="!(passwordCheck==appUser.password && passwordCheck!='')" (click)="onCreatUser()">OK</button>
+    </div>
+  </div>
+  <hr style="border: 1px dotted black"/>
+  <h3>Modify User</h3>
+  <hr style="border: 1px dotted black"/>
   <div class="row">
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Username</label>
-        <input type="text"  [(ngModel)]="appUser.username" name="username" class="form-control"/>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Username</label>        
+          <select type="text" class="form-control" [(ngModel)]="appUserToMod">
+            <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Password</label>
-        <input type="password"  [(ngModel)]="appUser.password" name="password" placeholder="Password" 
-        class="form-control" required #password="ngModel" />
-        <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
-          <div *ngIf="password.errors.required"> Password est denamde required. </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Password</label>
+          <input type="password"  [(ngModel)]="appUserToMod.password" name="passwordToMod" placeholder="Password" 
+          class="form-control" required #passwordToMod="ngModel" />
+          <div *ngIf="passwordToMod.invalid && passwordToMod.touched" class="alert alert-danger">
+            <div *ngIf="passwordToMod.errors.required"> Password est denamde required. </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Confirm Password</label>
+          <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
+          class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
+        <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
+          <div *ngIf="confirmpasswordToMod.errors.required"> Confirm password is required. </div>
+          <div *ngIf="confirmpasswordToMod.errors.pattern"> Password & Confirm Password does not match.</div>
+        </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Role</label>
+          <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
+            (ngModelChange)="typeRoleChange($event)" required disabled>
+            <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+          </select>
+        </div>
+      </div>
+      <!-- <div class="col-sm-12 col-md-1 col-lg-1">
+        <div class="form-group">
+          <label >For</label>
+          
+          <input type="text" [(ngModel)]="appUserToMod.idUser"
+                name="idUserToMod" class="form-control" disabled>
+        </div>
+      </div> -->
+      <!-- <div class="col-sm-12 col-md-1 col-lg-1">
+        <div class="form-group">
+          <label >IdSecond(Sh/Tr)</label>
+          
+          <input type="text" [(ngModel)]="appUserToMod.idSecond"
+            name="idSecondToMod" class="form-control" disabled/>
+        </div>
+      </div> -->
+      <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+          <label >Full Name</label>
+          <input type="text" [(ngModel)]="appUserToMod.fullName" name="fullName"/>
         </div>
       </div>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Confirm Password</label>
-        <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
-        class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
-      <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
-        <div *ngIf="confirmpassword.errors.required"> Confirm password is required. </div>
-        <div *ngIf="confirmpassword.errors.pattern"> Password & Confirm Password does not match.</div>
-      </div>
-      </div>
+    <div class="form-group">
+      <button [disabled]="!(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!='')" (click)="onModifyUser()">Modify</button>
+      <span>&nbsp;&nbsp;</span>
+      <button (click)="onDeleteUser()">Delete</button>
     </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Role</label>
-        <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
-          (ngModelChange)="typeRoleChange($event)" required>
-          <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-sm-12 col-md-2 col-lg-2" *ngIf="!appUser.roleSimple.includes('DISPATCH')">
-      <!-- <div class="form-group"> -->
-        <!-- <label >IdUser(Sh/Tr)</label> -->
-        <label class="control-label">For </label>
-        <select class="form-control" [(ngModel)]="appUser.idUser">
-          <option [disabled]="appUser.roleSimple.includes('TRANSPORTER')  
-          || appUser.roleSimple.includes('TECHNICIEN') || appUser.roleSimple.includes('TERMINAL')" 
-           *ngFor="let e of listShippers" [ngValue]="e.id" >{{e.nom}}
-          </option>
-          <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
-          *ngFor="let e of listTrans" [ngValue]="e.id" >{{e.nom}}</option>
-        </select>
-        <!-- <input type="text" [(ngModel)]="appUser.idUser"
-              name="idUser" (change)="idUserChange()" class="form-control" list="defaultPros"
-              [disabled]="disabledIdUser">
-         <datalist id="defaultPros">
-           <option [disabled]="appUser.roleSimple.includes('TRANSPORTER') || appUser.roleSimple.includes('DISPATCH') || appUser.roleSimple.includes('TECHNICIAN')" 
-           *ngFor="let e of listShippers" [ngValue]="e" >Ship {{e.id}} {{e.nom}}
-          </option>
-           <option [disabled]="appUser.roleSimple.includes('SHIPPER')" 
-           *ngFor="let e of listTrans" [ngValue]="e" >Trans {{e.id}} {{e.nom}}</option>
-         </datalist> -->
-      <!-- </div> -->
-    </div>
-    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
-      <div class="form-group">
-        <label >IdSecond(Sh/Tr)</label>
-        
-        <input type="text" [(ngModel)]="appUser.idSecond"
-          name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
-          [disabled]="disabledIdSecond || appUser.idUser==''"/>
-         <datalist id="defaultPros2em">
-           <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
-         </datalist>
-      </div>
-    </div> -->
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Full Name</label>
-        <input type="text" [(ngModel)]="appUser.fullName" name="fullName"/>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <button [disabled]="!(passwordCheck==appUser.password && passwordCheck!='')" (click)="onCreatUser()">OK</button>
-  </div>
 </div>
-<hr style="border: 1px dotted black"/>
-<h3>Modify User</h3>
-<hr style="border: 1px dotted black"/>
-<div class="row">
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Username</label>        
-        <select type="text" class="form-control" [(ngModel)]="appUserToMod">
-          <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Password</label>
-        <input type="password"  [(ngModel)]="appUserToMod.password" name="passwordToMod" placeholder="Password" 
-        class="form-control" required #passwordToMod="ngModel" />
-        <div *ngIf="passwordToMod.invalid && passwordToMod.touched" class="alert alert-danger">
-          <div *ngIf="passwordToMod.errors.required"> Password est denamde required. </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Confirm Password</label>
-        <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
-        class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
-      <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
-        <div *ngIf="confirmpasswordToMod.errors.required"> Confirm password is required. </div>
-        <div *ngIf="confirmpasswordToMod.errors.pattern"> Password & Confirm Password does not match.</div>
-      </div>
-      </div>
-    </div>
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Role</label>
-        <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
-          (ngModelChange)="typeRoleChange($event)" required disabled>
-          <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
-        </select>
-      </div>
-    </div>
-    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
-      <div class="form-group">
-        <label >For</label>
-        
-        <input type="text" [(ngModel)]="appUserToMod.idUser"
-              name="idUserToMod" class="form-control" disabled>
-      </div>
-    </div> -->
-    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
-      <div class="form-group">
-        <label >IdSecond(Sh/Tr)</label>
-        
-        <input type="text" [(ngModel)]="appUserToMod.idSecond"
-          name="idSecondToMod" class="form-control" disabled/>
-      </div>
-    </div> -->
-    <div class="col-sm-12 col-md-2 col-lg-2">
-      <div class="form-group">
-        <label >Full Name</label>
-        <input type="text" [(ngModel)]="appUserToMod.fullName" name="fullName"/>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <button [disabled]="!(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!='')" (click)="onModifyUser()">Modify</button>
-    <span>&nbsp;&nbsp;</span>
-    <button (click)="onDeleteUser()">Delete</button>
-  </div>
 <hr style="border: 1px dotted black"/>
 

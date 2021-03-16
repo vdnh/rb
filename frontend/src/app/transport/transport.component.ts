@@ -1186,6 +1186,12 @@ export class TransportComponent implements OnInit, OnDestroy {
     this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
       this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
         this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
+        // del Itineraire if there is
+        this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null) this.itinerairesService.deleteItineraire(it.id).subscribe((dt:Itineraire)=>{
+
+          }, err=>{console.log()})
+        }, err=>{console.log()})
       }, err=>{console.log(err)})
     }, err=>{
       console.log(err)

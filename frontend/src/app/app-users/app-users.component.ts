@@ -374,6 +374,38 @@ export class AppUsersComponent implements OnInit {
     })
   }
   
+  usersMode = false;
+  planSettingMode = false;
+  ordersMode = true;  // to show ordersMode for first view
+  ordersHistoricMode = false;
+  
+  onUsers(){
+    this.usersMode = true;
+    this.planSettingMode = false;
+    this.ordersMode = false;  
+    this.ordersHistoricMode = false;
+  }
+
+  onPlanSetting(){
+    this.usersMode = false;
+    this.planSettingMode = true;
+    this.ordersMode = false;  
+    this.ordersHistoricMode = false;
+  }
+
+  onOrders(){
+    this.usersMode = false;
+    this.planSettingMode = false;
+    this.ordersMode = true;  
+    this.ordersHistoricMode = false;
+  }
+
+  onOrdersHistoric(){
+    this.usersMode = false;
+    this.planSettingMode = false;
+    this.ordersMode = false;  
+    this.ordersHistoricMode = true;
+  }
 }
 
 export class PlanOrderTransporter{

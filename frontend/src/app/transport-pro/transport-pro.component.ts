@@ -1287,8 +1287,8 @@ onSortDate(data:Array<Transport>){
           console.log(err);
         })
       })
-      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"It'sent.")
-      if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
+      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
+      if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
       // after create order then create itineraire
       if(this.transport.typeDoc==2){ // if a command, create route
         let route = new Itineraire();
