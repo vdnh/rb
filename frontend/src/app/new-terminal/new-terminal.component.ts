@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Terminal } from 'src/model/model.terminal';
 
-import { Shipper } from 'src/model/model.shipper';
-import { ShippersService } from '../../services/shippers.service';
-import { ContactsService } from '../../services/contacts.service';
-import { Contact } from 'src/model/model.contact';
-import { Adresse } from 'src/model/model.adresse';
-import { AdressesService } from '../../services/adresses.service';
+// import { Shipper } from 'src/model/model.shipper';
+// import { ShippersService } from '../../services/shippers.service';
+// import { ContactsService } from '../../services/contacts.service';
+// import { Contact } from 'src/model/model.contact';
+// import { Adresse } from 'src/model/model.adresse';
+// import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
 import { Router } from '@angular/router';
-import * as myGlobals from 'src/services/globals';
+// import * as myGlobals from 'src/services/globals';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { TerminalsService } from 'src/services/terminals.service';
 import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
+import { GeolocationService } from 'src/services/geolocation.service';
+import { GeocodingService } from 'src/services/geocoding.service';
 
 @Component({
   selector: 'app-new-terminal',
@@ -45,7 +47,7 @@ export class NewTerminalComponent implements OnInit {
     // public adressesService:AdressesService, 
     public authenticationService:AuthenticationService, 
     public varsGlobal:VarsGlobal,
-    public router:Router) { }
+    public router:Router, private geolocation : GeolocationService) { }
 
   ngOnInit() {
     this.role=localStorage.getItem('role');
@@ -72,7 +74,12 @@ export class NewTerminalComponent implements OnInit {
       this.trucksGps=this.trucks.filter(x=>(x.gps))
       this.trucksNoGps=this.trucks.filter(x=>(!x.gps))
     }, err=>{console.log(err)})
-
+    
+    // get local coordinates
+    this.geolocation.getCurrentPosition().subscribe((data)=>{
+      this.terminal.latitude=data.coords.latitude,
+      this.terminal.longitude=data.coords.longitude
+    },err=>{console.log(err)})
   }
 
   onSelectTruck(){

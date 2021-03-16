@@ -1102,6 +1102,16 @@ export class CamionsListComponent implements OnInit, OnDestroy {
           this.transportsService.getDetailTransport(this.itiner.idTransport).subscribe((tr:Transport)=>{
             tempTransport=tr;
             // set camion to transport
+            if(this.itiner.idCamion!=null && this.itiner.idCamion>0 
+              && this.itiner.camionAttribue!=null && this.itiner.camionAttribue.length>0)
+            {
+              // it means that it's schedule
+              tempTransport.sent=true
+            }
+            else{
+              // it means that it didn't schedule
+              tempTransport.sent=false
+            }
             tempTransport.camionAttribue = this.itiner.camionAttribue
             tempTransport.idCamion = this.itiner.idCamion
             tempTransport.imgUrl = this.itiner.imgUrl

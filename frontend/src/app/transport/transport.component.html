@@ -6,7 +6,7 @@
   </select>
 </div> -->
 <div>
-  <label class="control-label"><strong>Select Client</strong></label>
+  <label class="control-label"><strong>Clients</strong></label>
   <select class="form-control" [(ngModel)]="shipper" (ngModelChange)="shipperChange()" style="width: 25ch;">
     <option [ngValue]="null" selected>All</option>
     <option *ngFor="let shp of listShipper" [ngValue]="shp">{{shp.nom}}</option>
@@ -15,11 +15,20 @@
   <!-- <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">Placer une Commande</button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>  -->
   
-  <button class="btn btn-link" (click)="onListCommande()" [disabled]="transport.typeDoc!=0">ListCommandes</button>
+  <button class="btn btn-link" (click)="onListCommande()" [disabled]="transport.typeDoc!=0">
+    <span *ngIf="varsGlobal.language.includes('Francais')">Commandes</span>
+    <span *ngIf="varsGlobal.language.includes('English')">Orders</span>
+  </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="onListEvalue()" [disabled]="transport.typeDoc!=0">ListEvalues</button>
+  <button class="btn btn-link" (click)="onListEvalue()" [disabled]="transport.typeDoc!=0">
+    <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalues</span>
+    <span *ngIf="varsGlobal.language.includes('English')">Prices Evaluated</span>
+  </button>
   <span *ngIf="shipper!=null && shipper.id!=null && shipper.id>0">
-    <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">Evaluer un Taux</button>
+    <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">
+      <span *ngIf="varsGlobal.language.includes('Francais')">Evaluer un Taux</span>
+      <span *ngIf="varsGlobal.language.includes('English')">Evaluate a Rate</span>
+    </button>
     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <button class="btn btn-link" (click)="resetSimple()" [disabled]="transport.typeDoc==0">Reset</button>
     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -30,15 +39,30 @@
   <!-- list commandes -->
   <div *ngIf="modeListCommande">
     <table border="1">
-      <tr><th colspan="10">List Commandes</th></tr>
-      <tr>
+      <tr *ngIf="varsGlobal.language.includes('Francais')">
+        <th colspan="10">Commandes</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('English')">
+        <th colspan="10">Orders</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('Francais')">
         <th>#Num</th>
         <th>Client</th>
-        <th>TypeTransport</th>        
-        <th>DateEvaluation</th>
-        <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
+        <th>Type</th>        
+        <th>DateCommande</th>
+        <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
+        <th>Delete</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('English')">
+        <th>#Num</th>
+        <th>Client</th>
+        <th>Type</th>        
+        <th>DateOrder</th>
+        <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
+        <th>From</th>
+        <th>To</th>
         <th>Delete</th>
       </tr>
       <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">&nbsp;</th></tr>
@@ -170,17 +194,30 @@
   <!-- list evalues -->
   <div *ngIf="modeListEvalue">
     <table border="1">
-      <tr><th colspan="10">List Evalues</th></tr>
-      <tr>
+      <tr *ngIf="varsGlobal.language.includes('Francais')">
+        <th colspan="10">Prix Evalues</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('English')">
+        <th colspan="10">Prices Evaluated</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('Francais')">
         <th>#Num</th>
         <th>Client</th>
-        <th>TypeTransport</th>        
-        <th>DateEvaluation</th>
-        <th>&nbsp;&nbsp; Prix &nbsp;&nbsp;</th>
+        <th>Type</th>        
+        <th>Date</th>
+        <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
         <th>De</th>
         <th>A</th>
-        <!-- <th>Commander</th>
-        <th>print</th> -->
+        <th>Delete</th>
+      </tr>
+      <tr *ngIf="varsGlobal.language.includes('English')">
+        <th>#Num</th>
+        <th>Client</th>
+        <th>Type</th>        
+        <th>Date</th>
+        <th>&nbsp;&nbsp;Price&nbsp;&nbsp;</th>
+        <th>From</th>
+        <th>To/th>
         <th>Delete</th>
       </tr>
       <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="10">&nbsp;</th></tr>
@@ -215,7 +252,10 @@
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
     <br>
     <strong *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</strong> 
-    <strong *ngIf="transport.typeDoc==1">Evaluer &nbsp;</strong>
+    <strong *ngIf="transport.typeDoc==1">
+      <span *ngIf="varsGlobal.language.includes('Francais')">Evaluer &nbsp;</span>
+      <span *ngIf="varsGlobal.language.includes('English')">Evaluate &nbsp;</span>
+    </strong>
     <strong *ngIf="transport.typeDoc==2">Commande &nbsp;</strong>
     <strong>{{loadFrequent.nom}}</strong>
   </div>
@@ -231,7 +271,10 @@
     <span><input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()"></span>
   </div> -->
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
-    <strong>Adresse de Depart </strong>
+    <strong>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Depart </span>
+      <span *ngIf="varsGlobal.language.includes('English')">From </span>
+    </strong>
     <span>
       <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies"> -->
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
@@ -244,7 +287,10 @@
   </div>
 
   <div *ngIf="transport.origin.length>8">
-    <strong>Adresse de Livraison </strong> 
+    <strong>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Livraison </span>
+      <span *ngIf="varsGlobal.language.includes('English')">To </span>
+    </strong> 
     <span>
       <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
       <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
@@ -295,10 +341,13 @@
     </table>
   </div>
   
-  <br>
+  <!-- <br> -->
 
   <div *ngIf="transport.origin.length>8 && transport.destination.length>8">
-    <strong>Prix </strong>
+    <strong>
+      <span *ngIf="varsGlobal.language.includes('Francais')">Prix </span>
+      <span *ngIf="varsGlobal.language.includes('English')">Price </span>
+    </strong>
     <strong *ngIf="transport.loadsFee!=null && transport.distance!=null">
       <!-- {{transport.loadsFee}} -->
       <input style="width: 10ch;" type="number" [(ngModel)]="transport.loadsFee">

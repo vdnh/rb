@@ -97,7 +97,7 @@
 </table>
 </div>
 
-<div [hidden]="!usersMode">
+<div [hidden]="appUser.roleSimple.includes('ADMIN') && !usersMode">
   <!-- <span>UserMode</span> -->
   <hr style="border: 1px dotted black"/>
   <h3>Create User</h3>
