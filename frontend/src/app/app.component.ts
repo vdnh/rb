@@ -15,6 +15,8 @@ import { Transporter } from 'src/model/model.transporter';
 import { TransportersService } from 'src/services/transporters.service';
 import { ViewportScroller } from '@angular/common';
 
+import { Subscription, interval } from 'rxjs';
+
 declare global {
   interface Window {
     rTCPeerConnection: RTCPeerConnection;
@@ -158,6 +160,94 @@ export class AppComponent implements OnInit{
       window.webkitRTCPeerConnection;
   }
 
+  subscription : Subscription;
+
+  ngOnDestroy(): void {
+    console.log('this.subscription.unsubscribe();')
+    if(this.subscription!=null) this.subscription.unsubscribe();
+  }
+
+  sleep(ms){
+    return new Promise((resolve)=>{
+      setTimeout(resolve, ms);
+    })
+  }
+
+  modeWindowSession = false;
+  timeRemain = 1000*60*5; // time remain 5 minutes
+  timeRemainMinuteShow=5
+  timeRemainSecondShow=0
+  checkSessionTimeLife(){
+    // we must calculate time to call checkSessionTimeLife()
+    // 1000 * 60 * 60 * 24  this is time for 1 day
+    let timeActual = new Date().getTime()
+    let timeToCheck = 1000 * 60 * 60 * 23 // normally we set timetocheck equal 23 hours
+    // let timeToCheck = 1000 * 60 * 5 //  we set timetocheck equal 5 minutes - 30 seconds / to test
+    let timeStarting = Number(localStorage.getItem('timeStarting'))
+    if(timeStarting!=undefined && timeStarting>0){
+      // console.log('timeStarting: ' + timeStarting)
+      // console.log('timeActual: ' + timeActual)
+      let timePass= timeActual - timeStarting
+      // console.log('timePass: ' + timePass)
+      timeToCheck = timeToCheck - timePass
+      // console.log('timeToCheck: ' + timeToCheck)      
+    }
+    else{
+      localStorage.setItem('timeStarting', timeActual.toString())
+    }
+    if(timeToCheck<=0){ //if timeToCheck <=0 logout instanement
+      this.logout();
+    }
+    else if(timeToCheck<1000*60*30)  // if timeToCheck < 30 minutes show message and logout in 5 minutes
+    {
+      // console.log("Your timeToCheck is so less, we must refressh your session")
+      // this.logout()
+      this.modeWindowSession = true;
+      interval(this.timeRemain).subscribe(val=>{this.logout()})  // logout after 5 minutes
+      let temp = this.timeRemain // set the time temp = this.timeRemain (5 minutes)
+      if(timeToCheck<this.timeRemain) temp=timeToCheck // but if timeToCheck < this.timeRemain (5 minutes) set time temp = timeToCheck
+      // while(temp>0){
+      //   setTimeout(()=>{temp=temp-1}, 1000)
+      //   this.timeRemainMinuteShow = temp % (1000*60)
+      //   this.timeRemainSecondShow = temp % (1000)
+      // }
+      interval(2000).subscribe(val=>{
+        temp=temp-2000
+        // console.log("temp " + temp)
+        this.timeRemainMinuteShow = (temp - (temp % (1000*60)))/(1000*60)
+        let stars = temp - (this.timeRemainMinuteShow*1000*60)
+        this.timeRemainSecondShow = (stars - stars % (1000))/1000
+      })
+    }
+    else{ // if timeToCheck > 30 minutes - set un subscription with timer of timeToCheck
+      const intervalSession = interval(timeToCheck); // interval for refresh session
+      // const intervalSession = interval(10000); // interval for refresh session - to test
+      // const intervalSession = interval(2000000); // test with 20 seconds, interval for refresh session
+      if(this.subscription!=null) this.subscription.unsubscribe();
+      this.subscription=intervalSession.subscribe(val=>{
+        // alert('Votre session sera expire bientot. Vous devez Logout et puis Login pour rafraichir votre session')
+        this.modeWindowSession = true;
+        // this.subscription.unsubscribe();
+        // setTimeout(()=>{alert("Hi from setTimeout")}, 1000*5) // show this message after 5 seconds - to test
+        interval(this.timeRemain).subscribe(val=>{this.logout()})  // logout after this.timeRemain minutes
+        // this.sleep(5000).then(()=>this.logout()); // sleep 5 seconds 
+        let temp = this.timeRemain
+        // while(temp>0){
+        //   setTimeout(()=>{temp=temp-1}, 1000)
+        //   this.timeRemainMinuteShow = temp % (1000*60)
+        //   this.timeRemainSecondShow = temp % (1000)
+        // }
+        interval(2000).subscribe(val=>{
+          temp=temp-2000
+          this.timeRemainMinuteShow = (temp - (temp % (1000*60)))/(1000*60)
+          let stars = temp - (this.timeRemainMinuteShow*1000*60)
+          this.timeRemainSecondShow = (stars - stars % (1000))/1000
+        })
+      })
+    }
+    
+  }
+
   ngOnInit() { 
     
     //await this.determineLocalIp();
@@ -190,6 +280,14 @@ export class AppComponent implements OnInit{
         let userLogsId = Number (localStorage.getItem('userLogsId'))
         this.userLogsService.getDetailUserLogs(userLogsId).subscribe((data:UserLogs)=>{
           this.varsGlobal.userLogs=data;
+          // after checked eligible, check time life of sesseion if it isn't TERMINAL && CHAUFFEUR
+          if(!localStorage.getItem('role').includes('CHAUFFEUR') &&
+          !localStorage.getItem('role').includes('TERMINAL'))
+          {
+            // console.log("localStorage.getItem('role'): "+localStorage.getItem('role'))
+            // console.log('checkSessionTimeLife from init()')
+            this.checkSessionTimeLife()
+          }
         }, err=>{console.log(err)})
       }
     }
@@ -519,11 +617,20 @@ export class AppComponent implements OnInit{
     else await this.authService.login(dataForm).subscribe(resp=> {
       let jwtToken=resp.headers.get('Authorization');
       this.authService.saveTonken(jwtToken);
-      //console.log(jwtToken);        
+      //console.log(jwtToken); 
+      // after logged in, check time life of sesseion
+      // this.checkSessionTimeLife()       
       //*
       this.authService.getUserInfo().subscribe(async (res:Role)=>{
         this.role = res.roleName;
         localStorage.setItem('role', this.role);
+        // after logged in && got role, check time life of sesseion  if it isn't TERMINAL || CHAUFFEUR
+        if(!this.role.includes('CHAUFFEUR') && !this.role.includes('TERMINAL'))
+        {
+          // console.log("this.role: "+this.role)
+          // console.log('checkSessionTimeLife from onLogin()')
+          this.checkSessionTimeLife()
+        }
         this.usernameLogin=dataForm.username;  // to get usename
         localStorage.setItem('usernameLogin', this.usernameLogin)
         this.roleUsernameLogin=await btoa(this.role+this.usernameLogin)
@@ -746,6 +853,7 @@ export class AppComponent implements OnInit{
   }
 
   public async logout(){
+    this.modeWindowSession = false; // set modeWindowSession = false to hide window check session
     this.modeExpress=0; // to switch - modeExpress==1 : Remorquage Express; modeExpress==2 : Transport Express; 
     if(this.varsGlobal!=null&&this.varsGlobal.userLogs!=null&&this.varsGlobal.userLogs.loginTime!=null){
       this.varsGlobal.userLogs.logoutTime=new Date();

@@ -43,6 +43,7 @@ export class AppUsersComponent implements OnInit {
   listPros: any[];
   listPros2em: any[];
   //listUser: Array<AppUser>;
+  transporter : Transporter;
   
   listPlanOrders:Array<PlanOrderTransporter>=[];
   listPlanOrdersArchived:Array<PlanOrderTransporter>=[];
@@ -56,14 +57,14 @@ export class AppUsersComponent implements OnInit {
 
   async onCreatUser(){
     let exist=false; // this loginName doesn't exist yet
-    if(this.appUser.roleSimple.includes('DISPATCH')){
-      let numDisp;
-      let numTech;
-      this.listAppUsers.forEach(apU=>{
+    // if(this.appUser.roleSimple.includes('DISPATCH')){
+    //   let numDisp;
+    //   let numTech;
+    //   this.listAppUsers.forEach(apU=>{
         
-      })
-      this.appUser.idUser=this.listTrans.pop().id.toString();
-    }
+    //   })
+    //   this.appUser.idUser=this.listTrans.pop().id.toString();
+    // }
     await this.listAppUsersAll.forEach(aU=>{
       if(aU.username.includes(this.appUser.username)&&(aU.username.length==this.appUser.username.length))
         {
@@ -72,6 +73,8 @@ export class AppUsersComponent implements OnInit {
         }
     })
     if(!exist){
+      this.appUser.idTransporter=this.transporter.id
+      this.appUser.entrepriseNom=this.transporter.nom
       this.authenticationService.createAppUser(this.appUser).subscribe((data:AppUser)=>{
         this.appUser = new AppUser();
         this.passwordCheck='';
@@ -83,6 +86,7 @@ export class AppUsersComponent implements OnInit {
   }
   
   typeRoleChange(type){
+    this.appUser.idUser=''; // set appUser.idUser to null each time it change the role
     this.appUser.roleSimple=type
     if(this.appUser.roleSimple.includes('ADMIN')){
       this.disabledIdUser=true;
@@ -139,6 +143,7 @@ export class AppUsersComponent implements OnInit {
           this.listTrans.push(data);
           // this.listTrans = data;
           this.typeRoleChange(this.roleTypes[0]);
+          this.transporter=data
         }, err=>{
           console.log(err)
         })
@@ -217,7 +222,7 @@ export class AppUsersComponent implements OnInit {
         ];
         this.listAppUsers=data.filter(x=>(
           x.idTransporter==Number(localStorage.getItem('idTransporter')) &&
-          !x.roleSimple.includes("TERMINAL")
+          !x.roleSimple.includes("TERMINAL") && (x.idUser==undefined || x.idUser.length==0)
         ));
       }
       else this.listAppUsers=data;

@@ -125,7 +125,7 @@
         <strong *ngIf="camionsList">Camions</strong>
     </button>
 <!--  -->
-    <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+    <button disabled (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
     </button>
@@ -1428,7 +1428,7 @@
         <strong *ngIf="camionsList">Units</strong>
     </button>
 <!--  -->
-    <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+    <button disabled (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Routes</span>
         <strong *ngIf="itineraire">Routes</strong>
     </button>

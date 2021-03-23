@@ -355,6 +355,15 @@
       <!--/div>
       <br>
     </div-->
+    
+    <!-- to show info session timelife -->
+    <h4 *ngIf="modeWindowSession" >
+      <strong style="color: red;">
+        Votre session expire dans {{timeRemainMinuteShow}}:{{timeRemainSecondShow>9?timeRemainSecondShow:"0"+timeRemainSecondShow}} <br>
+         Vous devez Logout et puis Login pour rafraichir votre session &nbsp;</strong>
+         <span><button class="btn btn-link" (click)="logout()">Logout</button></span>
+    </h4>
+
     <router-outlet *ngIf="mode!=2"></router-outlet>
     <!--br><br-->
     <!--footer *ngIf="mode!=2"-->
@@ -755,6 +764,14 @@
       <!--/div>
       <br>
     </div-->
+    
+    <!-- to show info session timelife -->
+    <h4 *ngIf="modeWindowSession" >
+      <strong style="color: red;">Your session expire in {{timeRemainMinuteShow}}:{{timeRemainSecondShow>9?timeRemainSecondShow:"0"+timeRemainSecondShow}}  <br> 
+        You must Logout and then Login to refresh your session &nbsp;</strong>
+      <span><button class="btn btn-link" (click)="logout()">Logout</button></span>
+    </h4>
+
     <router-outlet *ngIf="mode!=2"></router-outlet>
     <!--br><br-->
     <!--footer *ngIf="mode!=2"-->

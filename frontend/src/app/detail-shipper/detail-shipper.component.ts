@@ -117,6 +117,45 @@ export class DetailShipperComponent implements OnInit {
     WindowPrt.close();
   }
 
+  listLoginName:Array<string>=[];
+  checkLoginName(){
+    if(this.shipper.loginName.length<4)
+      alert('LoginName doit avoir au moins 4 characteres!')
+    if(this.shipper.loginName.length>=4){
+      // if login name change
+      if(this.appUser.username.length!=this.shipper.loginName.length ||
+        this.appUser.username.localeCompare(this.shipper.loginName)!=0)
+      {
+        // in case shipper.loginname changed, set appUser.username = shipper.loginName
+        // this.appUser.username = this.shipper.loginName
+        console.log('LoginName was changed.')
+        // must check UserName in list
+        this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+          data.forEach(aU=>{
+            this.listLoginName.push(aU.username)
+          })
+          let exist=false; // this loginName doesn't exist yet
+          this.listLoginName.forEach(loginName=>{
+            if(loginName.includes(this.shipper.loginName)&&(loginName.length==this.shipper.loginName.length))
+              {
+                alert("Username existe deja. Choisir un autre username, SVP!");
+                exist=true; // this loginName exist already
+              }
+          })
+          if(!exist)
+          {
+            this.appUser.username = this.shipper.loginName
+            this.saveShipper()
+          }
+        }, err=>{console.log(err)})
+      }
+      // if login name don't change
+      else{
+        this.saveShipper()
+      }
+    }
+  }
+  
   saveShipper(){
     if(this.shipper.password.length>=4){
       if(this.shipper.idTransporter==undefined && localStorage.getItem('idTransporter')!=undefined){ // checker si shipper n'appartient aucun transporter, et dispatch transporter modifie son shipper

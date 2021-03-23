@@ -216,7 +216,7 @@
                   <td colspan="2"><strong>Username - Password</strong></td>
                 </tr>
                 <tr *ngIf='!role.includes("SHIPPER")'>
-                  <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName" disabled></td>
+                  <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
                   <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
                 
                 </tr>         
@@ -226,7 +226,8 @@
             <td>
               <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
             </td>
-            <td><button class="btn btn-primary" (click)="saveShipper()">Enregistrer</button></td>
+            <td><button class="btn btn-primary" (click)="checkLoginName()">Enregistrer</button></td>
+            <!-- saveShipper() -->
             <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
             <td></td>
             <td></td>
@@ -600,7 +601,7 @@
                   <td colspan="2"><strong>Username - Password</strong></td>
                 </tr>
                 <tr *ngIf='!role.includes("SHIPPER")'>
-                  <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName" disabled></td>
+                  <td style="text-align: right;">Username: </td><td><input type="text" [(ngModel)]="shipper.loginName"></td>
                   <td style="text-align: right;">Password: </td><td><input type="text" [(ngModel)]="shipper.password"></td>
                   <!-- <td colspan="2">
                     <button (click)="onModifyUser()" class="btn btn-link">Modifier password</button>
@@ -612,7 +613,8 @@
             <td>
               <button (click)="printPriceList('toprint')" class="btn btn-primary">Print</button>
             </td>
-            <td><button class="btn btn-primary" (click)="saveShipper()">Save</button></td>
+            <td><button class="btn btn-primary" (click)="checkLoginName()">Save</button></td>
+            <!-- saveShipper() -->
             <!--td *ngIf='!role.includes("SHIPPER")'><button class="btn btn-primary" routerLink="/shippers">Quit</button></td--> 
             <td></td>
             <td></td>
