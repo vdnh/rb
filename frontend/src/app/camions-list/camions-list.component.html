@@ -65,7 +65,7 @@
                     <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                     <br><strong>Drop:</strong> {{iti.destination}}
                      <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                    <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
+                    <!-- <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
                 </li>
                 <br>
                 <!-- <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button>
@@ -86,7 +86,7 @@
                 <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                 <br><strong>Drop:</strong> {{iti.destination}}
                  <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
+                <!-- <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
             </li>
             <!-- <span mat-menu-item class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="refreshCamionsSurMap()">
                 Fermer
@@ -124,8 +124,8 @@
         <span *ngIf="!camionsList">Camions</span>
         <strong *ngIf="camionsList">Camions</strong>
     </button>
-<!--  -->
-    <button disabled (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+<!-- disabled -->
+    <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Itineraires</span>
         <strong *ngIf="itineraire">Itineraires</strong>
     </button>
@@ -190,7 +190,7 @@
         <div><br></div>
         
         <table border="1">
-            <tr><td colspan="5"><h4><strong>Liste Points de Repere</strong></h4></td></tr>
+            <tr><td colspan="5"><h4><strong>Points de Repere</strong></h4></td></tr>
             <tr>
                 <th>Nom</th>
                 <th>Adresse</th>
@@ -287,7 +287,7 @@
                                     <!-- <td> -->
                                         <br><strong>Drop</strong> {{iti.destination}}
                                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
+                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
                                     <!-- </td> -->
                                 </p>
                                 <!-- <tr>
@@ -351,7 +351,7 @@
 
                                         <br><strong>Drop</strong> {{iti.destination}}
                                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small>
+                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
                                 </p>
                         </tr>
                     </table>
@@ -534,7 +534,7 @@
         </table>
     </div>
     <div *ngIf="itineraire" id="toprint" class="col-md-7 col-lg-7">
-        <table border="1"  id="truck">
+        <table border="1"  id="truck" hidden>
             <!-- <tr><td colspan="7">Ajouter Itineraire</td></tr> -->
             <tr></tr>
             <tr>
@@ -844,7 +844,7 @@
         <div><br></div>
         
         <table border="1" class="table-responsive">
-            <tr><td colspan="3"><h4><strong>Liste Itineraires</strong></h4></td></tr>
+            <tr><td colspan="3"><h4><strong>Itineraires</strong></h4></td></tr>
             <tr>
                 <th style="width: 5%;"></th>
                 <th style="width: 40;">Itineraire</th> 
@@ -876,25 +876,28 @@
                     <!-- <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link"> -->
                         <button *ngIf="camionTemp!=null" class="btn btn-link" (click)="onClickCamionId(it.idCamion)">
                             <span *ngIf="(camionTemp.foreignName==null || camionTemp.foreignName.length==0)">
-                                {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
+                                {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele + 
+                                ((camionTemp.nameTerminal!=null&&camionTemp.nameTerminal.length>0) ? ('  +' +camionTemp.nameTerminal) : "")}}
                             </span>
-                            <span *ngIf="camionTemp.foreignName!=null && camionTemp.foreignName.length>0">{{camionTemp.foreignName}}</span>
+                            <span *ngIf="camionTemp.foreignName!=null && camionTemp.foreignName.length>0">{{camionTemp.foreignName + 
+                                ((camionTemp.nameTerminal!=null&&camionTemp.nameTerminal.length>0) ? ('  +' +camionTemp.nameTerminal) : "")}}
+                            </span>
                         </button>
                     <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null" style="width: 35%;">{{it.camionAttribue}}</td>
                 <!-- <td  style="width: 5%;"><button (click)="itinerFini(it)" class="btn btn-link">Finir</button></td> -->
-                <td colspan="2" style="width: 20%; font-size: small;">
+                <td hidden colspan="2" style="width: 20%; font-size: small;">
                     <button (click)="itinerFini(it)" class="btn btn-link">Finir</button> <button (click)="onModify(it)" class="btn btn-link">Modifier</button> <button (click)="itinerCancel(it)" class="btn btn-link">Annuler</button>
                 </td>
             </tr>
             <tr><br></tr>
-            <tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Finis
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersFinis; let i = index">
+            <tr hidden *ngFor="let it of itinersFinis; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>
@@ -919,13 +922,13 @@
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Delete</button></td>
             </tr>
             
-            <tr><br></tr>
-            <tr>
+            <tr hidden><br></tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Annules
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersCancels; let i = index">
+            <tr hidden *ngFor="let it of itinersCancels; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>
@@ -950,13 +953,13 @@
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Delete</button></td>
             </tr>
 
-            <tr><br></tr>
-            <tr>
+            <tr hidden><br></tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Archives
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersArchives; let i = index">
+            <tr hidden *ngFor="let it of itinersArchives; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>
@@ -1368,7 +1371,7 @@
                     <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                     <br><strong>Drop:</strong> {{iti.destination}}
                      <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                    <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
+                    <!-- <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                 </li>
                 <br>
                 <!-- <br> <button mat-menu-item (click)="showMessage('hi '+camion.unite)">showMessage</button>
@@ -1389,7 +1392,7 @@
                 <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
                 <br><strong>Drop:</strong> {{iti.destination}}
                  <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
+                <!-- <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
             </li>
             <!-- <span mat-menu-item class="btn btn-link" style="margin-bottom: 0;padding-bottom: 0;" (click)="refreshCamionsSurMap()">
                 Fermer
@@ -1427,8 +1430,8 @@
         <span *ngIf="!camionsList">Units</span>
         <strong *ngIf="camionsList">Units</strong>
     </button>
-<!--  -->
-    <button disabled (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
+<!-- disabled -->
+    <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
         <span *ngIf="!itineraire">Routes</span>
         <strong *ngIf="itineraire">Routes</strong>
     </button>
@@ -1493,7 +1496,7 @@
         <div><br></div>
         
         <table border="1">
-            <tr><td colspan="5"><h4><strong>List Landmark</strong></h4></td></tr>
+            <tr><td colspan="5"><h4><strong>Landmarks</strong></h4></td></tr>
             <tr>
                 <th>Name</th>
                 <th>Address</th>
@@ -1590,7 +1593,7 @@
                                     <!-- <td> -->
                                         <br><strong>Drop</strong> {{iti.destination}}
                                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
+                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                                     <!-- </td> -->
                                 </p>
                                 <!-- <tr>
@@ -1655,7 +1658,7 @@
 
                                         <br><strong>Drop</strong> {{iti.destination}}
                                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small>
+                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                                 </p>
                         </tr>
                     </table>
@@ -1838,7 +1841,7 @@
         </table>
     </div>
     <div *ngIf="itineraire" id="toprint" class="col-md-7 col-lg-7">
-        <table border="1"  id="truck">
+        <table border="1"  id="truck" hidden>
             <!-- <tr><td colspan="7">Ajouter Itineraire</td></tr> -->
             <tr></tr>
             <tr>
@@ -2133,7 +2136,7 @@
         <div><br></div>
         
         <table border="1" class="table-responsive">
-            <tr><td colspan="3"><h4><strong>List Routes</strong></h4></td></tr>
+            <tr><td colspan="3"><h4><strong>Routes</strong></h4></td></tr>
             <tr>
                 <th style="width: 5%;"></th>
                 <th style="width: 40;">Route</th> 
@@ -2165,25 +2168,28 @@
                     <!-- <button (click)="onClickCamionId(it.idCamion)" class="btn btn-link"> -->
                         <button *ngIf="camionTemp!=null" class="btn btn-link" (click)="onClickCamionId(it.idCamion)">
                             <span *ngIf="(camionTemp.foreignName==null || camionTemp.foreignName.length==0)">
-                                {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele}}
+                                {{camionTemp.unite + ' - ' + camionTemp.marque +'  ' +camionTemp.modele + 
+                                ((camionTemp.nameTerminal!=null&&camionTemp.nameTerminal.length>0) ? ('  +' +camionTemp.nameTerminal) : "")}}
                             </span>
-                            <span *ngIf="camionTemp.foreignName!=null && camionTemp.foreignName.length>0">{{camionTemp.foreignName}}</span>
+                            <span *ngIf="camionTemp.foreignName!=null && camionTemp.foreignName.length>0">{{camionTemp.foreignName + 
+                                ((camionTemp.nameTerminal!=null&&camionTemp.nameTerminal.length>0) ? ('  +' +camionTemp.nameTerminal) : "")}}
+                            </span>
                         </button>
                     <!-- </button>                     -->
                 </td>
                 <td *ngIf="it.idCamion==null" style="width: 35%;">{{it.camionAttribue}}</td>
                 <!-- <td  style="width: 5%;"><button (click)="itinerFini(it)" class="btn btn-link">Finir</button></td> -->
-                <td colspan="2" style="width: 20%; font-size: small;">
+                <td hidden colspan="2" style="width: 20%; font-size: small;">
                     <button (click)="itinerFini(it)" class="btn btn-link">Finish</button> <button (click)="onModify(it)" class="btn btn-link">Modify</button> <button (click)="itinerCancel(it)" class="btn btn-link">Cancel</button>
                 </td>
             </tr>
             <tr><br></tr>
-            <tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Finished
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersFinis; let i = index">
+            <tr hidden *ngFor="let it of itinersFinis; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>
@@ -2208,13 +2214,13 @@
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Delete</button></td>
             </tr>
             
-            <tr><br></tr>
-            <tr>
+            <tr hidden><br></tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Cancelled
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersCancels; let i = index">
+            <tr hidden *ngFor="let it of itinersCancels; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>
@@ -2239,13 +2245,13 @@
                 <td  style="width: 10%;"><button (click)="deleteItiner(it)" class="btn btn-link">Delete</button></td>
             </tr>
 
-            <tr><br></tr>
-            <tr>
+            <tr hidden><br></tr>
+            <tr hidden>
                 <th colspan="5">
                     Itineraires Archives
                 </th>
             </tr>
-            <tr *ngFor="let it of itinersArchives; let i = index">
+            <tr hidden *ngFor="let it of itinersArchives; let i = index">
                 <td style="width: 5%">&nbsp;{{i+1}}&nbsp;</td>
                 <td style="width: 40%">
                     <p>

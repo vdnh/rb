@@ -647,7 +647,10 @@ export class TransportComponent implements OnInit, OnDestroy {
     if(transport.camionAttribue.includes('Waiting')){
       transport.camionAttribue="";
       transport.idCamion=null
-      let r = confirm("Voulez vous le placer dans Waiting List ?")
+      if(this.varsGlobal.language.includes('English')){
+        var r = confirm("Do you want place Waiting List ?")
+      }
+      else var r = confirm("Voulez vous le placer dans la liste d'attente ?")
         if(r)
         {
           this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
@@ -683,7 +686,11 @@ export class TransportComponent implements OnInit, OnDestroy {
           }
         })
         if(camion!=null){
-          let r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
+          if(this.varsGlobal.language.includes('English')){
+            var r = confirm("Do you want "+transport.camionAttribue+" ?")
+          }
+          else var r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
+          // let r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
           if(r)
           {
             this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
