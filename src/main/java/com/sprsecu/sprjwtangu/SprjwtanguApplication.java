@@ -5,6 +5,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 //import static com.sprsecu.sprjwtangu.ThreadEntretiens.mailServerProperties;
 import com.sprsecu.sprjwtangu.dao.CamionRepository;
 import com.sprsecu.sprjwtangu.dao.RoleRepository;
+import com.sprsecu.sprjwtangu.dao.TerminalRepository;
 import com.sprsecu.sprjwtangu.dao.TransporterRepository;
 //import com.sprsecu.sprjwtangu.dao.TaskRepository;
 import com.sprsecu.sprjwtangu.dao.UserRepository;
@@ -13,6 +14,7 @@ import com.sprsecu.sprjwtangu.entities.AppUser;
 import com.sprsecu.sprjwtangu.entities.AutreEntretien;
 import com.sprsecu.sprjwtangu.entities.Camion;
 import com.sprsecu.sprjwtangu.entities.MessagesConstants;
+import com.sprsecu.sprjwtangu.entities.Terminal;
 import com.sprsecu.sprjwtangu.entities.Transporter;
 import com.sprsecu.sprjwtangu.entities.UniteInfos;
 //import com.sprsecu.sprjwtangu.entities.Task;
@@ -47,11 +49,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
     static Properties mailServerProperties;
     static Session getMailSession;
     static MimeMessage generateMailMessage;
-    
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+        
     @Autowired
     AccountService  accountService;
     
@@ -60,7 +58,8 @@ public class SprjwtanguApplication implements CommandLineRunner{
     List<Transporter> transporters = new ArrayList<>();
     @Autowired
     private CamionRepository camionRepository;
-    //List<Camion> camions = new ArrayList<>();
+    @Autowired
+    private TerminalRepository terminalRepository;
     @Autowired
     private AutreEntretienRepository autreEntretienRepository;
     
@@ -199,56 +198,56 @@ public class SprjwtanguApplication implements CommandLineRunner{
         
         // Thread update odometre pour SOS Prestige
         Thread updateOdoSOSPrestigeThread = new Thread(() -> {
-            List<Camion> truckTers = new ArrayList<>(); // trucks noGps but with terminal
-            List<Camion> truckTersTemp = new ArrayList<>(); // truckTersTemp noGps but with terminal, be used to compare
+//            List<Camion> truckTers = new ArrayList<>(); // trucks noGps but with terminal
+//            List<Camion> truckTersTemp = new ArrayList<>(); // truckTersTemp noGps but with terminal, be used to compare
             //camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
             while (true) {
                 try {
                     List<Camion> camions = new ArrayList<>();
-                    truckTers.clear();
+//                    truckTers.clear();
                     camions=camionRepository.camionsDeTransporter(8l); // transporterid de SOS Prestige est 8 
-                    camions.forEach(camion ->{
-                        // if truck is noGps and with terminal
-                        //if(camion.getIdTerminal()!=null) System.out.println("camion.idTerminal: "+ camion.getIdTerminal());
-                        if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
-                            truckTers.add(camion);
-                            //System.out.println("Camion.id + camion.terminalName: "+ camion.getId() + " - " + camion.getNameTerminal());
-                        }
-                    });
-                    // in the cas truckterstemp is nul or truckterstemp is not equal truckters
-                    if(truckTersTemp.isEmpty() || (truckTersTemp.size()!=truckTers.size())){
-                        truckTersTemp = truckTers;
-                        //System.out.println("truckTersTemp.size + truckTers.size : " + truckTersTemp.size() + truckTers.size());
-                    }
-                    else{
-                        truckTersTemp.forEach(truck ->{
-                            if( // if data gps was not changed
-                               Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
-                                &&
-                               Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
-                            )
-                            {
-                                // and timestop is null ==> must set timestop to current time
-                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()== null){
-                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(System.currentTimeMillis());
-                                    truckTers.get(truckTers.indexOf(truck)).setSpeed(0.00);
-                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
-                                }
-                                
-                            }
-                            else{ // in case the gps data was changed, if timestop!= null must set timestop to null
-                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()!=null
-                                        &&
-                                   truckTers.get(truckTers.indexOf(truck)).getTimeStop()>0)
-                                {
-                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(null);
-                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
-                                }
-                            }
-                        });
-                        // when finished update timeStop for all trucks, set truckterstemp equal truckters
-                        truckTersTemp = truckTers;
-                    }
+//                    camions.forEach(camion ->{
+//                        // if truck is noGps and with terminal
+//                        //if(camion.getIdTerminal()!=null) System.out.println("camion.idTerminal: "+ camion.getIdTerminal());
+//                        if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
+//                            truckTers.add(camion);
+//                            //System.out.println("Camion.id + camion.terminalName: "+ camion.getId() + " - " + camion.getNameTerminal());
+//                        }
+//                    });
+//                    // in the cas truckterstemp is nul or truckterstemp is not equal truckters
+//                    if(truckTersTemp.isEmpty() || (truckTersTemp.size()!=truckTers.size())){
+//                        truckTersTemp = truckTers;
+//                        //System.out.println("truckTersTemp.size + truckTers.size : " + truckTersTemp.size() + truckTers.size());
+//                    }
+//                    else{
+//                        truckTersTemp.forEach(truck ->{
+//                            if( // if data gps was not changed
+//                               Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
+//                                &&
+//                               Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
+//                            )
+//                            {
+//                                // and timestop is null ==> must set timestop to current time
+//                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()== null){
+//                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(System.currentTimeMillis());
+//                                    truckTers.get(truckTers.indexOf(truck)).setSpeed(0.00);
+//                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+//                                }
+//                                
+//                            }
+//                            else{ // in case the gps data was changed, if timestop!= null must set timestop to null
+//                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()!=null
+//                                        &&
+//                                   truckTers.get(truckTers.indexOf(truck)).getTimeStop()>0)
+//                                {
+//                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(null);
+//                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+//                                }
+//                            }
+//                        });
+//                        // when finished update timeStop for all trucks, set truckterstemp equal truckters
+//                        truckTersTemp = truckTers;
+//                    }
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
                     List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
                     //https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1
@@ -319,6 +318,109 @@ public class SprjwtanguApplication implements CommandLineRunner{
         
         //envoiMsgThread.start();
         //updateOdoSOSPrestigeThread.start(); 
+        
+        // Thread check terminals and trucks with terminal in system
+        Thread checkTerminalThread = new Thread(() -> {
+            List<Camion> truckTers = new ArrayList<>(); // trucks noGps but with terminal
+            List<Camion> truckTersTemp = new ArrayList<>(); // truckTersTemp noGps but with terminal, be used to compare
+            List<Terminal> ters = new ArrayList<>(); // list terminals
+            List<Terminal> tersTemp = new ArrayList<>(); // tersTemp be used to compare
+            while (true) {
+                try {
+                    List<Camion> camions = new ArrayList();
+                    List<Terminal> terminals = new ArrayList();
+                    truckTers.clear();
+                    ters.clear();
+                    camions=camionRepository.findAll(); // get All Trucks 
+                    terminals=terminalRepository.findAll(); // get All Terminals
+                    
+                    // begin check for terminals
+                    terminals.forEach(terminal ->{
+                        ters.add(terminal);
+                    });
+                    // in the cas tersTemp is nul or tersTemp is not equal ters
+                    if(tersTemp.isEmpty() || (tersTemp.size()!=ters.size())){
+                        tersTemp = ters;
+                    }
+                    else{
+                        tersTemp.forEach(terminal ->{
+                            if( // if data gps was not changed
+                               Double.compare(terminal.getLatitude(), ters.get(ters.indexOf(terminal)).getLatitude())==0
+                                &&
+                               Double.compare(terminal.getLongitude(), ters.get(ters.indexOf(terminal)).getLongitude())==0
+                            )
+                            {
+                                // and timestop is null ==> must set timestop to current time
+                                if(ters.get(ters.indexOf(terminal)).getTimeStop()== null){
+                                    ters.get(ters.indexOf(terminal)).setTimeStop(System.currentTimeMillis());
+                                    ters.get(ters.indexOf(terminal)).setSpeed(0.00);
+                                    terminalRepository.save(ters.get(ters.indexOf(terminal)));
+                                }
+                            }
+                            else{ // in case the gps data was changed, if timestop!= null must set timestop to null
+                                if(ters.get(ters.indexOf(terminal)).getTimeStop()!=null
+                                        &&
+                                   ters.get(ters.indexOf(terminal)).getTimeStop()>0)
+                                {
+                                    ters.get(ters.indexOf(terminal)).setTimeStop(null);
+                                    terminalRepository.save(ters.get(ters.indexOf(terminal)));
+                                }
+                            }
+                        });
+                        // when finished update timeStop for all terminals, set tersTemp equal ters
+                        tersTemp = ters;
+                    }
+                    // end check for terminals
+                    
+                    // begin check for trucks
+                    camions.forEach(camion ->{
+                        if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
+                            truckTers.add(camion);
+                        }
+                    });
+                    // in the cas truckterstemp is nul or truckterstemp is not equal truckters
+                    if(truckTersTemp.isEmpty() || (truckTersTemp.size()!=truckTers.size())){
+                        truckTersTemp = truckTers;
+                    }
+                    else{
+                        truckTersTemp.forEach(truck ->{
+                            if( // if data gps was not changed
+                               Double.compare(truck.getLatitude(), truckTers.get(truckTers.indexOf(truck)).getLatitude())==0
+                                &&
+                               Double.compare(truck.getLongtitude(), truckTers.get(truckTers.indexOf(truck)).getLongtitude())==0
+                            )
+                            {
+                                // and timestop is null ==> must set timestop to current time
+                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()== null){
+                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(System.currentTimeMillis());
+                                    truckTers.get(truckTers.indexOf(truck)).setSpeed(0.00);
+                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+                                }
+                            }
+                            else{ // in case the gps data was changed, if timestop!= null must set timestop to null
+                                if(truckTers.get(truckTers.indexOf(truck)).getTimeStop()!=null
+                                        &&
+                                   truckTers.get(truckTers.indexOf(truck)).getTimeStop()>0)
+                                {
+                                    truckTers.get(truckTers.indexOf(truck)).setTimeStop(null);
+                                    camionRepository.save(truckTers.get(truckTers.indexOf(truck)));
+                                }
+                            }
+                        });
+                        // when finished update timeStop for all trucks, set truckterstemp equal truckters
+                        truckTersTemp = truckTers;
+                    }
+                    // end check for trucks
+                    
+                    Thread.sleep(120150);  // 1000*60*5 = 300000 ms - 5 minutes -- 120000 ms - 2 minutes  - here we exces 150ns for sure every time
+                } catch (Exception e) {
+                    System.err.println("Error occurred:" + e);
+                }
+            } 
+        });
+        // end thread check Odo changed trucks in system
+        // start thread check Odo all trucks in system
+        checkTerminalThread.start();
     }
     
         public void generateAndSendEmail(String emailBody, String email, String uniteCamion) throws AddressException, MessagingException {
