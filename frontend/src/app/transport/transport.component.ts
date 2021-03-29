@@ -643,6 +643,31 @@ export class TransportComponent implements OnInit, OnDestroy {
     }
    }
 
+  priceTemp=0;
+  getPriceActual(transport:Transport){
+    this.priceTemp = transport.loadsFee
+  }
+  subPriceChange(transport:Transport){
+    if (transport.loadsFee!=this.priceTemp){
+      if(this.varsGlobal.language.includes('Francais')) 
+        var r = confirm('Voulez vous changer ce prix ?')
+      else var r = confirm('Do you want to change this price ?')
+      if(r) {
+        this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+          // do some thing
+          this.priceTemp=0;
+        }, err=>{console.log(err)})
+      }
+      else {
+        transport.loadsFee = this.priceTemp;
+        this.priceTemp=0;
+        this.onListCommande();
+      }
+      this.priceTemp=0;
+    }
+    
+  }
+  
   subCamionChange(transport:Transport){
     if(transport.camionAttribue.includes('Waiting')){
       transport.camionAttribue="";

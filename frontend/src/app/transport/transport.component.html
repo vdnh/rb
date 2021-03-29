@@ -73,7 +73,14 @@
         <td>{{trCm.transport.nomEntreprise}}</td>
         <td>{{trCm.loadDetail.description}}</td>
         <td>{{showDateLocal(trCm.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
-        <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td>
+        <!-- <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td> -->
+        <td style="text-align: right;">
+          <span>
+            <input type="number" [(ngModel)]="trCm.transport.loadsFee" 
+            (focus)="getPriceActual(trCm.transport)" (focusout)="subPriceChange(trCm.transport)"
+            style="width: 7ch; border: 0; text-align: right; margin-right: 0;"/>$
+          </span>
+        </td>
         <td>{{trCm.transport.origin}}</td>
         <td>{{trCm.transport.destination}}</td>
         <td>

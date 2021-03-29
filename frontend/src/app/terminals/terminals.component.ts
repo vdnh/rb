@@ -387,7 +387,7 @@ export class TerminalsComponent implements OnInit {
       let duration = new Date().getTime() - timeStop
       //console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
       // return ' stopped: ' + Math.round(duration/1000/60) + " minutes"
-      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60))
+      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60)) + " (or network phone off)"
     }
     else 
       return ''

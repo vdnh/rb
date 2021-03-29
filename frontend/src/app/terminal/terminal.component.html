@@ -7,7 +7,7 @@
 <!-- <button>OK</button><br> -->
 <div *ngIf="terminal!=null">
     <!-- <div *ngIf="codeValided==false"> -->
-    <div *ngIf="hash!=null && (this.terminal.accepts==null || !this.terminal.accepts.includes(this.hash))">
+    <div *ngIf="hash!=null && (terminal.accepts==null || !terminal.accepts.includes(hash))">
         <!-- <div *ngIf="this.terminal.accepts!=null&&this.terminal.accepts.includes(this.hash)">
             <h2>Code Validation: </h2>
             <input type="number" [(ngModel)]="codeValidation">

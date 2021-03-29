@@ -271,10 +271,12 @@ export class SuiviRapideComponent implements OnInit {
                 this.transport=data;
                 this.textResult(data.sent, data.fini, data.driverNote)
                 if(this.varsGlobal.language.includes('Francais')){
-                  this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+                  // set to "" temporary
+                  this.result = ""  //"Transport #Bon " +this.numBon+ ': ' + this.result
                 }
                 if(this.varsGlobal.language.includes('English')){
-                  this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+                  // set to "" temporary
+                  this.result = "" // "Freight #Num " +this.numBon+ ': ' + this.result
                 }
                 //alert('this is a transport')  
               }
@@ -292,10 +294,11 @@ export class SuiviRapideComponent implements OnInit {
               this.transport=data;
               this.textResult(data.sent, data.fini, data.driverNote)
               if(this.varsGlobal.language.includes('Francais')){
-                this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+                // set to "" temporary
+                this.result = "" // "Transport #Bon " +this.numBon+ ': ' + this.result
               }
               if(this.varsGlobal.language.includes('English')){
-                this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+                this.result = "" // "Freight #Num " +this.numBon+ ': ' + this.result
               }
               //alert('this is a transport')
             }

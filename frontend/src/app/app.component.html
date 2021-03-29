@@ -257,7 +257,7 @@
                   <span *ngIf="!ressource">Ressource</span>
                   <strong *ngIf="ressource">Ressource</strong>
                 </button> 
-                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" disabled
+                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')"
                 (click)="onSuivi(); router.navigateByUrl('/suivi-rapide', {skipLocationChange: true})">
                 <!-- routerLink="/suivi-rapide" -->
                   <strong *ngIf="suivi">Suivi Rapide</strong>
@@ -663,7 +663,7 @@
                   <span *ngIf="!ressource">Resources</span>
                   <strong *ngIf="ressource">Resources</strong>
                 </button> 
-                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')" disabled
+                <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')"
                 (click)="onSuivi(); router.navigateByUrl('/suivi-rapide', {skipLocationChange: true})">
                   <!-- routerLink="/suivi-rapide" -->
                   <strong *ngIf="suivi">Track</strong>

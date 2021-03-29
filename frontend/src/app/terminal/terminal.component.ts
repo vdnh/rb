@@ -184,65 +184,69 @@ export class TerminalComponent implements OnInit {
               
           //   })
           // }
-          // at beginning, we write the position actual and set data for terminalTemp
-          navigator.geolocation.getCurrentPosition(
-            (position: Position) => {
-                // observer.next(position);
-                // observer.complete();
-                this.terminal.latitude=position.coords.latitude 
-                this.terminal.longitude=position.coords.longitude
-                this.terminalTemp.latitude=position.coords.latitude 
-                this.terminalTemp.longitude=position.coords.longitude
-                // set the field accepts of terminal to 'savingfromterminal', Server will recognize and save infos just been changed
-                this.terminal.tempora= "savingfromterminal";
-                this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
-                  this.terminal= data; 
-                  // this.terminalTemp = data;
-                  console.log("Set terminalTemp to the actual position")
-                  // and then find the truck and update his location then showMap()
-                  if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
-                    this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
-                      this.truck=data  
-                      let geocodingTemp = new GeocodingService()             
-                      geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
-                        this.truck.latitude=this.terminal.latitude,
-                        this.truck.longtitude=this.terminal.longitude
-                      ))
-                      .forEach(
-                        (results: google.maps.GeocoderResult[]) => {
-                          this.truck.location=results[0].formatted_address;
-                        }
-                      ).then(()=>{
-                        this.transferDaoToDtoTruck()
-                        this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
-                        // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
-                        //   this.truck=data
-                          console.log("Updated trucks' location and find list itiners and then showMap()")
-                          // this.itinerairesService.itinerairesDeCamion(this.truck.id).
-                          this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
-                          subscribe((data:Array<Itineraire>)=>{
-                            this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
-                            this.itinersFinis=data.filter(x=>(x.fini))
-                            this.showMap()  
-                          }, err=>{console.log(err)})                                            
-                        }
-                        ,err=>{console.log(err)})
+          // at beginning, if good terminal, we write the position actual and set data for terminalTemp
+          if(this.hash!=null && this.terminal.accepts!=null && this.terminal.accepts.includes(this.hash))
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  // observer.next(position);
+                  // observer.complete();
+                  this.terminal.latitude=position.coords.latitude 
+                  this.terminal.longitude=position.coords.longitude
+                  this.terminalTemp.latitude=position.coords.latitude 
+                  this.terminalTemp.longitude=position.coords.longitude
+                  
+                  this.terminal.timeStop=null;
+                  // set the field accepts of terminal to 'savingfromterminal', Server will recognize and save infos just been changed
+                  this.terminal.tempora= "savingfromterminal";
+                  this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
+                    this.terminal= data; 
+                    // this.terminalTemp = data;
+                    console.log("Set terminalTemp to the actual position")
+                    // and then find the truck and update his location then showMap()
+                    if(this.terminal.idTruck!=null && this.terminal.idTruck>0){
+                      this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
+                        this.truck=data  
+                        let geocodingTemp = new GeocodingService()             
+                        geocodingTemp.geocode(new google.maps.LatLng( // locate the address of the last location        
+                          this.truck.latitude=this.terminal.latitude,
+                          this.truck.longtitude=this.terminal.longitude
+                        ))
+                        .forEach(
+                          (results: google.maps.GeocoderResult[]) => {
+                            this.truck.location=results[0].formatted_address;
+                          }
+                        ).then(()=>{
+                          this.truck.timeStop=null;
+                          this.transferDaoToDtoTruck()
+                          this.camionsService.updateCamionFromterminal(this.camionForRoute).subscribe((data:CamionForRoute)=>{
+                          // this.camionsService.saveCamions(this.truck).subscribe((data:Camion)=>{
+                          //   this.truck=data
+                            console.log("Updated trucks' location and find list itiners and then showMap()")
+                            // this.itinerairesService.itinerairesDeCamion(this.truck.id).
+                            this.itinerairesService.itinerairesLegerDeCamion(this.truck.id).
+                            subscribe((data:Array<Itineraire>)=>{
+                              this.itiners=this.sortItiners(data.filter(x=>(!x.fini && !x.cancelled)))
+                              this.itinersFinis=data.filter(x=>(x.fini))
+                              this.showMap()  
+                            }, err=>{console.log(err)})                                            
+                          }
+                          ,err=>{console.log(err)})
+                        })
                       })
-                    })
-                  }
-                  // Just showMap(), if there are no truck
-                  else this.showMap();
-                }, err=>{console.log(err)})
-            },
-            (error: PositionError) => {
-                console.log('Geolocation service: ' + error.message);
-                // observer.error(error);
-            },{
-              timeout: 2000, // 2 second before the request errors out
-              maximumAge: 3000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
-              enableHighAccuracy: true  // require a position with highest level of accuracy possible
-            }
-          );
+                    }
+                    // Just showMap(), if there are no truck
+                    else this.showMap();
+                  }, err=>{console.log(err)})
+              },
+              (error) => {
+                  console.log('Geolocation service: ' + error.message);
+                  // observer.error(error);
+              },{
+                timeout: 2000, // 2 second before the request errors out
+                maximumAge: 3000,  //10000, //5000, // age of the position cached by the browser. Don't accept one older than the set amount
+                enableHighAccuracy: true  // require a position with highest level of accuracy possible
+              }
+            );
           // if(this.terminalTemp==null){ // at beginning, we write the position actual and set data for terminalTemp
           //   this.terminalsService.saveTerminals(this.terminal).subscribe((data:Terminal)=>{
           //     this.terminalTemp = data;

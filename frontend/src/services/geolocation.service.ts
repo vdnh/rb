@@ -16,15 +16,16 @@ import { Observable } from 'rxjs';
      *
      * @return An observable of Position
      */
-    getCurrentPosition(): Observable<Position> {
-        return Observable.create((observer: Observer<Position>) => {
+    getCurrentPosition(): Observable<any> {
+        // Observable.create
+        return new Observable((observer: Observer<any>) => {
             // Invokes getCurrentPosition method of Geolocation API.
             navigator.geolocation.getCurrentPosition(
-                (position: Position) => {
+                (position) => {
                     observer.next(position);
                     observer.complete();
                 },
-                (error: PositionError) => {
+                (error) => {
                     console.log('Geolocation service: ' + error.message);
                     observer.error(error);
                 }
