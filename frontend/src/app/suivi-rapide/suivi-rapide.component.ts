@@ -10,6 +10,8 @@ import { Transporter } from 'src/model/model.transporter';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
+import { Shipper } from 'src/model/model.shipper';
+import { ShippersService } from 'src/services/shippers.service';
 
 //import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 
@@ -21,12 +23,14 @@ import { LoadDetailsService } from 'src/services/loadDetails.Service';
 export class SuiviRapideComponent implements OnInit {
   transporter: Transporter = new Transporter();
   loadDetails: LoadDetail[]=[];
+  shipper: Shipper = new Shipper()
 
   constructor(private transportService: TransportsService, 
     private remorquageService: RemorquagesService,
     private authService:AuthenticationService,
     private fb:FormBuilder,
     public transportersService:TransportersService,
+    public shippersService: ShippersService,
     public loadDetailsService:LoadDetailsService,
     public varsGlobal:VarsGlobal) 
   {
@@ -258,6 +262,11 @@ export class SuiviRapideComponent implements OnInit {
       else{  // in case don't find out remorquage
         this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
           if(data!=null){
+            if(data.idEntreprise!=null && data.idEntreprise>0){
+              this.shippersService.getDetailShipper(data.idEntreprise).subscribe(
+                (data:Shipper)=>{this.shipper=data}, err=>{console.log(err)}
+              )
+            }
             this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
               this.loadDetails=lds;
             }, err=>{

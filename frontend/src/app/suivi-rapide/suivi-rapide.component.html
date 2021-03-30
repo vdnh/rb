@@ -229,6 +229,7 @@
           <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transport.telContact}}</span>
           <span *ngIf="transport.extTelContact.length>0" style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;{{"Ext: " + transport.extTelContact}}</span> -->
           <strong>&nbsp;{{transport.nomEntreprise}}</strong>
+          <span *ngIf="shipper!=null">{{", " + shipper.tel + ", " + shipper.email }}</span>
           <!-- <span *ngIf="loadDetails.length>0">&nbsp;{{" - " + loadDetails[0].description}} <br> </span> -->
         </td>  
         </tr>
@@ -586,6 +587,7 @@
         <td colspan="5">
           <strong style="text-decoration-line: underline">Client:</strong>
           <strong>&nbsp;{{transport.nomEntreprise}}</strong>
+          <span *ngIf="shipper!=null">{{", " + shipper.tel + ", " + shipper.email }}</span>
           <!-- <span *ngIf="loadDetails.length>0">&nbsp;{{" - " + loadDetails[0].description}} <br> </span> -->
           <!-- <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"Contact: " + transport.nomContact}}</span>
           <span style="font-size: 11pt; font-style: italic">&nbsp;&nbsp;&nbsp;{{"- Tel: " + transport.telContact}}</span>
