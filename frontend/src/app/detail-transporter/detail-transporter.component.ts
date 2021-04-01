@@ -20,12 +20,8 @@ import { AutreEntretienList } from 'src/model/model.autreEntretienList';
 import { Subscription, timer, interval } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 import * as myGlobals from 'src/services/globals';
-import { PlanOrder } from 'src/model/model.planOrder';
-import { PlanOrderService } from 'src/services/planOrder.service';
-import { PlanPrice } from 'src/model/model.planPrice';
-import { PlanPriceService } from 'src/services/planPrice.service';
-import { dispatch } from 'rxjs/internal/observable/pairs';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -65,16 +61,6 @@ export class DetailTransporterComponent implements OnInit {
   modeCamions:number=0;
   modeTableau:number=0;
   transporter:Transporter=new Transporter();
-  
-  planOrder:PlanOrder=new PlanOrder();
-  listPlanOrders:Array<PlanOrder>=null;
-  packsTrucks=0;
-  packsClientsPros=0;
-  packsTerminals=0;
-  packsTrucksPrice:number;
-  packsClientsProsPrice:number;
-  packsTerminalsPrice:number;
-
   id:number;
   mode:number=1;
   contacts:Array<Contact>;
@@ -89,6 +75,8 @@ export class DetailTransporterComponent implements OnInit {
   camionsInOperation:Array<Camion>; // all camion in service
   camionsOutOperation:Array<Camion>; // all camion out service or antecedent
   addcamion:Camion=new Camion(); // to add more camion
+  // camionFr:Camion=new Camion();
+  // camionEn:Camion=new Camion();
   fichePhysiqueEntretien:FichePhysiqueEntretien= new FichePhysiqueEntretien();
   fichePhysiqueEntretienCont:FichePhysiqueEntretienCont = new FichePhysiqueEntretienCont();
   arrayEnts : Array<AutreEntretien>=new Array<AutreEntretien>();
@@ -96,18 +84,25 @@ export class DetailTransporterComponent implements OnInit {
   //entsAutre:AutreEntretienList=new AutreEntretienList();
 
   infoWindow : any;
-  planPrice: PlanPrice;
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, public planOrderService:PlanOrderService,
-    public planPriceService:PlanPriceService, private sanitizer:DomSanitizer)
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public varsGlobal:VarsGlobal)
   {  
     if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
       this.id = Number(localStorage.getItem('idTransporter'))
     else this.id=activatedRoute.snapshot.params['id'];
-    this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
+    // set truck/unit in english
+    // this.camionEn.message01="Change engine oil, oil filter, lubrication, brake adjustment.";
+    // this.camionEn.message02="Change air filter, fuel filter.";
+    // this.camionEn.message03="Change polene filter.";
+    // this.camionEn.message04="Change hydraulic filter.";
+    // this.camionEn.message05="Change anti-freeze filter.";
+    // this.camionEn.message06="Change anti-freeze.";
+    // this.camionEn.message07="Change oil transmission.";
+    // this.camionEn.message08="Change oil differentiel.";
+    // this.avltrackLinkTrust=sanitizer.bypassSecurityTrustResourceUrl(this.avltrackLink)
   }
 
 /*/test ngOnDestroy  -- pour quoi il ne marche pas comme ol est dans camion.component.ts
@@ -119,12 +114,42 @@ export class DetailTransporterComponent implements OnInit {
   }
 //*/
 
+  setMessagesToEnglish(camion:Camion){
+    // set truck/unit in english
+    camion.message01="Change engine oil, oil filter, lubrication, brake adjustment.";
+    camion.message02="Change air filter, fuel filter.";
+    camion.message03="Change polene filter.";
+    camion.message04="Change hydraulic filter.";
+    camion.message05="Change anti-freeze filter.";
+    camion.message06="Change anti-freeze.";
+    camion.message07="Change oil transmission.";
+    camion.message08="Change oil differentiel.";
+  }
+
+  setMessagesEnFrancais(camion:Camion){
+    // set truck/unit in english
+    camion.message01="Changement huile moteur, filtre moteur, graissage, ajustement des freins.";
+    camion.message02="Changement filtre a l'air, filtre a fuel.";
+    camion.message03="Changement filtre a polene.";
+    camion.message04="Changement filtre hydrolique.";
+    camion.message05="Changement filtre antigel.";
+    camion.message06="Changement antigel.";
+    camion.message07="Changement huile transmission.";
+    camion.message08="Changement huile differentiel.";
+  }
+
   ngOnInit() {
-    this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
-      if(data!=null && data.length>0){
-        this.planPrice=data[0]
-      }
-    }, err=>{console.log(err)})
+    
+    if(this.varsGlobal.language.includes('Francais'))
+    {  
+      this.carteText='Reperer sur la carte'
+      this.setMessagesEnFrancais(this.addcamion);
+    }
+    else {
+      this.carteText='Locate on the Map'
+      this.setMessagesToEnglish(this.addcamion);
+    }
+    
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
       this.quitButton=localStorage.getItem('role')
       this.transporter=data;
@@ -165,21 +190,9 @@ export class DetailTransporterComponent implements OnInit {
     this.adressesService.adressesDeTransporter(this.id).subscribe((data:Array<Adresse>)=>{
       this.adresses=data;
     }, err=>{
-      console.log(err);
+      console.log();
     });    
 
-    this.planOrderService.planOrdersDeTransporter(this.id).subscribe((data:Array<PlanOrder>)=>{
-      this.listPlanOrders=data.sort((b,a)=>{
-        if(a.id>b.id)
-          return 1;
-        if(a.id<b.id)
-          return -1;
-        return 0;
-      });
-    }, err=>{
-      console.log(err)
-    })
-    
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
       /*/this.camionsSurMap.length=0;
       data.forEach(camion=>{
@@ -187,22 +200,6 @@ export class DetailTransporterComponent implements OnInit {
           this.camionsSurMap.push(camion)
       })
       //*/
-      // get all trucks or number of truck equal number trucks of this transporter  
-      // from oldest to newest
-      if(data.length>this.transporter.trucks){
-        console.log('camions before splice : ' +data.length)
-        data.sort((a,b)=>{
-          if(a.id>b.id)
-            return 1;
-          if(a.id<b.id)
-            return -1;
-          return 0;
-        });
-        // remove number trucks excess number trucks of transporter
-        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
-        console.log('camions after splice : ' +data.length)
-      }
-      //
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)
@@ -216,7 +213,8 @@ export class DetailTransporterComponent implements OnInit {
       });
       this.camions= data
 
-      this.camionsSurMap = await this.camions.filter(camion=>(camion.gps && camion.status))
+      this.camionsSurMap = await this.camions.filter(camion=>(
+        (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)) && camion.status))
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
       this.camionsInOperation = await this.camions.filter(camion=>(!camion.broker && camion.status))
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
@@ -271,7 +269,8 @@ export class DetailTransporterComponent implements OnInit {
   saveTransporter(){
     this.transportersService.saveTransporters(this.transporter).subscribe(data=>{
       //this.mode=2;
-      alert('Changement enregistre.');
+      if(this.varsGlobal.language.includes('Francais')) alert('Changement enregistre.');
+      else alert('Change was saved.')
     }, err=>{
       console.log(err);
     });
@@ -317,7 +316,7 @@ export class DetailTransporterComponent implements OnInit {
   addChauffeur(){
     this.addchauffeur.idTransporter=this.id;
     this.chauffeursService.saveChauffeurs(this.addchauffeur).subscribe((data:Chauffeur)=>{
-      alert("Chauffeur added.");
+      alert("Driver added.");
       //this.refresh()
       this.chauffeurs.push(data)
     }, err=>{
@@ -327,7 +326,7 @@ export class DetailTransporterComponent implements OnInit {
 
   deleteContact(id:number){
     this.contactsService.deleteContact(id).subscribe((data:Contact)=>{
-      alert("Contact : "+this.addcontact.nom+" a ete supprime.");
+      alert("Contact : "+this.addcontact.nom+" was deleted.");
       this.contacts.splice(this.contacts.indexOf(data), 1)
     }, err=>{
       console.log(err);
@@ -336,7 +335,7 @@ export class DetailTransporterComponent implements OnInit {
   
   deleteChauffeur(id:number){
     this.chauffeursService.deleteChauffeur(id).subscribe((data:Chauffeur)=>{
-      alert("Chauffeur : "+this.addchauffeur.nom+" a ete supprime.");
+      alert("Driver : "+this.addchauffeur.nom+" was deleted.");
       this.chauffeurs.splice(this.chauffeurs.indexOf(data), 1)
     }, err=>{
       console.log(err);
@@ -345,7 +344,7 @@ export class DetailTransporterComponent implements OnInit {
   
   modifyChauffeur(ch:Chauffeur){
     this.chauffeursService.saveChauffeurs(ch).subscribe((data:Chauffeur)=>{
-      alert("Chauffeur : "+this.addchauffeur.nom+" a ete modifie.");
+      alert("Driver : "+this.addchauffeur.nom+" was modified.");
       //this.chauffeurs.splice(this.chauffeurs.indexOf(data), 1)
     }, err=>{
       console.log(err);
@@ -365,7 +364,7 @@ export class DetailTransporterComponent implements OnInit {
 
   deleteAdresse(id:number){
     this.adressesService.deleteAdresse(id).subscribe((data:Adresse)=>{
-      alert("Adresse : "+this.addadresse.num+" a ete supprime.");
+      alert("Adresse : "+this.addadresse.num+" was deleted.");
       //this.refresh();
       this.adresses.splice(this.adresses.indexOf(data), 1)
     }, err=>{
@@ -381,7 +380,9 @@ export class DetailTransporterComponent implements OnInit {
       this.listNumberUnite.forEach(nu=>{
         if(nu.includes(this.addcamion.unite)&&(nu.length==this.addcamion.unite.length))
           {
-            alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
+            if(this.varsGlobal.language.includes('Francais')) 
+              alert("Numero Unite existe deja. Choisir un autre Numero Unite, SVP!");
+            else alert('#Unit existe already. Enter another #Unit, please>')
             exist=true; // this Number unite exist already
           }
       })
@@ -390,13 +391,23 @@ export class DetailTransporterComponent implements OnInit {
         this.camionsService.saveCamions(this.addcamion).subscribe((data:Camion)=>{
           this.listNumberUnite.push(data.unite)
           this.addcamion=new Camion();
+          if(this.varsGlobal.language.includes('Francais'))
+          {
+            // this.addcamion=this.camionFr;
+            this.setMessagesEnFrancais(this.addcamion);
+          }
+          else {
+            // this.addcamion=this.camionEn;
+            this.setMessagesToEnglish(this.addcamion);
+          }
           this.camions.push(data) // refresh list camions
           if(!data.broker) this.camionsInOperation.push(data)  // refresh list camionsInOperation
           this.fichePhysiqueEntretien.idCamion=data.id;
           this.fichePhysiqueEntretienCont.idCamion=data.id;
           this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fichePhysiqueEntretien).subscribe((data:FichePhysiqueEntretien)=>{             
             this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{              
-              alert("Unite a ete bien ajoute.")              
+              if(this.varsGlobal.language.includes('Francais')) alert("Unite a ete bien ajoute.")              
+              else alert("Unit was added.")
             }, err=>{
               console.log(err)
             });
@@ -409,7 +420,8 @@ export class DetailTransporterComponent implements OnInit {
       }
     }
     else{
-      alert('Vous devez remplir des infos de cette unite.')
+      if(this.varsGlobal.language.includes('Francais')) alert('Vous devez remplir des infos de cette unite.')
+      else alert('You must enter the infos for this unit.')
     }
 
     /*
@@ -468,11 +480,15 @@ export class DetailTransporterComponent implements OnInit {
     this.carte=-this.carte;
     if(this.carte==-1){
       this.camionsSurMap=[];// to empty this list
-      this.carteText='Reperer sur la carte'
+      if(this.varsGlobal.language.includes('Francais'))
+        this.carteText='Reperer sur la carte'
+      else this.carteText='Locate on the Map'
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Fermer la carte'    
+      if(this.varsGlobal.language.includes('Francais'))
+        this.carteText='Fermer la carte'
+      else this.carteText='Close the Map'  
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
@@ -544,19 +560,6 @@ export class DetailTransporterComponent implements OnInit {
   refreshListCamions(){
     this.arrayArrayEnts=[]
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
-      if(data.length>this.transporter.trucks){
-        console.log('camions before splice : ' +data.length)
-        data.sort((a,b)=>{
-          if(a.id>b.id)
-            return 1;
-          if(a.id<b.id)
-            return -1;
-          return 0;
-        });
-        // remove number trucks excess number trucks of transporter
-        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
-        console.log('camions after splice : ' +data.length)
-      }
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)
@@ -569,7 +572,8 @@ export class DetailTransporterComponent implements OnInit {
         return 0;
       });
       this.camions= data
-      this.camionsSurMap = await this.camions.filter(camion=>(camion.gps && camion.status))
+      this.camionsSurMap = await this.camions.filter(camion=>(
+        (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)) && camion.status))
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
       this.camionsInOperation = await this.camions.filter(camion=>(!camion.broker && camion.status))
         .sort((a,b)=>Number(a.unite)-Number(b.unite));
@@ -734,13 +738,8 @@ export class DetailTransporterComponent implements OnInit {
     this.camAdd=0;
   }
   onCamAdd(){
-    if(this.camions.length>=this.transporter.trucks){
-      alert('Contact your dispatch, please !')
-    }
-    else{
-      this.camList=0;
-      this.camAdd=1;
-    }
+    this.camList=0;
+    this.camAdd=1;
   }
   codeCouleurEnt1(camion:Camion){
     //if(camion.odo1Fait!=camion.odo2Fait)
@@ -832,10 +831,18 @@ export class DetailTransporterComponent implements OnInit {
   codeTextEnt1(camion:Camion){
     //if(camion.odo1Fait!=camion.odo2Fait)
       //return this.codeTextEnt2(camion)
-    if(camion.ent1==null || camion.ent1==0 || camion.odometre==null || camion.odometre==0)      
-      return 'pas_data';
+    if(camion.ent1==null || camion.ent1==0 || camion.odometre==null || camion.odometre==0)
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
+    }            
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if((camion.odometre-camion.odo1Fait)<camion.ent1)
       return "attention";
     if((camion.odometre-camion.odo1Fait)>=camion.ent1)
@@ -847,9 +854,17 @@ export class DetailTransporterComponent implements OnInit {
     //if(camion.odo2Fait!=camion.odo3Fait)
       //return this.codeTextEnt3(camion)
     if(camion.ent2==null || camion.ent2==0 || camion.odometre==null || camion.odometre==0)
-      return 'pas_data';
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
+    }
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if((camion.odometre-camion.odo2Fait)<camion.ent2)
       return "attention";
     if((camion.odometre-camion.odo2Fait)>=camion.ent2)
@@ -859,9 +874,17 @@ export class DetailTransporterComponent implements OnInit {
   }
   codeTextEnt3(camion:Camion){
     if(camion.ent3==null || camion.ent3==0 || camion.odometre==null || camion.odometre==0)
-      return 'pas_data';
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
+    }
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if((camion.odometre-camion.odo3Fait)<camion.ent3)
       return "attention";
     if((camion.odometre-camion.odo3Fait)>=camion.ent3)
@@ -872,9 +895,17 @@ export class DetailTransporterComponent implements OnInit {
 
   codeText(odometre, odoFait:number, odoAFaire:number){
     if(odoAFaire==0 || odoAFaire==null || odometre==null || odometre==0)
-      return 'pas_data';
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
+    }
     if((odometre-odoFait)<(odoAFaire-5000))
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if((odometre-odoFait)<odoAFaire)
       return "attention";
     if((odometre-odoFait)>=odoAFaire)
@@ -885,12 +916,18 @@ export class DetailTransporterComponent implements OnInit {
   codeTextVignette(vignetteSaaq:Date){
     if(vignetteSaaq==null)
     {
-      return 'pas_data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
     }
     let date = new Date();
     let days = (date.getTime() - new Date(vignetteSaaq).getTime())/24/60/60/1000;
     if (days<334)
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if (days>=334 && days<364)
       return "attention";
     if (days>=364)
@@ -901,13 +938,19 @@ export class DetailTransporterComponent implements OnInit {
   codeTextInspect(inspect6m:Date){
     if(inspect6m==null)
     {
-      return 'pas_data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas_data';
+      else return 'no_data'
     }
     let date = new Date();
     let days = (date.getTime() - new Date(inspect6m).getTime())/24/60/60/1000;
     //console.log('days in codeTextInspect : '+days)
     if (days<152)
-      return "bon-etat";
+    {
+      if(this.varsGlobal.language.includes('Francais'))
+        return "bon-etat";
+      else return 'good'
+    }
     if (days>=152 && days<182)
       return "attention";
     if (days>=182)
@@ -1201,228 +1244,4 @@ export class DetailTransporterComponent implements OnInit {
     this.transporter.photo=""
   }
 
-  remainRate = 1.00 // this is the rate days reste for extension
-  extensionPlan = false;
-  onExtension(){
-    this.extensionPlan = !this.extensionPlan
-    if(!this.flagNewPlan && this.extensionPlan){
-      this.planOrder.planName="Extension"
-      let timeLag = new Date().getTimezoneOffset() / 60 ;
-      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
-      this.planOrder.dateEnding=new Date();
-      this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
-      
-      let today = new Date();
-      // let heure = today.getHours()
-      // this.planOrder.dateEnding.setHours(heure)
-      // console.log("new Date(this.transporter.endDatePlan).getTime()): "+ new Date(this.transporter.endDatePlan).getTime())
-      // console.log("today.getTime(): " + today.getTime())
-      this.remainRate = Math.round(((new Date(this.transporter.endDatePlan).getTime()-today.getTime())/1000/60/60/24
-      / this.transporter.daysPlan)*100)/100
-      // console.log("remainRate: " + this.remainRate)
-    }
-    
-    if(!this.flagNewPlan && !this.extensionPlan){
-      this.planOrder.planName=''
-      this.packsTrucks=0;
-      this.packsClientsPros=0;
-      this.packsTerminals=0;
-      this.remainRate=1.00
-      this.planNameChange()
-    }
-  }
-
-  disableExtension=false
-  flagNewPlan=false
-  newOrRenewPlan(){
-    if(this.packsTrucks<0) this.packsTrucks=0;
-    if(this.packsTerminals<0) this.packsTerminals=0;
-    if(this.packsClientsPros<0) this.packsClientsPros=0;
-    
-    // in case extension
-    if(this.planOrder.planName!=null && this.planOrder.planName.includes("Extension")){
-      this.planOrder.trucks=(this.packsTrucks*this.planPrice.trucks)
-      this.planOrder.terminals=(this.packsTerminals*this.planPrice.terminals)
-      this.planOrder.clientsPros=(this.packsClientsPros*this.planPrice.clientsPros)
-    }
-
-    // in the case New Plan
-    else if(!this.transporter.evaluation && (this.transporter.trucks==null || this.transporter.trucks==0)){
-      this.disableExtension=true
-      this.flagNewPlan=true
-      this.planOrder.trucks=this.planPrice.trucks + (this.packsTrucks*this.planPrice.trucks)
-      this.planOrder.terminals=this.planPrice.terminals + (this.packsTerminals*this.planPrice.terminals)
-      this.planOrder.clientsPros=this.planPrice.clientsPros + (this.packsClientsPros*this.planPrice.clientsPros)      
-    }
-    
-    // in the case Renew Plan    
-    else{
-      this.extensionPlan=false
-      this.disableExtension=true
-      this.planOrder.trucks= this.transporter.trucks; // (this.packsTrucks*this.planPrice.trucks)
-      this.planOrder.terminals= this.transporter.terminals; // (this.packsTerminals*this.planPrice.terminals)
-      this.planOrder.clientsPros= this.transporter.clientsPros; // (this.packsClientsPros*this.planPrice.clientsPros)
-
-      this.planOrder.planName=this.transporter.planActual
-    }
-
-    this.planNameChange(); // to sur take the planName and price 
-  }
-
-  orderPlan(){
-    this.planOrder.idTransporter=this.id
-    // if(this.transporter.trucks>0)// && this.transporter.endDatePlan>new Date())
-    //   this.planOrder.planName="Extension"
-    this.planOrderService.savePlanOrder(this.planOrder).subscribe((data:PlanOrder)=>{
-      this.planOrder=data;
-      this.listPlanOrders.push(data)
-      this.listPlanOrders.sort((b,a)=>{
-        if(a.id>b.id)
-          return 1;
-        if(a.id<b.id)
-          return -1;
-        return 0;
-      });
-    }, err=>{console.log(err)})
-  }
-
-  cancelOrderPlan(){
-    this.packsTrucks=0;
-    this.packsTerminals=0;
-    this.packsClientsPros=0;
-    this.planOrder = new PlanOrder();
-    // this.extensionPlan = !this.extensionPlan
-    this.disableExtension = false
-    this.extensionPlan = false
-  }
-  
-  planNameChange(){
-    if(this.planOrder.planName!=null && !this.planOrder.planName.includes("Extension")){
-      let today =new Date()
-      let timeZone= new Date().getTimezoneOffset()
-      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
-      console.log('timeZone: '+timeZone)
-      let timeLag = timeZone/60
-      console.log("timeLag: "+ timeLag )
-      // in case new plan 
-      if(this.flagNewPlan){ 
-        today = this.planOrder.dateEnding = new Date();
-      }
-      
-      // in case renew plan 
-      if(!this.flagNewPlan){ 
-        today = this.planOrder.dateEnding = new Date() ;// new Date(this.transporter.endDatePlan).setHours(today.getHours()+timeLag));
-        this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
-        today.setTime(timeEndDatePlan + (timeLag*60*60*1000))
-        // let heure = today.getHours()
-        // today.setHours(heure)
-        // this.planOrder.dateEnding.setHours(heure)
-        //this.planOrder.dateEnding.setHours(today.getHours()+timeLag);
-      }
-
-      if(this.planOrder.planName.includes("3 Months"))
-      {
-        this.planOrder.daysPlan=90; // 3 months
-        this.planOrder.dateEnding.setMonth(today.getMonth()+3);
-        this.planOrder.price=this.planPrice.price * 3 + 
-          ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price)
-        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price
-        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price
-        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price
-      }
-      if(this.planOrder.planName.includes("1 Year")){
-        this.planOrder.daysPlan=365; // 1 Year
-        this.planOrder.dateEnding.setFullYear(today.getFullYear()+1);
-        this.planOrder.price=this.planPrice.price * 3 * 3  + 
-        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 3)
-        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *3
-        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 3
-        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 3
-      }
-        
-      if(this.planOrder.planName.includes("2 Years")){
-        this.planOrder.daysPlan=730; // 2 Years
-        this.planOrder.dateEnding.setFullYear(today.getFullYear()+2);
-        this.planOrder.price=this.planPrice.price * 3 * 5 + 
-        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 5)
-        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *5
-        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 5
-        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 5
-      }
-      this.planOrder.dateEndingMillis=this.planOrder.dateEnding.getTime();
-    }
-    else if(this.planOrder.planName!=null && this.planOrder.planName.includes("Extension")){
-      
-      if(this.transporter.planActual.includes("3 Months"))
-      {
-        this.planOrder.daysPlan=90; // 3 months
-        this.planOrder.price=this.remainRate * 
-          ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price)
-        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price
-        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price
-        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price
-      }
-      if(this.transporter.planActual.includes("1 Year")){
-        this.planOrder.daysPlan=365; // 1 Year
-        this.planOrder.price=this.remainRate * 
-        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 3)
-        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price *3
-        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price * 3
-        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price * 3
-      }
-        
-      if(this.transporter.planActual.includes("2 Years")){
-        this.planOrder.daysPlan=730; // 2 Years
-        this.planOrder.price=this.remainRate * 
-        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 5)
-        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price *5
-        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price * 5
-        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price * 5
-      }
-    }
-  }
-
-  onFileUpLoadPlanOrder(event, po:PlanOrder){
-    let selectedFile : File=event.target.files[0];
-    if(selectedFile){
-      const reader = new FileReader();
-      reader.onload = ()=>{po.imgUrl=reader.result.toString();}
-      reader.readAsDataURL(selectedFile)
-    }
-    else po.imgUrl='';
-  }
-
-  onModifyingPlanOrder(po:PlanOrder){
-    this.planOrderService.savePlanOrder(po).subscribe((data:PlanOrder)=>{
-      po=data;
-    }, err=>{console.log(err)})
-  }
-
-  onDeletPlanOrder(pO:PlanOrder){
-    if(pO.id!=null && pO.id>0) this.planOrderService.deletePlanOrder(pO.id).subscribe((data:PlanOrder)=>{
-      this.listPlanOrders.splice(this.listPlanOrders.indexOf(data), 1)
-    }, err=>{console.log()})
-  }
-
-  infosTransporterMode = false;
-  planActualMode = true; // to show plan actual for first view
-  plansHistoricMode = false;
-  
-  onPlanActual(){
-    this.infosTransporterMode = false;
-    this.planActualMode = true;
-    this.plansHistoricMode = false;
-  }
-
-  onInfosTransporter(){
-    this.infosTransporterMode = true;
-    this.planActualMode = false;
-    this.plansHistoricMode = false;
-  }
-
-  onPlansHistoric(){
-    this.infosTransporterMode = false;
-    this.planActualMode = false;
-    this.plansHistoricMode = true;
-  }
 }

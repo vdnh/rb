@@ -10,6 +10,7 @@ import { PlanPrice } from 'src/model/model.planPrice';
 import { PlanPriceService } from 'src/services/planPrice.service';
 import { PlanOrderService } from 'src/services/planOrder.service';
 import { PlanOrder } from 'src/model/model.planOrder';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-app-users',
@@ -47,6 +48,18 @@ export class AppUsersComponent implements OnInit {
   
   listPlanOrders:Array<PlanOrderTransporter>=[];
   listPlanOrdersArchived:Array<PlanOrderTransporter>=[];
+
+  roleTypesWriteInEnglish(role:string){
+    if(this.varsGlobal.language.includes('English')){
+      if(role.includes('TECHNICIEN')){
+        return "TECHNICIAN";
+      }
+      if(role.includes('CHAUFFEUR')){
+        return "DRIVER";
+      }
+    }
+    return role;
+  }
 
   onCreatUserTest(){
     console.log(this.appUser)
@@ -125,7 +138,7 @@ export class AppUsersComponent implements OnInit {
     public shipperservice:ShippersService,
     public transporterservice:TransportersService,
     public planPriceService:PlanPriceService,
-    public planOrderService:PlanOrderService) { 
+    public planOrderService:PlanOrderService, public varsGlobal : VarsGlobal) { 
 
     }
 

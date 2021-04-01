@@ -1,11 +1,12 @@
-<!--div *ngIf='!quitButton.includes("DISPATCH")'-->
+<div *ngIf="varsGlobal.language.includes('Francais')">
+    <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
     <div *ngIf="mode==1"> 
         <strong>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </strong>
         <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
         <span class="btn btn-link" (click)="onPress()">{{carteText}}</span>
         <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
         <span class="btn btn-link" *ngIf='quitButton.includes("TRANSPORTER")'>
-            <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Conditions de routes</a>
+            <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Traffic</a>
         </span>        
         <!--button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button-->
         <span class="btn btn-link"  *ngIf='quitButton.includes("TRANSPORTER")'>
@@ -49,7 +50,7 @@
     <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
     <div *ngIf="modeCamions==1">modeCamions</div>
     <div *ngIf="modeTableau==1">modeTableau</div-->
-  <div class="panel panel-primary" *ngIf="mode==1">
+    <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCoordonnes==1" >
             <tr>
@@ -92,7 +93,7 @@
                 <td colspan="3" *ngIf="transporter.photo!=null && transporter.photo.length>0" style="border: 2px dotted gray">
                     <img [src]="transporter.photo" alt="logo_image" class="img-responsive" width="300px">
                 </td>
-              </tr>
+            </tr>
             <tr>
                 <th colspan="2" *ngIf="transporter.photo!=null && transporter.photo.length>0">
                     <button (click)="onChangeImage()">Changer Logo</button>
@@ -168,11 +169,11 @@
             </div>                                  
             <div *ngIf="coorAddContact==1">
                 <!-- Add Contact -->
-              <tr>
+            <tr>
                 <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
-              </tr>
+            </tr>
             <!--tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr-->     
-              <tr>
+            <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
@@ -181,7 +182,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
                 <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
                 <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
-              </tr>   
+            </tr>   
             </div>
             <div *ngIf="coorAddChauffeur==1">
                 <!-- Add Chauffeur -->
@@ -297,7 +298,8 @@
             </div>              
         </table>      
         <!-- <h4 *ngIf="modeTableau==1">Entretiens Reguliers</h4> -->
-        <h5 *ngIf="modeTableau==1">Code couleur - &nbsp;&nbsp;&nbsp; Vert : pas besoins, Jaune : conseille, Rouge : oblige</h5> 
+        <h5 *ngIf="modeTableau==1" style="font-weight: bold;">Code couleur - &nbsp;&nbsp;&nbsp; 
+           <span style="color: green;">Vert : Bon-etat</span>, <span style="color:rgb(255, 196, 0);">Jaune : Attention</span>, <span style="color: red;">Rouge : Urgent</span></h5> 
         <table border="1" *ngIf="modeTableau==1">
             <!-- class="table table-striped table-sm table-responsive" -->
             <tr>
@@ -364,7 +366,7 @@
     </div>   
     <div>
         <table class="table table-striped table-responsive"> 
-            <td *ngIf="modeTableau!=1"><button class="btn btn-primary" (click)="saveTransporter()">Ok - Modifier</button></td>
+            <td *ngIf='quitButton.includes("TRANSPORTER")'><button class="btn btn-primary" (click)="saveTransporter()">Ok - Modifier</button></td>
             <td *ngIf='quitButton.includes("ADMIN")'><button class="btn btn-primary" routerLink="/transporters">Quit</button></td> 
             <td></td>
             <td></td>
@@ -372,9 +374,9 @@
             <td></td>                  
         </table>
     </div>
-  </div>
+    </div>
 
-  <div class="panel panel-primary" *ngIf="mode==2">
+    <div class="panel panel-primary" *ngIf="mode==2">
         <div class="panel-heading">Confirmation</div>
         <div class="panel-body">
                 <table class="table table-striped table-responsive">
@@ -400,11 +402,11 @@
                         </tr>   
                         <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
                         <tr>
-                          <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
-                          <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
-                          <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
-                          <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
-                          <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
+                        <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
+                        <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
+                        <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
+                        <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
+                        <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
                         </tr>                    
                         <tr><td colspan="2"><strong>List de Camions</strong></td></tr>
                         <tr>
@@ -423,8 +425,8 @@
                     </table>
             <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/transporters">Ok</button></div>
         </div>   
-  </div>
-  <div class="panel panel-primary" *ngIf="mode==3">
+    </div>
+    <div class="panel panel-primary" *ngIf="mode==3">
     <div class="panel-heading">Detail Contact</div>
     <div class="panel-body">
             <table class="table table-striped table-responsive">
@@ -450,180 +452,19 @@
                     </tr>   
                     <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
                     <tr>
-                      <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
-                      <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
-                      <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
-                      <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
-                      <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
+                    <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
+                    <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
+                    <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
+                    <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
+                    <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
                     </tr>                    
                 </table>
         <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/business-messages">Retour</button></div>
     </div>   
-  </div>
+    </div>
     <!--Use for the case of Dispatch want to add driver-->
     <div class="panel panel-primary" *ngIf="mode==4">
-        <span><button class="btn btn-link" (click)="onInfosTransporter()">Infos</button></span>
-        <span><button class="btn btn-link" (click)="onPlanActual()">Plan Actual</button></span>
-        <span><button class="btn btn-link" (click)="onPlansHistoric()">Plans Historic</button></span>
-        <!-- <hr style="border: 1px dotted black"/> -->
-        <div [hidden]="!planActualMode">
-            
-            <table border="1">
-                <tr>
-                    <th>Plan Actual</th>
-                    <th>Trucks</th>
-                    <th>ClientsPros</th>
-                    <th>Terminals</th>
-                    <th>DateEnding</th>
-                </tr>
-                <tr *ngIf="transporter.evaluation || (!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
-                    <td colspan="5">
-                        <button (click)="newOrRenewPlan()">
-                            New Plan
-                            <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
-                                New Plan
-                            </span> 
-                            <span *ngIf="transporter.evaluation">
-                                New Plan
-                            </span> -->
-                        </button></td>
-                    <td><button *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)" (click)="onExtension()">Extension</button></td>
-                </tr>
-
-                <tr *ngIf="(!transporter.evaluation && transporter.trucks!=null && transporter.trucks>0)">
-                    <td>{{transporter.planActual}}</td>
-                    <td>{{transporter.trucks}}</td>
-                    <td>{{transporter.clientsPros}}</td>
-                    <td>{{transporter.terminals}}</td>
-                    <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
-                    <td><button (click)="newOrRenewPlan()" [disabled]="extensionPlan">
-                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
-                            Renew
-                        </span> 
-                        <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
-                            New Plan
-                        </span> 
-                        <span *ngIf="transporter.evaluation">
-                            New Plan
-                        </span> -->
-                    </button></td>
-                    <td><button (click)="onExtension()" [disabled]="disableExtension">Extension</button></td>
-                </tr>
-            <!-- </table>
-            <table border="1"> -->
-                <tr></tr>
-                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
-                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
-                    (planOrder.terminals!=null && planOrder.terminals>0)">
-                    <th>Plan Order</th>
-                </tr>
-                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
-                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
-                    (planOrder.terminals!=null && planOrder.terminals>0)">
-                    <td>
-                        <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
-                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
-                            <option value="3 Months" selected="selected">3 Months</option>
-                            <option value="1 Year">1 Year</option>
-                            <option value="2 Years">2 Years</option>
-                            <!-- <option selected>3 Months</option>
-                            <option>1 Year</option>
-                            <option>2 Years</option> -->
-                        </select>
-                        <select *ngIf=" !extensionPlan && (!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))"
-                            [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
-                            <!-- {{this.transporter.planActual}} -->
-                            <option value="3 Months">3 Months</option>
-                            <option value="1 Year">1 Year</option>
-                            <option value="2 Years">2 Years</option>
-                        </select>
-                        <span *ngIf="(extensionPlan && !flagNewPlan)">
-                            Extension
-                        </span>
-                    </td>
-                    <td>{{planOrder.trucks}}</td>
-                    <td>{{planOrder.clientsPros}}</td>
-                    <td>{{planOrder.terminals}}</td>
-                    <td>{{planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
-                    <td style="text-align: right;">{{planOrder.price}} $</td>
-                    <td><button (click)="orderPlan()">Demand</button></td>
-                    <td><button (click)="cancelOrderPlan()">Annuler</button></td>
-                </tr>
-            </table>
-            <table border="1" *ngIf="extensionPlan">
-                <tr><th colspan="5">Extension</th></tr>
-                <tr>
-                    <th>Pack</th>
-                    <th>Quantity</th>                    
-                    <th>Price</th>
-                </tr>
-                <tr>
-                    <th>{{planPrice.trucks}} Trucks</th>
-                    <th><input type="number" style="width: 6ch; border: none;" 
-                        [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
-                    <th style="text-align: right;">{{packsTrucksPrice}} $</th>
-                </tr>
-                <tr>
-                    <th>{{planPrice.clientsPros}} ClientPros</th>
-                    <th><input type="number" style="width: 6ch; border: none;" 
-                        [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
-                    
-                    <th style="text-align: right;">{{packsClientsProsPrice}} $</th>
-                </tr>
-                <tr>
-                    <th>{{planPrice.terminals}} Terminals</th>
-                    <th><input type="number" style="width: 6ch; border: none;" 
-                        [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
-                    
-                    <th style="text-align: right;">{{packsTerminalsPrice}} $</th>
-                </tr>
-                <!-- <tr><th><button>OK</button></th></tr> -->
-            </table>
-            <table border="1" *ngIf="planOrder!=null && planOrder.price!=null && planOrder.price>0">
-                <tr>
-                    <th colspan="2">
-                        <span style="text-align: center;">Payement Infos : </span><br>
-                        <span>SOS Prestige, 520 Guindon, Sainte Eustache, QC</span>
-                    </th>
-                </tr>
-                <tr><th>Mode</th> <th>Detail</th></tr>
-                <tr><th>Interac</th><td>sosprestige@gmail.com</td></tr>
-                <tr><th>Carte Credit / Debit</th><td>Telephone 450-974-9111</td></tr>
-            </table>
-        </div>
-        <div [hidden]="!plansHistoricMode">
-            <table border="1">
-                <tr>Plans Historic</tr>
-                <tr>
-                    <th>#Number</th><th>Plan</th><th>Trucks</th><th>ClientPros</th><th>Terminals</th>
-                    <th>Demande</th><th>Ending</th><th>Price</th><th>Status</th><th>PayProof</th>
-                </tr>
-                <tr *ngFor="let pO of listPlanOrders">
-                    <td>{{pO.id}}</td>
-                    <td>{{pO.planName}}</td><td>{{pO.trucks}}</td><td>{{pO.clientsPros}}</td><td>{{pO.terminals}}</td>
-                    <td>{{pO.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.dateEnding | date: 'dd-MMM-yyyy'}}</td>
-                    <td style="text-align: right;">{{pO.price}} $</td><td>{{(pO.payed?"Payed":"Waiting")}}</td>
-                    <!-- <td *ngIf="!pO.payed"><button class="btn btn-link">LoadProofPay</button></td> -->
-                    <td *ngIf="!pO.payed">
-                        <!-- <label for="proofImg" class="form-control">LoadProofPay</label> -->
-                        <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg">
-                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
-                        <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Change</button>
-                        <!-- <button (click)="onModifyingPlanOrder(pO)" class="btn btn-link">&nbsp; Modify</button> -->
-                    </td>
-                    <td *ngIf="pO.payed">
-                        <!-- <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg"> -->
-                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
-                        <!-- <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Delete&nbsp;</button> -->
-                    </td>
-                    <td *ngIf="!pO.payed">
-                        <button class="btn btn-link" (click)="onDeletPlanOrder(pO)">Delete</button>
-                    </td>
-                </tr>
-                <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
-            </table>
-        </div>
-        <div class="panel-body" [hidden]="!infosTransporterMode">
+        <div class="panel-body">
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
@@ -697,4 +538,552 @@
             </table>
         </div>
     </div>
-<!--div-->
+    <!--div-->
+
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+    <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
+    <div *ngIf="mode==1"> 
+        <strong>{{transporter.nom}} Fleet &nbsp;&nbsp;&nbsp; </strong>
+        <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
+        <span class="btn btn-link" (click)="onPress()">{{carteText}}</span>
+        <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
+        <span class="btn btn-link" *ngIf='quitButton.includes("TRANSPORTER")'>
+            <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Traffic</a>
+        </span>        
+        <!--button class="btn btn-link" (click)="onAvlTrack()">{{textAvltrack}}</button-->
+        <span class="btn btn-link"  *ngIf='quitButton.includes("TRANSPORTER")'>
+            <a href="https://client2.avltrack.com/" target="_blank">AvlTrack</a>
+        </span>
+        <!--iframe width="1200" height="800" src="http://www.quebec511.info/en/Carte/Default.aspx" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-same-origin" *ngIf="quebec511==-1">
+        </iframe>
+        <iframe class="e2e-iframe-trusted-src" width="1200" height="800" src="https://client2.avltrack.com/" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-modals allow-pointer-lock allow-same-origin" *ngIf="avltrack==-1">
+        </iframe-->
+        <div class="row" *ngIf="carte==1">
+            <div class="col-md-12">
+                <div>
+                    <select type="text" [(ngModel)]="camionMap" (ngModelChange)="onChange()">
+                        <option *ngFor="let c of camionsSurMap" [ngValue]="c">{{c.unite}}</option>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <h3>
+                        <div #gmap style="width:100%;height:500px" ></div>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="mode==1">
+    <h3>
+        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>
+            <strong *ngIf="modeCoordonnes">Coordonnees</strong>
+            <span *ngIf="!modeCoordonnes">Coordonnees</span> 
+        </button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onCamions()">
+            <strong *ngIf="modeCamions">Fleet</strong>
+            <span *ngIf="!modeCamions">Fleet</span> 
+        </button>&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-link" (click)="onTableau()">
+            <strong *ngIf="modeTableau">Maintenance Table</strong>
+            <span *ngIf="!modeTableau">Maintenance Table</span> 
+        </button>
+    </h3>
+    </div>
+    <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
+    <div *ngIf="modeCamions==1">modeCamions</div>
+    <div *ngIf="modeTableau==1">modeTableau</div-->
+  <div class="panel panel-primary" *ngIf="mode==1">
+    <div class="panel-body">
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeCoordonnes==1" >
+            <tr>
+                <button class="btn btn-link" (click)="onCoorInfos()">                    
+                    <strong *ngIf="coorInfos">Infos</strong>
+                    <span *ngIf="!coorInfos">Infos</span> 
+                </button>&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCoorAddAdresse()">
+                    <strong *ngIf="coorAddAdresse">Add Address</strong>
+                    <span *ngIf="!coorAddAdresse">Add Address</span> 
+                </button>&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCoorAddContact()">                    
+                    <strong *ngIf="coorAddContact">Add Contact</strong>
+                    <span *ngIf="!coorAddContact">Add Contact</span> 
+                </button>             
+                <button class="btn btn-link" (click)="onCoorAddChauffeur()">
+                    <strong *ngIf="coorAddChauffeur">Add Driver</strong>
+                    <span *ngIf="!coorAddChauffeur">Add Driver</span> 
+                </button>             
+            </tr>
+            <div *ngIf="coorInfos==1">
+                <!-- Coordonnee Infos  -->
+            <tr>
+                <th>Name</th><th>Social Reason</th><th>Since</th><th>Email</th><th>Telephone</th><th>Fax</th><th>EmailTechnic</th>
+            </tr>
+            <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+                <td><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="transporter.emailTechnic" /></td>
+            </tr>
+            <!-- Logo -->
+            <tr>
+                <th>
+                    <span>Logo &nbsp; </span>
+                </th>
+                <td colspan="3" *ngIf="transporter.photo!=null && transporter.photo.length>0" style="border: 2px dotted gray">
+                    <img [src]="transporter.photo" alt="logo_image" class="img-responsive" width="300px">
+                </td>
+              </tr>
+            <tr>
+                <th colspan="2" *ngIf="transporter.photo!=null && transporter.photo.length>0">
+                    <button (click)="onChangeImage()">Change Logo</button>
+                </th>
+                <th colspan="2" *ngIf="transporter.photo==null || transporter.photo.length==0">
+                    <label for="imglogo">Take Logo &nbsp;&nbsp;</label>
+                    <input name="imglogo" type="file" title="Joindre image logo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                </th>    
+            </tr>
+            <tr><td colspan="2"><strong>Addresses</strong></td></tr>
+            <tr>
+                <th>Number</th><th>Street</th><th>Code Postal</th><th>City</th><th>Province</th><th>Country</th>
+            </tr>
+            <tr *ngFor="let adresse of adresses">
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
+                <td><button class="btn btn-link" (click)="deleteAdress(contact.id)">Delete</button></td>
+            </tr>            
+            <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+            <tr>
+                <th>FirstName</th><th>LastName</th><th>Function</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+            </tr>
+            <tr *ngFor="let contact of contacts">
+                <td><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
+                <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
+                <td><button class="btn btn-link" (click)="deleteContact(contact.id)">Delete</button></td>
+            </tr>   
+            <tr><td colspan="2"><strong>Services</strong></td></tr>
+            <tr>
+                <td colspan="2">Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue"></td>
+                <td colspan="2">Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur"></td>
+            </tr>
+            <tr>    
+                <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage"></td>
+                <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention"></td>
+                <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt"></td>
+            </tr>
+
+            <tr><td colspan="2"><strong>Drivers</strong></td></tr>
+            <tr>
+                <th>Name</th><th>Phone</th><th>Email</th>
+            </tr>
+            <tr *ngFor="let chauffeur of chauffeurs">
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /></td>                
+                <td><input class="form-control" type="text" [(ngModel)]="chauffeur.email" /></td>
+                <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Delete</button></td>
+            </tr>    
+        </div>
+            <div *ngIf="coorAddAdresse==1">
+                <!-- Add Adresse -->
+            <tr>
+                <th>Number</th><th>Street</th><th>Code Postal</th><th>City</th><th>Province</th><th>Country</th>
+            </tr>
+            <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                            
+                <td><button class="btn btn-link" (click)="addAdresse()">Add</button></td>
+            </tr>  
+            </div>                                  
+            <div *ngIf="coorAddContact==1">
+                <!-- Add Contact -->
+              <tr>
+                <th>FirstName</th><th>LastName</th><th>Function</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+              </tr>
+            <!--tr><td colspan="2"><strong>Ajouter de contact</strong></td></tr-->     
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
+                
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.tel" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcontact.fax" /></td>
+                <!--td><input class="form-control" type="text" [(ngModel)]="addcontact.photo" /></td-->
+                <td><button class="btn btn-link" (click)="addContact()">Add</button></td>
+              </tr>   
+            </div>
+            <div *ngIf="coorAddChauffeur==1">
+                <!-- Add Chauffeur -->
+                <tr>
+                    <th>Name</th><th>Mobile</th><th>Email</th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()">Add</button></td>
+                </tr>   
+            </div>
+        </table>
+        
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
+            <tr>
+                <button class="btn btn-link" (click)="onCamList()">
+                    <strong *ngIf="camList">Units</strong>
+                    <span *ngIf="!camList">Units</span> 
+                </button>&nbsp;&nbsp;
+                <button class="btn btn-link" (click)="onCamAdd()">
+                    <strong *ngIf="camAdd">Add Unit</strong>
+                    <span *ngIf="!camAdd">Add Unit</span> 
+                </button>
+            </tr>
+            <div *ngIf="camList==1">   
+            <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
+            <tr>
+                <th>#Unit</th><th>Plate</th><th>Mark</th><th>Model</th><th colspan="2">N.I.V</th>
+                <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
+            </tr>
+            <tr *ngFor="let camion of camionsInOperation">
+                <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
+                <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv"/></td>
+                <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detail</button></td>
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsInOperation)">Delete</button></td>
+            </tr>
+            <tr><th colspan="4">Antecedents</th></tr>
+            <tr *ngFor="let camion of camionsOutOperation" style="background-color: darkgray;">
+                <td>
+                    {{camion.unite}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/> -->
+                </td>
+                <td>
+                    {{camion.plaque}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.plaque" disabled/> -->
+                </td>
+                <td>
+                    {{camion.marque}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.marque" disabled/> -->
+                </td>
+                <td>
+                    {{camion.modele}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.modele" disabled/> -->
+                </td>
+                <td colspan="2">
+                    {{camion.niv}}
+                    <!-- <input class="form-control" type="text" [(ngModel)]="camion.niv" disabled/> -->
+                </td>
+                <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detail</button></td>
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsOutOperation)">Delete</button></td>
+            </tr>            
+
+            <tr><th colspan="4">Brokers' Units</th></tr>
+            <tr *ngFor="let camion of camionsBroker" style="background-color: darkgray;">
+                <td>
+                    {{camion.unite}}
+                </td>
+                <td>
+                    {{camion.plaque}}            
+                </td>
+                <td>
+                    {{camion.marque}}
+                </td>
+                <td>
+                    {{camion.modele}}
+                </td>
+                <td colspan="2">
+                    {{camion.niv}}
+                </td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsOutOperation)">Delete</button></td>
+            </tr>
+
+            </div>   
+            <div *ngIf="camAdd==1">
+            <tr><td colspan="2"><strong>Add Unit</strong></td></tr>     
+            <tr>
+                <th>#Unite</th><th>Plate</th><th>Mark</th><th>Model</th><th colspan="2">N.I.V</th>
+                <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
+            </tr>    
+            <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.unite" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.plaque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.modele" /></td>
+                <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
+                <!--td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.localDepart" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td-->
+                <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
+            </tr>      
+            </div>              
+        </table>      
+        <!-- <h4 *ngIf="modeTableau==1">Entretiens Reguliers</h4> -->
+        <h5 *ngIf="modeTableau==1" style="font-weight: bold;">Color Code - &nbsp;&nbsp;&nbsp; 
+            <span style="color: green;">Green : Good</span>, <span style="color:rgb(255, 196, 0);">Yellow : Attention</span>, <span style="color: red;">Red : Urgent</span></h5> 
+            <!-- Green : Good, Yellow : Attention, Red : Urgent</h5>  -->
+        <table border="1" *ngIf="modeTableau==1">
+            <!-- class="table table-striped table-sm table-responsive" -->
+            <tr>
+                <th>Unit</th>
+                <th *ngFor="let camion of camionsInOperation" style="text-align: center">
+                    <button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">
+                        {{camion.unite}}
+                    </button>
+                </th>
+            </tr>
+            <tr>
+                <th>Prog-1</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurEnt1(camion)}}" [disabled]="disableButton1(camion)" (click)="onEntretien01(camion)">{{codeTextEnt1(camion)}}</button></th>
+            </tr>
+            <tr>
+                <th>Prog-2</th>       
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurEnt2(camion)}}" [disabled]="disableButton2(camion)" (click)="onEntretien02(camion)">{{codeTextEnt2(camion)}}</button></th>         
+            </tr>            
+            <tr>
+                <th>Prog-3</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurEnt3(camion)}}" [disabled]="disableButton3(camion)" (click)="onEntretien03(camion)">{{codeTextEnt3(camion)}}</button></th>
+            </tr>
+            <tr>
+                <th>Prog-4</th>          
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo4Fait, camion.filHydrolique)}}" [disabled]="disableButton(camion.odometre, camion.odo4Fait, camion.filHydrolique)" (click)="onEntretien04(camion)">{{codeText(camion.odometre, camion.odo4Fait, camion.filHydrolique)}}</button></th>      
+            </tr>
+            <tr>
+                <th>Prog-5</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo5Fait, camion.filAntigel)}}" [disabled]="disableButton(camion.odometre, camion.odo5Fait, camion.filAntigel)" (click)="onEntretien05(camion)">{{codeText(camion.odometre, camion.odo5Fait, camion.filAntigel)}}</button></th>
+            </tr>
+            <tr>
+                <th>Prog-6</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo6Fait, camion.huileAntigel)}}" [disabled]="disableButton(camion.odometre, camion.odo6Fait, camion.huileAntigel)" (click)="onEntretien06(camion)">{{codeText(camion.odometre, camion.odo6Fait, camion.huileAntigel)}}</button></th>
+            </tr>
+            <tr>
+                <th>Prog-7</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo7Fait, camion.huileTransmission)}}" [disabled]="disableButton(camion.odometre, camion.odo7Fait, camion.huileTransmission)" (click)="onEntretien07(camion)">{{codeText(camion.odometre, camion.odo7Fait, camion.huileTransmission)}}</button></th>
+            </tr>
+            <tr>
+                <th>Prog-8</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleur(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}" [disabled]="disableButton(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)" (click)="onEntretien08(camion)">{{codeText(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}</button></th>
+            </tr>
+            <tr>
+                <th>Inspect-6months</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurInspect(camion.inspect6m)}}" [disabled]="disableButtonInspect(camion.inspect6m)" (click)="onInspect6(camion)">{{codeTextInspect(camion.inspect6m)}}</button></th>
+            </tr>
+            <tr>
+                <th>License-1year</th>                
+                <th *ngFor="let camion of camionsInOperation"><button class="btn btn-sm {{codeCouleurVignette(camion.vignetteSaaq)}}" [disabled]="disableButtonVignette(camion.vignetteSaaq)" (click)="onVignette(camion)">{{codeTextVignette(camion.vignetteSaaq)}}</button></th>
+            </tr>
+        </table>     
+        <br>
+        <h4 *ngIf="modeTableau==1"><u>Other Programs</u></h4>
+        <table border="1" *ngIf="modeTableau==1">
+            <!-- class="table table-striped table-sm table-responsive" -->
+            <!-- <tr><th>Autres Entretiens</th></tr> -->
+            <tr *ngFor="let aae of arrayArrayEnts">
+                <th>Unit {{aae.unite}}</th>
+                <td *ngFor="let entretien of aae.entsList"><button class="btn btn-sm {{codeCouleurAutre(aae.odometre, entretien.odoFait, entretien.kmTrage, entretien.kmAvertir)}}" [disabled]="disableButtonAutre(aae.odometre, entretien.odoFait, entretien.kmTrage, entretien.kmAvertir)" (click)="onAutreEntretien(entretien, aae.odometre)">{{entretien.nom}}</button></td>
+                <!--th>Autres Entretiens</th-->                             
+                <!--th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(entretien.odometre, entretien.odoFait, entretien.kmTrage)}}" [disabled]="disableButton(entretien.odometre, entretien.odoFait, entretien.kmTrage)" (click)="onAutreEntretien(entretien)">{{codeText(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}</button></th-->
+            </tr>                                     
+        </table>     
+    </div>   
+    <div>
+        <table class="table table-striped table-responsive"> 
+            <td *ngIf='quitButton.includes("TRANSPORTER")'><button class="btn btn-primary" (click)="saveTransporter()">Ok - Modify</button></td>
+            <td *ngIf='quitButton.includes("ADMIN")'><button class="btn btn-primary" routerLink="/transporters">Quit</button></td> 
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>                  
+        </table>
+    </div>
+  </div>
+
+  <div class="panel panel-primary" *ngIf="mode==2">
+        <div class="panel-heading">Confirmation</div>
+        <div class="panel-body">
+                <table class="table table-striped table-responsive">
+                        <tr>
+                            <th>Name</th><th>Social Reason</th><th>Since</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+                        </tr>
+                        <tr>
+                            <td>{{transporter.nom}}</td><td>{{transporter.raison_sociale}}</td><td>{{transporter.depuis}}</td><td>{{transporter.email}}</td><td>{{transporter.tel}}</td><td>{{transporter.fax}}</td><!--td>{{transporter.photo}}</td-->
+                        </tr>
+                        <tr><td colspan="2"><strong>Address</strong></td></tr>
+                        <tr>
+                            <th>Number</th><th>Street</th><th>Code Postal</th><th>City</th><th>Province</th><th>Country</th>
+                        </tr>
+                        <tr *ngFor="let adresse of adresses">
+                            <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+                        </tr>                                         
+                        <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+                        <tr>
+                            <th>FirstName</th><th>LastName</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th>
+                        </tr>
+                        <tr *ngFor="let contact of contacts">
+                            <td>{{contact.prenom}}</td><td>{{contact.nom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+                        </tr>   
+                        <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
+                        <tr>
+                          <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
+                          <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
+                          <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
+                          <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
+                          <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
+                        </tr>                    
+                        <tr><td colspan="2"><strong>Units</strong></td></tr>
+                        <tr>
+                            <th>#Unit</th><th>Plate</th><th>Mark</th><th>Latitude</th><th>Longitude</th><th>In Mission</th><th>Local Depart</th><th>Destination</th>
+                        </tr>    
+                        <tr *ngFor="let camion of camions">
+                            <td>{{camion.unite}}</td>
+                            <td>{{camion.plaque}}</td>
+                            <td>{{camion.marque}}</td>
+                            <td>{{camion.latitude}}</td>
+                            <td>{{camion.longtitude}}</td>
+                            <td><input type="checkbox" [(ngModel)]="camion.status" disabled></td>
+                            <td>{{camion.localDepart}}</td>
+                            <td>{{camion.destination}}</td>                            
+                        </tr>                                               
+                    </table>
+            <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/transporters">Ok</button></div>
+        </div>   
+  </div>
+  <div class="panel panel-primary" *ngIf="mode==3">
+    <div class="panel-heading">Contact</div>
+    <div class="panel-body">
+            <table class="table table-striped table-responsive">
+                    <tr>
+                        <th>Name</th><th>Social Reason</th><th>Since</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+                    </tr>
+                    <tr>
+                        <td>{{transporter.nom}}</td><td>{{transporter.raison_sociale}}</td><td>{{transporter.depuis}}</td><td>{{transporter.email}}</td><td>{{transporter.tel}}</td><td>{{transporter.fax}}</td><!--td>{{transporter.photo}}</td-->
+                    </tr>
+                    <tr><td colspan="2"><strong>Address</strong></td></tr>
+                    <tr>
+                        <th>Number</th><th>Street</th><th>Code Postal</th><th>City</th><th>Province</th><th>Country</th>
+                    </tr>
+                    <tr *ngFor="let adresse of adresses">
+                        <td>{{adresse.num}}</td><td>{{adresse.rue}}</td><td>{{adresse.code_postal}}</td><td>{{adresse.ville}}</td><td>{{adresse.province}}</td><td>{{adresse.pays}}</td>
+                    </tr>                                         
+                    <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+                    <tr>
+                        <th>FirstName</th><th>LastName</th><th>Function</th><th>Email</th><th>Phone</th><th>Fax</th>
+                    </tr>
+                    <tr *ngFor="let contact of contacts">
+                        <td>{{contact.prenom}}</td><td>{{contact.nom}}</td><td>{{contact.fonction}}</td><td>{{contact.email}}</td><td>{{contact.tel}}</td><td>{{contact.fax}}</td>
+                    </tr>   
+                    <tr><td colspan="2"><strong>Services Offrir</strong></td></tr>
+                    <tr>
+                      <td>Entreposage Intérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_interieue" disabled></td>
+                      <td>Entreposage Extérieur : <input type="checkbox" [(ngModel)]="servicesOffre.entreposage_exterieur" disabled></td>
+                      <td>Transbordage : <input type="checkbox" [(ngModel)]="servicesOffre.service_transbordage" disabled></td>
+                      <td>Manutention : <input type="checkbox" [(ngModel)]="servicesOffre.manutention" disabled></td>
+                      <td>Cross Polt : <input type="checkbox" [(ngModel)]="servicesOffre.cross_polt" disabled></td>
+                    </tr>                    
+                </table>
+        <div> <button class="btn btn-primary" (click)="mode=1" routerLink="/business-messages">Retour</button></div>
+    </div>   
+  </div>
+    <!--Use for the case of Dispatch want to add driver-->
+    <div class="panel panel-primary" *ngIf="mode==4">
+        <div class="panel-body">
+            <table>
+                <!-- <tr><th><h4>Profil</h4></th></tr>  -->
+                <tr>
+                    <th>Nom/Name</th><th>NID</th><th>NIR</th><th>INITIAL</th>
+                    <!-- <td rowspan="2"><button (click)="modifiyTransporter()">Save Profile</button></td> -->
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nid" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.nir" /></td>                    
+                    <td><input style="width: 12ch;" class="form-control" type="text" [(ngModel)]="transporter.initial" /></td>
+                </tr>
+                <tr>
+                    <th>Address</th><th>Ville/City</th><th>CodePostal</th><th>TaxProvince</th>
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.address" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.ville" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.codePostal" /></td>
+                    <td>
+                        <!-- <input class="form-control" type="text" [(ngModel)]="transporter.taxProvince" /> -->
+                        <select type="text" class="form-control" [(ngModel)]="transporter.taxProvince">
+                            <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                        </select>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <th>Contacts Express</th><th>Tel</th><th>Email</th>
+                    <!-- <th>Initial</th> -->
+                </tr>
+                <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.expressContact" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                    <!-- <td><input style="width: 12ch;" class="form-control" type="text" [(ngModel)]="transporter.initial" /></td> -->
+                    <td rowspan="2"><button (click)="modifiyTransporter()">Save Profile</button></td>
+                </tr>
+                <tr>
+                    <!-- <th>
+                        <span>Logo &nbsp; </span>
+                    </th> -->
+                    <td colspan="3" *ngIf="transporter.photo!=null && transporter.photo.length>0" style="border: 2px dotted gray">
+                        <img [src]="transporter.photo" alt="logo_image" class="img-responsive" width="300px">
+                    </td>
+                </tr>
+                <tr>
+                    <th *ngIf="transporter.photo!=null && transporter.photo.length>0">
+                        <button (click)="onChangeImage()">Change Logo</button>
+                    </th>
+                    <th colspan="2" *ngIf="transporter.photo==null || transporter.photo.length==0">
+                        <label for="imglogo">Take Logo &nbsp;&nbsp;</label>
+                        <input name="imglogo" type="file" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                    </th>    
+                </tr>
+                <!-- <tr><td rowspan="6"><button class="btn btn-link" (click)="modifiyTransporter()">Enregistrer Profil</button></td></tr> -->
+                <!-- <tr>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()">Ajouter</button></td>
+                </tr>   
+                <br>
+                <tr *ngFor="let chauffeur of chauffeurs">
+                    <td><input class="form-control" type="text" [(ngModel)]="chauffeur.nom" /></td>
+                    <td><input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /></td>                
+                    <td><input class="form-control" type="text" [(ngModel)]="chauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="modifyChauffeur(chauffeur)">Modifier</button></td>
+                    <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur.id)">Supprimer</button></td>
+                </tr> -->
+            </table>
+        </div>
+    </div>
+    <!--div-->
+
+</div>

@@ -41,6 +41,7 @@ export class AppComponent implements OnInit{
   modeSignUp=0; // 0: sign in; 1: sign up; 2: demande express
   textSign="Nouveau Transporter ou Shipper"
   userId=""; // use to identify dispatch of shipper or dispatch general (by defaul "" general)
+  idTransporter="";
 
   // to control if we are in the session
   session='no';
@@ -470,6 +471,9 @@ export class AppComponent implements OnInit{
       //console.log('res.id : '+res.id)
       this.userId=localStorage.getItem('userId')
     }
+    if(localStorage.getItem('idTransporter')!=null) {
+      this.idTransporter=localStorage.getItem('idTransporter')
+    }
     if (localStorage.getItem('role')!=null){
       this.messagesService.messagesReceived(Number(localStorage.getItem('userId'))).subscribe(
         (data:Array<Message>)=>{
@@ -485,7 +489,7 @@ export class AppComponent implements OnInit{
         //localStorage.setItem('userId', res.id.toString());
       }  
       if(this.role.includes('TECHNICIEN')) {         
-        this.router.navigate(['/detail-transporter/'+ this.userId], {skipLocationChange: true});
+        this.router.navigate(['/detail-transporter/'+ this.idTransporter], {skipLocationChange: true});
       }
       if(this.role.includes('SHIPPER')) {         
         //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});
@@ -665,7 +669,7 @@ export class AppComponent implements OnInit{
             }
             //
           }, err=>{console.log(err)})
-          localStorage.setItem('idTransporter',res.idTransporter.toString())
+          localStorage.setItem('idTransporter', this.idTransporter = res.idTransporter.toString())
           localStorage.setItem('entrepriseNom', res.entrepriseNom);
           this.entrepriseNom=res.entrepriseNom;
         } // prendre idTransporter s'il en a
@@ -742,7 +746,7 @@ export class AppComponent implements OnInit{
           //localStorage.setItem('userId', res.id.toString());
         }  
         if(res.roleName.includes('TECHNICIEN')) {                  
-          this.router.navigate(['/detail-transporter/'+ res.id], {skipLocationChange: true});
+          this.router.navigate(['/detail-transporter/'+ this.idTransporter], {skipLocationChange: true});
         }
         if(res.roleName.includes('SHIPPER')) {         
           //this.router.navigateByUrl('/detail-shipper/'+ res.id, {skipLocationChange: true});

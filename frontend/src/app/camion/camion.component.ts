@@ -15,6 +15,7 @@ import { ReparationsService } from 'src/services/reparation.service';
 import { BonDeTravailsService } from 'src/services/bonDeTravail.service';
 import { Garantie } from 'src/model/model.garantie';
 import { GarantiesService } from 'src/services/garantie.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-camion',
@@ -38,12 +39,12 @@ export class CamionComponent implements OnInit {
   subscription : Subscription;
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
-  marker=new google.maps.Marker();
+  marker:google.maps.Marker; //=new google.maps.Marker();
   latitude:number=45;
   longitude:number=-73;
   iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
   carte: number=-1;
-  carteText:string='Reperer sur la carte'
+  carteText:string='' //'Reperer sur la carte'
   //*/
   modeInfos:number=0;
   modeFiche:number=0;
@@ -56,6 +57,8 @@ export class CamionComponent implements OnInit {
 
   pieceChercher:string="";  // par default on voit tous pieces garantie
 
+  camionFr:Camion=new Camion();
+  camionEn:Camion=new Camion();
   camion:Camion=new Camion();
   id:number;
 
@@ -87,8 +90,16 @@ export class CamionComponent implements OnInit {
   constructor(public activatedRoute:ActivatedRoute, public camionsService:CamionsService, public fichePhysiquesService:FichePhysiquesService,
   public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router, 
   public reparationsService:ReparationsService, public bonDeTravailsService:BonDeTravailsService,
-  public garantieService:GarantiesService){        
+  public garantieService:GarantiesService, public varsGlobal : VarsGlobal){        
     this.id=activatedRoute.snapshot.params['id'];
+    this.camionEn.message01="Change engine oil, oil filter, lubrication, brake adjustment.";
+    this.camionEn.message02="Change air filter, fuel filter.";
+    this.camionEn.message03="Change polene filter.";
+    this.camionEn.message04="Change hydraulic filter.";
+    this.camionEn.message05="Change anti-freeze filter.";
+    this.camionEn.message06="Change anti-freeze.";
+    this.camionEn.message07="Change oil transmission.";
+    this.camionEn.message08="Change oil differentiel.";
   }
 
   getLocalisation(){
@@ -119,9 +130,9 @@ export class CamionComponent implements OnInit {
       this.infoWindow = new google.maps.InfoWindow;
       //*  
       this.marker.addListener('click', (event)=>{
-        var contentString:string=' Vitesse : ' + this.camion.speed;
+        var contentString:string=' Speed : ' + this.camion.speed;
         if(this.camion.stopDuration>0)
-          contentString='Arrete depuis : ' + this.showStopDuration(this.camion.stopDuration)
+          contentString='Stopped : ' + this.showStopDuration(this.camion.stopDuration)
         // Replace the info window's content and position.
         this.infoWindow.setContent(contentString);
         this.infoWindow.setPosition(event.latLng);
@@ -137,6 +148,16 @@ export class CamionComponent implements OnInit {
     }
   //*/
   async ngOnInit() {
+    if(this.varsGlobal.language.includes('Francais'))
+    {
+      this.camion=this.camionFr;
+      this.carteText = 'Reperer sur la carte'
+    }
+    else {
+      this.camion=this.camionEn;
+      this.carteText = 'Locate on the Map'
+    }
+    
     this.today=new Date();
     this.modeBonDeTravail=1;  // voir la partie Entretien-BonDetravail au premier
     this.modeFiche=0;
@@ -553,9 +574,13 @@ export class CamionComponent implements OnInit {
     //if(camion.odo1Fait!=camion.odo2Fait)
       //return this.codeTextEnt2(camion)
     if(camion.ent1==null || camion.ent1==0 || camion.odometre==null || camion.odometre==0)      
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     if((camion.odometre-camion.odo1Fait)<(camion.ent1-5000))
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good'  
     if((camion.odometre-camion.odo1Fait)<camion.ent1)
       return "attention";
     if((camion.odometre-camion.odo1Fait)>=camion.ent1)
@@ -567,9 +592,13 @@ export class CamionComponent implements OnInit {
     //if(camion.odo2Fait!=camion.odo3Fait)
       //return this.codeTextEnt3(camion)
     if(camion.ent2==null || camion.ent2==0 || camion.odometre==null || camion.odometre==0)
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     if((camion.odometre-camion.odo2Fait)<(camion.ent2-5000))
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good'  
     if((camion.odometre-camion.odo2Fait)<camion.ent2)
       return "attention";
     if((camion.odometre-camion.odo2Fait)>=camion.ent2)
@@ -579,9 +608,13 @@ export class CamionComponent implements OnInit {
   }
   codeTextEnt3(camion:Camion){
     if(camion.ent3==null || camion.ent3==0 || camion.odometre==null || camion.odometre==0)
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     if((camion.odometre-camion.odo3Fait)<(camion.ent3-5000))
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good'  
     if((camion.odometre-camion.odo3Fait)<camion.ent3)
       return "attention";
     if((camion.odometre-camion.odo3Fait)>=camion.ent3)
@@ -593,9 +626,13 @@ export class CamionComponent implements OnInit {
   codeText(odoFait:number, odoAFaire:number){
     //console.log("I am called. And odoAFait : " + odoAFaire)
     if(odoAFaire==0 || odoAFaire==null || this.camion.odometre==null || this.camion.odometre==0)
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     if((this.camion.odometre-odoFait)<(odoAFaire-5000))
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good'  
     if((this.camion.odometre-odoFait)<odoAFaire)
       return "attention";
     if((this.camion.odometre-odoFait)>=odoAFaire)
@@ -606,12 +643,16 @@ export class CamionComponent implements OnInit {
   codeTextVignette(){
     if(this.camion.vignetteSaaq==null)
     {
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     }
     let date = new Date();
     let days = (date.getTime() - new Date(this.camion.vignetteSaaq).getTime())/24/60/60/1000;
     if (days<334)
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good' 
     if (days>=334 && days<364)
       return "attention";
     if (days>=364)
@@ -622,12 +663,16 @@ export class CamionComponent implements OnInit {
   codeTextInspect(){
     if(this.camion.inspect6m==null)
     {
-      return 'pas-data';
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'pas-data';
+      else return 'no-data'
     }
     let date = new Date();
     let days = (date.getTime() - new Date(this.camion.inspect6m).getTime())/24/60/60/1000;
     if (days<152)
-      return "bon-etat";
+      if(this.varsGlobal.language.includes('Francais'))
+        return 'bon-etat';
+      else return 'good' 
     if (days>=152 && days<182)
       return "attention";
     if (days>=182)
@@ -690,7 +735,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien01(){
-    alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 1 - Changement huile moteur, filtre moteur, graissage, ajustement des freins");
+    else alert('Program 1 - Change engine oil, oil filter, lubrication, brake adjustment.')
     //let rep:Reparation=new Reparation();
     //rep.reparationEffectuer= this.camion.message01 //ent01.message
     //this.reparations.push(rep)
@@ -709,7 +756,9 @@ export class CamionComponent implements OnInit {
   }
   
   onEntretien02(){
-    alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 2 - Changement filtre a l'air, filtre a fuel");
+    else alert('Program 2 - Change air filter, fuel filter.')
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= this.camion.message02 //ent02.message
     // this.reparations.push(rep)
@@ -732,7 +781,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien03(){
-    alert("Entretien 3 - Changement filtre a polene");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 3 - Changement filtre a polene");
+    else alert('Program 3 - Change polene filter.')
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= this.camion.message03 //ent03.message
     // this.reparations.push(rep)
@@ -754,7 +805,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien04(){
-    alert("Entretien 4 - Changement filtre hydrolique");
+    if(this.varsGlobal.language.includes('Francais')) 
+      alert("Entretien 4 - Changement filtre hydrolique");
+    else alert('Program 4 - Change hydraulic filter.')
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= this.camion.message04 //ent04.message
     // this.reparations.push(rep)
@@ -773,7 +826,9 @@ export class CamionComponent implements OnInit {
   }
   
   onEntretien05(){
-    alert("Entretien 5 - Changement filtre antigel");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 5 - Changement filtre antigel");
+    else alert('Program 5 - Change anti-freeze filter.')
     let rep:Reparation=new Reparation();
     rep.reparationEffectuer= this.camion.message05 //ent05.message
     this.reparations.push(rep)
@@ -792,7 +847,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien06(){
-    alert("Entretien 6 - Changement huile antigel");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 6 - Changement huile antigel");
+    else alert('Program 6 - Change anti-freeze.')
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= this.camion.message06 //ent06.message
     // this.reparations.push(rep)
@@ -811,7 +868,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien07(){
-    alert("Entretien 7 - Changement huile transmission");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 7 - Changement huile transmission");
+    else alert('Program 7- Change oil transmission.')
     let rep:Reparation=new Reparation();
     rep.reparationEffectuer= this.camion.message07 //ent01.message
     this.reparations.push(rep)
@@ -830,7 +889,9 @@ export class CamionComponent implements OnInit {
   }
 
   onEntretien08(){
-    alert("Entretien 8 - Changement huile differentiel");
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien 8 - Changement huile differentiel");
+    else alert('Program 8 - Change oil differentiel.')
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= this.camion.message08 //ent01.message
     // this.reparations.push(rep)
@@ -849,21 +910,37 @@ export class CamionComponent implements OnInit {
   }
 
   onVignette(){
-    alert('Vignette SAAQ 1 fois par an.');
-    this.reparation.reparationEffectuer= 'Vignette SAAQ'
+    if(this.varsGlobal.language.includes('Francais'))
+    {
+      alert('Vignette SAAQ 1 fois par an.');
+      this.reparation.reparationEffectuer= 'Vignette SAAQ'
+    }
+    else {
+      alert('License 1 time per year.')
+      this.reparation.reparationEffectuer= 'License 1 time per year'
+    }
     this.camion.vignetteSaaq=new Date();
     this.couleur10=this.codeCouleurVignette();
   }
 
   onInspect6(){
-    alert('Inspection aux 6 mois.');
-    this.reparation.reparationEffectuer= 'Inspection aux 6 mois.'
+    if(this.varsGlobal.language.includes('Francais'))
+    {
+      alert('Inspection aux 6 mois.');
+      this.reparation.reparationEffectuer= 'Inspection aux 6 mois.'
+    }
+    else {
+      alert('Inspection every 6 months.')
+      this.reparation.reparationEffectuer= 'Inspection every 6 months.'
+    }
     this.camion.inspect6m=new Date();
     this.couleur09=this.codeCouleurInspect();
   }
 
-  onAutreEntretien(entretien:AutreEntretien){
-    alert("Entretien - "+entretien.nom);
+  onAutreEntretien(entretien:AutreEntretien){    
+    if(this.varsGlobal.language.includes('Francais'))
+      alert("Entretien - "+entretien.nom);
+    else alert("Program - "+entretien.nom);
     // let rep:Reparation=new Reparation();
     // rep.reparationEffectuer= entretien.message;
     // this.reparations.push(rep)
@@ -900,17 +977,21 @@ export class CamionComponent implements OnInit {
   onPress(id:number){
     this.carte=-this.carte;
     if(this.carte==-1){
-      this.carteText='Reperer sur la carte'
+      if(this.varsGlobal.language.includes('Francais'))
+        this.carteText = 'Reperer sur la carte'
+      else this.carteText = 'Locate on the Map'
       this.subscription.unsubscribe();
     }
     else{
-      this.carteText='Fermer la carte'
+      if(this.varsGlobal.language.includes('Francais'))
+        this.carteText='Fermer la carte'
+      else this.carteText = 'Close the Map'
       var numbers = timer(2000);
       numbers.subscribe(x =>{
         this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
           //this.camion=data;
           // if(data.status && (data.uniteMonitor!=null && data.monitor!=null) && (data.monitor.length!=0 && data.monitor.length!=0)){
-          if(data.status && data.gps){
+          if(data.status && (data.gps || (data.idTerminal!=null && data.idTerminal>0))){
             //this.latitude = this.camion.latitude;
             //this.longitude= this.camion.longtitude
             //this.marker.setMap(null);
@@ -941,9 +1022,9 @@ export class CamionComponent implements OnInit {
             this.infoWindow = new google.maps.InfoWindow;
             //*  
             this.marker.addListener('click', (event)=>{
-              var contentString:string=' Vitesse : ' + this.camion.speed;
+              var contentString:string=' Speed : ' + this.camion.speed;
               if(this.camion.stopDuration>0)
-                contentString='Arrete depuis : ' + this.showStopDuration(this.camion.stopDuration)
+                contentString='Stopped : ' + this.showStopDuration(this.camion.stopDuration)
               // Replace the info window's content and position.
               this.infoWindow.setContent(contentString);
               this.infoWindow.setPosition(event.latLng);
@@ -957,7 +1038,9 @@ export class CamionComponent implements OnInit {
             this.subscription=source.subscribe(val=>{this.getLocalisation()})  
           }
           else
+          if(this.varsGlobal.language.includes('Francais'))
             alert("Ce camion n'est pas suivi gps")
+          else alert("This unit hasn't GPS")
         }, err=>{
           console.log();
         })//*/
@@ -984,7 +1067,7 @@ export class CamionComponent implements OnInit {
   addEntretien(){
     this.autreEntretien.idCamion=this.id;
     this.autreEntretiensService.saveAutreEntretiens(this.autreEntretien).subscribe(data=>{
-      alert("Entretien added.");
+      alert("Ok, it's added.");
       this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
         this.entretiens=data;
       }, err=>{
@@ -1203,7 +1286,9 @@ export class CamionComponent implements OnInit {
   
   deleteReparation(rep:Reparation){
     if(this.reparations.length<=1){
-      alert('On ne peut que modifier la reparation unique.')
+      if(this.varsGlobal.language.includes('Francais'))
+        alert('On ne peut que modifier la reparation unique.')
+      else alert('We can only modify the reparation')
     }
     else{
       this.reparations.splice(this.reparations.findIndex(x=>x==rep), 1); 

@@ -136,7 +136,7 @@
           <label >Role</label>
           <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
             (ngModelChange)="typeRoleChange($event)" required>
-            <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+            <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
           </select>
         </div>
       </div>
@@ -212,7 +212,7 @@
           <label >Role</label>
           <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
             (ngModelChange)="typeRoleChange($event)" required disabled>
-            <option *ngFor="let r of roleTypes" [ngValue]="r">{{r}}</option>
+            <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
           </select>
         </div>
       </div>
