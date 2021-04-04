@@ -22,6 +22,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 import * as myGlobals from 'src/services/globals';
+import { BonDeTravailsService } from 'src/services/bonDeTravail.service';
+import { ReparationsService } from 'src/services/reparation.service';
+import { GarantiesService } from 'src/services/garantie.service';
+import { Garantie } from 'src/model/model.garantie';
+import { BonDeTravail } from 'src/model/model.bonDeTravail';
+import { Reparation } from 'src/model/model.reparation';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -88,7 +94,9 @@ export class DetailTransporterComponent implements OnInit {
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
-    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public varsGlobal:VarsGlobal)
+    public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public varsGlobal:VarsGlobal, 
+    public garantieService:GarantiesService, public reparationsService:ReparationsService, 
+    public bonDeTravailsService:BonDeTravailsService,)
   {  
     if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
       this.id = Number(localStorage.getItem('idTransporter'))
@@ -451,18 +459,56 @@ export class DetailTransporterComponent implements OnInit {
 
   deleteCamion(camion, camions:Array<Camion>){
     //*
-    this.camionsService.deleteCamion(camion.id).subscribe(data=>{
-      // this.camionsService.camionsDeTransporter(this.id).subscribe((data:Array<Camion>)=>{
-      //   this.camions=data;
-      // }, err=>{
-      //   console.log(err);
-      // });
+    this.camionsService.deleteCamion(camion.id).subscribe(async data=>{
+      this.deleteFiche01(camion)
+      this.deleteFiche02(camion)
+      this.deleteGaranties(camion)
+      await this.deleteBonTravails(camion)
       camions.splice(camions.indexOf(camion), 1)
     }, err=>{
       console.log(err);
     });//*/
   }  
   
+  deleteFiche01(camion:Camion){
+    // this.fichePhysiquesService
+    this.fichePhysiquesService.fichePhysiqueEntretienDeCamion(camion.id).subscribe(
+      (data:FichePhysiqueEntretien)=>{
+        if(data!=null) this.fichePhysiquesService.deleteFichePhysiqueEntretien(data.id).subscribe(
+          (dt:FichePhysiqueEntretien)=>{}, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+  }
+  deleteFiche02(camion:Camion){
+    this.fichePhysiqueContsService.fichePhysiqueEntretienContDeCamion(camion.id).subscribe(
+      (data:FichePhysiqueEntretienCont)=>{
+        if(data!=null) this.fichePhysiqueContsService.deleteFichePhysiqueEntretienCont(data.id).subscribe(
+          (dt:FichePhysiqueEntretienCont)=>{}, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+  }
+  deleteGaranties(camion:Camion){
+    this.garantieService.garantieDeCamion(camion.id).subscribe((data:Array<Garantie>)=>{
+      if(data!=null) data.forEach(dt=>{this.garantieService.deleteGarantie(dt.id).subscribe(
+        (g:Garantie)=>{}, err=>{console.log(err)})})
+    }, err=>{console.log(err)})
+  }
+  deleteBonTravails(camion:Camion){
+    this.bonDeTravailsService.bonDeTravailDeCamion(camion.id).subscribe((data:Array<BonDeTravail>)=>{
+      if(data!=null) data.forEach(async dt=>{
+        await this.deleteReparations(dt)
+        this.bonDeTravailsService.deleteBonDeTravail(dt.id).subscribe(()=>{}, err=>{console.log(err)})
+      })
+    }, err=>{console.log(err)})
+  }
+  deleteReparations(bon:BonDeTravail){
+    this.reparationsService.reparationDeBon(bon.id).subscribe((reps:Array<Reparation>)=>{
+      if(reps!=null) reps.forEach(rep=>{
+        this.reparationsService.deleteReparation(rep.id).subscribe((dt:Reparation)=>{}, err=>{console.log(err)})
+      })
+    }, err=>{
+      console.log(err)
+    })
+ }
+
   gotoDetailCamion(id:number){
     //console.log('this is test of camion detail');
     this.router.navigate(['camion',id]);

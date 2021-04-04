@@ -112,8 +112,16 @@ export class AppComponent implements OnInit{
       document.querySelector('head').appendChild(newAPI);
       // console.log('urlTemp : '+urlTemp)
       let urlChild = urlTemp.split('://')[1].split('/')[1]
+      // console.log('urlChild : '+urlChild)
+
+      let urlChildChild =''
+      if(urlTemp.split('://')[1].split('/').length>2){
+        urlChildChild = '/'+urlTemp.split('://')[1].split('/')[2]
+      }
+      // console.log('urlChildChild : '+urlChildChild)
+
       if(urlChild!=null && urlChild.length>=1){
-        this.router.navigateByUrl('/'+urlChild, {skipLocationChange: true});  
+        this.router.navigateByUrl('/'+urlChild + urlChildChild, {skipLocationChange: true});  
       }
       else this.router.navigateByUrl('/', {skipLocationChange: true});
       //this.ngOnInit();

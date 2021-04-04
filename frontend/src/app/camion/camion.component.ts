@@ -142,9 +142,10 @@ export class CamionComponent implements OnInit {
       console.log();
     })//*/
   }
-  /*/test ngOnDestroy
+  //test ngOnDestroy
     ngOnDestroy(){
-      this.subscription.unsubscribe();
+      if(this.subscription!=null)
+        this.subscription.unsubscribe();
     }
   //*/
   async ngOnInit() {
