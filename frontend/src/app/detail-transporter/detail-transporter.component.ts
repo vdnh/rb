@@ -463,6 +463,7 @@ export class DetailTransporterComponent implements OnInit {
       this.deleteFiche01(camion)
       this.deleteFiche02(camion)
       this.deleteGaranties(camion)
+      this.deleteAutreEntretiens(camion)
       await this.deleteBonTravails(camion)
       camions.splice(camions.indexOf(camion), 1)
     }, err=>{
@@ -489,6 +490,12 @@ export class DetailTransporterComponent implements OnInit {
     this.garantieService.garantieDeCamion(camion.id).subscribe((data:Array<Garantie>)=>{
       if(data!=null) data.forEach(dt=>{this.garantieService.deleteGarantie(dt.id).subscribe(
         (g:Garantie)=>{}, err=>{console.log(err)})})
+    }, err=>{console.log(err)})
+  }
+  deleteAutreEntretiens(camion:Camion){
+    this.autreEntretiensService.autreEntretienDeCamion(camion.id).subscribe((data:Array<AutreEntretien>)=>{
+      if(data!=null) data.forEach(dt=>{this.autreEntretiensService.deleteAutreEntretien(dt.id).subscribe(
+        (a:AutreEntretien)=>{}, err=>{console.log(err)})})
     }, err=>{console.log(err)})
   }
   deleteBonTravails(camion:Camion){

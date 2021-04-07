@@ -30,9 +30,8 @@ import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { LoadFrequent } from 'src/model/model.loadFrequent';
 import { Itineraire } from 'src/model/model.itineraire';
 import { ItinerairesService } from 'src/services/itineraires.service';
-import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
-
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 
 @Component({
   selector: 'app-transport-pro',
@@ -143,9 +142,12 @@ export class TransportProComponent implements OnInit {
     componentRestrictions: { country: ["CA","US"] }
   }
   public async handleAddressOriginChange(address: Address) {
-    if(this.originSimpleChangeBusy){
+    // console.log('Before formatted - this.transport.origin: '+this.transport.origin)
+    if (this.originSimpleChangeBusy){
+      // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
       await this.sleep(1000);
-      this.handleAddressOriginChange(address);
+      this.handleAddressOriginChange(address)
+      // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
     }
     else{
       // Do some stuff
@@ -155,16 +157,21 @@ export class TransportProComponent implements OnInit {
         this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
         this.varsGlobal.addressCookieToList.push(this.transport.origin)
       }
+      // console.log('After formatted - this.transport.origin: '+this.transport.origin)
       //console.log('adresse: '+adr)
       // console.log('this.transport.origin: '+ this.transport.origin)
       this.originSimpleChange()
     }
+    
   }
 
   public async handleAddressDestinationChange(address: Address) {
-    if(this.destinationSimpleChangeBusy){
-      await this.sleep(1000)
+    // console.log('Before formatted - this.transport.destination: '+this.transport.destination)
+    if (this.destinationSimpleChangeBusy){
+      // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+      await this.sleep(1000);
       this.handleAddressDestinationChange(address)
+      // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
     }
     else{
       // Do some stuff
@@ -174,6 +181,7 @@ export class TransportProComponent implements OnInit {
         this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + ';;-;; '
         this.varsGlobal.addressCookieToList.push(this.transport.destination)
       }
+      // console.log('After formatted - this.transport.destination: '+this.transport.destination)
       //console.log('adresse: '+adr)
       // console.log('this.transport.destination: '+this.transport.destination)
       this.destinationSimpleChange()
@@ -273,6 +281,7 @@ export class TransportProComponent implements OnInit {
   listTrsAnnule: Transport[]; // appels annules
   listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
   listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
+  listTrsEvalueToDelete: {transport:Transport, loadDetail:LoadDetail}[]=[]; // Transports evalues to delete because too old
   // test:[{transport:Transport; loadDetail:LoadDetail}]
   contacts: Contact[];
   chauffeurs: Chauffeur[];
@@ -900,8 +909,6 @@ export class TransportProComponent implements OnInit {
               }
     }).then(()=>{
       if(found && this.transport.destination!=null && this.transport.destination.length>0){
-        ++this.transport.evaluatedTimes;
-        this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
         this.setDistanceTravel(this.transport.origin, this.transport.destination).
         then(()=>this.originSimpleChangeBusy=false)
         //await this.showMap()
@@ -915,6 +922,7 @@ export class TransportProComponent implements OnInit {
         found=false;
         this.transport.loadsFee=null
         this.originSimpleChangeBusy=false
+        // this.transport.origin=''
       }
     });//*/
   }
@@ -928,19 +936,23 @@ export class TransportProComponent implements OnInit {
     // }
     let geocoding = new GeocodingService()
     let found = false;
-    this.destinationSimpleChangeBusy = true
+    this.destinationSimpleChangeBusy=true
     await geocoding.codeAddress(this.transport.destination).forEach(
-      async (results: google.maps.GeocoderResult[]) => {
-            console.log("results.length: " + results.length)
+      (results: google.maps.GeocoderResult[]) => {
             if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= await new google.maps.LatLng(
+              this.latLngDestination= new google.maps.LatLng(
                 //results[0].geometry.location.lat(),
                 //results[0].geometry.location.lng()     
                 this.transport.destLat = results[0].geometry.location.lat(),
                 this.transport.destLong = results[0].geometry.location.lng()                                                   
               )
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-              found = true;
+              if(this.latLngDestination!=null) {
+                found = true;
+                // console.log("found latLngDestination at "+this.transport.destination)
+                // console.log("results[0].geometry.location.lat(): "+results[0].geometry.location.lat())
+                // console.log("results[0].geometry.location.lng(): "+results[0].geometry.location.lng())
+              }
               // this.sleep(2000);
               // if(this.transport.origin!=null && this.transport.origin.length>0){
               //   // await 
@@ -960,12 +972,8 @@ export class TransportProComponent implements OnInit {
                 alert("Can not locate this destination")
               else alert("Ne pas trouver de coordonnees de cet destination")
             }
-            console.log('in forEach() geocoding.codeAddress found equal : ' + found)
-    })//.then(()=>{
-      console.log('destinationSimpleChange() - after geocoding.codeAddress found equal : ' + found)
+    }).then(()=>{
       if(found && this.transport.origin!=null && this.transport.origin.length>0){
-        ++this.transport.evaluatedTimes;
-        this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
         this.setDistanceTravel(this.transport.origin, this.transport.destination).
         then(()=>this.destinationSimpleChangeBusy=false)
         //await this.showMap()
@@ -979,8 +987,9 @@ export class TransportProComponent implements OnInit {
         found=false;
         this.transport.loadsFee=null
         this.destinationSimpleChangeBusy=false
+        // this.transport.destination=''
       }
-    //});//*/
+    });//*/
   }
   //*
 async originChange(){
@@ -1036,9 +1045,6 @@ async originChange(){
               }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
-      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
-      ++this.transport.evaluatedTimes;
-      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1099,9 +1105,6 @@ async destinationChange(){
             }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
-      // add evaluatedtime and add textTime  (to know how many times client evaluated for this transport)
-      ++this.transport.evaluatedTimes;
-      this.transport.textTimes = this.transport.textTimes + (this.transport.origin + " - " + this.transport.destination+ "; ")
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1130,6 +1133,7 @@ onSortDate(data:Array<Transport>){
       this.listTrsAnnule=[]
       this.listTrsCommande=[]
       this.listTrsEvalue=[]
+      this.listTrsEvalueToDelete=[]
       //*
       data.sort((b, a)=>{
         if(a.id>b.id)
@@ -1138,28 +1142,81 @@ onSortDate(data:Array<Transport>){
           return -1;
         return 0;
       })//*/
+      let timeNow = new Date().getTime();
+      let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
       data.filter(transport=>(transport.valid)).forEach(tr=>{
         if(tr.typeDoc==1) {
-          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
-          })        
+          if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
+            this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
+          else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+          
+          // this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          //   if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
+          // })        
         }
         else if(tr.typeDoc==2) {
-          this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-          if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
-          })
+          this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+          // this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+          // if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
+          // })
         }
         else if(tr.fini) this.listTrsFini.push(tr)
         else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
         else if (tr.sent) this.listTrsSent.push(tr)
         else if (tr.valid) this.listTrs.push(tr)//*/
       })
+      // sort list evaluate
+      if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      }).forEach(trEv=>{
+        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+        })
+      })
+      // check list evaluation delete
+      if(this.listTrsEvalueToDelete.length>0){
+        this.listTrsEvalueToDelete.forEach(trEv=>{
+          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {
+              trEv.loadDetail=data[0] 
+              this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
+            };
+            this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
+              this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
+            }, err=>{console.log(err)})
+          })
+        })
+        // this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+        //   this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        //     this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+        //   }, err=>{console.log(err)})
+        // }, err=>{
+        //   console.log()
+        // })
+      }
+      // sort list Commands
+      if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      }).forEach(trCm=>{
+        this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+        })
+      })
+
     }, err=>{
       console.log(err)
     })
 
-    await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
-    this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
+    // await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+    // this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
   // sort listTrsCommande by status
@@ -1287,8 +1344,8 @@ onSortDate(data:Array<Transport>){
           console.log(err);
         })
       })
-      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
       if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
+      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
       // after create order then create itineraire
       if(this.transport.typeDoc==2){ // if a command, create route
         let route = new Itineraire();
@@ -1752,10 +1809,9 @@ onSortDate(data:Array<Transport>){
     // calculate load distance - ld
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
-    }, (results: any) => {  
-      if(results.rows[0].elements[0].distance!=undefined)  
-      {
-        okForWriting = true
+    }, (results: any) => {    
+      if(results.rows[0].elements[0].distance!=undefined){
+        okForWriting = true;
         if(this.mode==1){
           this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
         }
@@ -1788,7 +1844,6 @@ onSortDate(data:Array<Transport>){
         })
       }, err=>{console.log(err)})
     }
-    
   }
 
   // dateChange(event){

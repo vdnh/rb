@@ -61,7 +61,7 @@
         <th>&nbsp;Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
         <th>Type</th>        
         <th>DateOrder</th>
-        <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
+        <th>&nbsp;&nbsp;Price&nbsp;&nbsp;</th>
         <th>From</th>
         <th>To</th>
         <th>Truck</th>
@@ -222,10 +222,10 @@
   <div *ngIf="modeListEvalue">
     <table border="1">
       <tr *ngIf="varsGlobal.language.includes('Francais')">
-        <th colspan="10">Prix Evalues</th>
+        <th colspan="9">Prix Evalues</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
-        <th colspan="10">Prices Evaluated</th>
+        <th colspan="9">Prices Evaluated</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('Francais')">
         <!-- <th>#Num</th> -->
@@ -244,12 +244,12 @@
         <th>Date</th>
         <th>&nbsp;&nbsp;Price&nbsp;&nbsp;</th>
         <th>From</th>
-        <th>To/th>
+        <th>To</th>
         <th>Delete</th>
       </tr>
-      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="10">&nbsp;</th></tr>
+      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="9">&nbsp;</th></tr>
       <tr *ngFor="let trEv of listTrsEvalue">
-        <td>{{trEv.transport.id}}</td>
+        <!-- <td>{{trEv.transport.id}}</td> -->
         <td>{{trEv.transport.nomEntreprise}}</td>
         <td>{{trEv.loadDetail.description}}</td>
         <td>{{showDateLocal(trEv.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>

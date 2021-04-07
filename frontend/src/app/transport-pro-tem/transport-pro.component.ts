@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ImageService } from 'src/services/image.service';
-import { Subscription, timer, interval, from, Observable, fromEvent } from 'rxjs';
 
 import { } from 'googlemaps';
 
@@ -24,24 +23,22 @@ import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
-import { Voyage } from 'src/model/model.voyage';
-import { VoyagesService } from 'src/services/voyages.service';
+import { VarsGlobal } from 'src/services/VarsGlobal';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
-import { LoadFrequent } from 'src/model/model.loadFrequent';
-import { VarsGlobal } from 'src/services/VarsGlobal';
 import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
+import { LoadFrequent } from 'src/model/model.loadFrequent';
 import { Itineraire } from 'src/model/model.itineraire';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 
 @Component({
-  selector: 'app-transport',
-  templateUrl: './transport.component.html',
-  styleUrls: ['./transport.component.css']
+  selector: 'app-transport-pro',
+  templateUrl: './transport-pro.component.html',
+  styleUrls: ['./transport-pro.component.css']
 })
-export class TransportComponent implements OnInit, OnDestroy {
+export class TransportProComponent implements OnInit {
 
   //imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -52,12 +49,6 @@ export class TransportComponent implements OnInit, OnDestroy {
 
   loadFrequent:LoadFrequent=new LoadFrequent();
   loadFrequents:Array<LoadFrequent>=new Array<LoadFrequent>();
-
-  modeListEvalue=false;
-  modeListCommande=false;
-  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
-  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
-
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -80,9 +71,6 @@ export class TransportComponent implements OnInit, OnDestroy {
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
-
-  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
-  taxProvince  = this.taxList[10]
 
   provinceList=myGlobals.provinceList ;
   
@@ -154,6 +142,7 @@ export class TransportComponent implements OnInit, OnDestroy {
     componentRestrictions: { country: ["CA","US"] }
   }
   public async handleAddressOriginChange(address: Address) {
+    // console.log('Before formatted - this.transport.origin: '+this.transport.origin)
     if (this.originSimpleChangeBusy){
       // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
       await this.sleep(1000);
@@ -168,6 +157,7 @@ export class TransportComponent implements OnInit, OnDestroy {
         this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
         this.varsGlobal.addressCookieToList.push(this.transport.origin)
       }
+      // console.log('After formatted - this.transport.origin: '+this.transport.origin)
       //console.log('adresse: '+adr)
       // console.log('this.transport.origin: '+ this.transport.origin)
       this.originSimpleChange()
@@ -176,6 +166,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   }
 
   public async handleAddressDestinationChange(address: Address) {
+    // console.log('Before formatted - this.transport.destination: '+this.transport.destination)
     if (this.destinationSimpleChangeBusy){
       // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
       await this.sleep(1000);
@@ -186,10 +177,11 @@ export class TransportComponent implements OnInit, OnDestroy {
       // Do some stuff
       // let adr:any
       this.transport.destination=await address.formatted_address;
-      if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
-        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
-        this.varsGlobal.addressCookieToList.push(this.transport.origin)
+      if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.destination)
       }
+      // console.log('After formatted - this.transport.destination: '+this.transport.destination)
       //console.log('adresse: '+adr)
       // console.log('this.transport.destination: '+this.transport.destination)
       this.destinationSimpleChange()
@@ -203,6 +195,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   disableAuthority=false;
   disableTransCreditUS=false;
   modeGestionAppel: number = 2;
+  id: number;
   transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -280,23 +273,22 @@ export class TransportComponent implements OnInit, OnDestroy {
 
   today=new Date();
   modeHistoire: number=-1;
-  listTrs: Transport[]=[]; // appels waitting
-  listTrsSent: Transport[]=[]; // appels sent
-  listTrsFini: Transport[]=[]; // appels finished
-  listTrsAnnule: Transport[]=[]; // appels annules
-  contacts: Contact[]=[];
-  chauffeurs: Chauffeur[]=[];
+  modeListEvalue=false;
+  modeListCommande=false;
+  listTrs: Transport[]; // appels waitting
+  listTrsSent: Transport[]; // appels sent
+  listTrsFini: Transport[]; // appels finished
+  listTrsAnnule: Transport[]; // appels annules
+  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
+  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
+  // test:[{transport:Transport; loadDetail:LoadDetail}]
+  contacts: Contact[];
+  chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
 
   em:EmailMessage=new EmailMessage();
 
-  camions:Array<Camion>;  // truck no GPS
-  camionsGps:Array<Camion>; // truck with Gps
-  remorques:Array<Camion>;  // list of trailers
-  camion:Camion;
-  trailer1:Camion;
-  trailer2:Camion;
-  voyage:Voyage = new Voyage();
+  camions:Array<Camion>;
   
   templateName:string=''; // name of the transport model
   templates: Transport[]=[];  // liste transport models
@@ -306,20 +298,22 @@ export class TransportComponent implements OnInit, OnDestroy {
   modifyModels=false; // to appear the list models transport
   
   constructor(public transportsService : TransportsService, 
-    public varsGlobal:VarsGlobal,
+    // public geocoding : GeocodingService, 
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
-    public loadFrequentsService:LoadFrequentsService,
+    private datePipe: DatePipe,
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
-    public voyagesService : VoyagesService, 
+    public varsGlobal:VarsGlobal,
+    public loadFrequentsService:LoadFrequentsService,
     private itinerairesService:ItinerairesService,
     public transportersService:TransportersService
     ) { 
+      this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
       //const selectAllControl01 = new FormControl(false);
@@ -362,25 +356,13 @@ export class TransportComponent implements OnInit, OnDestroy {
         //this.transport.emailIntervenant=ch.email
       }
     })
-   
     this.transport.id=this.idTransportTemp;
-   
-    // clear all infos of camion, chauffeur, loaddetails, and trailers
-    this.camion=null;
-    this.chauffeur=null;
-    this.loadDetail=new LoadDetail();
-    this.loadDetails=new Array<LoadDetail>();
-    this.trailer1=null;
-    this.trailer2=null;
-    this.nomEntrepriseInputChange()   // to get shipper (client pro) and his client list
-    //
-
     if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     this.transport.dateDepart=new Date()
     this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     // refresh the templates
-    this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+    this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
       this.templates = data; // just for test
     },err=>{console.log(err)})
   }
@@ -389,7 +371,7 @@ export class TransportComponent implements OnInit, OnDestroy {
     console.log('t.id -  before modifiy model : '+t.id)
     this.transportsService.saveTransportModels(t).subscribe((data:Transport)=>{
       console.log('data.id - after modified model : '+data.id)
-      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
         this.templates = data;
       },err=>{console.log(err)})
     }, err=>{
@@ -400,7 +382,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   deleteTemplate(id:any){
     this.transportsService.deleteTransportModel(id).subscribe((data:Transport)=>{
       console.log('deleted template id - name : '+id+' - '+data.modelName+' - d.id: '+data.id)
-      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
         this.templates = data;
       },err=>{console.log(err)})
     }, err=>{
@@ -435,44 +417,60 @@ export class TransportComponent implements OnInit, OnDestroy {
     this.onSave();
   }
   onReset(){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure to cancel this case ?")
-    }
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to cancel this load ?")
     else var r = confirm("Etes vous sur d'annuler cet appel ?")
     if(r) {
-      this.camion=null;
-      this.chauffeur=null;
-      this.loadDetail=new LoadDetail();;
-      this.loadDetails=new Array<LoadDetail>();
-      this.trailer1=null;
-      this.trailer2=null;
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
       if(this.transport.id!=null){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
-          this.onSelectTax(); // select tax when re-init a transport
+          this.loadDetail=new LoadDetail();
+          this.loadDetails=new Array<LoadDetail>();
+          this.transport.nomEntreprise=this.shipper.nom
+          this.transport.idEntreprise=this.id
           this.templateName='';
           if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         }, err=>{
           console.log(err)
         })
       }
-      else {
-        this.transport=new Transport();
-        this.onSelectTax(); // select tax when re-init a transport
-      }
+      else this.transport=new Transport();      
       if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       this.templateName='';
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.id
     }
   }
 
+  getLoadDetail(id:number){ // we use idTransport to find loaddetail in transport
+    this.loadDetailsService.getDetailLoadDetail(id).subscribe((data:LoadDetail)=>{
+
+    })
+  }
 
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
     //this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
+  }
+  // addLoadDetail(){
+  //   let load:LoadDetail=new LoadDetail();
+  //   load=this.loadDetail
+  //   this.loadDetails.push(load)
+  //   this.dimensionResume()
+    
+  //   this.loadDetail=new LoadDetail();
+  // }
+
+  addLoadSimpleDetail(){
+    let load:LoadDetail=new LoadDetail();
+    load=this.loadDetail
+    this.loadDetails.push(load)
+    this.prixBase(this.transport.totalpoints)
+    this.loadDetail=new LoadDetail(); // after added set equal new
   }
 
   addLoadDetail(){
@@ -480,32 +478,14 @@ export class TransportComponent implements OnInit, OnDestroy {
     load=this.loadDetail
     this.loadDetails.push(load)
     
-    // let tempLoadsFee=0.00;
-    // this.loadDetails.forEach(ld=>{
-    //   tempLoadsFee+=ld.price
-    // })
-    // this.transport.loadsFee=tempLoadsFee;
     this.prixBase(this.transport.totalpoints)
 
     this.loadDetail=new LoadDetail(); // after added set equal new
     this.loadFrequent=null; // after added set to null
     this.dimensionResume()
-    /*
-    if(load.longueur!=null){
-      if(this.transport.longueur!=null)
-        this.transport.longueur=this.transport.longueur + (load.longueur*load.quantity)
-      else  
-        this.transport.longueur=load.longueur*load.quantity
-    }
-    if(load.poids!=null){
-      if(this.transport.poids!=null)
-        this.transport.poids=this.transport.poids + (load.poids*load.quantity)
-      else  
-        this.transport.poids=load.poids*load.quantity
-    }//*/
-    // this.loadDetail=new LoadDetail();
+    
   }
-
+  
   dimensionResume(){
     this.transport.longueur=0;
     this.transport.poids=0;
@@ -516,334 +496,109 @@ export class TransportComponent implements OnInit, OnDestroy {
       //this.transport.largeur=this.transport.largeur+load.largeur
     })
   }
-  // on focus windows
+  // // on focus windows
   // @HostListener('window:focus', ['$event'])
   // onfocus(event:any):void {
   //   this.onRefresh()
   // }
   
   async ngOnInit() {    
+    //*
+    this.varsGlobal.pro='yes'  // to control we are in professionnal
+    this.loadDetails.length=0;
+    
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+
     // attacher idtransporter
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
-
-    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
-    this.loadDetails.length=0;
-    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
-    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-    if(localStorage.getItem('fullName')!=null) 
-      this.transport.nomDispatch=localStorage.getItem('fullName')
-    await this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
-    .subscribe((data:Array<Camion>)=>{
-      //this.camions = data
-      // this will take camions with gps monitor
-      this.camions=[];
-      this.camionsGps=[];
-      this.remorques=[];
-      // data.forEach(camion=>{
-      //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
-      //     this.camions.push(camion)
-      //   else
-      //     if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
-      // })
-      data.forEach(camion=>{
-        if(camion.trailer && !camion.outService && camion.status) // trailer + not out ofservice + in operation
-          this.remorques.push(camion)
-        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
-        {
-          if(!camion.gps && (camion.idTerminal==null || camion.idTerminal==0)) this.camions.push(camion)
-          //if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
-          if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)) this.camionsGps.push(camion)
-        }          
-      })
-      this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
-      .subscribe((data:Array<Chauffeur>)=>{
-        this.chauffeurs=data;
+    
+    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
+      this.shipper=data;
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.id
+      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
+        this.contacts=data;
+        this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
+          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+        }, err=>{console.log(err)})
+        this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+          this.templates = data; // just for test
+          this.templates.forEach((t:Transport)=>{
+            console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
+          })
+        },err=>{console.log(err)})
       }, err=>{
         console.log(err);
       });
     }, err=>{
-      console.log();
-    })
-    // end of taking list camion SOSPrestige
-    //await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-    await this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
-    .subscribe((data:Array<Shipper>)=>{
-      this.listShipper=this.filteredShippers=data.sort((a, b)=>{
-        return a.nom.localeCompare(b.nom)
-      });
-      /*this.listShipper.forEach((sh:Shipper)=>{
-        console.log('Shipper nom : '+ sh.nom)
-      })
-      this.filteredShippers.forEach((sh:Shipper)=>{
-        console.log('Shipper filtered nom : '+ sh.nom)
-      })//*/
-      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
-        this.templates = data; // just for test
-        this.templates.forEach((t:Transport)=>{
-          console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
-        })
-      },err=>{console.log(err)})
-    }, err=>{
       console.log(err);
     })
-    
     await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
-      // this.onSelectTax(); // get tax province after having transporter
-      this.prixBaseInit();
-      this.prixCalcul(); // there are already function onSelectTax()
     }), err=>{
       console.log(err)
     };
-    
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
     
     this.transport.timeCall=heure+':'+minute
-    //console.log('this.transport.timeCall : '+this.transport.timeCall)
+    console.log('this.transport.timeCall : '+this.transport.timeCall)
     //this.transport.typeService=this.serviceTypes[0];
     //this.typeServiceChange(this.serviceTypes[0]);
-    //this.calculTotalpoints() 
-    // this.prixBaseInit();
-    // this.prixCalcul()
-    // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
+    this.calculTotalpoints() 
+    this.prixCalcul()
+    //*/
   }
   
-  async chauffeurChange(){
+  onListEvalue(){
+    this.modeListEvalue=true 
+    this.modeListCommande=false
+    this.onRefresh()
+  }
+
+  onListCommande(){
+    this.modeListEvalue=false 
+    this.modeListCommande=true
+    this.onRefresh()
+  }
+
+  resetSimple(){
+    // delete transport if this is type place command but not yet valid
+    if(this.transport!=null && this.transport.id!=null && this.transport.id>0 &&
+      this.transport.typeDoc==2 && !this.transport.valid){
+      this.transportsService.deleteTransport(this.transport.id).subscribe((data:Transport)=>{
+        if(this.loadDetail!=null && this.loadDetail.id!=null && this.loadDetail.id>0){
+          this.loadDetailsService.deleteLoadDetail(this.loadDetail.id).subscribe(data=>{
+            this.loadDetail=new LoadDetail();
+          }, err=>{console.log(err)})
+        }
+      })
+    }
+    this.modeListEvalue=false
+    this.modeListCommande=false
+    this.transport = new Transport(); 
+    this.transport.nomEntreprise=this.shipper.nom
+    this.transport.idEntreprise=this.id
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
+    this.loadFrequent=new LoadFrequent();
+  }
+
+  chauffeurChange(){
     let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
-    if(strings.length>1){
-      let chId:number =  Number(strings[1])
-      await this.chauffeurs.forEach(ch=>{
-        if(ch.id==chId) 
-        {
-          this.chauffeur=ch
-          this.transport.nomIntervenant=this.chauffeur.nom
-          this.transport.telIntervenant=this.chauffeur.tel
-          this.transport.emailIntervenant=this.chauffeur.email
-        }
-      })
-      if(chId!=this.chauffeur.id)
-        {
-          this.chauffeur=null;
-          this.transport.nomIntervenant=''
-          this.transport.telIntervenant=''
-          this.transport.emailIntervenant=''
-        }
-    }  
-    else this.chauffeur=null;
-  }
-  
-  // this is to help the datalist show all 
-  tempDatalist="";
-  clickDatalist(transport:Transport){
-    if(this.tempDatalist.length==0) this.tempDatalist=transport.camionAttribue
-    transport.camionAttribue=""
-  }
-  mouseleaveDatalist(transport:Transport){
-    if(transport.camionAttribue.length==0 && this.tempDatalist.length>0){
-      transport.camionAttribue=this.tempDatalist
-    }
-   }
-  
-  priceTemp=0;
-  getPriceActual(transport:Transport){
-    this.priceTemp = transport.loadsFee
-  }
-  subPriceChange(transport:Transport){
-    if (transport.loadsFee!=this.priceTemp){
-      if(this.varsGlobal.language.includes('Francais')) 
-        var r = confirm('Voulez vous changer ce prix ?')
-      else var r = confirm('Do you want to change this price ?')
-      if(r) {
-        this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
-          // do some thing
-          this.priceTemp=0;
-        }, err=>{console.log(err)})
+    let chId:number =  Number(strings[1])
+    this.chauffeurs.forEach(ch=>{
+      if(ch.id==chId) 
+      {
+        this.transport.nomIntervenant=ch.nom
+        this.transport.telIntervenant=ch.tel
+        this.transport.emailIntervenant=ch.email
       }
-      else {
-        transport.loadsFee = this.priceTemp;
-        this.priceTemp=0;
-        this.onListCommande();
-      }
-    }
-    this.priceTemp=0;
-  }
-
-  subCamionChange(transport:Transport){
-    if(transport.camionAttribue.includes('Waiting')){
-      transport.camionAttribue="";
-      transport.idCamion=null
-      if(this.varsGlobal.language.includes('English')){
-        var r = confirm("Do you want place it in Waiting List ?")
-      }
-      else var r = confirm("Voulez vous le placer dans la liste d'attente ?")
-        if(r)
-        {
-          this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
-            this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-              if(it!=null){
-                it.camionAttribue = ""
-                it.idCamion = null
-                this.itinerairesService.saveItineraires(it).subscribe(data=>{
-                  this.onRefresh();
-                }, err=>{console.log(err)})
-              }
-            }, err=>{console.log(err)})
-          }, err=>{console.log(err)})    
-        }
-        else { 
-          this.onRefresh();
-        }
-    }
-    else{ // it is not the text Waiting
-      let camion: Camion;
-      let allCamions: Array<Camion>=[]
-      allCamions = allCamions.concat(this.camionsGps, this.camions)
-      let strings:Array<string>=transport.camionAttribue.split(".Id.");
-      if(strings.length>1){
-        let string0 :string = strings[0]
-        let cId:number =  Number(strings[1])
-        allCamions.forEach(c=>{
-          if(c.id==cId) 
-          {
-            camion=c;
-            transport.camionAttribue= string0.trim();
-            transport.idCamion=c.id
-          }
-        })
-        if(camion!=null){
-          if(this.varsGlobal.language.includes('English')){
-            var r = confirm("Do you want "+transport.camionAttribue+" ?")
-          }
-          else var r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
-          if(r)
-          {
-            this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
-              this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-                if(it!=null){
-                  it.camionAttribue = transport.camionAttribue
-                  it.idCamion = transport.idCamion
-                  this.itinerairesService.saveItineraires(it).subscribe(data=>{
-                    this.onRefresh();
-                  }, err=>{console.log(err)})
-                }
-              }, err=>{console.log(err)})
-            }, err=>{console.log(err)})    
-          }
-          else { 
-            this.onRefresh();
-          }
-        }
-        else{ // don't find out truck
-          this.onRefresh();
-        }
-      }
-      else  // name dosen't correspond to truck
-        this.onRefresh();    
-    }    
-  }
-
-  camionChange(){
-    let allCamions: Array<Camion>=[]
-    allCamions = allCamions.concat(this.camionsGps, this.camions)
-    let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
-    //let string0 :string = strings[0]
-    // console.log('strings.length : '+strings.length);
-    // console.log('strings[0] : '+strings[0]);
-    // console.log('strings[1] : '+strings[1]);
-    if(strings.length>1){
-      let string0 :string = strings[0]
-      let cId:number =  Number(strings[1])
-      // this.camions
-      allCamions.forEach(c=>{
-        if(c.id==cId) 
-        {
-          this.camion=c;
-          this.transport.camionAttribue= string0.trim(); //this.camion.unite
-          this.transport.idCamion=this.camion.id
-        }
-      })
-      if(cId!=this.camion.id)
-        this.camion=null;
-    }
-    else this.camion=null;
-  }
-
-  trailer1Change(){
-    let strings:Array<string>=this.transport.trailer1.split(".Id.");
-    //let string0 :string = strings[0]
-    if(strings.length>1){
-      let string0 :string = strings[0]
-      let tId:number =  Number(strings[1])
-      this.remorques.forEach(r=>{
-        if(r.id==tId) 
-        {
-          this.trailer1=r;
-          this.transport.trailer1= string0.trim(); //this.trailer1.unite
-          this.transport.idTrailer1=this.trailer1.id
-        }
-      })
-      if(this.trailer1==undefined || tId!=this.trailer1.id)
-        {
-          this.trailer1=null;
-          this.trailer2=null;
-          this.transport.trailer2=''
-        }
-    }
-    else {
-      this.trailer1=null;
-      this.trailer2=null;
-      this.transport.trailer2=''
-    }
-  }
-
-  trailer2Change(){
-    let strings:Array<string>=this.transport.trailer2.split(".Id.");
-    //let string0 :string = strings[0]
-    if(strings.length>1){
-      let string0 :string = strings[0]
-      let tId:number =  Number(strings[1])
-      if(tId==this.trailer1.id){
-        if(this.varsGlobal.language.includes('English')){
-          alert('Do not choose the same trailer1 !!')
-        }
-        else alert('Il ne faut pas le meme de trailer1 !!')
-        this.transport.trailer2=''
-      }
-      else{
-        this.remorques.forEach(r=>{
-          if(r.id==tId) 
-          {
-            this.trailer2=r;
-            this.transport.trailer2= string0.trim(); //this.trailer2.unite
-            this.transport.idTrailer2=this.trailer2.id
-          }
-        })
-      }
-      
-      if(this.trailer2==undefined || tId!=this.trailer2.id)
-        this.trailer2=null;
-    }
-    else this.trailer2=null;
-  }
-
-  volumeLongueur(){
-    let tot : number = 0;
-    if(this.camion && this.camion.longueur!=undefined) tot = tot+this.camion.longueur
-    if(this.trailer1 && this.trailer1.longueur!=undefined) tot = tot+this.trailer1.longueur
-    if(this.trailer2 && this.trailer2.longueur!=undefined) tot = tot+this.trailer2.longueur
-    return tot
-  }
-
-  volumePoids(){
-    let tot : number = 0;
-    if(this.camion && this.camion.poids!=undefined) tot = tot+this.camion.poids
-    if(this.trailer1 && this.trailer1.poids!=undefined) tot = tot+this.trailer1.poids
-    if(this.trailer2 && this.trailer2.poids!=undefined) tot = tot+this.trailer2.poids
-    return tot
+    })
   }
 
   calculTotalpoints(){ // calculate the base price in the same time
@@ -855,7 +610,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   }
 
   async gotoDetailTransport(t:Transport){
-    window.open("/detail-transport/"+t.id, "_blank")
+    window.open("/detail-transport-pro/"+t.id, "_blank")
   }
 
   gotoTop(){
@@ -1030,86 +785,10 @@ export class TransportComponent implements OnInit, OnDestroy {
     return 0;            
   }
 
-  shipperChange(){
-    // this.transport=new Transport()
-    if(this.shipper!=null){
-      // this.transport=new Transport()
-      this.transport.nomEntreprise=this.shipper.nom
-      this.transport.idEntreprise=this.shipper.id
-      // attacher idtransporter
-      if(localStorage.getItem('idTransporter')!=undefined)
-        this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
-      this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
-      .subscribe((data:Array<LoadFrequent>)=>{
-        this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
-        this.onRefresh()
-      })
-    }
-    else{
-      this.transport.nomEntreprise=''
-      this.transport.idEntreprise=null
-      this.loadFrequents=[]
-      this.onRefresh()
-    }
-    this.resetSimple(); // when we change shipper, we must begin from scratch the command/evaluate
-  }
-
-  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
-    let modulo_10 = price%10;
-    // console.log('modulo_10 of '+price+': '+modulo_10)
-    if(modulo_10>0 && modulo_10<=5){
-      price = (price - modulo_10) + 5
-    }
-    if(modulo_10>5 && modulo_10<10){
-      price = (price - modulo_10) + 10
-    }
-    // console.log('price after rounded: '+price)
-    return price;
-  }
-
-  onListEvalue(){
-    this.modeListEvalue=true 
-    this.modeListCommande=false
-    this.onRefresh()
-    if(this.subscription!=null) this.subscription.unsubscribe();
-    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
-    this.subscription=intervalIsCs.subscribe(val=>{
-      this.onRefresh()
-    })
-  }
-
-  onListCommande(){
-    this.modeListEvalue=false 
-    this.modeListCommande=true
-    this.onRefresh()
-    if(this.subscription!=null) this.subscription.unsubscribe();
-    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
-    this.subscription=intervalIsCs.subscribe(val=>{
-      this.onRefresh()
-    })
-  }
-
-  ngOnDestroy(): void {
-    if(this.subscription!=null) {
-      console.log('this.subscription.unsubscribe();')
-      this.subscription.unsubscribe();
-    }
-  }
-
-  resetSimple(){
-    this.modeListEvalue=false
-    this.modeListCommande=false
-    this.transport = new Transport(); 
-    this.loadFrequent=new LoadFrequent();
-    if(this.shipper!=null) {
-      this.transport.nomEntreprise=this.shipper.nom
-      this.transport.idEntreprise=this.shipper.id
-    }
-    // attacher idtransporter
-    if(localStorage.getItem('idTransporter')!=undefined)
-      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
-  }
-
+  // prix base
+  // prixBase(totalPoints:number){
+  //   this.transport.prixBase = 250.00;
+  // }
   loadFrequentChange(){
     // if(this.loadFrequent==null) 
     this.loadDetail=new LoadDetail()
@@ -1121,167 +800,6 @@ export class TransportComponent implements OnInit, OnDestroy {
     
   }
 
-  addLoadSimpleDetail(){
-    let load:LoadDetail=new LoadDetail();
-    load=this.loadDetail
-    this.loadDetails.push(load)
-    this.prixBase(this.transport.totalpoints)
-    this.loadDetail=new LoadDetail(); // after added set equal new
-  }
-
-  originSimpleChangeBusy=false;
-  async originSimpleChange(){
-    // if (this.originSimpleChangeBusy){
-    //   // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
-    //   await this.sleep(3000);
-    //   // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
-    // }
-    let geocoding = new GeocodingService()
-    this.originSimpleChangeBusy=true
-    await geocoding.codeAddress(this.transport.origin).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngOrigin= new google.maps.LatLng(
-                //results[0].geometry.location.lat(),
-                //results[0].geometry.location.lng()                            
-                this.transport.originLat = results[0].geometry.location.lat(),
-                this.transport.originLong = results[0].geometry.location.lng()                            
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-              {
-                if(this.varsGlobal.language.includes('English'))
-                  alert("Can not locate this origin")
-                else alert("Ne pas trouver de coordonnees de ce origin")
-              }
-    });//*/
-    if(this.transport.destination!=null && this.transport.destination.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
-      then(()=>this.originSimpleChangeBusy=false)
-      //await this.showMap()
-      //this.typeServiceChange(this.remorquage.typeService)
-    }
-    else {this.originSimpleChangeBusy=false}
-  }
-
-  destinationSimpleChangeBusy = false
-  async destinationSimpleChange(){
-    // if (this.destinationSimpleChangeBusy){
-    //   // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
-    //   await this.sleep(3000);
-    //   // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
-    // }
-    let geocoding = new GeocodingService()
-    this.destinationSimpleChangeBusy = true
-    await geocoding.codeAddress(this.transport.destination).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= new google.maps.LatLng(
-                //results[0].geometry.location.lat(),
-                //results[0].geometry.location.lng()     
-                this.transport.destLat = results[0].geometry.location.lat(),
-                this.transport.destLong = results[0].geometry.location.lng()                                                   
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-            }
-            else
-            {
-              if(this.varsGlobal.language.includes('English'))
-                alert("Can not locate this destination")
-              else alert("Ne pas trouver de coordonnees de cet destination")
-            }
-    });//*/
-    if(this.transport.origin!=null && this.transport.origin.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
-      then(()=>this.destinationSimpleChangeBusy = false)
-      //await this.showMap()
-      //this.typeServiceChange(this.remorquage.typeService)
-    }
-    else{this.destinationSimpleChangeBusy = false}
-  }
-
-  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
-    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-      }, err=>{console.log(err)})
-    }, err=>{
-      console.log()
-    })
-  }
-
-  onDeleteCommand(trCm:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
-    this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
-        this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
-        // delete Itineraire if there is
-        this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null) this.itinerairesService.deleteItineraire(it.id).subscribe((dt:Itineraire)=>{ 
-          }, err=>{console.log(err)})
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }, err=>{
-      console.log(err)
-    })
-  }
-
-  saveSimple(){
-    this.transport.valid = true; // valid this transport ing saving
-    
-    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0)
-      this.transport.idEntreprise=this.shipper.id // add id shipper if there is
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-      this.loadDetails.forEach(load=>{
-        load.idTransport=data.id;
-        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-          load.id = d.id;
-        }, err=>{
-          console.log(err);
-        })
-      })
-      alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
-      // after create order then create itineraire
-      let route = new Itineraire();
-      route.idEntreprise = this.transport.idEntreprise
-      route.nomEntreprise = this.transport.nomEntreprise
-      route.idTransport = this.transport.id
-      route.idTransporter = this.transport.idTransporter
-
-      route.datePick = this.transport.dateReserve
-      route.timeResrvation = this.transport.timeResrvation
-      route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
-      
-      route.destLat = this.transport.destLat
-      route.destLong = this.transport.destLong
-      route.destination = this.transport.destination
-      
-      route.origin = this.transport.origin
-      route.originLat = this.transport.originLat
-      route.originLong = this.transport.originLong
-
-      route.camionAttribue = this.transport.camionAttribue //= string0.trim(); //this.camion.unite
-      route.idCamion = this.transport.idCamion //=this.camion.id
-
-      this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
-        route=data;
-      }, err=>{console.log()})
-    }, err=>{
-      console.log(err)
-    })
-  }
-
-  showDateLocal(d:Date){
-    d=new Date(d);
-    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
-    return dateLocal;
-  }
-  
-  pickDateChange(event){
-    this.transport.dateReserve=event.target.value;
-  }
-  
   showKm(distance){
     return Math.round(distance / 0.621371)
   }
@@ -1302,21 +820,23 @@ export class TransportComponent implements OnInit, OnDestroy {
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
       let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distance)
       priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
-      loadDetail.price=quantity*priceLoadFrequent
+      loadDetail.price=Math.round(quantity*priceLoadFrequent*100)/100
     }
   }
-  // prix base
+
   prixBase(totalPoints:number){
     this.transport.prixBase =0.00;
 
     this.transport.loadsFee=0.00;
     let tempLoadsFee=0.00;
     this.loadDetails.forEach(ld=>{
-      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
+      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id==ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
     this.transport.prixBase=this.transport.loadsFee=Math.round(this.roundPrice(tempLoadsFee)*100)/100
-    this.prixCalcul()
+  
+    this.prixCalcul()  // deactive temporary
+  
     // this.loadDetails.forEach(load=>{
     //   //this.priceLoad(load)
     // })
@@ -1328,17 +848,7 @@ export class TransportComponent implements OnInit, OnDestroy {
     this.transport.ptoFee=0.00;
     this.transport.waitingFee=0.00;
   }
-  // prix base
-  prixBaseInit(){
-    this.transport.prixBase = 0.00;
-    this.transport.loadsFee= 0.00;
-    this.transport.waitingPrice=0.00;
-    this.transport.waitingTime=0.00;
-    this.transport.ptoPrice=0.00;
-    this.transport.ptoTime=0.00;
-    this.transport.ptoFee=0.00;
-    this.transport.waitingFee=0.00;
-  }
+
   prixDistance(totalPoints:number){
     
     return 250.00;
@@ -1355,7 +865,132 @@ export class TransportComponent implements OnInit, OnDestroy {
     
     return 0.00;
   }
-//*
+
+  originSimpleChangeBusy=false;
+  async originSimpleChange(){
+    // if (this.originSimpleChangeBusy){
+    //   // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    // }
+    let geocoding = new GeocodingService()
+    let found = false;
+    this.originSimpleChangeBusy=true
+    await geocoding.codeAddress(this.transport.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngOrigin= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()                            
+                this.transport.originLat = results[0].geometry.location.lat(),
+                this.transport.originLong = results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              found=true;
+              // this.sleep(2000);
+              // if(this.transport.destination!=null && this.transport.destination.length>0){
+              //   // await 
+              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
+              //   //await this.showMap()
+              //   //this.typeServiceChange(this.remorquage.typeService)
+              // }
+            }
+            else
+              {
+                if(this.transport!=null){
+                  found=false;
+                  this.transport.loadsFee=null
+                  this.transport.origin=''
+                }
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Can not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
+    }).then(()=>{
+      if(found && this.transport.destination!=null && this.transport.destination.length>0){
+        this.setDistanceTravel(this.transport.origin, this.transport.destination).
+        then(()=>this.originSimpleChangeBusy=false)
+        //await this.showMap()
+        //this.typeServiceChange(this.remorquage.typeService)
+        // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + '; '
+        //   this.varsGlobal.addressCookieToList.push(this.transport.origin)
+        // }
+      }
+      else{
+        found=false;
+        this.transport.loadsFee=null
+        this.originSimpleChangeBusy=false
+        // this.transport.origin=''
+      }
+    });//*/
+  }
+
+  destinationSimpleChangeBusy = false
+  async destinationSimpleChange(){
+    // if (this.destinationSimpleChangeBusy){
+    //   // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    // }
+    let geocoding = new GeocodingService()
+    let found = false;
+    this.destinationSimpleChangeBusy=true
+    await geocoding.codeAddress(this.transport.destination).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngDestination= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()     
+                this.transport.destLat = results[0].geometry.location.lat(),
+                this.transport.destLong = results[0].geometry.location.lng()                                                   
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+              if(this.latLngDestination!=null) {
+                found = true;
+                // console.log("found latLngDestination at "+this.transport.destination)
+                // console.log("results[0].geometry.location.lat(): "+results[0].geometry.location.lat())
+                // console.log("results[0].geometry.location.lng(): "+results[0].geometry.location.lng())
+              }
+              // this.sleep(2000);
+              // if(this.transport.origin!=null && this.transport.origin.length>0){
+              //   // await 
+              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
+              //   //await this.showMap()
+              //   //this.typeServiceChange(this.remorquage.typeService)
+              // }
+            }
+            else
+            {
+              if(this.transport!=null) {
+                found=false;
+                this.transport.loadsFee=null
+                this.transport.destination=''
+              }
+              if(this.varsGlobal.language.includes('English'))
+                alert("Can not locate this destination")
+              else alert("Ne pas trouver de coordonnees de cet destination")
+            }
+    }).then(()=>{
+      if(found && this.transport.origin!=null && this.transport.origin.length>0){
+        this.setDistanceTravel(this.transport.origin, this.transport.destination).
+        then(()=>this.destinationSimpleChangeBusy=false)
+        //await this.showMap()
+        //this.typeServiceChange(this.remorquage.typeService)
+        // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
+        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + '; '
+        //   this.varsGlobal.addressCookieToList.push(this.transport.destination)
+        // }
+      }
+      else{
+        found=false;
+        this.transport.loadsFee=null
+        this.destinationSimpleChangeBusy=false
+        // this.transport.destination=''
+      }
+    });//*/
+  }
+  //*
 async originChange(){
   //*
   if(this.transport.originProvince!=null){
@@ -1402,12 +1037,11 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-            {
-              if(this.varsGlobal.language.includes('English')){
-                alert('Can not locate this origin !!')
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Can not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
               }
-              else alert("Ne pas trouver de coordonnees de ce origin")
-            }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -1464,9 +1098,8 @@ async destinationChange(){
             }
             else
             {
-              if(this.varsGlobal.language.includes('English')){
-                alert('can not locate this destination')
-              }
+              if(this.varsGlobal.language.includes('English'))
+                alert("Can not locate this destination")
               else alert("Ne pas trouver de coordonnees de cet destination")
             }
     });//*/
@@ -1486,62 +1119,12 @@ onSortDate(data:Array<Transport>){
     return 0;
   })
 }
-  
-  subscription : Subscription;
   async onRefresh(){
-    this.tempDatalist=""; // initial the tempdata of datalist
-    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
-      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe(async (data:Array<Transport>)=>{
-        this.listTrsCommande=[]
-        this.listTrsEvalue=[]
-      //*
-        data.sort((b, a)=>{
-          if(a.id>b.id)
-            return 1;
-          if(a.id<b.id)
-            return -1;
-          return 0;
-        })//*/
-        data.filter(transport=>(transport.valid)).forEach(async tr=>{
-          if(tr.typeDoc==1) {
-            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-              if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
-            })        
-          }
-          else if(tr.typeDoc==2) {
-            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
-            })
-          }
-        })
-        await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
-        // sort list evaluate
-        this.listTrsEvalue.sort((b,a)=>{
-          if(a.transport.id>b.transport.id)
-            return 1;
-          if(a.transport.id<b.transport.id)
-            return -1;
-          return 0;
-        })
-        // sort list Commands
-        this.listTrsCommande.sort((b,a)=>{
-          if(a.transport.id>b.transport.id)
-            return 1;
-          if(a.transport.id<b.transport.id)
-            return -1;
-          return 0;
-        })
-        //
-      }, err=>{console.log(err)})
-    }
-
-    // if shipper null => find all transports
-    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
-    .subscribe((data:Array<Transport>)=>{
+    this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
       // refresh the templates
-      // this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
-      //   this.templates = data; // just for test
-      // },err=>{console.log(err)})
+      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+        this.templates = data; // just for test
+      },err=>{console.log(err)})
 
       this.listTrs=[]  //data;
       this.listTrsSent=[]
@@ -1549,7 +1132,7 @@ onSortDate(data:Array<Transport>){
       this.listTrsAnnule=[]
       this.listTrsCommande=[]
       this.listTrsEvalue=[]
-      /*
+      //*
       data.sort((b, a)=>{
         if(a.id>b.id)
           return 1;
@@ -1570,12 +1153,11 @@ onSortDate(data:Array<Transport>){
           // if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
           // })
         }
-        // else if(tr.fini) this.listTrsFini.push(tr)
-        // else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
-        // else if (tr.sent) this.listTrsSent.push(tr)
-        // else if (tr.valid) this.listTrs.push(tr)//*/
+        else if(tr.fini) this.listTrsFini.push(tr)
+        else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
+        else if (tr.sent) this.listTrsSent.push(tr)
+        else if (tr.valid) this.listTrs.push(tr)//*/
       })
-      //await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
       // sort list evaluate
       if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
         if(a.transport.id>b.transport.id)
@@ -1600,17 +1182,16 @@ onSortDate(data:Array<Transport>){
           if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
         })
       })
-    //
+
     }, err=>{
       console.log(err)
     })
-    
+
+    // await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
     // this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
   // sort listTrsCommande by status
-  numListShow = 1; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
-  listTrsCommandeShow: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
@@ -1622,7 +1203,6 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
     this.listTrsCommandeArchive = [];
-    
     if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
         if(trCo.transport.archive && trCo.transport.fini){
@@ -1644,164 +1224,57 @@ onSortDate(data:Array<Transport>){
         }
       })
     }
-    // this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+    this.listTrsCommande = this.listTrsCommandeSchedule
+    // .concat(
     //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
     //     this.listTrsCommandeFini)))
-    if(this.numListShow==1) 
-      this.listTrsCommandeShow = this.listTrsCommandeSchedule
-    if(this.numListShow==2) 
-      this.listTrsCommandeShow = this.listTrsCommandeWaiting
-    if(this.numListShow==3) 
-      this.listTrsCommandeShow = this.listTrsCommandeFini
-    if(this.numListShow==4) 
-      this.listTrsCommandeShow = this.listTrsCommandeCancelled
-    if(this.numListShow==5) 
-      this.listTrsCommandeShow = this.listTrsCommandeArchive
   }
 
   allCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeSchedule.concat(
+    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
       this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
         this.listTrsCommandeFini)))
   }
-  
   waitingCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeWaiting
-    this.numListShow = 2; // 2:waiting
+    this.listTrsCommande = this.listTrsCommandeWaiting
   }
-  
   scheduleCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeSchedule
-    this.numListShow = 1; // 1:schedule
+    this.listTrsCommande = this.listTrsCommandeSchedule
   }
-  
   finishedCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeFini
-    this.numListShow = 3; // 3:finished
+    this.listTrsCommande = this.listTrsCommandeFini
   }
-  
   cancelledCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeCancelled
-    this.numListShow = 4; // 4:cancelled
+    this.listTrsCommande = this.listTrsCommandeCancelled
   }
-
   archiveCommands(){
-    this.listTrsCommandeShow = this.listTrsCommandeArchive
-    this.numListShow = 5; // 5:archive
+    this.listTrsCommande = this.listTrsCommandeArchive
   }
 
-  onCancelTransportInList(transport:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure to cancel this freight ?")
+  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
+    let modulo_10 = price%10;
+    // console.log('modulo_10 of '+price+': '+modulo_10)
+    if(modulo_10>0 && modulo_10<=5){
+      price = (price - modulo_10) + 5
     }
-    else var r = confirm("Etes vous sur d'annuler ce transport ?")
-    if(r==true){
-      transport.driverNote="!!Cancelled!!";  
-      transport.idCamion=null;   
-      transport.camionAttribue=""   
-      this.transportsService.saveTransports(transport).subscribe(data=>{
-        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null){
-            it.cancelled = true
-            it.camionAttribue = ""
-            it.idCamion = null
-            this.itinerairesService.saveItineraires(it).subscribe(data=>{
-              this.onRefresh();
-            }, err=>{console.log(err)})
-          }
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
+    if(modulo_10>5 && modulo_10<10){
+      price = (price - modulo_10) + 10
     }
+    // console.log('price after rounded: '+price)
+    return price;
   }
 
-  onFinishTransportInList(transport:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure this freight finished ?")
-    }
-    else var r = confirm("Etes vous sur ce transport a fini ?")
-    if(r==true){
-      transport.fini=true;  
-      this.transportsService.saveTransports(transport).subscribe(data=>{
-        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null){
-            it.fini = true
-            this.itinerairesService.saveItineraires(it).subscribe(data=>{
-              this.onRefresh();
-            }, err=>{console.log(err)})
-          }
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }
+  showDateLocal(d:Date){
+    d=new Date(d);
+    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
+    return dateLocal;
   }
 
-  onResumeTransportInList(transport:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Do you resume this freight ?")
-    }
-    else var r = confirm("Voulez vous reprendre ce transport ?")
-    if(r==true){
-      transport.driverNote="";  
-      this.transportsService.saveTransports(transport).subscribe(data=>{
-        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null){
-            // it.fini = false
-            it.cancelled = false;
-            this.itinerairesService.saveItineraires(it).subscribe(data=>{
-              this.onRefresh();
-            }, err=>{console.log(err)})
-          }
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }
+  pickDateChange(event){
+    this.transport.dateReserve=event.target.value;
   }
 
-  onDeleteTransportInList(transport:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Would you delete this freight ?")
-    }
-    else var r = confirm("Voulez vous supprimer ce transport ?")
-    if(r==true){
-      this.transportsService.deleteTransport(transport.id).subscribe(data=>{
-        this.loadDetailsService.loadDetailsDeTransport(transport.id).subscribe((lds:Array<LoadDetail>)=>{
-          this.loadDetails=lds;
-          this.loadDetails.forEach(load=>{
-            load.idTransport=this.transport.id;
-            this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
-          })
-        }, err=>{
-          console.log(err)
-        })
-        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null){
-            this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{
-              this.onRefresh();
-            }, err=>{console.log(err)})
-          }
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }
-  }
-
-  onArchiveTransportInList(transport:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Would you archive this freight ?")
-    }
-    else var r = confirm("Voulez vous archiver ce transport ?")
-    if(r==true){
-      transport.archive = true;
-      this.transportsService.saveTransports(transport).subscribe(data=>{
-        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null){
-            it.archive = true;
-            this.itinerairesService.saveItineraires(it).subscribe(data=>{
-              this.onRefresh();
-            }, err=>{console.log(err)})
-          }
-        }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }
-  }
-
+  // trEvTemp:{transport:Transport, loadDetail:LoadDetail}
   onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
     var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
     if(r){
@@ -1820,7 +1293,60 @@ onSortDate(data:Array<Transport>){
       })
     }
   }
-  
+
+  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+      }, err=>{console.log(err)})
+    }, err=>{
+      console.log()
+    })
+  }
+
+  saveSimple(){
+    this.transport.valid = true; // valid this transport ing saving
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+      this.loadDetails.forEach(load=>{
+        load.idTransport=data.id;
+        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          load.id = d.id;
+        }, err=>{
+          console.log(err);
+        })
+      })
+      if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
+      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
+      // after create order then create itineraire
+      if(this.transport.typeDoc==2){ // if a command, create route
+        let route = new Itineraire();
+        route.idEntreprise = this.transport.idEntreprise
+        route.nomEntreprise = this.transport.nomEntreprise
+        route.idTransport = this.transport.id
+        route.idTransporter = this.transport.idTransporter
+
+        route.datePick = this.transport.dateReserve
+        route.timeResrvation = this.transport.timeResrvation
+        route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
+        
+        route.destLat = this.transport.destLat
+        route.destLong = this.transport.destLong
+        route.destination = this.transport.destination
+        
+        route.origin = this.transport.origin
+        route.originLat = this.transport.originLat
+        route.originLong = this.transport.originLong
+        this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
+          route=data;
+        }, err=>{console.log()}) 
+        if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
+      }
+    }, err=>{
+      console.log(err)
+    })
+  }
+
   sleep(ms){
     return new Promise((resolve)=>{
       setTimeout(resolve, ms);
@@ -1836,25 +1362,9 @@ onSortDate(data:Array<Transport>){
     await this.sleep(400)
 
     if(this.transportSelected.typeDoc==1){
-      // let promise = new Promise(function(resolve, reject){
-      //   setTimeout(function(){
-      //     resolve('Print after 1 seconde')
-      //   },1000);
-      // });
-      // promise.then(function(value){
-      //   console.log('value: ' + value)
-      // });
       this.printBonDeTransport('printevalueselected')
     }
     if(this.transportSelected.typeDoc==2){
-      // let promise = new Promise(function(resolve, reject){
-      //   setTimeout(function(){
-      //     resolve('Print after 1 seconde')
-      //   },1000);
-      // });
-      // promise.then(function(value){
-      //   console.log('value: ' + value)
-      // });
       this.printBonDeTransport('printcommandselected')
     }
   }
@@ -1873,23 +1383,18 @@ onSortDate(data:Array<Transport>){
     WindowPrt.focus();
     WindowPrt.print();
     WindowPrt.close();
-    // this.resetSimple();
+    this.resetSimple();
   }
 
-  async prixCalcul(){
-    //this.transport.prixBase +
-    this.transport.horstax= this.transport.loadsFee + this.transport.waitingFee + this.transport.ptoFee
+  prixCalcul(){
+    this.transport.horstax=this.transport.prixBase
     if((this.transport.distance-this.transport.inclus)>0){
-      this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+      this.transport.horstax =this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
     }
     this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
     if(this.transport.taxable){
-      this.onSelectTax();
-      // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-      // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-      // we must remember : tps is gsthst and tvq is pst
-      this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
-      this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
+      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
     else{
@@ -1897,62 +1402,12 @@ onSortDate(data:Array<Transport>){
       this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
-    this.ifAtPlace()
-    this.ifDebit()
-  }
-
-  // prixCalculWithHorsTax(){
-  //   if(this.remorquage.taxable){
-  //     if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
-  //       this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
-  //     this.onSelectTax();
-
-  //     // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
-  //     // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
-  //     // we must remember : tps is gsthst and tvq is pst
-  //     this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
-  //     this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
-  //     this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
-  //   }
-  //   else{
-  //     this.remorquage.tps =0.00; 
-  //     this.remorquage.tvq =0.00; 
-  //     this.remorquage.total= this.remorquage.horstax; 
-  //   }
-  // }
-
-  onSelectTax(){
-    if(this.transport.taxProvince==null || this.transport.taxProvince.length==0)
-    {
-      if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
-        this.transport.taxProvince=this.provinceList[10] // Quebec is the province by default
-        this.taxProvince=this.taxList[10]
-      }
-      else{ // exist tax province for this transporter
-        this.transport.taxProvince=this.transporter.taxProvince
-        this.taxList.forEach(tp=>{
-          if(tp.id.localeCompare(this.transport.taxProvince)==0)
-            this.taxProvince=tp
-        })
-      }
-    }
-    else{  // exist tax province for this towing
-      this.taxList.forEach(tp=>{
-        if(tp.id.localeCompare(this.transport.taxProvince)==0)
-          this.taxProvince=tp
-      })
-    }
-    //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
   }
 
   prixCalculWithHorsTax(){
     if(this.transport.taxable){
-      this.onSelectTax();
-      // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-      // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
-      // we must remember : tps is gsthst and tvq is pst
-      this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
-      this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
+      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
     else{
@@ -1960,8 +1415,6 @@ onSortDate(data:Array<Transport>){
       this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
-    this.ifAtPlace()
-    this.ifDebit()
   }
 
   async showMap() {
@@ -2099,16 +1552,14 @@ onSortDate(data:Array<Transport>){
   }
 
   onFini(){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure this case is finished ?")
-    }
-    else var r = confirm("Etes vous sur que ce cas est fini ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Are you sure this load in finished?")
+    else var r = confirm("Etes vous sur que ce load est fini ?")
     if(r==true){
-      console.log("Le cas est termine.")
+      // console.log("Le cas est termine.")
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
-        this.onSelectTax(); // select tax when re-init a transport
       }, err=>{console.log(err)})
     }
     else {
@@ -2118,10 +1569,9 @@ onSortDate(data:Array<Transport>){
   }
 
   onCancel(){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure to cancel this case ?")
-    }
-    else var r = confirm("Etes vous sur d'annuler ce cas ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to cancel this load ?")
+    else var r = confirm("Etes vous sur d'annuller ce load ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.transport.id>0){
@@ -2129,18 +1579,11 @@ onSortDate(data:Array<Transport>){
           // commence d'envoyer email
           if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
             this.em.emailDest=this.transport.emailIntervenant
-            if(this.varsGlobal.language.includes('English')){
-              this.em.titre="Cancel case #Num : " + this.transport.id.toString()
-              this.em.content='<div><p> '+'Cancel case #Num : ' + this.transport.id.toString()+' </p></div>'
-            }
-            else{
-              this.em.titre="Annuler case #Bon : " + this.transport.id.toString()
-              this.em.content='<div><p> '+'Annuler case #Bon : ' + this.transport.id.toString()+' </p></div>'    
-            }
+            this.em.titre="Annuler case numero : " + this.transport.id.toString()
+            this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              if(this.varsGlobal.language.includes('English')){
-                alert('A canceled email was sent to driver.')
-              }
+              if(this.varsGlobal.language.includes('English'))
+                alert("An email cancel was sent to driver.")
               else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
@@ -2148,7 +1591,6 @@ onSortDate(data:Array<Transport>){
           }
           //*/
           this.transport=new Transport();
-          this.onSelectTax(); // select tax when re-init a transport
         }, err=>{console.log(err)})
       }
     }
@@ -2158,36 +1600,38 @@ onSortDate(data:Array<Transport>){
   }
 
   onDelete(tr:Transport){
-    if(this.varsGlobal.language.includes('English')){
-      var r = confirm("Are you sure to delete this case ?")
-    }
-    else var r = confirm("Etes vous sur de supprimer ce transport ?")
+    if(this.varsGlobal.language.includes('English'))
+      var r = confirm("Do you want to delete this load ?")
+    else var r = confirm("Etes vous sur de supprimer ce cas ?")
     if(r==true){
-      console.log("Ce Transport est supprime.")
+      // console.log("Le cas est supprime.")
       if(tr.id>0){
         this.transportsService.deleteTransport(tr.id).subscribe(data=>{
-          this.listTrsAnnule.splice(this.listTrsAnnule.indexOf(tr),1)
+          if(tr.fini)
+            this.listTrsFini.splice(this.listTrsFini.indexOf(tr),1)
+          else if(tr.sent)
+            this.listTrsSent.splice(this.listTrsSent.indexOf(tr),1)
+          else this.listTrs.splice(this.listTrs.indexOf(tr),1)
+          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
         }, err=>{console.log(err)})
       }
     }
     else {
-      console.log('Ce Transport est maintenu.')
+      console.log('Le cas est continue.')
     }
   }
-  
+
   contactChange(){
     let strings:Array<string>=this.transport.nomContact.split("Id.");
-    if(strings.length>1){
-      let conId:number =  Number(strings[1])
-      this.contacts.forEach(con=>{
-        if(con.id==conId) 
-        {
-          this.transport.nomContact=con.prenom
-          this.transport.telContact=con.tel.toString()
-          this.transport.emailContact=con.email
-        }
-      })
-    }
+    let conId:number =  Number(strings[1])
+    this.contacts.forEach(con=>{
+      if(con.id==conId) 
+      {
+        this.transport.nomContact=con.prenom
+        this.transport.telContact=con.tel.toString()
+        this.transport.emailContact=con.email
+      }
+    })
   }
 
   async onSaveWithMessage(){  // will save with message confirmation
@@ -2202,9 +1646,8 @@ onSortDate(data:Array<Transport>){
       await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
         if(this.transport.id!=null)
         {
-          if(this.varsGlobal.language.includes('English')){
+          if(this.varsGlobal.language.includes('English'))
             alert("It's saved.")
-          }
           else alert("C'est enregistre.")
         }
         await this.loadDetails.forEach(load=>{
@@ -2223,11 +1666,9 @@ onSortDate(data:Array<Transport>){
         this.back=0;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
-        this.transport=new Transport();      
-        this.onSelectTax(); // select tax when re-init a transport
-        this.camion=null
-        this.trailer1=null
-        this.trailer2=null
+        this.transport=new Transport(); 
+        this.transport.nomEntreprise=this.shipper.nom
+        this.transport.idEntreprise=this.id     
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       }, 
         err=>{console.log(err)
@@ -2237,13 +1678,11 @@ onSortDate(data:Array<Transport>){
     else{ // mode=1 already, just save
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
-        {
-          if(this.varsGlobal.language.includes('English')){
-            alert("It's saved.")
+          {
+            if(this.varsGlobal.language.includes('English'))
+              alert("it's saved.")
+            else alert("C'est enregistre.")
           }
-          else alert("C'est enregistre.")
-        }
-        //await this.createVoyage() // creer un voyage
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -2260,11 +1699,9 @@ onSortDate(data:Array<Transport>){
         this.back=0;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
-        this.transport=new Transport();   
-        this.onSelectTax(); // select tax when re-init a transport
-        this.camion=null
-        this.trailer1=null
-        this.trailer2=null   
+        this.transport=new Transport();      
+        this.transport.nomEntreprise=this.shipper.nom
+        this.transport.idEntreprise=this.id
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         //this.transport=data;
       }, 
@@ -2321,37 +1758,6 @@ onSortDate(data:Array<Transport>){
       })
     }
   }
-
-  createVoyage(){
-    this.voyage.originLat=this.transport.originLat
-    this.voyage.originLong=this.transport.originLong
-    this.voyage.destLat=this.transport.destLat
-    this.voyage.destLong=this.transport.destLong
-    this.voyage.dateDepart = new Date(this.voyage.dateDepart)
-    this.voyage.origin=this.transport.origin
-    this.voyage.originAdresse=this.transport.originAdresse
-    this.voyage.originVille=this.transport.originVille
-    this.voyage.originProvince=this.transport.originProvince
-    this.voyage.destination=this.transport.destination
-    this.voyage.destAdresse=this.transport.destAdresse
-    this.voyage.destVille=this.transport.destVille
-    this.voyage.destProvince=this.transport.destProvince
-    this.voyage.typeCamion=this.transport.typeCamion
-    this.voyage.optionVoyage=this.transport.optionDemande
-    this.voyage.idTransporter=8 // id of sosprestige by default
-    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
-      if(this.varsGlobal.language.includes('English')){
-        alert('A voyage was also created.')
-      }
-      else alert('Un voyage est aussi cree.')
-      this.voyage=data
-      this.transport.idVoyage=this.voyage.id
-      this.transportsService.saveTransports(this.transport).subscribe(data=>{},err=>{console.log(err)})
-    }, err=>{
-      console.log(err)
-    })
-  }
-
   onPrint(heure){    
     console.log(heure)
     console.log('this.transport.timeCall : '+this.transport.timeCall)
@@ -2386,17 +1792,29 @@ onSortDate(data:Array<Transport>){
       else{
         okForWriting = false;
       }
-      // if(this.mode==1){
-      //   this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
-      // }
-      // else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
+      
       // calculate price load actual and total price after distance
-      // this.priceLoad(this.loadDetail, this.loadFrequent)
+      //this.priceLoad(this.loadDetail, this.loadFrequent)
       // this.prixBase(this.transport.totalpoints)
+      //return;
     });  
     await this.sleep(2000);
     if(okForWriting){
       this.prixBase(this.transport.totalpoints)
+      // save 
+      if(this.transport.typeDoc==1) this.transport.valid = true //valid for all evaluating whether save or don't save
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        this.transport=data;
+        this.loadDetails.forEach(load=>{
+          load.idTransport=data.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+            if(this.transport.typeDoc==2) this.loadDetail = d; // this is just for type place command
+          }, err=>{
+            console.log(err);
+          })
+        })
+      }, err=>{console.log(err)})
     }
   }
 
@@ -2409,9 +1827,11 @@ onSortDate(data:Array<Transport>){
     
   //   console.log('this.transport.dateDepart : '+this.transport.dateReserve)
   // }
+
   dateChange(event){
     this.transport.dateReserve =event.target.value // new Date(event.target.value);
   }
+  
   nomContactChange(event){
     this.transport.nomContact=event.nom
     this.transport.telContact=event.tel
@@ -2469,9 +1889,6 @@ onSortDate(data:Array<Transport>){
       //this.typeServiceChange(this.remorquage.typeService);
       this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
-        this.loadFrequentsService.loadFrequentsDeShipper(ent.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
-        }, err=>{console.log(err)})
       }, err=>{
         console.log(err);
       });
@@ -2492,9 +1909,7 @@ onSortDate(data:Array<Transport>){
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      //this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
-      this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
-      .subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
         //this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
@@ -2533,51 +1948,36 @@ onSortDate(data:Array<Transport>){
   }
   
   onEnvoyer(){
-    let stringsd:string[]=location.href.split('/transport-client/')
-    if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
-      this.em.emailDest=this.transport.emailIntervenant
-      if(this.varsGlobal.language.includes('English')){
-        this.em.titre="From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
+    let stringsd:string[]=location.href.split('/transport-pro')
+    this.em.emailDest=myGlobals.emailPrincipal; 
+    if(this.varsGlobal.language.includes('English'))
+      this.em.titre= this.transport.nomEntreprise +" - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
+      ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
+    else this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
+      ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
+    this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
+    + this.transport.id   //1733  // replace by Number of Bon Transport
+    +"'><h4>Detail</h4></a>" +" </p></div>"    
+    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      {
+        if(this.varsGlobal.language.includes('English'))
+          alert("This load was sent")
+        else alert("Ce load a ete envoye.")
       }
-      else this.em.titre="De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
-      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-      " <br> <a href='"+ stringsd[0] +"/transport-client/"
-      + (this.transport.id*100-5)   //1733  // replace by Number of Bon Transport
-      +"'><h4>Detail</h4></a>" +" </p></div>"    
-      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-        if(this.varsGlobal.language.includes('English')){
-          alert('Email was sent to driver.')
-        }
-        else alert("Le courriel a ete envoye au chauffeur.")
-        if(this.transport.emailContact.length>10){
-          let em:EmailMessage=new EmailMessage();
-          em.emailDest=this.transport.emailContact;  // email of professional
-          if(this.varsGlobal.language.includes('English')){
-            em.titre= "In progress - " + "From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
-            em.content='<div><p> '+ em.titre + " <br>" + 
-            "<div> #Num: " + this.transport.id+ " </div>"+
-            '<div>'+
-              '<div><br></div>'+
-              '<div>Thank you for your collaboration.</div>'+
-              '<div><br></div>'+
-              '<div>Dispatch - '+this.transporter.nom+' </div>'+
-              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
-            '</div>'+
-            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
-            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
-            " </p></div>"
-          }
-          else{
-            em.titre= "Encours traitement - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
-            em.content='<div><p> '+ em.titre + " <br>" + 
-            "<div> #Bon: " + this.transport.id+ " </div>"+
-            '<div>'+
-              '<div><br></div>'+
-              '<div>Merci de votre collaboration.</div>'+
-              '<div><br></div>'+
-              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
-              '<div>Dispatch - '+this.transporter.nom+' </div>'+
-              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+      //*/ Also App send confirmation email to client professionnel
+      if(this.transport.emailContact.length>10){
+        let em:EmailMessage=new EmailMessage();
+        em.emailDest=this.transport.emailContact;  // email of professional
+        em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
+        em.content='<div><p> '+ em.titre + " <br>" + 
+          '<div>'+
+            '<div><br></div>'+
+            '<div>Merci de votre collaboration.</div>'+
+            '<div><br></div>'+
+            //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+            '<div>Dispatch - '+this.transporter.nom+' </div>'+
+            '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
             //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
             
@@ -2586,71 +1986,99 @@ onSortDate(data:Array<Transport>){
             //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
-            " </p></div>"
-          }
-          
-          this.bankClientsService.envoyerMail(em).subscribe(data=>{
-            console.log('Le client professionnel recois aussi .')
-          }, err=>{console.log(err)})
-        }
-        this.transport.sent=true;
-        this.onSaveWithMessage();
-        // this.back=0;
-        // this.pagePresent=this.back+1;
-        // this.forward=this.back+2
-        // this.transport=new Transport();      
-        // if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
-        /*this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-          this.transport=data;
-        }, 
-          err=>{console.log(err)
-        })
-        this.gotoTop();//*/
-      }, err=>{
-        console.log(err)
-      })//*/
-    }
-    else 
-    {
-      if(this.varsGlobal.language.includes('English')){
-        alert("Verify drivers' email, please!!")
+          " </p></div>"
+        this.bankClientsService.envoyerMail(em).subscribe(data=>{
+          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+        }, err=>{console.log(err)})
       }
-      else alert("Verifier le courriel de chauffer, SVP!!!")
-    }
+      //*/
+      this.onSaveWithMessage();
+      this.transport = new Transport() // declare one new case
+      this.back=0;
+      this.pagePresent=this.back+1;
+      this.forward=this.back+2;
+    }, err=>{
+      console.log()
+    })
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });  // go to top  
   }
 
-  ifDebit(){ // porter au compte
-    if(this.transport.debit){
-      this.transport.porterAuCompte=this.transport.total
-      this.transport.collecterArgent=0;
-      this.transport.atPlace=false
-      this.transport.byCash=false
-      this.transport.byCheck=false
-      this.transport.creditCard=false
-      this.transport.byInterac=false
-      this.transport.transfer=false
-    }
-    else{
-      this.transport.porterAuCompte=0;
-    }
-  }
-  
-  ifAtPlace(){ // collecter d'argent
-    if(this.transport.atPlace){
-      this.transport.collecterArgent=this.transport.total
-      this.transport.porterAuCompte=0;
-      this.transport.debit=false
-    }
-    else{
-      this.transport.collecterArgent=0;
-    }
+  onEnvoyerWithSaveSimple(){
+    // let stringsd:string[]=location.href.split('/transport-pro')
+    this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
+    // check validation of this.shipper.email
+    if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
+      this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
+    if(this.varsGlobal.language.includes('English'))
+      this.em.titre= this.transport.nomEntreprise + " - Order: " + this.loadFrequent.nom 
+      //+
+      // " - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
+      // ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
+    else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.loadFrequent.nom 
+    // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
+    //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
+    this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom+ " - " + 
+    this.shipper.tel + " - " + this.shipper.email + " </h3> <br>"
+    + document.getElementById('sendcommand').innerHTML
+    /*//
+    +
+    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
+    + this.transport.id   //1733  // replace by Number of Bon Transport
+    +"'><h4>Detail</h4></a>" +" </p></div>"    
+    //*/
+    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      // {
+      //   // if(this.varsGlobal.language.includes('English'))
+      //   //   alert("This load was sent")
+      //   // else alert("Ce load a ete envoye.")
+      // }
+      // //*/ Also App send confirmation email to client professionnel
+      // if(this.transport.emailContact.length>10){
+      //   let em:EmailMessage=new EmailMessage();
+      //   em.emailDest=this.transport.emailContact;  // email of professional
+      //   em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
+      //   em.content='<div><p> '+ em.titre + " <br>" + 
+      //     '<div>'+
+      //       '<div><br></div>'+
+      //       '<div>Merci de votre collaboration.</div>'+
+      //       '<div><br></div>'+
+      //       //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+      //       '<div>Dispatch - '+this.transporter.nom+' </div>'+
+      //       '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+      //       '</div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+      //       '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+      //       '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+      //     " </p></div>"
+      //   this.bankClientsService.envoyerMail(em).subscribe(data=>{
+      //     console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+      //   }, err=>{console.log(err)})
+      // }
+      // //*/
+      // this.onSaveWithMessage();
+      // this.transport = new Transport() // declare one new case
+      // this.back=0;
+      // this.pagePresent=this.back+1;
+      // this.forward=this.back+2;
+      this.resetSimple(); // reset/new after sent
+    }, err=>{
+      console.log()
+    })
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });  // go to top  
   }
 
-  onPage1(){
-    this.pagePresent=1;
-    this.back=this.pagePresent-1;
-    this.forward=this.pagePresent+1
-  }
   onPage2(){
     this.modifyModels=false;  // must be sure for close list templates
     if(this.transport.id==null){
@@ -2714,58 +2142,14 @@ onSortDate(data:Array<Transport>){
     this.back=this.pagePresent-1;
     this.forward=this.pagePresent+1
   }
-  onPage9(){
-    this.modifyModels=false;  // must be sure for close list templates
-    if(this.transport.id==null){
-      this.onSave();
-    }
-    this.pagePresent=9;
-    this.back=this.pagePresent-1;
-    this.forward=this.pagePresent+1
-  }
-  onPage10(){
-    this.modifyModels=false;  // must be sure for close list templates
-    if(this.transport.id==null){
-      this.onSave();
-    }
-    this.pagePresent=10;
-    this.back=this.pagePresent-1;
-    this.forward=this.pagePresent+1
-  }
 
-  loadPriceChange(){
-    let tempTotal=0;
-    this.loadDetails.forEach(load=>{
-      tempTotal+=load.price
-    })
-    this.transport.loadsFee=tempTotal
-  }
-  // testVar:Shipper=new Shipper();
-  // textreturn(id:number){
-  //   let s:Shipper=new Shipper();
-  //   this.listShipper.forEach(sp=>{if(sp.id==id)s=sp})
-  //   console.log('Shipper : ' + s.nom)
-  //   return ' .aa.' + s.nom
-  // }
-  // onListFrequentChange(e){
-  //   //this.extractLoadFrequent(e.target.value)
-  //   alert('e : '+ e)
-  //   alert('e.target.value : '+ e.target.value)
-  //   //this.extractShipper(e.target.value)
-  // }
-  // extractLoadFrequent(l:LoadFrequent){
-  //   alert('l.idTransporter + l.nom + l.description : '+ l.idTransporter +  ' - ' + l.nom +  ' - ' + l.description)
-  // }
-  // extractShipper(){
-  //   //alert('Shipper : idTransporter + nom + tel : '+ this.testVar.idTransporter +  ' - ' + this.testVar.nom +  ' - ' + this.testVar.tel)
-  // }
 
-  // logout(){
-  //   localStorage.clear();
-  //   //this.router.navigateByUrl("");
-  //   //this.router.navigateByUrl('/transporters/');
-  //   this.router.navigate(['']);
-  // }
+  logout(){
+    localStorage.clear();
+    //this.router.navigateByUrl("");
+    //this.router.navigateByUrl('/transporters/');
+    this.router.navigate(['']);
+  }
 }
 
 interface marker {

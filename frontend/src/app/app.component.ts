@@ -654,7 +654,7 @@ export class AppComponent implements OnInit{
         if(res.idTransporter != undefined) {
           this.transportersService.getDetailTransporter(res.idTransporter).subscribe((tr:Transporter)=>{
             this.transporter = tr;
-            // check plan
+            /*// begin check plan
             if(
               (this.transporter.dateEndTrialMillis!=null && this.transporter.dateEndTrialMillis>new Date().getTime()) 
               ||
@@ -675,7 +675,7 @@ export class AppComponent implements OnInit{
                 //var r = confirm("Contact your dispatch, please !")
               }
             }
-            //
+            /// end of check plan //*/
           }, err=>{console.log(err)})
           localStorage.setItem('idTransporter', this.idTransporter = res.idTransporter.toString())
           localStorage.setItem('entrepriseNom', res.entrepriseNom);
