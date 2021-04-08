@@ -28,6 +28,10 @@ import { GarantiesService } from 'src/services/garantie.service';
 import { Garantie } from 'src/model/model.garantie';
 import { BonDeTravail } from 'src/model/model.bonDeTravail';
 import { Reparation } from 'src/model/model.reparation';
+import { PlanOrder } from 'src/model/model.planOrder';
+import { PlanPrice } from 'src/model/model.planPrice';
+import { PlanPriceService } from 'src/services/planPrice.service';
+import { PlanOrderService } from 'src/services/planOrder.service';
 
 @Component({
   selector: 'app-detail-transoprter',
@@ -91,12 +95,22 @@ export class DetailTransporterComponent implements OnInit {
 
   infoWindow : any;
 
+  planPrice: PlanPrice;
+  planOrder:PlanOrder=new PlanOrder();
+  listPlanOrders:Array<PlanOrder>=null;
+  packsTrucks=0;
+  packsClientsPros=0;
+  packsTerminals=0;
+  packsTrucksPrice:number;
+  packsClientsProsPrice:number;
+  packsTerminalsPrice:number;
+
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
     public fichePhysiqueContsService:FichePhysiqueContsService, public autreEntretiensService:AutreEntretiensService, private router:Router,
     public chauffeursService:ChauffeursService, private sanitizer:DomSanitizer, public varsGlobal:VarsGlobal, 
-    public garantieService:GarantiesService, public reparationsService:ReparationsService, 
-    public bonDeTravailsService:BonDeTravailsService,)
+    public garantieService:GarantiesService, public reparationsService:ReparationsService, public planPriceService:PlanPriceService,
+    public bonDeTravailsService:BonDeTravailsService, public planOrderService:PlanOrderService,)
   {  
     if(localStorage.getItem('idTransporter')!=undefined &&Number(localStorage.getItem('idTransporter'))>0)
       this.id = Number(localStorage.getItem('idTransporter'))
@@ -1296,5 +1310,254 @@ export class DetailTransporterComponent implements OnInit {
   onChangeImage(){
     this.transporter.photo=""
   }
+
+
+  infosTransporterMode = false;
+  planActualMode = true; // to show plan actual for first view
+  plansHistoricMode = false;
+  
+  onPlanActual(){
+    this.infosTransporterMode = false;
+    this.planActualMode = true;
+    this.plansHistoricMode = false;
+  }
+
+  onInfosTransporter(){
+    this.infosTransporterMode = true;
+    this.planActualMode = false;
+    this.plansHistoricMode = false;
+  }
+
+  onPlansHistoric(){
+    this.infosTransporterMode = false;
+    this.planActualMode = false;
+    this.plansHistoricMode = true;
+  }
+
+remainRate = 1.00 // this is the rate days reste for extension
+  extensionPlan = false;
+  onExtension(){
+    this.extensionPlan = !this.extensionPlan
+    if(!this.flagNewPlan && this.extensionPlan){
+      this.planOrder.planName="Extension"
+      let timeLag = new Date().getTimezoneOffset() / 60 ;
+      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
+      this.planOrder.dateEnding=new Date();
+      this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
+      
+      let today = new Date();
+      // let heure = today.getHours()
+      // this.planOrder.dateEnding.setHours(heure)
+      // console.log("new Date(this.transporter.endDatePlan).getTime()): "+ new Date(this.transporter.endDatePlan).getTime())
+      // console.log("today.getTime(): " + today.getTime())
+      this.remainRate = Math.round(((new Date(this.transporter.endDatePlan).getTime()-today.getTime())/1000/60/60/24
+      / this.transporter.daysPlan)*100)/100
+      // console.log("remainRate: " + this.remainRate)
+    }
+    
+    if(!this.flagNewPlan && !this.extensionPlan){
+      this.planOrder.planName=''
+      this.packsTrucks=0;
+      this.packsClientsPros=0;
+      this.packsTerminals=0;
+      this.remainRate=1.00
+      this.planNameChange()
+    }
+  }
+
+  disableExtension=false
+  flagNewPlan=false
+  newOrRenewPlan(){
+    if(this.packsTrucks<0) this.packsTrucks=0;
+    if(this.packsTerminals<0) this.packsTerminals=0;
+    if(this.packsClientsPros<0) this.packsClientsPros=0;
+    
+    // in case extension
+    if(this.planOrder.planName!=null && this.planOrder.planName.includes("Extension")){
+      this.planOrder.trucks=(this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals=(this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros=(this.packsClientsPros*this.planPrice.clientsPros)
+    }
+
+    // in the case New Plan
+    else if(!this.transporter.evaluation && (this.transporter.trucks==null || this.transporter.trucks==0)){
+      this.disableExtension=true
+      this.flagNewPlan=true
+      this.planOrder.trucks=this.planPrice.trucks + (this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals=this.planPrice.terminals + (this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros=this.planPrice.clientsPros + (this.packsClientsPros*this.planPrice.clientsPros)      
+    }
+    
+    // in the case Renew Plan    
+    else{
+      this.extensionPlan=false
+      this.disableExtension=true
+      this.planOrder.trucks= this.transporter.trucks; // (this.packsTrucks*this.planPrice.trucks)
+      this.planOrder.terminals= this.transporter.terminals; // (this.packsTerminals*this.planPrice.terminals)
+      this.planOrder.clientsPros= this.transporter.clientsPros; // (this.packsClientsPros*this.planPrice.clientsPros)
+
+      this.planOrder.planName=this.transporter.planActual
+    }
+
+    this.planNameChange(); // to sur take the planName and price 
+  }
+
+  orderPlan(){
+    this.planOrder.idTransporter=this.id
+    // if(this.transporter.trucks>0)// && this.transporter.endDatePlan>new Date())
+    //   this.planOrder.planName="Extension"
+    this.planOrderService.savePlanOrder(this.planOrder).subscribe((data:PlanOrder)=>{
+      this.planOrder=data;
+      this.listPlanOrders.push(data)
+      this.listPlanOrders.sort((b,a)=>{
+        if(a.id>b.id)
+          return 1;
+        if(a.id<b.id)
+          return -1;
+        return 0;
+      });
+    }, err=>{console.log(err)})
+  }
+
+  cancelOrderPlan(){
+    this.packsTrucks=0;
+    this.packsTerminals=0;
+    this.packsClientsPros=0;
+    this.planOrder = new PlanOrder();
+    // this.extensionPlan = !this.extensionPlan
+    this.disableExtension = false
+    this.extensionPlan = false
+  }
+  
+  planNameChange(){
+    if(this.planOrder.planName!=null && !this.planOrder.planName.includes("Extension")){
+      let today =new Date()
+      let timeZone= new Date().getTimezoneOffset()
+      let timeEndDatePlan = this.transporter.dateEndingMillis; //new Date(this.transporter.endDatePlan).getTime()
+      console.log('timeZone: '+timeZone)
+      let timeLag = timeZone/60
+      console.log("timeLag: "+ timeLag )
+      // in case new plan 
+      if(this.flagNewPlan){ 
+        today = this.planOrder.dateEnding = new Date();
+      }
+      
+      // in case renew plan 
+      if(!this.flagNewPlan){ 
+        today = this.planOrder.dateEnding = new Date() ;// new Date(this.transporter.endDatePlan).setHours(today.getHours()+timeLag));
+        this.planOrder.dateEnding.setTime(timeEndDatePlan + (timeLag*60*60*1000))
+        today.setTime(timeEndDatePlan + (timeLag*60*60*1000))
+        // let heure = today.getHours()
+        // today.setHours(heure)
+        // this.planOrder.dateEnding.setHours(heure)
+        //this.planOrder.dateEnding.setHours(today.getHours()+timeLag);
+      }
+
+      if(this.planOrder.planName.includes("3 Months"))
+      {
+        this.planOrder.daysPlan=90; // 3 months
+        this.planOrder.dateEnding.setMonth(today.getMonth()+3);
+        this.planOrder.price=this.planPrice.price * 3 + 
+          ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price
+      }
+      if(this.planOrder.planName.includes("1 Year")){
+        this.planOrder.daysPlan=365; // 1 Year
+        this.planOrder.dateEnding.setFullYear(today.getFullYear()+1);
+        this.planOrder.price=this.planPrice.price * 3 * 3  + 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 3)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *3
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 3
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 3
+      }
+        
+      if(this.planOrder.planName.includes("2 Years")){
+        this.planOrder.daysPlan=730; // 2 Years
+        this.planOrder.dateEnding.setFullYear(today.getFullYear()+2);
+        this.planOrder.price=this.planPrice.price * 3 * 5 + 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 5)
+        this.packsTrucksPrice = this.packsTrucks  * this.planPrice.price *5
+        this.packsClientsProsPrice = this.packsClientsPros  * this.planPrice.price * 5
+        this.packsTerminalsPrice = this.packsTerminals  * this.planPrice.price * 5
+      }
+      this.planOrder.dateEndingMillis=this.planOrder.dateEnding.getTime();
+    }
+    else if(this.planOrder.planName!=null && this.planOrder.planName.includes("Extension")){
+      
+      if(this.transporter.planActual.includes("3 Months"))
+      {
+        this.planOrder.daysPlan=90; // 3 months
+        this.planOrder.price=this.remainRate * 
+          ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price)
+        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price
+        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price
+        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price
+      }
+      if(this.transporter.planActual.includes("1 Year")){
+        this.planOrder.daysPlan=365; // 1 Year
+        this.planOrder.price=this.remainRate * 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 3)
+        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price *3
+        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price * 3
+        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price * 3
+      }
+        
+      if(this.transporter.planActual.includes("2 Years")){
+        this.planOrder.daysPlan=730; // 2 Years
+        this.planOrder.price=this.remainRate * 
+        ((this.packsTrucks + this.packsClientsPros + this.packsTerminals) * this.planPrice.price * 5)
+        this.packsTrucksPrice =this.remainRate * this.packsTrucks  * this.planPrice.price *5
+        this.packsClientsProsPrice =this.remainRate * this.packsClientsPros  * this.planPrice.price * 5
+        this.packsTerminalsPrice =this.remainRate * this.packsTerminals  * this.planPrice.price * 5
+      }
+    }
+  }
+
+  onFileUpLoadPlanOrder(event, po:PlanOrder){
+    let selectedFile : File=event.target.files[0];
+    if(selectedFile){
+      const reader = new FileReader();
+      reader.onload = ()=>{po.imgUrl=reader.result.toString();}
+      reader.readAsDataURL(selectedFile)
+    }
+    else po.imgUrl='';
+  }
+
+  onModifyingPlanOrder(po:PlanOrder){
+    this.planOrderService.savePlanOrder(po).subscribe((data:PlanOrder)=>{
+      po=data;
+    }, err=>{console.log(err)})
+  }
+
+  onDeletPlanOrder(pO:PlanOrder){
+    if(pO.id!=null && pO.id>0) this.planOrderService.deletePlanOrder(pO.id).subscribe((data:PlanOrder)=>{
+      this.listPlanOrders.splice(this.listPlanOrders.indexOf(data), 1)
+    }, err=>{console.log()})
+  }
+
+  // infosTransporterMode = false;
+  // planActualMode = true; // to show plan actual for first view
+  // plansHistoricMode = false;
+  
+  // onPlanActual(){
+  //   this.infosTransporterMode = false;
+  //   this.planActualMode = true;
+  //   this.plansHistoricMode = false;
+  // }
+
+  // onInfosTransporter(){
+  //   this.infosTransporterMode = true;
+  //   this.planActualMode = false;
+  //   this.plansHistoricMode = false;
+  // }
+
+  // onPlansHistoric(){
+  //   this.infosTransporterMode = false;
+  //   this.planActualMode = false;
+  //   this.plansHistoricMode = true;
+  // }
+
 
 }

@@ -464,7 +464,168 @@
     </div>
     <!--Use for the case of Dispatch want to add driver-->
     <div class="panel panel-primary" *ngIf="mode==4">
-        <div class="panel-body">
+        <span><button class="btn btn-link" (click)="onInfosTransporter()">Infos</button></span>
+        <span><button class="btn btn-link" (click)="onPlanActual()">Plan Actuel</button></span>
+        <span><button class="btn btn-link" (click)="onPlansHistoric()">Plans Historique</button></span>
+        <!-- <hr style="border: 1px dotted black"/> -->
+        <div [hidden]="!planActualMode">
+            
+            <table border="1">
+                <tr>
+                    <th>Plan Actuel</th>
+                    <th>Unites</th>
+                    <th>SubDispatchs</th>
+                    <th>Terminaux</th>
+                    <th>Date Fin</th>
+                </tr>
+                <tr *ngIf="transporter.evaluation || (!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                    <td colspan="5">
+                        <button (click)="newOrRenewPlan()">
+                            Nouveau Plan
+                            <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                                New Plan
+                            </span> 
+                            <span *ngIf="transporter.evaluation">
+                                New Plan
+                            </span> -->
+                        </button></td>
+                    <td><button *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)" (click)="onExtension()">Extension</button></td>
+                </tr>
+
+                <tr *ngIf="(!transporter.evaluation && transporter.trucks!=null && transporter.trucks>0)">
+                    <td>{{transporter.planActual}}</td>
+                    <td>{{transporter.trucks}}</td>
+                    <td>{{transporter.clientsPros}}</td>
+                    <td>{{transporter.terminals}}</td>
+                    <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
+                    <td><button (click)="newOrRenewPlan()" [disabled]="extensionPlan">
+                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
+                            Renouveler
+                        </span> 
+                        <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                            New Plan
+                        </span> 
+                        <span *ngIf="transporter.evaluation">
+                            New Plan
+                        </span> -->
+                    </button></td>
+                    <td><button (click)="onExtension()" [disabled]="disableExtension">Extension</button></td>
+                </tr>
+            <!-- </table>
+            <table border="1"> -->
+                <tr></tr>
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
+                    <th>Plan Commande</th>
+                </tr>
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
+                    <td>
+                        <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
+                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <option value="3 Months" selected="selected">3 Mois</option>
+                            <option value="1 Year">1 An</option>
+                            <option value="2 Years">2 Ans</option>
+                            <!-- <option selected>3 Months</option>
+                            <option>1 Year</option>
+                            <option>2 Years</option> -->
+                        </select>
+                        <select *ngIf=" !extensionPlan && (!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))"
+                            [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <!-- {{this.transporter.planActual}} -->
+                            <option value="3 Months">3 Mois</option>
+                            <option value="1 Year">1 An</option>
+                            <option value="2 Years">2 Ans</option>
+                        </select>
+                        <span *ngIf="(extensionPlan && !flagNewPlan)">
+                            Extension
+                        </span>
+                    </td>
+                    <td>{{planOrder.trucks}}</td>
+                    <td>{{planOrder.clientsPros}}</td>
+                    <td>{{planOrder.terminals}}</td>
+                    <td>{{planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="text-align: right;">{{planOrder.price}} $</td>
+                    <td><button (click)="orderPlan()">Demander</button></td>
+                    <td><button (click)="cancelOrderPlan()">Annuler</button></td>
+                </tr>
+            </table>
+            <table border="1" *ngIf="extensionPlan">
+                <tr><th colspan="5">Extension</th></tr>
+                <tr>
+                    <th>Pack</th>
+                    <th>Quantite</th>                    
+                    <th>Prix</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.trucks}} Unites</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
+                    <th style="text-align: right;">{{packsTrucksPrice}} $</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.clientsPros}} SubDispatchs</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
+                    
+                    <th style="text-align: right;">{{packsClientsProsPrice}} $</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.terminals}} Terminaux</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
+                    
+                    <th style="text-align: right;">{{packsTerminalsPrice}} $</th>
+                </tr>
+                <!-- <tr><th><button>OK</button></th></tr> -->
+            </table>
+            <table border="1" *ngIf="planOrder!=null && planOrder.price!=null && planOrder.price>0">
+                <tr>
+                    <th colspan="2">
+                        <span style="text-align: center;">Paiement Infos : </span><br>
+                        <span>SOS Prestige, 520 Guindon, Sainte Eustache, QC</span>
+                    </th>
+                </tr>
+                <tr><th>Mode</th> <th>Detail</th></tr>
+                <tr><th>Interac</th><td>sosprestige@gmail.com</td></tr>
+                <tr><th>Carte Credit / Debit</th><td>Telephone 450-974-9111</td></tr>
+            </table>
+        </div>
+        <div [hidden]="!plansHistoricMode">
+            <table border="1">
+                <tr>Plans Historic</tr>
+                <tr>
+                    <th>#Numero</th><th>Plan</th><th>Unites</th><th>SubDispatchs</th><th>Terminaux</th>
+                    <th>Demande</th><th>Fin</th><th>Prix</th><th>Status</th><th>Preuve de Paiement</th>
+                </tr>
+                <tr *ngFor="let pO of listPlanOrders">
+                    <td>{{pO.id}}</td>
+                    <td>{{pO.planName}}</td><td>{{pO.trucks}}</td><td>{{pO.clientsPros}}</td><td>{{pO.terminals}}</td>
+                    <td>{{pO.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="text-align: right;">{{pO.price}} $</td><td>{{(pO.payed?"Payed":"Waiting")}}</td>
+                    <!-- <td *ngIf="!pO.payed"><button class="btn btn-link">LoadProofPay</button></td> -->
+                    <td *ngIf="!pO.payed">
+                        <!-- <label for="proofImg" class="form-control">LoadProofPay</label> -->
+                        <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg">
+                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
+                        <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Change</button>
+                        <!-- <button (click)="onModifyingPlanOrder(pO)" class="btn btn-link">&nbsp; Modify</button> -->
+                    </td>
+                    <td *ngIf="pO.payed">
+                        <!-- <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg"> -->
+                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
+                        <!-- <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Delete&nbsp;</button> -->
+                    </td>
+                    <td *ngIf="!pO.payed">
+                        <button class="btn btn-link" (click)="onDeletPlanOrder(pO)">Delete</button>
+                    </td>
+                </tr>
+                <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
+            </table>
+        </div>
+        <div class="panel-body" [hidden]="!infosTransporterMode">
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
@@ -538,7 +699,6 @@
             </table>
         </div>
     </div>
-    <!--div-->
 
 </div>
 
@@ -1010,7 +1170,168 @@
   </div>
     <!--Use for the case of Dispatch want to add driver-->
     <div class="panel panel-primary" *ngIf="mode==4">
-        <div class="panel-body">
+        <span><button class="btn btn-link" (click)="onInfosTransporter()">Infos</button></span>
+        <span><button class="btn btn-link" (click)="onPlanActual()">Plan Actual</button></span>
+        <span><button class="btn btn-link" (click)="onPlansHistoric()">Plans Historic</button></span>
+        <!-- <hr style="border: 1px dotted black"/> -->
+        <div [hidden]="!planActualMode">
+            
+            <table border="1">
+                <tr>
+                    <th>Plan Actual</th>
+                    <th>Units</th>
+                    <th>SubDispatchs</th>
+                    <th>Terminals</th>
+                    <th>DateEnding</th>
+                </tr>
+                <tr *ngIf="transporter.evaluation || (!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                    <td colspan="5">
+                        <button (click)="newOrRenewPlan()">
+                            New Plan
+                            <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                                New Plan
+                            </span> 
+                            <span *ngIf="transporter.evaluation">
+                                New Plan
+                            </span> -->
+                        </button></td>
+                    <td><button *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)" (click)="onExtension()">Extension</button></td>
+                </tr>
+
+                <tr *ngIf="(!transporter.evaluation && transporter.trucks!=null && transporter.trucks>0)">
+                    <td>{{transporter.planActual}}</td>
+                    <td>{{transporter.trucks}}</td>
+                    <td>{{transporter.clientsPros}}</td>
+                    <td>{{transporter.terminals}}</td>
+                    <td>{{transporter.endDatePlan | date: 'dd-MMM-yyyy'}}</td>
+                    <td><button (click)="newOrRenewPlan()" [disabled]="extensionPlan">
+                        <span *ngIf="(!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))">
+                            Renew
+                        </span> 
+                        <!-- <span *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))">
+                            New Plan
+                        </span> 
+                        <span *ngIf="transporter.evaluation">
+                            New Plan
+                        </span> -->
+                    </button></td>
+                    <td><button (click)="onExtension()" [disabled]="disableExtension">Extension</button></td>
+                </tr>
+            <!-- </table>
+            <table border="1"> -->
+                <tr></tr>
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
+                    <th>Plan Order</th>
+                </tr>
+                <tr *ngIf="(planOrder.trucks!=null && planOrder.trucks>0)||
+                    (planOrder.clientsPros!=null && planOrder.clientsPros>0)||
+                    (planOrder.terminals!=null && planOrder.terminals>0)">
+                    <td>
+                        <select *ngIf="(!transporter.evaluation && (transporter.trucks==null || transporter.trucks==0))"
+                        [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <option value="3 Months" selected="selected">3 Months</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                            <!-- <option selected>3 Months</option>
+                            <option>1 Year</option>
+                            <option>2 Years</option> -->
+                        </select>
+                        <select *ngIf=" !extensionPlan && (!transporter.evaluation && (transporter.trucks!=null && transporter.trucks>0))"
+                            [(ngModel)]="planOrder.planName"  (ngModelChange)="planNameChange()" class="form-control">
+                            <!-- {{this.transporter.planActual}} -->
+                            <option value="3 Months">3 Months</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                        </select>
+                        <span *ngIf="(extensionPlan && !flagNewPlan)">
+                            Extension
+                        </span>
+                    </td>
+                    <td>{{planOrder.trucks}}</td>
+                    <td>{{planOrder.clientsPros}}</td>
+                    <td>{{planOrder.terminals}}</td>
+                    <td>{{planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="text-align: right;">{{planOrder.price}} $</td>
+                    <td><button (click)="orderPlan()">Send</button></td>
+                    <td><button (click)="cancelOrderPlan()">Cancel</button></td>
+                </tr>
+            </table>
+            <table border="1" *ngIf="extensionPlan">
+                <tr><th colspan="5">Extension</th></tr>
+                <tr>
+                    <th>Pack</th>
+                    <th>Quantity</th>                    
+                    <th>Price</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.trucks}} Units</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTrucks" (change)="newOrRenewPlan()"></th>
+                    <th style="text-align: right;">{{packsTrucksPrice}} $</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.clientsPros}} SubDispatchs</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsClientsPros" (change)="newOrRenewPlan()"></th>
+                    
+                    <th style="text-align: right;">{{packsClientsProsPrice}} $</th>
+                </tr>
+                <tr>
+                    <th>{{planPrice.terminals}} Terminals</th>
+                    <th><input type="number" style="width: 6ch; border: none;" 
+                        [(ngModel)]="packsTerminals" (change)="newOrRenewPlan()"></th>
+                    
+                    <th style="text-align: right;">{{packsTerminalsPrice}} $</th>
+                </tr>
+                <!-- <tr><th><button>OK</button></th></tr> -->
+            </table>
+            <table border="1" *ngIf="planOrder!=null && planOrder.price!=null && planOrder.price>0">
+                <tr>
+                    <th colspan="2">
+                        <span style="text-align: center;">Payement Infos : </span><br>
+                        <span>SOS Prestige, 520 Guindon, Sainte Eustache, QC</span>
+                    </th>
+                </tr>
+                <tr><th>Mode</th> <th>Detail</th></tr>
+                <tr><th>Interac</th><td>sosprestige@gmail.com</td></tr>
+                <tr><th>Credit Card</th><td>Telephone 450-974-9111</td></tr>
+            </table>
+        </div>
+        <div [hidden]="!plansHistoricMode">
+            <table border="1">
+                <tr>Plans Historic</tr>
+                <tr>
+                    <th>#Number</th><th>Plan</th><th>Units</th><th>SubDispatch</th><th>Terminals</th>
+                    <th>Demande</th><th>Ending</th><th>Price</th><th>Status</th><th>PayProof</th>
+                </tr>
+                <tr *ngFor="let pO of listPlanOrders">
+                    <td>{{pO.id}}</td>
+                    <td>{{pO.planName}}</td><td>{{pO.trucks}}</td><td>{{pO.clientsPros}}</td><td>{{pO.terminals}}</td>
+                    <td>{{pO.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.dateEnding | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="text-align: right;">{{pO.price}} $</td><td>{{(pO.payed?"Payed":"Waiting")}}</td>
+                    <!-- <td *ngIf="!pO.payed"><button class="btn btn-link">LoadProofPay</button></td> -->
+                    <td *ngIf="!pO.payed">
+                        <!-- <label for="proofImg" class="form-control">LoadProofPay</label> -->
+                        <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg">
+                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
+                        <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Change</button>
+                        <!-- <button (click)="onModifyingPlanOrder(pO)" class="btn btn-link">&nbsp; Modify</button> -->
+                    </td>
+                    <td *ngIf="pO.payed">
+                        <!-- <input *ngIf="pO.imgUrl==null || pO.imgUrl.length==0" name="proofImg" type="file" (change)="onFileUpLoadPlanOrder($event, pO); onModifyingPlanOrder(pO)" accept="image/x-png,image/gif,image/jpeg"> -->
+                        <img *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" [src]="pO.imgUrl" style="width:100px; height: 100px;" alt="">
+                        <!-- <button *ngIf="pO.imgUrl!=null && pO.imgUrl.length>0" (click)="pO.imgUrl=''; onModifyingPlanOrder(pO)" class="btn btn-link">Delete&nbsp;</button> -->
+                    </td>
+                    <td *ngIf="!pO.payed">
+                        <button class="btn btn-link" (click)="onDeletPlanOrder(pO)">Delete</button>
+                    </td>
+                </tr>
+                <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
+            </table>
+        </div>
+        <div class="panel-body" [hidden]="!infosTransporterMode">
             <table>
                 <!-- <tr><th><h4>Profil</h4></th></tr>  -->
                 <tr>
@@ -1059,11 +1380,11 @@
                 </tr>
                 <tr>
                     <th *ngIf="transporter.photo!=null && transporter.photo.length>0">
-                        <button (click)="onChangeImage()">Change Logo</button>
+                        <button (click)="onChangeImage()">Changer Logo</button>
                     </th>
                     <th colspan="2" *ngIf="transporter.photo==null || transporter.photo.length==0">
-                        <label for="imglogo">Take Logo &nbsp;&nbsp;</label>
-                        <input name="imglogo" type="file" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
+                        <label for="imglogo">Prendre Logo &nbsp;&nbsp;</label>
+                        <input name="imglogo" type="file" title="Joindre image logo " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg">
                     </th>    
                 </tr>
                 <!-- <tr><td rowspan="6"><button class="btn btn-link" (click)="modifiyTransporter()">Enregistrer Profil</button></td></tr> -->
@@ -1084,6 +1405,5 @@
             </table>
         </div>
     </div>
-    <!--div-->
 
 </div>
