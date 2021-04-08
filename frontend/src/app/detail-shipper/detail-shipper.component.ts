@@ -247,9 +247,18 @@ export class DetailShipperComponent implements OnInit {
       alert("LoadFrequent added.");
       this.loadFrequents.push(data)
       this.loadFrequent=new LoadFrequent();
+      this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
     }, err=>{
       console.log(err)
     })
+  }
+
+  modifyLoadFrequent(lf:LoadFrequent){
+    this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
+      alert('Ok, modified.')
+      lf=data;
+      this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
+    }, err=>{console.log(err)})
   }
 
   deleteAdresse(id:number){

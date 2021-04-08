@@ -144,7 +144,10 @@
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
                   <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
-                  <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
+                  <td width="14%">
+                    <button class="btn btn-link" (click)="modifyLoadFrequent(lf)">Modifier</button>
+                    <button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button>
+                  </td>
                 </tr>
                 <tr>
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
@@ -532,7 +535,10 @@
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
                   <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
-                  <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
+                  <td width="14%">
+                    <button class="btn btn-link" (click)="modifyLoadFrequent(lf)">Modify</button>
+                    <button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button>
+                  </td>
                 </tr>
                 <tr>
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /></td>
