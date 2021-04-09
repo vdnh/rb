@@ -216,12 +216,22 @@ export class DetailTransporterComponent implements OnInit {
     });    
 
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
-      /*/this.camionsSurMap.length=0;
-      data.forEach(camion=>{
-        if(camion.uniteMonitor!=null && camion.monitor!=null)
-          this.camionsSurMap.push(camion)
-      })
-      //*/
+      //check number trucks follow plan pay
+      if(data.length>this.transporter.trucks){
+        // console.log('camions before splice : ' +data.length)
+        data.sort((a,b)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        });
+        // remove number trucks excess number trucks of transporter
+        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+        // console.log('camions after splice : ' +data.length)
+      }
+      // end check number trucks
+
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)
@@ -474,12 +484,20 @@ export class DetailTransporterComponent implements OnInit {
   deleteCamion(camion, camions:Array<Camion>){
     //*
     this.camionsService.deleteCamion(camion.id).subscribe(async data=>{
+      // this.listNumberUnite.splice(camions.indexOf(camion), 1) // withdraw 1 unit on listNumberUnite
       this.deleteFiche01(camion)
       this.deleteFiche02(camion)
       this.deleteGaranties(camion)
       this.deleteAutreEntretiens(camion)
       await this.deleteBonTravails(camion)
       camions.splice(camions.indexOf(camion), 1)
+      // refresh list camions every 2 minutes
+      if(this.subscriptionRefresh!=null) {
+        this.subscription.unsubscribe()
+        const source = interval(60000);
+        this.subscriptionRefresh=source.subscribe(val=>{this.refreshListCamions()})
+      }
+      this.refreshListCamions()
     }, err=>{
       console.log(err);
     });//*/
@@ -627,6 +645,22 @@ export class DetailTransporterComponent implements OnInit {
   refreshListCamions(){
     this.arrayArrayEnts=[]
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+      //check number trucks follow plan pay
+      if(data.length>this.transporter.trucks){
+        // console.log('camions before splice : ' +data.length)
+        data.sort((a,b)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        });
+        // remove number trucks excess number trucks of transporter
+        data.splice(this.transporter.trucks, (data.length-this.transporter.trucks))
+        // console.log('camions after splice : ' +data.length)
+      }
+      // end check number trucks
+
       this.listNumberUnite=[] ;// empty the list number unite
       data.forEach(camion=>{
         this.listNumberUnite.push(camion.unite)

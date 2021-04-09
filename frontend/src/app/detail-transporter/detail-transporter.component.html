@@ -595,7 +595,7 @@
         </div>
         <div [hidden]="!plansHistoricMode">
             <table border="1">
-                <tr>Plans Historic</tr>
+                <tr><th colspan="10">Plans Historique</th></tr>
                 <tr>
                     <th>#Numero</th><th>Plan</th><th>Unites</th><th>SubDispatchs</th><th>Terminaux</th>
                     <th>Demande</th><th>Fin</th><th>Prix</th><th>Status</th><th>Preuve de Paiement</th>
@@ -909,7 +909,7 @@
                     <strong *ngIf="camList">Units</strong>
                     <span *ngIf="!camList">Units</span> 
                 </button>&nbsp;&nbsp;
-                <button class="btn btn-link" (click)="onCamAdd()">
+                <button [disabled]="!(listNumberUnite.length<transporter.trucks)" class="btn btn-link" (click)="onCamAdd()">
                     <strong *ngIf="camAdd">Add Unit</strong>
                     <span *ngIf="!camAdd">Add Unit</span> 
                 </button>
@@ -984,7 +984,7 @@
 
             </div>   
             <div *ngIf="camAdd==1">
-            <tr><td colspan="2"><strong>Add Unit</strong></td></tr>     
+            <!-- <tr><td colspan="2"><strong>Add Unit</strong></td></tr>      -->
             <tr>
                 <th>#Unite</th><th>Plate</th><th>Mark</th><th>Model</th><th colspan="2">N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
@@ -1301,7 +1301,7 @@
         </div>
         <div [hidden]="!plansHistoricMode">
             <table border="1">
-                <tr>Plans Historic</tr>
+                <tr><th colspan="10">Plans Historic</th></tr>
                 <tr>
                     <th>#Number</th><th>Plan</th><th>Units</th><th>SubDispatch</th><th>Terminals</th>
                     <th>Demande</th><th>Ending</th><th>Price</th><th>Status</th><th>PayProof</th>
