@@ -810,16 +810,40 @@ export class TransportProComponent implements OnInit {
       // let loadFrequent : LoadFrequent
       // loadFrequent=this.loadFrequents.find(x=>(x.id=load.idLoadFrequent))
       // load.price
+      let distanceToCharge : number;
       let distance : number;
-      if(this.mode==1){ // if en mile change distance to km to calculate
+
+      if(this.mode==1){ // if in mile change distance to km to calculate
+        // console.log('We are on mode Mile')
         distance = Math.round(this.transport.distance / 0.621371);
+        if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
+          {
+            // console.log('kmIncluded :' +loadFrequent.kmInclus)
+            distanceToCharge = distance - loadFrequent.kmInclus
+          }
+        else {
+          // console.log('kmIncluded egal null or null')
+          distanceToCharge = distance
+        }
       }
       else{ // if already in km, no change
         distance = this.transport.distance;
+        if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
+          {
+            // console.log('kmIncluded :' +loadFrequent.kmInclus)
+            distanceToCharge = distance - loadFrequent.kmInclus
+          }
+        else {
+          // console.log('kmIncluded egal null or null')
+          distanceToCharge = distance
+        }
       }
+      // console.log('distance : ' + distance)
+      // console.log('distanceToCharge : ' + distanceToCharge)
+
       let quantity =(loadDetail.quantity>0?loadDetail.quantity:1)
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
-      let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distance)
+      let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distanceToCharge)
       priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
       loadDetail.price=Math.round(quantity*priceLoadFrequent*100)/100
     }
