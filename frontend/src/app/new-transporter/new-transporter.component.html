@@ -1,63 +1,211 @@
+<br>
 <div *ngIf="varsGlobal.language.includes('Francais')">
   <div class="panel panel-primary" *ngIf="mode==1">
-    <div class="panel-heading">Infos</div>
-      <div class="panel-body">
-            <table border="1">
-                    <tr>
-                      <th>Nom</th><th>Raison Sociale</th><th>En Affaire Depuis</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
-                    </tr>
-                    <tr>
-                      <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
-                      <td><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
-                      <!--td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td-->
-                    </tr>
-                    <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
-                    <tr>
-                      <th>Numero</th><th>Rue</th><th>Code Postal</th><th>Ville</th><th>Province</th><th>Pays</th>
-                    </tr>
-                    <tr>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
-                    </tr>                        
-                    <tr><td colspan="2"><strong>Personne principal a contact</strong></td></tr>
-                    <tr>
-                      <th>Nom</th><th>Prenom</th><th>Fonction</th><th>Email</th><th>Telephone</th><th>Fax</th><!--th>Photo</th-->
-                    </tr>
-                    <tr>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
-                      <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
-                      <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
-                    </tr>        
-            </table>          
-  
-        <div> 
-          <button *ngIf="checkValidTransporter()" class="btn btn-link" (click)="signUpTransporter()">
-            OK
-          </button>
-        </div>
-      </div>   
+    <div>
+      <table border="1">  
+        <tr><th colspan="6">Nouveau Transporteur</th></tr>
+        <tr>
+          <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">En Affaire Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
+        </tr>
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+          <td width="28%"><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+          <td width="14%"><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+          <td width="16%"><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="transporter.tel" name="telTransporter"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="transporter.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="transporter.fax" name="faxTransporter"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="transporter.fax=reformTelEvent($event)" required>
+          </td>
+        </tr>
+        <br>
+        <tr><td colspan="2"><strong>Adresse Principal</strong></td></tr>
+        <tr>
+          <th width="14%">Numero</th><th width="28%">Rue</th><th width="14%">Code Postal</th><th width="16%">Ville</th><th width="14%">Province</th>
+        </tr>
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+          <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+          <td width="16%">
+            <input type="text" [(ngModel)]="adresse.ville" name="originVille"
+              class="form-control" list="defaultVilles" placeholder="Ville">
+            <datalist id="defaultVilles">
+                <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+            </datalist>
+          </td>
+          <td width="14%">
+            <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </td>
+        </tr>  
+      </table>                      
+      <br>
+      <table border="1">
+        <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+        <tr>
+          <th width="14%">Prenom</th><th width="14%">Nom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+        </tr>
+        <tr *ngFor="let ct of contacts">
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
+          <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="ct.tel" name="telContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="ct.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.extTel" /></td> 
+          <td width="14%">
+            <input type="tel" [(ngModel)]="ct.fax" name="faxContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="ct.fax=reformTelEvent($event)" required>
+          </td>
+        </tr>     
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+          
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="contact.tel" name="telAddContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="contact.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
+          <td width="8%">
+            <input type="tel" [(ngModel)]="contact.fax" name="faxAddContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="contact.fax=reformTelEvent($event)" required>
+          </td>
+          <td width="7%"><button class="btn btn-link" [disabled] ="!(contact.nom.length>0 || contact.prenom.length>0)" (click)="addContact()">Add</button></td>
+        </tr> 
+      </table>
+      <br>
+      <table> 
+        <tr>
+          <td><button class="btn btn-primary" [disabled]="!checkValidTransporter()" (click)="signUpTransporter()">Enregistrer</button></td>
+        </tr>
+      </table>
+    </div>   
   </div>
 </div>
 
 <div *ngIf="varsGlobal.language.includes('English')">
   <div class="panel panel-primary" *ngIf="mode==1">
+    <div>
+      <table border="1">  
+        <tr><th colspan="6">New Transporter</th></tr>
+        <tr>
+          <th width="14%">Name</th><th width="28%">Business</th><th width="14%">Since</th><th width="16%">Email</th><th width="14%">Phone</th><th width="14%">Fax</th><!--th>Photo</th-->
+        </tr>
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+          <td width="28%"><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+          <td width="14%"><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+          <td width="16%"><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="transporter.tel" name="telTransporter"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="transporter.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="transporter.fax" name="faxTransporter"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="transporter.fax=reformTelEvent($event)" required>
+          </td>
+        </tr>
+        <br>
+        <tr><td colspan="2"><strong>Address Principal</strong></td></tr>
+        <tr>
+          <th width="14%">Number</th><th width="28%">Street</th><th width="14%">Code Postal</th><th width="16%">City</th><th width="14%">Province</th>
+        </tr>
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+          <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+          <td width="16%">
+            <input type="text" [(ngModel)]="adresse.ville" name="originVille"
+              class="form-control" list="defaultVilles" placeholder="Ville">
+            <datalist id="defaultVilles">
+                <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+            </datalist>
+          </td>
+          <td width="14%">
+            <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange()">
+              <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+            </select>
+          </td>
+        </tr>  
+      </table>                      
+      <br>
+      <table border="1">
+        <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+        <tr>
+          <th width="14%">FirstName</th><th width="14%">LastName</th><th width="14%">Function</th><th width="16%">Email</th><th width="14%">Phone</th><th width="14%">Ext</th><th width="14%">Fax</th>
+        </tr>
+        <tr *ngFor="let ct of contacts">
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
+          <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="ct.tel" name="telContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="ct.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.extTel" /></td> 
+          <td width="14%">
+            <input type="tel" [(ngModel)]="ct.fax" name="faxContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="ct.fax=reformTelEvent($event)" required>
+          </td>
+        </tr>     
+        <tr>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.prenom" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
+          
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.fonction" /></td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
+          <td width="14%">
+            <input type="tel" [(ngModel)]="contact.tel" name="telAddContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="contact.tel=reformTelEvent($event)" required>
+          </td>
+          <td width="14%"><input class="form-control" type="text" [(ngModel)]="contact.extTel" /></td>
+          <td width="8%">
+            <input type="tel" [(ngModel)]="contact.fax" name="faxAddContact"
+              class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+              (focusout)="contact.fax=reformTelEvent($event)" required>
+          </td>
+          <td width="7%"><button class="btn btn-link" [disabled] ="!(contact.nom.length>0 || contact.prenom.length>0)" (click)="addContact()">Add</button></td>
+        </tr> 
+      </table>
+      <br>
+      <table> 
+        <tr>
+          <td><button class="btn btn-primary" [disabled]="!checkValidTransporter()" (click)="signUpTransporter()">Save</button></td>
+        </tr>
+      </table>
+    </div>   
+  </div>
+</div>
+
+<!-- <div *ngIf="varsGlobal.language.includes('English')">
+  <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-heading">Infos</div>
       <div class="panel-body">
             <table border="1">
                     <tr>
-                      <th>Name</th><th>Business</th><th>Since</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+                      <th>Name</th><th>Business</th><th>Since</th><th>Email</th><th>Phone</th><th>Fax</th>
                     </tr>
                     <tr>
                       <td><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
@@ -66,7 +214,7 @@
                       <td><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
                       <td><input class="form-control" type="text" [(ngModel)]="transporter.tel" /></td>
                       <td><input class="form-control" type="text" [(ngModel)]="transporter.fax" /></td>
-                      <!--td><input class="form-control" type="text" [(ngModel)]="transporter.photo" /></td-->
+                      
                     </tr>
                     <tr><td colspan="2"><strong>Address Principal</strong></td></tr>
                     <tr>
@@ -82,7 +230,7 @@
                     </tr>                        
                     <tr><td colspan="2"><strong>Principal Contact</strong></td></tr>
                     <tr>
-                      <th>Last Name</th><th>First Name</th><th>Fonction</th><th>Email</th><th>Phone</th><th>Fax</th><!--th>Photo</th-->
+                      <th>Last Name</th><th>First Name</th><th>Fonction</th><th>Email</th><th>Phone</th><th>Fax</th>
                     </tr>
                     <tr>
                       <td><input class="form-control" type="text" [(ngModel)]="contact.nom" /></td>
@@ -91,15 +239,14 @@
                       <td><input class="form-control" type="text" [(ngModel)]="contact.email" /></td>
                       <td><input class="form-control" type="text" [(ngModel)]="contact.tel" /></td>
                       <td><input class="form-control" type="text" [(ngModel)]="contact.fax" /></td>
-                      <!--td><input class="form-control" type="text" [(ngModel)]="contact.photo" /></td-->
                     </tr>        
             </table>          
   
         <div> 
-          <button *ngIf="checkValidTransporter()" class="btn btn-link" (click)="signUpTransporter()">
+          <button [disabled]="!checkValidTransporter()" class="btn btn-link" (click)="signUpTransporter()">
             OK
           </button>
         </div>
       </div>   
   </div>
-</div>
+</div> -->

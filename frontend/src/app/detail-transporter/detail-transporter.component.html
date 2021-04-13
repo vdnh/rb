@@ -33,7 +33,7 @@
     </div>
     <div *ngIf="mode==1">
     <h3>
-        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>
+        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")||quitButton.includes("ADMIN")'>
             <strong *ngIf="modeCoordonnes">Coordonnees</strong>
             <span *ngIf="!modeCoordonnes">Coordonnees</span> 
         </button>&nbsp;&nbsp;&nbsp;
@@ -737,7 +737,7 @@
     </div>
     <div *ngIf="mode==1">
     <h3>
-        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")'>
+        <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")||quitButton.includes("ADMIN")'>
             <strong *ngIf="modeCoordonnes">Coordonnees</strong>
             <span *ngIf="!modeCoordonnes">Coordonnees</span> 
         </button>&nbsp;&nbsp;&nbsp;
