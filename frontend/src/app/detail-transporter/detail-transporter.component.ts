@@ -72,7 +72,7 @@ export class DetailTransporterComponent implements OnInit {
   modeTableau:number=0;
   transporter:Transporter=new Transporter();
   id:number;
-  mode:number=1;
+  mode:number=1; // 1:transporter, 2:confirmation, 3:shipper, 4:dispatch, 5:admin
   contacts:Array<Contact>;
   chauffeurs:Array<Chauffeur>;
   adresses:Array<Adresse>;
@@ -104,6 +104,78 @@ export class DetailTransporterComponent implements OnInit {
   packsTrucksPrice:number;
   packsClientsProsPrice:number;
   packsTerminalsPrice:number;
+
+  // provinceList=myGlobals.provinceList ;
+  villeList= myGlobals.QuebecVilles; //villeList;
+  AlbertaVilles=myGlobals.AlbertaVilles;
+  
+  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
+  
+  ManitobaVilles=myGlobals.ManitobaVilles;
+  
+  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
+  
+  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
+  
+  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
+  
+  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
+  
+  NunavutVilles=myGlobals.NunavutVilles;
+  
+  OntarioVilles=myGlobals.OntarioVilles;
+  
+  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
+  
+  QuebecVilles=myGlobals.QuebecVilles;
+  
+  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
+  
+  YukonVilles=myGlobals.YukonVilles;
+
+  reformTelEvent(tel:any){
+    if(tel.target.value.indexOf('-')<0)
+      {
+        let sub1 = tel.target.value.substr(0,3)
+        let sub2 = tel.target.value.substr(3,3)
+        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
+        tel.target.value=sub1+'-'+sub2+'-'+sub3
+      }
+    return tel.target.value;
+  }
+
+  async villeChange(adresse:Adresse){
+    //*
+    if(adresse.province!=null){
+      // check the province to limit the cities
+      if(adresse.province==this.provinceList[0])
+        this.villeList=this.AlbertaVilles;
+      if(adresse.province==this.provinceList[1])
+        this.villeList=this.BritishColumbiaVilles;        
+      if(adresse.province==this.provinceList[2])
+        this.villeList=this.ManitobaVilles;
+      if(adresse.province==this.provinceList[3])
+        this.villeList=this.NewBrunswickVilles;    
+      if(adresse.province==this.provinceList[4])
+        this.villeList=this.NewfoundlandLabradorVilles;    
+      if(adresse.province==this.provinceList[5])
+        this.villeList=this.NorthwestTerritoriesVilles;
+      if(adresse.province==this.provinceList[6])
+        this.villeList=this.NovaScotiaVilles;
+      if(adresse.province==this.provinceList[7])
+        this.villeList=this.NunavutVilles;
+      if(adresse.province==this.provinceList[8])
+        this.villeList=this.OntarioVilles;
+      if(adresse.province==this.provinceList[9])
+        this.villeList=this.PrinceEdwardIslandVilles;
+      if(adresse.province==this.provinceList[10])
+        this.villeList=this.QuebecVilles;
+      if(adresse.province==this.provinceList[11])
+        this.villeList=this.SaskatchewanVilles;  
+      if(adresse.province==this.provinceList[12])
+        this.villeList=this.YukonVilles;
+    }
+  }
 
   constructor(public activatedRoute:ActivatedRoute, public transportersService:TransportersService, public contactsService:ContactsService,
     public adressesService:AdressesService, public camionsService:CamionsService,  public fichePhysiquesService:FichePhysiquesService,
@@ -175,7 +247,10 @@ export class DetailTransporterComponent implements OnInit {
     this.transportersService.getDetailTransporter(this.id).subscribe((data:Transporter)=>{
       this.quitButton=localStorage.getItem('role')
       this.transporter=data;
-      if(localStorage.getItem('role').includes('SHIPPER')){  // in the cas Shipper want to view detail contact
+      if(localStorage.getItem('role').includes('ADMIN')){  // in the cas ADMIN want to view detail Transporter
+        this.mode=5;
+      }
+      else if(localStorage.getItem('role').includes('SHIPPER')){  // in the cas Shipper want to view detail contact
         this.mode=3;
       }
       else if(localStorage.getItem('role').includes('DISPATCH')){  // in the cas Dispatch SOSPrestige want to modify drivers

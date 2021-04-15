@@ -1,6 +1,7 @@
 <div>
   <!-- <h2>On progress test for new form</h2> -->
-  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2 || transport.id>0">
+  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2">
+    <!-- [disabled]="transport.typeDoc==2 || transport.id>0" -->
     <span *ngIf="varsGlobal.language.includes('English')">
       Order
     </span>
@@ -9,7 +10,8 @@
     </span>
   </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">
+  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1">
+    <!-- [disabled]="transport.typeDoc==1 || transport.id>0" -->
     <span *ngIf="varsGlobal.language.includes('English')">
       Evaluate a Rate
     </span>
@@ -126,7 +128,8 @@
     </table>
   </div>
   
-  <table *ngIf="transport.typeDoc!=0 && (transport.id==null || transport.id==0)" class="table-responsive">
+  <table *ngIf="transport.typeDoc!=0" class="table-responsive">
+    <!--  && (transport.id==null || transport.id==0) -->
     <tr><th colspan="2">Type Transport</th></tr>
     <tr *ngIf="loadFrequents.length==0">
       <p>Votre liste de type transport est vide.</p>

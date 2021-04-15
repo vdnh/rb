@@ -114,7 +114,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
-                <td><button class="btn btn-link" (click)="deleteAdress(contact.id)">Delete</button></td>
+                <td><button class="btn btn-link" (click)="deleteAdress(adresse.id)">Delete</button></td>
             </tr>            
             <tr><td colspan="2"><strong>Personnes a contact</strong></td></tr>
             <tr>
@@ -374,6 +374,128 @@
             <td></td>                  
         </table>
     </div>
+    </div>
+
+    <div class="panel panel-primary" *ngIf="mode==5">
+        <div>
+            <table border="1">  
+              <tr>
+                <th width="14%">Nom</th><th width="28%">Raison Sociale</th><th width="14%">En Affaire Depuis</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Fax</th><!--th>Photo</th-->
+              </tr>
+              <tr>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="transporter.nom" /></td>
+                <td width="28%"><input class="form-control" type="text" [(ngModel)]="transporter.raison_sociale" /></td>
+                <td width="14%"><input class="form-control" type="date" [(ngModel)]="transporter.depuis" /></td>
+                <td width="16%"><input class="form-control" type="text" [(ngModel)]="transporter.email" /></td>
+                <td width="14%">
+                  <input type="tel" [(ngModel)]="transporter.tel" name="telTransporter"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="transporter.tel=reformTelEvent($event)" required>
+                </td>
+                <td width="14%">
+                  <input type="tel" [(ngModel)]="transporter.fax" name="faxTransporter"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="transporter.fax=reformTelEvent($event)" required>
+                </td>
+              </tr>
+              <br>
+              <tr><td colspan="2"><strong>Adresses</strong></td></tr>
+              <tr>
+                <th width="14%">Numero</th><th width="28%">Rue</th><th width="14%">Code Postal</th><th width="16%">Ville</th><th width="14%">Province</th>
+              </tr>
+              <tr *ngFor="let adresse of adresses">
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.num" /></td>
+                <td width="28%"><input class="form-control" type="text" [(ngModel)]="adresse.rue" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="adresse.code_postal" /></td>
+                <td width="16%">
+                  <input type="text" [(ngModel)]="adresse.ville" name="originVille"
+                    class="form-control" list="defaultVilles" placeholder="Ville">
+                  <datalist id="defaultVilles">
+                      <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+                  </datalist>
+                </td>
+                <td width="14%">
+                  <select type="text" class="form-control" [(ngModel)]="adresse.province" (ngModelChange)="villeChange(adresse)">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>
+                <td><button class="btn btn-link" (click)="deleteAdress(adresse.id)">Delete</button></td>
+              </tr>  
+              <tr>
+                <!-- <td><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.ville" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.province" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="addadresse.pays" /></td>                             -->
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.num" /></td>
+                <td width="28%"><input class="form-control" type="text" [(ngModel)]="addadresse.rue" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addadresse.code_postal" /></td>
+                <td width="16%">
+                  <input type="text" [(ngModel)]="addadresse.ville" name="originVille"
+                    class="form-control" list="defaultVilles" placeholder="Ville">
+                  <datalist id="defaultVilles">
+                      <option *ngFor="let v of villeList" [ngValue]="v">{{v}}</option>
+                  </datalist>
+                </td>
+                <td width="14%">
+                  <select type="text" class="form-control" [(ngModel)]="addadresse.province" (ngModelChange)="villeChange(addadresse)">
+                    <option *ngFor="let p of provinceList" [ngValue]="p">{{p}}</option>
+                  </select>
+                </td>
+                <td><button class="btn btn-link" (click)="addAdresse()">Add</button></td>
+            </tr>
+            </table>                      
+            <br>
+            <table border="1">
+              <tr><td colspan="2"><strong>Contacts</strong></td></tr>
+              <tr>
+                <th width="14%">Prenom</th><th width="14%">Nom</th><th width="14%">Fonction</th><th width="16%">Email</th><th width="14%">Telephone</th><th width="14%">Ext</th><th width="14%">Fax</th><!--th>Photo</th-->
+              </tr>
+              <tr *ngFor="let ct of contacts">
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.prenom" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.nom" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.fonction" /></td>
+                <td width="16%"><input class="form-control" type="text" [(ngModel)]="ct.email" /></td>
+                <td width="14%">
+                  <input type="tel" [(ngModel)]="ct.tel" name="telContact"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="ct.tel=reformTelEvent($event)" required>
+                </td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="ct.extTel" /></td> 
+                <td width="14%">
+                  <input type="tel" [(ngModel)]="ct.fax" name="faxContact"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="ct.fax=reformTelEvent($event)" required>
+                </td>
+              </tr>     
+              <tr>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.prenom" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.nom" /></td>
+                
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.fonction" /></td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.email" /></td>
+                <td width="14%">
+                  <input type="tel" [(ngModel)]="addcontact.tel" name="telAddContact"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="contact.tel=reformTelEvent($event)" required>
+                </td>
+                <td width="14%"><input class="form-control" type="text" [(ngModel)]="addcontact.extTel" /></td>
+                <td width="8%">
+                  <input type="tel" [(ngModel)]="addcontact.fax" name="faxAddContact"
+                    class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                    (focusout)="contact.fax=reformTelEvent($event)" required>
+                </td>
+                <td width="7%"><button class="btn btn-link" [disabled] ="!(addcontact.nom.length>0 || addcontact.prenom.length>0)" (click)="addContact()">Add</button></td>
+              </tr> 
+            </table>
+            <br>
+            <!-- <table> 
+              <tr>
+                <td><button class="btn btn-primary" [disabled]="!checkValidTransporter()" (click)="signUpTransporter()">Enregistrer</button></td>
+              </tr>
+            </table> -->
+          </div>
     </div>
 
     <div class="panel panel-primary" *ngIf="mode==2">
@@ -818,7 +940,7 @@
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.ville" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.province" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="adresse.pays" /></td>
-                <td><button class="btn btn-link" (click)="deleteAdress(contact.id)">Delete</button></td>
+                <td><button class="btn btn-link" (click)="deleteAdress(adresse.id)">Delete</button></td>
             </tr>            
             <tr><td colspan="2"><strong>Contacts</strong></td></tr>
             <tr>

@@ -6,7 +6,7 @@ import { Adresse } from 'src/model/model.adresse';
 import { AdressesService } from '../../services/adresses.service';
 import { ContactsService } from '../../services/contacts.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
-import { Shipper } from 'src/model/model.shipper';
+// import { Shipper } from 'src/model/model.shipper';
 import { AppUser } from 'src/model/model.appUser';
 import * as myGlobals from 'src/services/globals';
 
@@ -21,7 +21,7 @@ export class NewTransporterComponent implements OnInit {
   contact:Contact=new Contact();
   adresse:Adresse=new Adresse();
   
-  shipper:Shipper=new Shipper();
+  // shipper:Shipper=new Shipper();
   
   contacts:Array<Contact>=[];
   adresses:Array<Adresse>=[];
@@ -59,7 +59,7 @@ export class NewTransporterComponent implements OnInit {
   
   YukonVilles=myGlobals.YukonVilles;
 
-  shippers: Array<Shipper>=[];
+  // shippers: Array<Shipper>=[];
 
   constructor(public transportersService:TransportersService, public contactsService:ContactsService, 
     public varsGlobal:VarsGlobal, public adressesService:AdressesService) { }
@@ -119,7 +119,7 @@ export class NewTransporterComponent implements OnInit {
   signUpContact(){
     if(this.contacts.length>0)
       this.contacts.forEach(ct=>{
-        ct.id_shipper=this.shipper.id;
+        ct.id_transporter=this.transporter.id;
         this.contactsService.signupContact(ct).subscribe((data:Contact)=>{}, 
         err=>{console.log(err);})   
       })  
