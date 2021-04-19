@@ -267,12 +267,14 @@
   <table *ngIf="transport.typeDoc!=0 && (transport.id==null || transport.id==0)" class="table-responsive">
     <tr><th colspan="2">Type Transport</th></tr>
     <tr>
-      <th *ngFor="let lf of loadFrequents">
-        <button (click)="loadFrequent=lf; loadFrequentChange(); 
-        loadDetails=[]; addLoadSimpleDetail();" 
-        [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id">
-          {{lf.nom}}
-        </button>
+      <th style="width: 100%;">
+        <span *ngFor="let lf of loadFrequents">
+          <button (click)="loadFrequent=lf; loadFrequentChange(); 
+          loadDetails=[]; addLoadSimpleDetail();" 
+          [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id">
+            {{lf.nom}}
+          </button>
+        </span>
       </th>
     </tr>
   </table>

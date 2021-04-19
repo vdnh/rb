@@ -1832,7 +1832,11 @@ onSortDate(data:Array<Transport>){
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
     service.getDistanceMatrix({
-      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
+      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
+      drivingOptions: {
+        departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
+      }
     }, (results: any) => {    
       if(results.rows[0].elements[0].distance!=undefined){
         okForWriting = true;
@@ -2195,6 +2199,19 @@ onSortDate(data:Array<Transport>){
     this.forward=this.pagePresent+1
   }
 
+  placerCommande(){
+    this.transport.typeDoc=2; 
+    this.modeListEvalue=false; 
+    this.modeListCommande=false;
+  }
+  evaluerTaux(){
+    this.transport.typeDoc=1; 
+    this.modeListEvalue=false; 
+    this.modeListCommande=false
+    if(this.transport.id!=null && this.transport.id>0 && !this.transport.valid){
+      this.transportsService.saveTransports(this.transport).subscribe(()=>{},err=>{console.log(err)})
+    }
+  }
 
   logout(){
     localStorage.clear();

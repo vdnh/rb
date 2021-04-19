@@ -2384,7 +2384,11 @@ onSortDate(data:Array<Transport>){
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
     service.getDistanceMatrix({
-      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING
+      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
+      drivingOptions: {
+        departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
+      }
     }, (results: any) => {    
       if(results.rows[0].elements[0].distance!=undefined){
         okForWriting = true;

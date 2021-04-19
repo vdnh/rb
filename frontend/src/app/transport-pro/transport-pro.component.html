@@ -1,6 +1,7 @@
 <div>
   <!-- <h2>On progress test for new form</h2> -->
-  <button class="btn btn-link" (click)="transport.typeDoc=2; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==2">
+  <button class="btn btn-link" (click)="placerCommande()" [disabled]="transport.typeDoc==2">
+    <!-- transport.typeDoc=2; modeListEvalue=false; modeListCommande=false -->
     <!-- [disabled]="transport.typeDoc==2 || transport.id>0" -->
     <span *ngIf="varsGlobal.language.includes('English')">
       Order
@@ -10,7 +11,8 @@
     </span>
   </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1">
+  <button class="btn btn-link" (click)="evaluerTaux()" [disabled]="transport.typeDoc==1">
+    <!-- transport.typeDoc=1; modeListEvalue=false; modeListCommande=false -->
     <!-- [disabled]="transport.typeDoc==1 || transport.id>0" -->
     <span *ngIf="varsGlobal.language.includes('English')">
       Evaluate a Rate
@@ -135,12 +137,14 @@
       <p>Votre liste de type transport est vide.</p>
     </tr>
     <tr *ngIf="loadFrequents.length>0">
-      <th *ngFor="let lf of loadFrequents">
-        <button (click)="loadFrequent=lf; loadFrequentChange(); 
-        loadDetails=[]; addLoadSimpleDetail();" 
-        [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id">
-          {{lf.nom}}
-        </button>
+      <th style="width: 100%;">
+        <span *ngFor="let lf of loadFrequents">
+          <button (click)="loadFrequent=lf; loadFrequentChange(); 
+          loadDetails=[]; addLoadSimpleDetail();" 
+          [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id">
+            {{lf.nom}}
+          </button>
+        </span>
       </th>
     </tr>
   </table>
