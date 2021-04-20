@@ -48,22 +48,24 @@
       <tr *ngIf="varsGlobal.language.includes('Francais')">
         <th>#Num</th>
         <th>&nbsp;Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th>Email</th>
         <th>Type</th>        
         <th>DateCommande</th>
         <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
-        <th>De</th>
-        <th>A</th>
+        <th style="width: 20%;">De</th>
+        <th style="width: 20%;">A</th>
         <th>Camion</th>
         <th>Delete</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
         <th>#Num</th>
         <th>&nbsp;Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th>Email</th>
         <th>Type</th>        
         <th>DateOrder</th>
         <th>&nbsp;&nbsp;Price&nbsp;&nbsp;</th>
-        <th>From</th>
-        <th>To</th>
+        <th style="width: 20%;">From</th>
+        <th style="width: 20%;">To</th>
         <th>Truck</th>
         <th>Delete</th>
       </tr>
@@ -71,6 +73,7 @@
       <tr *ngFor="let trCm of listTrsCommande">
         <td>{{trCm.transport.id}}</td>
         <td>{{trCm.transport.nomEntreprise}}</td>
+        <td>{{trCm.transport.emailContact}}</td>
         <td>{{trCm.loadDetail.description}}</td>
         <td>{{showDateLocal(trCm.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <!-- <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td> -->
@@ -231,20 +234,20 @@
         <!-- <th>#Num</th> -->
         <th>&nbsp;Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
         <th>Type</th>        
-        <th>Date</th>
+        <th style="width: 11ch;">Date</th>
         <th>&nbsp;&nbsp;Prix&nbsp;&nbsp;</th>
-        <th>De</th>
-        <th>A</th>
+        <th style="width: 30%;">De</th>
+        <th style="width: 30%;">A</th>
         <th>Delete</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
         <!-- <th>#Num</th> -->
         <th>&nbsp;Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
         <th>Type</th>        
-        <th>Date</th>
+        <th style="width: 11ch;">Date</th>
         <th>&nbsp;&nbsp;Price&nbsp;&nbsp;</th>
-        <th>From</th>
-        <th>To</th>
+        <th style="width: 30%;">From</th>
+        <th style="width: 30%;">To</th>
         <th>Delete</th>
       </tr>
       <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="9">&nbsp;</th></tr>

@@ -196,14 +196,19 @@
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
     <table>
       <tr *ngIf="varsGlobal.language.includes('Francais')">
+        <th>Email</th>
         <th>Date du Transport</th>
         <th>Heure</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
+        <th>Email</th>
         <th>Transport Date </th>
         <th>Time </th>
       </tr>
       <tr>
+        <td>
+          <input type="email" [(ngModel)]="transport.emailContact">
+        </td>
         <td>
           <input type="date" placeholder="Pick date" [ngModel]="showDateLocal(transport.dateReserve) | date: 'yyyy-MM-dd'" 
           name="dateReserve" min="{{today | date: 'yyyy-MM-dd'}}" class="form-control" (change)="pickDateChange($event)"

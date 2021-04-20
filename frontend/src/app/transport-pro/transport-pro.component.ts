@@ -1357,46 +1357,52 @@ onSortDate(data:Array<Transport>){
   }
 
   saveSimple(){
-    this.transport.valid = true; // valid this transport ing saving
-    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-      this.transport=data;
-      this.loadDetails.forEach(load=>{
-        load.idTransport=data.id;
-        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-          load.id = d.id;
-        }, err=>{
-          console.log(err);
+    if(this.transport.emailContact!=null && this.transport.emailContact.length>8 && this.transport.emailContact.includes('@')) {
+      this.transport.valid = true; // valid this transport ing saving
+      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+        this.transport=data;
+        this.loadDetails.forEach(load=>{
+          load.idTransport=data.id;
+          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+            load.id = d.id;
+          }, err=>{
+            console.log(err);
+          })
         })
-      })
-      if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
-      if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
-      // after create order then create itineraire
-      if(this.transport.typeDoc==2){ // if a command, create route
-        let route = new Itineraire();
-        route.idEntreprise = this.transport.idEntreprise
-        route.nomEntreprise = this.transport.nomEntreprise
-        route.idTransport = this.transport.id
-        route.idTransporter = this.transport.idTransporter
+        if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
+        if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
+        // after create order then create itineraire
+        if(this.transport.typeDoc==2){ // if a command, create route
+          let route = new Itineraire();
+          route.idEntreprise = this.transport.idEntreprise
+          route.nomEntreprise = this.transport.nomEntreprise
+          route.idTransport = this.transport.id
+          route.idTransporter = this.transport.idTransporter
 
-        route.datePick = this.transport.dateReserve
-        route.timeResrvation = this.transport.timeResrvation
-        route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
-        
-        route.destLat = this.transport.destLat
-        route.destLong = this.transport.destLong
-        route.destination = this.transport.destination
-        
-        route.origin = this.transport.origin
-        route.originLat = this.transport.originLat
-        route.originLong = this.transport.originLong
-        this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
-          route=data;
-        }, err=>{console.log()}) 
-        if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
-      }
-    }, err=>{
-      console.log(err)
-    })
+          route.datePick = this.transport.dateReserve
+          route.timeResrvation = this.transport.timeResrvation
+          route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
+          
+          route.destLat = this.transport.destLat
+          route.destLong = this.transport.destLong
+          route.destination = this.transport.destination
+          
+          route.origin = this.transport.origin
+          route.originLat = this.transport.originLat
+          route.originLong = this.transport.originLong
+          this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
+            route=data;
+          }, err=>{console.log()}) 
+          if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
+        }
+      }, err=>{
+        console.log(err)
+      })
+    }
+    else{
+      if(this.varsGlobal.language.includes('Francais')) alert("Entrer votre email, SVP!")
+      else alert('Please enter your email !')
+    }
   }
 
   sleep(ms){
@@ -2067,8 +2073,13 @@ onSortDate(data:Array<Transport>){
     // let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
     // check validation of this.shipper.email
-    if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
-      this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
+    // if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
+    //   this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
+    
+    // check validation of this.shipper.email
+    if(this.transport.emailContact!=null && this.transport.emailContact.length>8 && this.transport.emailContact.includes('@')) 
+      this.em.emailDest=this.em.emailDest + ',' + this.transport.emailContact // add in list email to send
+
     if(this.varsGlobal.language.includes('English'))
       this.em.titre= this.transport.nomEntreprise + " - Order: " + this.loadFrequent.nom 
       //+
@@ -2078,7 +2089,8 @@ onSortDate(data:Array<Transport>){
     // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
     //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
     this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom+ " - " + 
-    this.shipper.tel + " - " + this.shipper.email + " </h3> <br>"
+    // this.shipper.tel + 
+     " - " + this.transport.emailContact + " </h3> <br>"
     + document.getElementById('sendcommand').innerHTML
     /*//
     +
@@ -2209,6 +2221,7 @@ onSortDate(data:Array<Transport>){
     this.modeListEvalue=false; 
     this.modeListCommande=false
     if(this.transport.id!=null && this.transport.id>0 && !this.transport.valid){
+      this.transport.valid=true;
       this.transportsService.saveTransports(this.transport).subscribe(()=>{},err=>{console.log(err)})
     }
   }
