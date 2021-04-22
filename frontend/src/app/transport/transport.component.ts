@@ -522,7 +522,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   //   this.onRefresh()
   // }
   
-  async ngOnInit() {    
+  ngOnInit() {    
     // attacher idtransporter
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
@@ -533,7 +533,7 @@ export class TransportComponent implements OnInit, OnDestroy {
     //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
     if(localStorage.getItem('fullName')!=null) 
       this.transport.nomDispatch=localStorage.getItem('fullName')
-    await this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
+    this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Camion>)=>{
       //this.camions = data
       // this will take camions with gps monitor
@@ -567,7 +567,7 @@ export class TransportComponent implements OnInit, OnDestroy {
     })
     // end of taking list camion SOSPrestige
     //await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
-    await this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
+    this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Shipper>)=>{
       this.listShipper=this.filteredShippers=data.sort((a, b)=>{
         return a.nom.localeCompare(b.nom)
@@ -578,17 +578,17 @@ export class TransportComponent implements OnInit, OnDestroy {
       this.filteredShippers.forEach((sh:Shipper)=>{
         console.log('Shipper filtered nom : '+ sh.nom)
       })//*/
-      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
-        this.templates = data; // just for test
-        this.templates.forEach((t:Transport)=>{
-          console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
-        })
-      },err=>{console.log(err)})
+      // this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      //   this.templates = data; // just for test
+      //   this.templates.forEach((t:Transport)=>{
+      //     console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
+      //   })
+      // },err=>{console.log(err)})
     }, err=>{
       console.log(err);
     })
     
-    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
       // this.onSelectTax(); // get tax province after having transporter
@@ -1070,22 +1070,26 @@ export class TransportComponent implements OnInit, OnDestroy {
   onListEvalue(){
     this.modeListEvalue=true 
     this.modeListCommande=false
-    this.onRefresh()
+    // this.onRefresh()
+    this.onRefreshListEvaluated()
     if(this.subscription!=null) this.subscription.unsubscribe();
-    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
+    const intervalIsCs = interval(125000);  // we refresh the Camions/Itineraires each 120 seconde - 125000ms
     this.subscription=intervalIsCs.subscribe(val=>{
-      this.onRefresh()
+      // this.onRefresh()
+      this.onRefreshListEvaluated()
     })
   }
 
   onListCommande(){
     this.modeListEvalue=false 
     this.modeListCommande=true
-    this.onRefresh()
+    // this.onRefresh()
+    this.onRefreshListCommand()
     if(this.subscription!=null) this.subscription.unsubscribe();
-    const intervalIsCs = interval(45000);  // we refresh the Camions/Itineraires each 30 seconde - 30000ms
+    const intervalIsCs = interval(125000);  // we refresh the Camions/Itineraires each 120 seconde - 125000ms
     this.subscription=intervalIsCs.subscribe(val=>{
-      this.onRefresh()
+      // this.onRefresh()
+      this.onRefreshListCommand()
     })
   }
 
@@ -1204,7 +1208,10 @@ export class TransportComponent implements OnInit, OnDestroy {
   onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
     this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
       this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        // delete on real list
         this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+        // delete on show list
+        this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
       }, err=>{console.log(err)})
     }, err=>{
       console.log()
@@ -1214,6 +1221,9 @@ export class TransportComponent implements OnInit, OnDestroy {
   onDeleteCommand(trCm:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
     this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
       this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
+        // delete on show list
+        this.listTrsCommandToShow.splice(this.listTrsCommandToShow.indexOf(trCm),1)
+        // delet on real list
         this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
         // delete Itineraire if there is
         this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
@@ -1291,7 +1301,7 @@ export class TransportComponent implements OnInit, OnDestroy {
       // let loadFrequent : LoadFrequent
       // loadFrequent=this.loadFrequents.find(x=>(x.id=load.idLoadFrequent))
       // load.price
-      let distanceToCharge: number;
+      let distanceToCharge : number;
       let distance : number;
       if(this.mode==1){ // if en mile change distance to km to calculate
         distance = Math.round(this.transport.distance / 0.621371);
@@ -1300,14 +1310,9 @@ export class TransportComponent implements OnInit, OnDestroy {
         distance = this.transport.distance;
       }
       if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
-        {
-          // console.log('kmIncluded :' +loadFrequent.kmInclus)
-          distanceToCharge = distance - loadFrequent.kmInclus
-        }
-      else {
-        // console.log('kmIncluded egal null or null')
-        distanceToCharge = distance
-      }
+        distanceToCharge = distance - loadFrequent.kmInclus
+      else distanceToCharge = distance
+
       let quantity =(loadDetail.quantity>0?loadDetail.quantity:1)
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
       let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distanceToCharge)
@@ -1617,6 +1622,207 @@ onSortDate(data:Array<Transport>){
     
     // this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
+
+  // refresh for list evaluated
+  
+  pages:number = 0; 
+  counter(pages:number){  // this is for return number of pages to array
+    return new Array(pages);
+  }
+  
+  pageSelected:number = 0; 
+  selectPage(page:number){
+    this.pageSelected=page
+    if(this.modeListEvalue){
+      this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+      this.listTrsEvalueToShow.forEach(trEv=>{
+        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+        }, err=>{console.log(err)})
+      })
+    }
+    if(this.modeListCommande){
+      this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+      this.listTrsCommandToShow.forEach(trCm=>{
+        this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+        }, err=>{console.log(err)})
+      })
+    }
+  }
+
+  arrayListTrsEvalueToShow : Array<{transport:Transport, loadDetail:LoadDetail}[]>=[]; //Array of array Transports evalues to show
+  arrayListTrsCommandToShow : Array<{transport:Transport, loadDetail:LoadDetail}[]>=[]; //Array of array Transports commands to show
+  listTrsEvalueToShow : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports evalues to show
+  listTrsCommandToShow : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports command to show
+  onRefreshListEvaluated(){
+    // this.tempDatalist=""; // initial the tempdata of datalist
+    this.pageSelected=0;
+    this.pages=0;
+    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
+      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe((data:Array<Transport>)=>{
+        this.listTrsEvalue=[]
+        this.arrayListTrsEvalueToShow=[]
+        this.listTrsEvalueToShow=[]
+        data.filter(transport=>(transport.valid)).forEach(tr=>{
+          if(tr.typeDoc==1) {
+            this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+          }
+        })
+        // sort list evaluate
+        this.listTrsEvalue.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        // here ewe must divide this.listTrsEvalue in many page or get first 25 transports
+        let size=25
+        for(let i=0; i<this.listTrsEvalue.length; i+=size){
+          this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
+        }
+        if(this.arrayListTrsEvalueToShow.length>0){
+          this.pages=this.arrayListTrsEvalueToShow.length
+          console.log('We found ' + this.pages + ' pages.')
+          // at the first time, get the 25 first transport in list
+          this.pageSelected=0;
+          this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+          this.listTrsEvalueToShow.forEach(trEv=>{
+            this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+              if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+            }, err=>{console.log(err)})
+          })
+        }
+        
+      }, err=>{console.log(err)})
+    }
+
+    // if shipper null => find all transports
+    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Transport>)=>{
+      this.listTrsEvalue=[]
+      this.arrayListTrsEvalueToShow=[]
+      this.listTrsEvalueToShow=[]
+      data.filter(transport=>(transport.valid)).forEach(tr=>{
+        if(tr.typeDoc==1) {
+          this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+        }
+      })
+      if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      })
+      // here ewe must divide this.listTrsEvalue in many page or get first 25 transports
+      let size=25
+      for(let i=0; i<this.listTrsEvalue.length; i+=size){
+        this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
+      }
+      if(this.arrayListTrsEvalueToShow.length>0){
+        this.pages=this.arrayListTrsEvalueToShow.length
+        console.log('We found ' + this.pages + ' pages.')
+        // at the first time, get the 25 first transport in list
+        this.pageSelected=0;
+        this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+        this.listTrsEvalueToShow.forEach(trEv=>{
+          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        })
+      }
+      
+    }, err=>{
+      console.log(err)
+    })
+  }
+  // end refresh for list evaluated
+
+  // for list commands
+  onRefreshListCommand(){
+    // this.tempDatalist=""; // initial the tempdata of datalist
+    this.pageSelected=0;
+    this.pages=0;
+    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
+      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe((data:Array<Transport>)=>{
+        this.listTrsCommande=[]
+        this.arrayListTrsCommandToShow=[]
+        this.listTrsCommandToShow=[]
+        data.filter(transport=>(transport.valid)).forEach(tr=>{
+          if(tr.typeDoc==2) {
+            this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+          }
+        })
+        // sort list command
+        this.listTrsCommande.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        // here ewe must divide this.listTrsCommande in many page or get first 25 transports
+        let size=25
+        for(let i=0; i<this.listTrsCommande.length; i+=size){
+          this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
+        }
+        if(this.arrayListTrsCommandToShow.length>0){
+          this.pages=this.arrayListTrsCommandToShow.length
+          console.log('We found ' + this.pages + ' pages.')
+          // at the first time, get the 25 first transport in list
+          this.pageSelected=0;
+          this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+          this.listTrsCommandToShow.forEach(trCm=>{
+            this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+              if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+            }, err=>{console.log(err)})
+          })
+        }
+      }, err=>{console.log(err)})
+    }
+
+    // if shipper null => find all transports
+    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Transport>)=>{
+      this.listTrsCommande=[]
+      this.arrayListTrsCommandToShow=[]
+      this.listTrsCommandToShow=[]
+      data.filter(transport=>(transport.valid)).forEach(tr=>{
+        if(tr.typeDoc==2) {
+          this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+        }
+      })
+      if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      })
+      // here ewe must divide this.listTrsCommand in many page or get first 25 transports
+      let size=25
+      for(let i=0; i<this.listTrsCommande.length; i+=size){
+        this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
+      }
+      if(this.arrayListTrsCommandToShow.length>0){
+        this.pages=this.arrayListTrsCommandToShow.length
+        console.log('We found ' + this.pages + ' pages.')
+        // at the first time, get the 25 first transport in list
+        this.pageSelected=0;
+        this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+        this.listTrsCommandToShow.forEach(trCm=>{
+          this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        })
+      }
+    }, err=>{
+      console.log(err)
+    })
+  }
+  // end refresh for list commands
 
   // sort listTrsCommande by status
   numListShow = 1; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
@@ -2383,6 +2589,7 @@ onSortDate(data:Array<Transport>){
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
+    // let trafficModel: google.maps.TrafficModel;
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
       drivingOptions: {

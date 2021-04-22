@@ -69,8 +69,8 @@
         <th>Truck</th>
         <th>Delete</th>
       </tr>
-      <tr *ngIf="listTrsCommande==null || listTrsCommande.length==0"><th colspan="10">&nbsp;</th></tr>
-      <tr *ngFor="let trCm of listTrsCommande">
+      <tr *ngIf="listTrsCommandToShow==null || listTrsCommandToShow.length==0"><th colspan="9">&nbsp;</th></tr>
+      <tr *ngFor="let trCm of listTrsCommandToShow">
         <td>{{trCm.transport.id}}</td>
         <td>{{trCm.transport.nomEntreprise}}</td>
         <td>{{trCm.transport.emailContact}}</td>
@@ -107,6 +107,14 @@
         <td><span class="btn btn-link" (click)="onDeleteCommand(trCm)">Delete</span></td>
       </tr>
     </table>
+    <span>
+      <br><strong>Page:&nbsp;</strong> 
+      <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
+      *ngFor="let in of counter(pages); let i = index">
+        <small *ngIf="pageSelected!=i">{{i}}</small>
+        <strong *ngIf="pageSelected==i">{{i}}</strong>
+      </button>
+    </span>
   </div>
   <!-- <div *ngIf="modeListCommande">
     <table border="1">
@@ -250,8 +258,8 @@
         <th style="width: 30%;">To</th>
         <th>Delete</th>
       </tr>
-      <tr *ngIf="listTrsEvalue==null || listTrsEvalue.length==0"><th colspan="9">&nbsp;</th></tr>
-      <tr *ngFor="let trEv of listTrsEvalue">
+      <tr *ngIf="listTrsEvalueToShow==null || listTrsEvalueToShow.length==0"><th colspan="7">&nbsp;</th></tr>
+      <tr *ngFor="let trEv of listTrsEvalueToShow">
         <!-- <td>{{trEv.transport.id}}</td> -->
         <td>{{trEv.transport.nomEntreprise}}</td>
         <td>{{trEv.loadDetail.description}}</td>
@@ -265,13 +273,21 @@
         <td><span class="btn btn-link" (click)="onDeleteEvalue(trEv)">Delete</span></td>
       </tr>
     </table>
+    <span>
+      <br><strong>Page:&nbsp;</strong> 
+      <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
+      *ngFor="let in of counter(pages); let i = index">
+        <small *ngIf="pageSelected!=i">{{i}}</small>
+        <strong *ngIf="pageSelected==i">{{i}}</strong>
+      </button>
+    </span>
   </div>
   
   <table *ngIf="transport.typeDoc!=0 && (transport.id==null || transport.id==0)" class="table-responsive">
     <tr><th colspan="2">Type Transport</th></tr>
     <tr>
       <th style="width: 100%;">
-        <span *ngFor="let lf of loadFrequents">
+        <span *ngFor="let lf of loadFrequents; let i = index">
           <button (click)="loadFrequent=lf; loadFrequentChange(); 
           loadDetails=[]; addLoadSimpleDetail();" 
           [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id">
@@ -279,6 +295,7 @@
           </button>
         </span>
       </th>
+      
     </tr>
   </table>
   <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
