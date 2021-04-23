@@ -21,7 +21,7 @@
   </button>
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
   <button class="btn btn-link" (click)="onListEvalue()" [disabled]="transport.typeDoc!=0">
-    <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalues</span>
+    <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalués</span>
     <span *ngIf="varsGlobal.language.includes('English')">Prices Evaluated</span>
   </button>
   <span *ngIf="shipper!=null && shipper.id!=null && shipper.id>0">
@@ -233,7 +233,7 @@
   <div *ngIf="modeListEvalue">
     <table border="1">
       <tr *ngIf="varsGlobal.language.includes('Francais')">
-        <th colspan="9">Prix Evalues</th>
+        <th colspan="9">Prix Evalués</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
         <th colspan="9">Prices Evaluated</th>

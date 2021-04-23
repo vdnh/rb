@@ -1292,8 +1292,8 @@ onSortDate(data:Array<Transport>){
             return -1;
           return 0;
         })
-        // here ewe must divide this.listTrsEvalue in many page or get first 25 transports
-        let size=25
+        // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
+        let size=20
         for(let i=0; i<this.listTrsEvalue.length; i+=size){
           this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
         }
@@ -1351,8 +1351,8 @@ onSortDate(data:Array<Transport>){
             return -1;
           return 0;
         })
-        // here ewe must divide this.listTrsCommande in many page or get first 25 transports
-        let size=25
+        // here ewe must divide this.listTrsCommande in many page or get first 20 transports
+        let size=20
         for(let i=0; i<this.listTrsCommande.length; i+=size){
           this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
         }
@@ -2235,9 +2235,9 @@ onSortDate(data:Array<Transport>){
     else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.loadFrequent.nom 
     // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
     //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
-    this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom+ " - " + 
+    this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom + " - " + 
     // this.shipper.tel + 
-     " - " + this.transport.emailContact + " </h3> <br>"
+     " - " + this.transport.emailContact+ " <br> " + "Tel: " + this.shipper.tel + " </h3> <br>"
     + document.getElementById('sendcommand').innerHTML
     /*//
     +

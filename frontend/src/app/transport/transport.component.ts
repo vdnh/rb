@@ -1219,21 +1219,28 @@ export class TransportComponent implements OnInit, OnDestroy {
   }
 
   onDeleteCommand(trCm:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
-    this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
-        // delete on show list
-        this.listTrsCommandToShow.splice(this.listTrsCommandToShow.indexOf(trCm),1)
-        // delet on real list
-        this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
-        // delete Itineraire if there is
-        this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
-          if(it!=null) this.itinerairesService.deleteItineraire(it.id).subscribe((dt:Itineraire)=>{ 
+    if(this.varsGlobal.language.includes('Francais')){
+      var r = confirm("Etes vous sur d'annuler ce transport ?")
+    }
+    else var r = confirm("Are you sure to cancel this freight ?")
+    if(r==true){
+      this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
+        this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
+          // delete on show list
+          this.listTrsCommandToShow.splice(this.listTrsCommandToShow.indexOf(trCm),1)
+          // delet on real list
+          this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
+          // delete Itineraire if there is
+          this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
+            if(it!=null) this.itinerairesService.deleteItineraire(it.id).subscribe((dt:Itineraire)=>{ 
+            }, err=>{console.log(err)})
           }, err=>{console.log(err)})
         }, err=>{console.log(err)})
-      }, err=>{console.log(err)})
-    }, err=>{
-      console.log(err)
-    })
+      }, err=>{
+        console.log(err)
+      })
+    }
+    
   }
 
   saveSimple(){
@@ -1677,8 +1684,8 @@ onSortDate(data:Array<Transport>){
             return -1;
           return 0;
         })
-        // here ewe must divide this.listTrsEvalue in many page or get first 25 transports
-        let size=25
+        // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
+        let size=20
         for(let i=0; i<this.listTrsEvalue.length; i+=size){
           this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
         }
@@ -1716,8 +1723,8 @@ onSortDate(data:Array<Transport>){
           return -1;
         return 0;
       })
-      // here ewe must divide this.listTrsEvalue in many page or get first 25 transports
-      let size=25
+      // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
+      let size=20
       for(let i=0; i<this.listTrsEvalue.length; i+=size){
         this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
       }
@@ -1763,8 +1770,8 @@ onSortDate(data:Array<Transport>){
             return -1;
           return 0;
         })
-        // here ewe must divide this.listTrsCommande in many page or get first 25 transports
-        let size=25
+        // here ewe must divide this.listTrsCommande in many page or get first 20 transports
+        let size=20
         for(let i=0; i<this.listTrsCommande.length; i+=size){
           this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
         }
@@ -1801,8 +1808,8 @@ onSortDate(data:Array<Transport>){
           return -1;
         return 0;
       })
-      // here ewe must divide this.listTrsCommand in many page or get first 25 transports
-      let size=25
+      // here ewe must divide this.listTrsCommand in many page or get first 20 transports
+      let size=20
       for(let i=0; i<this.listTrsCommande.length; i+=size){
         this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
       }

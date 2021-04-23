@@ -27,7 +27,7 @@
   <button class="btn btn-link" (click)="onListCommande()" [disabled]="transport.typeDoc!=0">ListCommandes</button> -->
   <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
   <button class="btn btn-link" (click)="onListEvalue()" [disabled]="transport.typeDoc!=0">
-    <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalues</span>
+    <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalués</span>
     <span *ngIf="varsGlobal.language.includes('English')">Prices Evaluated</span>
   </button>
   <br>
@@ -94,7 +94,7 @@
   <div *ngIf="modeListEvalue">
     <table border="1">
       <tr><th colspan="8">
-        <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalues</span>
+        <span *ngIf="varsGlobal.language.includes('Francais')">Prix Evalués</span>
         <span *ngIf="varsGlobal.language.includes('English')">Prices Evaluated</span>
       </th></tr>
       <tr>
