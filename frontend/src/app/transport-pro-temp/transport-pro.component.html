@@ -1,28 +1,5 @@
 <div>
   <!-- <h2>On progress test for new form</h2> -->
-  <div class="row" *ngIf="(contacts!=null&&contacts.length>0)">
-    <div class="col-sm-6 col-md-3 col-lg-3">
-      <!-- <div class="form-group">
-        <label for="">Contact </label>
-        <input type="text" (change)="contactChange()" [(ngModel)]="transport.nomContact"
-             name="nomContact" class="form-control" list="defaultContacts">
-        <datalist id="defaultContacts">
-          <option *ngFor="let e of contacts" [ngValue]="e">{{e.prenom+'  .Id.'+e.id}}</option>
-        </datalist>
-      </div> -->
-      <label *ngIf="varsGlobal.language.includes('Francais')" class="control-label"><strong>Personne à Contact </strong></label>
-      <label *ngIf="varsGlobal.language.includes('English')" class="control-label"><strong>Person Contact </strong></label>
-      <select class="form-control" [(ngModel)]="contact" (ngModelChange)="contactChange()" style="width: 25ch;">
-        <option *ngFor="let c of contacts" [ngValue]="c">{{c.prenom}}</option>
-      </select>
-    </div>
-    <!-- <div class="col-sm-6 col-md-3 col-lg-3">
-      <span>Email </span>
-      <span>
-        <input type="email" [(ngModel)]="transport.emailContact">
-      </span>
-    </div> -->
-  </div>
   <button class="btn btn-link" (click)="placerCommande()" [disabled]="transport.typeDoc==2">
     <!--  transport.typeDoc=2; modeListEvalue=false; modeListCommande=false -->
     <!-- [disabled]="transport.typeDoc==2 || transport.id>0" -->
@@ -227,12 +204,12 @@
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
     <table>
       <tr *ngIf="varsGlobal.language.includes('Francais')">
-        <th>Email (*)</th>
+        <th>Email</th>
         <th>Date du Transport</th>
         <th>Heure</th>
       </tr>
       <tr *ngIf="varsGlobal.language.includes('English')">
-        <th>Email (*)</th>
+        <th>Email</th>
         <th>Transport Date </th>
         <th>Time </th>
       </tr>
@@ -295,13 +272,6 @@
           [(ngModel)]="transport.comments"
           style="margin-top: 0px">
         </textarea>
-      </div>
-      <div>
-        <label style="text-decoration-line: underline" for="">
-          <strong *ngIf="varsGlobal.language.includes('Francais')">Pièce Jointe </strong>
-          <strong *ngIf="varsGlobal.language.includes('English')">Attachment </strong>
-        </label>
-        <input class="form-control" type="file" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
       </div>
       <!-- <div>
         <label style="text-decoration-line: underline" for="">Piece Jointe</label>

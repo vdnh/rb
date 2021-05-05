@@ -1643,17 +1643,23 @@ onSortDate(data:Array<Transport>){
     if(this.modeListEvalue){
       this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
       this.listTrsEvalueToShow.forEach(trEv=>{
-        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-        }, err=>{console.log(err)})
+        // if load detail doesn't exist => load it
+        if(trEv.loadDetail.id==null || trEv.loadDetail.id==0){
+          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        }
       })
     }
     if(this.modeListCommande){
       this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
       this.listTrsCommandToShow.forEach(trCm=>{
-        this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
-          if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
-        }, err=>{console.log(err)})
+        // if load detail doesn't exist => load it
+        if(trCm.loadDetail.id==null || trCm.loadDetail.id==0){
+          this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        }
       })
     }
   }
@@ -1662,6 +1668,7 @@ onSortDate(data:Array<Transport>){
   arrayListTrsCommandToShow : Array<{transport:Transport, loadDetail:LoadDetail}[]>=[]; //Array of array Transports commands to show
   listTrsEvalueToShow : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports evalues to show
   listTrsCommandToShow : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports command to show
+  listTrsEvalueToDelete : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports command to delete
   onRefreshListEvaluated(){
     // this.tempDatalist=""; // initial the tempdata of datalist
     this.pageSelected=0;
@@ -1706,14 +1713,24 @@ onSortDate(data:Array<Transport>){
     }
 
     // if shipper null => find all transports
-    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    else this.transportsService.getEvaluationsTransportTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Transport>)=>{
       this.listTrsEvalue=[]
       this.arrayListTrsEvalueToShow=[]
       this.listTrsEvalueToShow=[]
+      this.listTrsEvalueToDelete=[]
+      let timeNow = new Date().getTime();
+      let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
+      // data.filter(transport=>(transport.valid)).forEach(tr=>{
+      //   if(tr.typeDoc==1) {
+      //     this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+      //   }
+      // })
       data.filter(transport=>(transport.valid)).forEach(tr=>{
         if(tr.typeDoc==1) {
-          this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+          if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
+            this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
+          else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
         }
       })
       if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
@@ -1738,6 +1755,21 @@ onSortDate(data:Array<Transport>){
           this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
             if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
           }, err=>{console.log(err)})
+        })
+      }
+
+      // check list evaluation delete
+      if(this.listTrsEvalueToDelete.length>0){
+        this.listTrsEvalueToDelete.forEach(trEv=>{
+          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {
+              trEv.loadDetail=data[0] 
+              this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
+            };
+            this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
+              this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
+            }, err=>{console.log(err)})
+          })
         })
       }
       
@@ -1791,7 +1823,7 @@ onSortDate(data:Array<Transport>){
     }
 
     // if shipper null => find all transports
-    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    else this.transportsService.getCommandsTransportTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Array<Transport>)=>{
       this.listTrsCommande=[]
       this.arrayListTrsCommandToShow=[]
@@ -2597,13 +2629,21 @@ onSortDate(data:Array<Transport>){
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
     // let trafficModel: google.maps.TrafficModel;
+    let timeNow = new Date();
+    console.log('timeNow just created in ms: ' + timeNow.getTime())
+    timeNow.setHours(0,0,0,0)
+    console.log('timeNow after set to midnight in ms: ' + timeNow.getTime())
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
       drivingOptions: {
-        departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        departureTime: new Date(timeNow.getTime() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        // departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
         trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
       }
     }, (results: any) => {    
+      console.log('Check timeNow after set to midnight in ms: ' + timeNow.getTime())  
+      console.log('Check time actual: ' + new Date().getTime())  
+      console.log('Check timeNow after add 10 days in ms: ' + new Date(timeNow.getTime() + 1000*60*60*24*10).getTime())  
       if(results.rows[0].elements[0].distance!=undefined){
         okForWriting = true;
         if(this.mode==1){

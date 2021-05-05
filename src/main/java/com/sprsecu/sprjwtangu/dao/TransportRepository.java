@@ -13,10 +13,13 @@ import org.springframework.data.repository.query.Param;
  * @author 
  */
 public interface TransportRepository  extends JpaRepository<Transport, Long>{
-        @Query("select t from Transport t where (t.origin like :t or t.destination like :x) ")
+    @Query("select t from Transport t where (t.origin like :x or t.destination like :x) ")
     public Page<Transport> chercher(@Param("x") String mc,  Pageable pageable);  
     
     public List<Transport> findByIdEntreprise(Long Transport);
     
     public List<Transport> findByIdTransporter(Long idTransporter);
+    
+    @Query("select t from Transport t where t.idTransporter = x ")
+    public Page<Transport> commandsOfTransporterPaged(@Param("x") int idTransporter,  Pageable pageable);  
 }

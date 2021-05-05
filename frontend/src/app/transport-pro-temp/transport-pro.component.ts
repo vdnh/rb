@@ -255,19 +255,11 @@ export class TransportProComponent implements OnInit {
          console.log(error);
        });
    }
-   
-   formData = new FormData();                        
    onFileUpLoad(event){
     //this.transport.imgUrl=event.target.files[0]
     //this.transport.imgUrl='';
     let selectedFile : File=event.target.files[0];
     if(selectedFile){
-      // this.formData.append("name", this.transporter.id.toString());
-      // this.formData.append("name", selectedFile.name);
-      // this.formData.append("file", selectedFile);
-      // console.log("form data " + this.formData);
-      this.em.nameAttached=selectedFile.name
-      console.log('selectedFile.name : ' + selectedFile.name)
       const reader = new FileReader();
       reader.onload = ()=>{this.transport.imgUrl=reader.result.toString();}
       reader.readAsDataURL(selectedFile)
@@ -292,7 +284,6 @@ export class TransportProComponent implements OnInit {
   listTrsEvalueToDelete: {transport:Transport, loadDetail:LoadDetail}[]=[]; // Transports evalues to delete because too old
   // test:[{transport:Transport; loadDetail:LoadDetail}]
   contacts: Contact[];
-  contact: Contact;
   chauffeurs: Chauffeur[];
   chauffeur: Chauffeur;
 
@@ -528,20 +519,7 @@ export class TransportProComponent implements OnInit {
       this.transport.nomEntreprise=this.shipper.nom
       this.transport.idEntreprise=this.id
       this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-        if(data!=null&&data.length>0)
-        {
-          let idContact:number;
-          if(localStorage.getItem('idContact')!=null) idContact=Number(localStorage.getItem('idContact'))
-          this.contacts=data;
-          // if exist idContact then find contact correspondent
-          if(idContact>0){
-            this.contact=this.contacts.find((x)=>x.id==idContact)
-            if(this.contact==undefined) this.contact=this.contacts[0]
-          }
-          // if not take the first contact in the list
-          else this.contact=this.contacts[0]
-          this.contactChange()
-        }
+        this.contacts=data;
         this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
           this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
         }, err=>{console.log(err)})
@@ -611,7 +589,6 @@ export class TransportProComponent implements OnInit {
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
     this.loadFrequent=new LoadFrequent();
-    this.contactChange();
   }
 
   chauffeurChange(){
@@ -1269,15 +1246,9 @@ onSortDate(data:Array<Transport>){
     if(this.modeListEvalue){
       this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
       this.listTrsEvalueToShow.forEach(trEv=>{
-        // if load detail doesn't exist => load it
-        if(trEv.loadDetail.id==null || trEv.loadDetail.id==0){
-          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-          }, err=>{console.log(err)})
-        }
-        // this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-        //   if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-        // }, err=>{console.log(err)})
+        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+        }, err=>{console.log(err)})
       })
     }
     if(this.modeListCommande){
@@ -1303,7 +1274,6 @@ onSortDate(data:Array<Transport>){
         this.listTrsEvalue=[]
         this.arrayListTrsEvalueToShow=[]
         this.listTrsEvalueToShow=[]
-        this.listTrsEvalueToDelete=[]
         //
         let timeNow = new Date().getTime();
         let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
@@ -1521,11 +1491,6 @@ onSortDate(data:Array<Transport>){
 
   saveSimple(){
     if(this.transport.emailContact!=null && this.transport.emailContact.length>8 && this.transport.emailContact.includes('@')) {
-      // it good, do nothing
-    }
-    else{ // set this.transport.emailContact equal null, to don't disturb the sending mail
-      this.transport.emailContact=""
-    }
       this.transport.valid = true; // valid this transport ing saving
       this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
         this.transport=data;
@@ -1566,11 +1531,11 @@ onSortDate(data:Array<Transport>){
       }, err=>{
         console.log(err)
       })
-    // }
-    // else{
-    //   if(this.varsGlobal.language.includes('Francais')) alert("Entrez votre email, SVP!")
-    //   else alert('Please enter your email !')
-    // }
+    }
+    else{
+      if(this.varsGlobal.language.includes('Francais')) alert("Entrez votre email, SVP!")
+      else alert('Please enter your email !')
+    }
     
   }
 
@@ -1849,23 +1814,16 @@ onSortDate(data:Array<Transport>){
   }
 
   contactChange(){
-    // let strings:Array<string>=this.transport.nomContact.split("Id.");
-    // let conId:number =  Number(strings[1])
-    // this.contacts.forEach(con=>{
-    //   if(con.id==conId) 
-    //   {
-    //     this.transport.nomContact=con.prenom
-    //     this.transport.telContact=con.tel.toString()
-    //     this.transport.emailContact=con.email
-    //   }
-    // })
-    localStorage.setItem('idContact',this.contact.id.toString() )
-    localStorage.setItem('nomContact',this.contact.prenom )
-    localStorage.setItem('telContact',this.contact.tel.toString() )
-    localStorage.setItem('emailContact',this.contact.email )
-    this.transport.nomContact=this.contact.prenom
-    this.transport.telContact=this.contact.tel.toString()
-    this.transport.emailContact=this.contact.email
+    let strings:Array<string>=this.transport.nomContact.split("Id.");
+    let conId:number =  Number(strings[1])
+    this.contacts.forEach(con=>{
+      if(con.id==conId) 
+      {
+        this.transport.nomContact=con.prenom
+        this.transport.telContact=con.tel.toString()
+        this.transport.emailContact=con.email
+      }
+    })
   }
 
   async onSaveWithMessage(){  // will save with message confirmation
@@ -2013,24 +1971,18 @@ onSortDate(data:Array<Transport>){
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
-    // let shortestDistance =0.00; // :  any;
-    let timeNow = new Date();
-    // console.log('timeNow just created in ms: ' + timeNow.getTime())
-    timeNow.setHours(0,0,0,0)
-    // console.log('timeNow after set to midnight in ms: ' + timeNow.getTime())
+    let shortestDistance =0.00; // :  any;
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING,
       drivingOptions: {
-        departureTime: new Date(timeNow.getTime() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
-        // departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
         trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
       }
-    }, (results: any) => {  
-      // console.log('Check timeNow after set to midnight in ms: ' + timeNow.getTime())  
+    }, (results: any) => {    
       // find shortest route
-      // console.log('results lenght: ' + results.length)
-      // console.log('results.rows lenght: ' + results.rows.length)
-      // console.log('results.rows[0].elements lenght: ' + results.rows[0].elements.length)
+      console.log('results lenght: ' + results.length)
+      console.log('results.rows lenght: ' + results.rows.length)
+      console.log('results.rows[0].elements lenght: ' + results.rows[0].elements.length)
       // results.rows[0].elements.forEach(element => {
       //   console.log('distance: '+ element.distance.value)
       //   if(shortestDistance==0) shortestDistance = element.distance.value
@@ -2286,50 +2238,55 @@ onSortDate(data:Array<Transport>){
     this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom + " - " + 
     // this.shipper.tel + 
      " - " + this.transport.emailContact+ " <br> " + "Tel: " + this.shipper.tel + " </h3> <br>"
-    + document.getElementById('sendcommand').innerHTML + " </p></div>"
-    if(this.transport.imgUrl!=null&&this.transport.imgUrl.length>0) 
-    {
-      // this.em.content = this.em.content + ' ' 
-      // +
-      // // '<iframe src="' +this.transport.imgUrl+ '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>' +
-      // '<script> function debugBase64(base64URL){var win = window.open();' +
-    	// 'win.document.write(' +'"<iframe src="'+ '+base64URL+'+ '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'+');'+
-      // '}</script>' + 
-      // '<button class="btn request-callback" onclick="debugBase64('+ this.transport.imgUrl+')">button attached test</button>'
-      // this.em.attachement=this.formData
-      // let text01 ="<script>function debugBase64(base64URL){var win = window.open(); win.document.write('"
-      // let text02 ='<iframe src="'
-      // let text03 ="' + base64URL  + '"
-      // let text04 ='" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
-      // let text05 ="');}</script><button class="
-      // let text06 ='"btn request-callback" onclick="debugBase64('
-      // let text07 ="'"
-      // let text08 = this.transport.imgUrl
-      // let text09 ="')"
-      // let text10 =  '"><h4>button attached test</h4></button>'
-      // this.em.content = this.em.content + ' ' +text01+text02+text03+text04+
-      //   text05+text06+text07+text08+text09+text10
-      // let ahref = ' <br> <a href="' + this.transport.imgUrl + '"><h4>file attached test</h4></a> '
-      // let ahref02 = ' <br> <a href="www.yahoo.com"><h4>Goto Yahoo</h4></a> '
-      // // target="_blank"
-      // this.em.content = this.em.content + ahref + ahref02
-      // console.log('Atachement with this.em.content: '+ this.em.content)
-      this.em.attachement= this.transport.imgUrl
-      this.bankClientsService.envoyerMailAttachment(this.em).
-      subscribe(data=>{this.resetSimple(); }, err=>{console.log()})
-    }
-    
+    + document.getElementById('sendcommand').innerHTML
     /*//
     +
     " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
     + this.transport.id   //1733  // replace by Number of Bon Transport
     +"'><h4>Detail</h4></a>" +" </p></div>"    
     //*/
-    else this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      // {
+      //   // if(this.varsGlobal.language.includes('English'))
+      //   //   alert("This load was sent")
+      //   // else alert("Ce load a ete envoye.")
+      // }
+      // //*/ Also App send confirmation email to client professionnel
+      // if(this.transport.emailContact.length>10){
+      //   let em:EmailMessage=new EmailMessage();
+      //   em.emailDest=this.transport.emailContact;  // email of professional
+      //   em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
+      //   em.content='<div><p> '+ em.titre + " <br>" + 
+      //     '<div>'+
+      //       '<div><br></div>'+
+      //       '<div>Merci de votre collaboration.</div>'+
+      //       '<div><br></div>'+
+      //       //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+      //       '<div>Dispatch - '+this.transporter.nom+' </div>'+
+      //       '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+      //       '</div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
+            
+      //       '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>520 Guindon St-Eustache,Qc</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
+      //       '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+      //       //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
+      //     " </p></div>"
+      //   this.bankClientsService.envoyerMail(em).subscribe(data=>{
+      //     console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
+      //   }, err=>{console.log(err)})
+      // }
+      // //*/
+      // this.onSaveWithMessage();
+      // this.transport = new Transport() // declare one new case
+      // this.back=0;
+      // this.pagePresent=this.back+1;
+      // this.forward=this.back+2;
       this.resetSimple(); // reset/new after sent
-      // this.contactChange(); // set transport email contact
-    }, err=>{console.log()})
-
+    }, err=>{
+      console.log()
+    })
     window.scroll({ 
       top: 0, 
       left: 0, 

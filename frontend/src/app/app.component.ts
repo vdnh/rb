@@ -882,7 +882,9 @@ export class AppComponent implements OnInit{
       })
     }
     //this.varsGlobal.userLogs=new UserLogs();
+    let idContactTemp = localStorage.getItem('idContact')
     localStorage.clear();
+    if(idContactTemp!=null) localStorage.setItem('idContact', idContactTemp) // keep the idContact if there is
     localStorage.setItem('language', this.varsGlobal.language)  // keep the last language
     localStorage.setItem('addressCookie', this.varsGlobal.addressCookie)  // keep the addressCookie
     

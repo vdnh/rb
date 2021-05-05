@@ -17,6 +17,4 @@ public class EmailMessage {
     private String content;
     private String addressCondition; // pour limiter region - par example Quebec, Montreal, Toronto, ...
     private String emailDest;
-    private String attachement; // to attach file (image and pdf)
-    private String nameAttached; // file name attached
 }

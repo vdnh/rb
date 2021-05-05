@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ImageService } from 'src/services/image.service';
+import { Subscription, timer, interval, from, Observable, fromEvent } from 'rxjs';
 
 import { } from 'googlemaps';
 
@@ -23,22 +24,24 @@ import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Chauffeur } from 'src/model/model.chauffeur';
 import { ChauffeursService } from 'src/services/chauffeurs.service';
-import { VarsGlobal } from 'src/services/VarsGlobal';
+import { Voyage } from 'src/model/model.voyage';
+import { VoyagesService } from 'src/services/voyages.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
-import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { LoadFrequent } from 'src/model/model.loadFrequent';
+import { VarsGlobal } from 'src/services/VarsGlobal';
+import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { Itineraire } from 'src/model/model.itineraire';
 import { ItinerairesService } from 'src/services/itineraires.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 
 @Component({
-  selector: 'app-transport-pro',
-  templateUrl: './transport-pro.component.html',
-  styleUrls: ['./transport-pro.component.css']
+  selector: 'app-transport',
+  templateUrl: './transport.component.html',
+  styleUrls: ['./transport.component.css']
 })
-export class TransportProComponent implements OnInit {
+export class TransportComponent implements OnInit, OnDestroy {
 
   //imgUrl: string = ''; //  'https://picsum.photos/200/300/?random';
   imageToShow: any;
@@ -49,6 +52,12 @@ export class TransportProComponent implements OnInit {
 
   loadFrequent:LoadFrequent=new LoadFrequent();
   loadFrequents:Array<LoadFrequent>=new Array<LoadFrequent>();
+
+  modeListEvalue=false;
+  modeListCommande=false;
+  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
+  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
+
 
   //* pour checkBox list
   formGroup: FormGroup;
@@ -71,6 +80,9 @@ export class TransportProComponent implements OnInit {
   listShipper=[];
   filteredShippers=[]; //=this.listShipper;
   firstFilteredShipper='' //new Shipper();
+
+  taxList = myGlobals.taxList; // tax list of provinces' Canada  - example this.taxList['province'].gsthst
+  taxProvince  = this.taxList[10]
 
   provinceList=myGlobals.provinceList ;
   
@@ -142,7 +154,6 @@ export class TransportProComponent implements OnInit {
     componentRestrictions: { country: ["CA","US"] }
   }
   public async handleAddressOriginChange(address: Address) {
-    // console.log('Before formatted - this.transport.origin: '+this.transport.origin)
     if (this.originSimpleChangeBusy){
       // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
       await this.sleep(1000);
@@ -157,7 +168,6 @@ export class TransportProComponent implements OnInit {
         this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
         this.varsGlobal.addressCookieToList.push(this.transport.origin)
       }
-      // console.log('After formatted - this.transport.origin: '+this.transport.origin)
       //console.log('adresse: '+adr)
       // console.log('this.transport.origin: '+ this.transport.origin)
       this.originSimpleChange()
@@ -166,7 +176,6 @@ export class TransportProComponent implements OnInit {
   }
 
   public async handleAddressDestinationChange(address: Address) {
-    // console.log('Before formatted - this.transport.destination: '+this.transport.destination)
     if (this.destinationSimpleChangeBusy){
       // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
       await this.sleep(1000);
@@ -177,11 +186,10 @@ export class TransportProComponent implements OnInit {
       // Do some stuff
       // let adr:any
       this.transport.destination=await address.formatted_address;
-      if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
-        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + ';;-;; '
-        this.varsGlobal.addressCookieToList.push(this.transport.destination)
+      if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
+        this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + ';;-;; '
+        this.varsGlobal.addressCookieToList.push(this.transport.origin)
       }
-      // console.log('After formatted - this.transport.destination: '+this.transport.destination)
       //console.log('adresse: '+adr)
       // console.log('this.transport.destination: '+this.transport.destination)
       this.destinationSimpleChange()
@@ -195,7 +203,6 @@ export class TransportProComponent implements OnInit {
   disableAuthority=false;
   disableTransCreditUS=false;
   modeGestionAppel: number = 2;
-  id: number;
   transporter: Transporter;
   drawComplete(data) {
     //console.log(this.signaturePad.toDataURL('image/png', 0.5));
@@ -255,19 +262,11 @@ export class TransportProComponent implements OnInit {
          console.log(error);
        });
    }
-   
-   formData = new FormData();                        
    onFileUpLoad(event){
     //this.transport.imgUrl=event.target.files[0]
     //this.transport.imgUrl='';
     let selectedFile : File=event.target.files[0];
     if(selectedFile){
-      // this.formData.append("name", this.transporter.id.toString());
-      // this.formData.append("name", selectedFile.name);
-      // this.formData.append("file", selectedFile);
-      // console.log("form data " + this.formData);
-      this.em.nameAttached=selectedFile.name
-      console.log('selectedFile.name : ' + selectedFile.name)
       const reader = new FileReader();
       reader.onload = ()=>{this.transport.imgUrl=reader.result.toString();}
       reader.readAsDataURL(selectedFile)
@@ -281,24 +280,23 @@ export class TransportProComponent implements OnInit {
 
   today=new Date();
   modeHistoire: number=-1;
-  modeListEvalue=false;
-  modeListCommande=false;
-  listTrs: Transport[]; // appels waitting
-  listTrsSent: Transport[]; // appels sent
-  listTrsFini: Transport[]; // appels finished
-  listTrsAnnule: Transport[]; // appels annules
-  listTrsCommande: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports commandes
-  listTrsEvalue: {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transport[]; // Transports evalues
-  listTrsEvalueToDelete: {transport:Transport, loadDetail:LoadDetail}[]=[]; // Transports evalues to delete because too old
-  // test:[{transport:Transport; loadDetail:LoadDetail}]
-  contacts: Contact[];
-  contact: Contact;
-  chauffeurs: Chauffeur[];
+  listTrs: Transport[]=[]; // appels waitting
+  listTrsSent: Transport[]=[]; // appels sent
+  listTrsFini: Transport[]=[]; // appels finished
+  listTrsAnnule: Transport[]=[]; // appels annules
+  contacts: Contact[]=[];
+  chauffeurs: Chauffeur[]=[];
   chauffeur: Chauffeur;
 
   em:EmailMessage=new EmailMessage();
 
-  camions:Array<Camion>;
+  camions:Array<Camion>;  // truck no GPS
+  camionsGps:Array<Camion>; // truck with Gps
+  remorques:Array<Camion>;  // list of trailers
+  camion:Camion;
+  trailer1:Camion;
+  trailer2:Camion;
+  voyage:Voyage = new Voyage();
   
   templateName:string=''; // name of the transport model
   templates: Transport[]=[];  // liste transport models
@@ -308,22 +306,20 @@ export class TransportProComponent implements OnInit {
   modifyModels=false; // to appear the list models transport
   
   constructor(public transportsService : TransportsService, 
-    // public geocoding : GeocodingService, 
+    public varsGlobal:VarsGlobal,
     private formBuilder:FormBuilder, public router:Router, 
     public contactsService:ContactsService,
     public shipperservice:ShippersService,
     public bankClientsService:BankClientsService, // use to send email
-    private datePipe: DatePipe,
+    public loadFrequentsService:LoadFrequentsService,
     public camionsService:CamionsService,
     private imageService: ImageService,
     public loadDetailsService:LoadDetailsService,
     public chauffeursService:ChauffeursService,
-    public varsGlobal:VarsGlobal,
-    public loadFrequentsService:LoadFrequentsService,
+    public voyagesService : VoyagesService, 
     private itinerairesService:ItinerairesService,
     public transportersService:TransportersService
     ) { 
-      this.id = Number (localStorage.getItem("userId"));
       //* construct for checkbox list
       const selectAllControl = new FormControl(false);
       //const selectAllControl01 = new FormControl(false);
@@ -366,13 +362,25 @@ export class TransportProComponent implements OnInit {
         //this.transport.emailIntervenant=ch.email
       }
     })
+   
     this.transport.id=this.idTransportTemp;
+   
+    // clear all infos of camion, chauffeur, loaddetails, and trailers
+    this.camion=null;
+    this.chauffeur=null;
+    this.loadDetail=new LoadDetail();
+    this.loadDetails=new Array<LoadDetail>();
+    this.trailer1=null;
+    this.trailer2=null;
+    this.nomEntrepriseInputChange()   // to get shipper (client pro) and his client list
+    //
+
     if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
     this.transport.dateDepart=new Date()
     this.transport.timeCall= (new Date().getHours().toString().length==2?new Date().getHours().toString():'0'+new Date().getHours().toString())+':'+ 
       (new Date().getMinutes().toString().length==2?new Date().getMinutes().toString():'0'+new Date().getMinutes().toString())  //"00:00";
     // refresh the templates
-    this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+    this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
       this.templates = data; // just for test
     },err=>{console.log(err)})
   }
@@ -381,7 +389,7 @@ export class TransportProComponent implements OnInit {
     console.log('t.id -  before modifiy model : '+t.id)
     this.transportsService.saveTransportModels(t).subscribe((data:Transport)=>{
       console.log('data.id - after modified model : '+data.id)
-      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
         this.templates = data;
       },err=>{console.log(err)})
     }, err=>{
@@ -392,7 +400,7 @@ export class TransportProComponent implements OnInit {
   deleteTemplate(id:any){
     this.transportsService.deleteTransportModel(id).subscribe((data:Transport)=>{
       console.log('deleted template id - name : '+id+' - '+data.modelName+' - d.id: '+data.id)
-      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
         this.templates = data;
       },err=>{console.log(err)})
     }, err=>{
@@ -427,60 +435,44 @@ export class TransportProComponent implements OnInit {
     this.onSave();
   }
   onReset(){
-    if(this.varsGlobal.language.includes('English'))
-      var r = confirm("Do you want to cancel this load ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this case ?")
+    }
     else var r = confirm("Etes vous sur d'annuler cet appel ?")
     if(r) {
+      this.camion=null;
+      this.chauffeur=null;
+      this.loadDetail=new LoadDetail();;
+      this.loadDetails=new Array<LoadDetail>();
+      this.trailer1=null;
+      this.trailer2=null;
       this.back=0;
       this.pagePresent=this.back+1;
       this.forward=this.back+2
       if(this.transport.id!=null){
         this.transportsService.deleteTransport(this.transport.id).subscribe(data=>{
           this.transport=new Transport();
-          this.loadDetail=new LoadDetail();
-          this.loadDetails=new Array<LoadDetail>();
-          this.transport.nomEntreprise=this.shipper.nom
-          this.transport.idEntreprise=this.id
+          this.onSelectTax(); // select tax when re-init a transport
           this.templateName='';
           if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         }, err=>{
           console.log(err)
         })
       }
-      else this.transport=new Transport();      
+      else {
+        this.transport=new Transport();
+        this.onSelectTax(); // select tax when re-init a transport
+      }
       if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       this.templateName='';
-      this.transport.nomEntreprise=this.shipper.nom
-      this.transport.idEntreprise=this.id
     }
   }
 
-  getLoadDetail(id:number){ // we use idTransport to find loaddetail in transport
-    this.loadDetailsService.getDetailLoadDetail(id).subscribe((data:LoadDetail)=>{
-
-    })
-  }
 
   deleteLoadDetail(load:LoadDetail){
     this.loadDetails.splice(this.loadDetails.findIndex(x=>x==load), 1); 
     //this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
     //this.prixChange();
-  }
-  // addLoadDetail(){
-  //   let load:LoadDetail=new LoadDetail();
-  //   load=this.loadDetail
-  //   this.loadDetails.push(load)
-  //   this.dimensionResume()
-    
-  //   this.loadDetail=new LoadDetail();
-  // }
-
-  addLoadSimpleDetail(){
-    let load:LoadDetail=new LoadDetail();
-    load=this.loadDetail
-    this.loadDetails.push(load)
-    this.prixBase(this.transport.totalpoints)
-    this.loadDetail=new LoadDetail(); // after added set equal new
   }
 
   addLoadDetail(){
@@ -488,14 +480,32 @@ export class TransportProComponent implements OnInit {
     load=this.loadDetail
     this.loadDetails.push(load)
     
+    // let tempLoadsFee=0.00;
+    // this.loadDetails.forEach(ld=>{
+    //   tempLoadsFee+=ld.price
+    // })
+    // this.transport.loadsFee=tempLoadsFee;
     this.prixBase(this.transport.totalpoints)
 
     this.loadDetail=new LoadDetail(); // after added set equal new
     this.loadFrequent=null; // after added set to null
     this.dimensionResume()
-    
+    /*
+    if(load.longueur!=null){
+      if(this.transport.longueur!=null)
+        this.transport.longueur=this.transport.longueur + (load.longueur*load.quantity)
+      else  
+        this.transport.longueur=load.longueur*load.quantity
+    }
+    if(load.poids!=null){
+      if(this.transport.poids!=null)
+        this.transport.poids=this.transport.poids + (load.poids*load.quantity)
+      else  
+        this.transport.poids=load.poids*load.quantity
+    }//*/
+    // this.loadDetail=new LoadDetail();
   }
-  
+
   dimensionResume(){
     this.transport.longueur=0;
     this.transport.poids=0;
@@ -506,125 +516,334 @@ export class TransportProComponent implements OnInit {
       //this.transport.largeur=this.transport.largeur+load.largeur
     })
   }
-  // // on focus windows
+  // on focus windows
   // @HostListener('window:focus', ['$event'])
   // onfocus(event:any):void {
   //   this.onRefresh()
   // }
   
-  async ngOnInit() {    
-    //*
-    this.varsGlobal.pro='yes'  // to control we are in professionnal
-    this.loadDetails.length=0;
-    
-    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
-
+  ngOnInit() {    
     // attacher idtransporter
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
-    
-    await this.shipperservice.getDetailShipper(this.id).subscribe((data:Shipper)=>{
-      this.shipper=data;
-      this.transport.nomEntreprise=this.shipper.nom
-      this.transport.idEntreprise=this.id
-      this.contactsService.contactsDeShipper(this.shipper.id).subscribe((data:Array<Contact>)=>{
-        if(data!=null&&data.length>0)
+
+    if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.loadDetails.length=0;
+    // begin taking list camions of SOSPrestige - Here 8 is the id of transporter SOSPrestige
+    //this.transport.collecterArgent=this.transport.total-this.transport.porterAuCompte
+    if(localStorage.getItem('fullName')!=null) 
+      this.transport.nomDispatch=localStorage.getItem('fullName')
+    this.camionsService.camionsDeTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Camion>)=>{
+      //this.camions = data
+      // this will take camions with gps monitor
+      this.camions=[];
+      this.camionsGps=[];
+      this.remorques=[];
+      // data.forEach(camion=>{
+      //   if(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && (camion.uniteMonitor.length!=0 && camion.monitor.length!=0))
+      //     this.camions.push(camion)
+      //   else
+      //     if(camion.status) this.remorques.push(camion)  // Camions in service without GPS are trailers
+      // })
+      data.forEach(camion=>{
+        if(camion.trailer && !camion.outService && camion.status) // trailer + not out ofservice + in operation
+          this.remorques.push(camion)
+        if(!camion.trailer && !camion.outService && camion.status) // not trailer + not out ofservice + in operation
         {
-          let idContact:number;
-          if(localStorage.getItem('idContact')!=null) idContact=Number(localStorage.getItem('idContact'))
-          this.contacts=data;
-          // if exist idContact then find contact correspondent
-          if(idContact>0){
-            this.contact=this.contacts.find((x)=>x.id==idContact)
-            if(this.contact==undefined) this.contact=this.contacts[0]
-          }
-          // if not take the first contact in the list
-          else this.contact=this.contacts[0]
-          this.contactChange()
-        }
-        this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
-        }, err=>{console.log(err)})
-        this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
-          this.templates = data; // just for test
-          this.templates.forEach((t:Transport)=>{
-            console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
-          })
-        },err=>{console.log(err)})
+          if(!camion.gps && (camion.idTerminal==null || camion.idTerminal==0)) this.camions.push(camion)
+          //if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0))
+          if(camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)) this.camionsGps.push(camion)
+        }          
+      })
+      this.chauffeursService.chauffeursDeTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Chauffeur>)=>{
+        this.chauffeurs=data;
       }, err=>{
         console.log(err);
       });
     }, err=>{
+      console.log();
+    })
+    // end of taking list camion SOSPrestige
+    //await this.shipperservice.getAllShippers().subscribe((data:Array<Shipper>)=>{
+    this.shipperservice.getShippersTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Shipper>)=>{
+      this.listShipper=this.filteredShippers=data.sort((a, b)=>{
+        return a.nom.localeCompare(b.nom)
+      });
+      /*this.listShipper.forEach((sh:Shipper)=>{
+        console.log('Shipper nom : '+ sh.nom)
+      })
+      this.filteredShippers.forEach((sh:Shipper)=>{
+        console.log('Shipper filtered nom : '+ sh.nom)
+      })//*/
+      // this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      //   this.templates = data; // just for test
+      //   this.templates.forEach((t:Transport)=>{
+      //     console.log('IDModel - Model Name : '+ t.id+' - '+t.modelName)
+      //   })
+      // },err=>{console.log(err)})
+    }, err=>{
       console.log(err);
     })
-    await this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
+    
+    this.transportersService.getDetailTransporter(Number(localStorage.getItem('idTransporter')))
     .subscribe((data:Transporter)=>{
       this.transporter=data;
+      // this.onSelectTax(); // get tax province after having transporter
+      this.prixBaseInit();
+      this.prixCalcul(); // there are already function onSelectTax()
     }), err=>{
       console.log(err)
     };
+    
     var heure= this.transport.dateDepart.getHours().toString().length==2?this.transport.dateDepart.getHours().toString():'0'+this.transport.dateDepart.getHours().toString()
       //+':'+
     var minute= this.transport.dateDepart.getMinutes().toString().length==2?this.transport.dateDepart.getMinutes().toString():'0'+this.transport.dateDepart.getMinutes().toString()
     
     this.transport.timeCall=heure+':'+minute
-    console.log('this.transport.timeCall : '+this.transport.timeCall)
+    //console.log('this.transport.timeCall : '+this.transport.timeCall)
     //this.transport.typeService=this.serviceTypes[0];
     //this.typeServiceChange(this.serviceTypes[0]);
-    this.calculTotalpoints() 
-    this.prixCalcul()
-    //*/
+    //this.calculTotalpoints() 
+    // this.prixBaseInit();
+    // this.prixCalcul()
+    // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
   }
   
-  onListEvalue(){
-    this.modeListEvalue=true 
-    this.modeListCommande=false
-    // this.onRefresh()
-    this.onRefreshListEvaluated()
-  }
-
-  onListCommande(){
-    this.modeListEvalue=false 
-    this.modeListCommande=true
-    // this.onRefresh()
-    this.onRefreshListCommand()
-  }
-
-  resetSimple(){
-    // delete transport if this is type place command but not yet valid
-    if(this.transport!=null && this.transport.id!=null && this.transport.id>0 &&
-      this.transport.typeDoc==2 && !this.transport.valid){
-      this.transportsService.deleteTransport(this.transport.id).subscribe((data:Transport)=>{
-        if(this.loadDetail!=null && this.loadDetail.id!=null && this.loadDetail.id>0){
-          this.loadDetailsService.deleteLoadDetail(this.loadDetail.id).subscribe(data=>{
-            this.loadDetail=new LoadDetail();
-          }, err=>{console.log(err)})
+  async chauffeurChange(){
+    let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
+    if(strings.length>1){
+      let chId:number =  Number(strings[1])
+      await this.chauffeurs.forEach(ch=>{
+        if(ch.id==chId) 
+        {
+          this.chauffeur=ch
+          this.transport.nomIntervenant=this.chauffeur.nom
+          this.transport.telIntervenant=this.chauffeur.tel
+          this.transport.emailIntervenant=this.chauffeur.email
         }
       })
+      if(chId!=this.chauffeur.id)
+        {
+          this.chauffeur=null;
+          this.transport.nomIntervenant=''
+          this.transport.telIntervenant=''
+          this.transport.emailIntervenant=''
+        }
+    }  
+    else this.chauffeur=null;
+  }
+  
+  // this is to help the datalist show all 
+  tempDatalist="";
+  clickDatalist(transport:Transport){
+    if(this.tempDatalist.length==0) this.tempDatalist=transport.camionAttribue
+    transport.camionAttribue=""
+  }
+  mouseleaveDatalist(transport:Transport){
+    if(transport.camionAttribue.length==0 && this.tempDatalist.length>0){
+      transport.camionAttribue=this.tempDatalist
     }
-    this.modeListEvalue=false
-    this.modeListCommande=false
-    this.transport = new Transport(); 
-    this.transport.nomEntreprise=this.shipper.nom
-    this.transport.idEntreprise=this.id
-    // attacher idtransporter
-    if(localStorage.getItem('idTransporter')!=undefined)
-      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
-    this.loadFrequent=new LoadFrequent();
-    this.contactChange();
+   }
+  
+  priceTemp=0;
+  getPriceActual(transport:Transport){
+    this.priceTemp = transport.loadsFee
+  }
+  subPriceChange(transport:Transport){
+    if (transport.loadsFee!=this.priceTemp){
+      if(this.varsGlobal.language.includes('Francais')) 
+        var r = confirm('Voulez vous changer ce prix ?')
+      else var r = confirm('Do you want to change this price ?')
+      if(r) {
+        this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+          // do some thing
+          this.priceTemp=0;
+        }, err=>{console.log(err)})
+      }
+      else {
+        transport.loadsFee = this.priceTemp;
+        this.priceTemp=0;
+        this.onListCommande();
+      }
+    }
+    this.priceTemp=0;
   }
 
-  chauffeurChange(){
-    let strings:Array<string>=this.transport.nomIntervenant.split("Id.");
-    let chId:number =  Number(strings[1])
-    this.chauffeurs.forEach(ch=>{
-      if(ch.id==chId) 
-      {
-        this.transport.nomIntervenant=ch.nom
-        this.transport.telIntervenant=ch.tel
-        this.transport.emailIntervenant=ch.email
+  subCamionChange(transport:Transport){
+    if(transport.camionAttribue.includes('Waiting')){
+      transport.camionAttribue="";
+      transport.idCamion=null
+      if(this.varsGlobal.language.includes('English')){
+        var r = confirm("Do you want place it in Waiting List ?")
       }
-    })
+      else var r = confirm("Voulez vous le placer dans la liste d'attente ?")
+        if(r)
+        {
+          this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+            this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+              if(it!=null){
+                it.camionAttribue = ""
+                it.idCamion = null
+                this.itinerairesService.saveItineraires(it).subscribe(data=>{
+                  this.onRefresh();
+                }, err=>{console.log(err)})
+              }
+            }, err=>{console.log(err)})
+          }, err=>{console.log(err)})    
+        }
+        else { 
+          this.onRefresh();
+        }
+    }
+    else{ // it is not the text Waiting
+      let camion: Camion;
+      let allCamions: Array<Camion>=[]
+      allCamions = allCamions.concat(this.camionsGps, this.camions)
+      let strings:Array<string>=transport.camionAttribue.split(".Id.");
+      if(strings.length>1){
+        let string0 :string = strings[0]
+        let cId:number =  Number(strings[1])
+        allCamions.forEach(c=>{
+          if(c.id==cId) 
+          {
+            camion=c;
+            transport.camionAttribue= string0.trim();
+            transport.idCamion=c.id
+          }
+        })
+        if(camion!=null){
+          if(this.varsGlobal.language.includes('English')){
+            var r = confirm("Do you want "+transport.camionAttribue+" ?")
+          }
+          else var r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
+          if(r)
+          {
+            this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+              this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+                if(it!=null){
+                  it.camionAttribue = transport.camionAttribue
+                  it.idCamion = transport.idCamion
+                  this.itinerairesService.saveItineraires(it).subscribe(data=>{
+                    this.onRefresh();
+                  }, err=>{console.log(err)})
+                }
+              }, err=>{console.log(err)})
+            }, err=>{console.log(err)})    
+          }
+          else { 
+            this.onRefresh();
+          }
+        }
+        else{ // don't find out truck
+          this.onRefresh();
+        }
+      }
+      else  // name dosen't correspond to truck
+        this.onRefresh();    
+    }    
+  }
+
+  camionChange(){
+    let allCamions: Array<Camion>=[]
+    allCamions = allCamions.concat(this.camionsGps, this.camions)
+    let strings:Array<string>=this.transport.camionAttribue.split(".Id.");
+    //let string0 :string = strings[0]
+    // console.log('strings.length : '+strings.length);
+    // console.log('strings[0] : '+strings[0]);
+    // console.log('strings[1] : '+strings[1]);
+    if(strings.length>1){
+      let string0 :string = strings[0]
+      let cId:number =  Number(strings[1])
+      // this.camions
+      allCamions.forEach(c=>{
+        if(c.id==cId) 
+        {
+          this.camion=c;
+          this.transport.camionAttribue= string0.trim(); //this.camion.unite
+          this.transport.idCamion=this.camion.id
+        }
+      })
+      if(cId!=this.camion.id)
+        this.camion=null;
+    }
+    else this.camion=null;
+  }
+
+  trailer1Change(){
+    let strings:Array<string>=this.transport.trailer1.split(".Id.");
+    //let string0 :string = strings[0]
+    if(strings.length>1){
+      let string0 :string = strings[0]
+      let tId:number =  Number(strings[1])
+      this.remorques.forEach(r=>{
+        if(r.id==tId) 
+        {
+          this.trailer1=r;
+          this.transport.trailer1= string0.trim(); //this.trailer1.unite
+          this.transport.idTrailer1=this.trailer1.id
+        }
+      })
+      if(this.trailer1==undefined || tId!=this.trailer1.id)
+        {
+          this.trailer1=null;
+          this.trailer2=null;
+          this.transport.trailer2=''
+        }
+    }
+    else {
+      this.trailer1=null;
+      this.trailer2=null;
+      this.transport.trailer2=''
+    }
+  }
+
+  trailer2Change(){
+    let strings:Array<string>=this.transport.trailer2.split(".Id.");
+    //let string0 :string = strings[0]
+    if(strings.length>1){
+      let string0 :string = strings[0]
+      let tId:number =  Number(strings[1])
+      if(tId==this.trailer1.id){
+        if(this.varsGlobal.language.includes('English')){
+          alert('Do not choose the same trailer1 !!')
+        }
+        else alert('Il ne faut pas le meme de trailer1 !!')
+        this.transport.trailer2=''
+      }
+      else{
+        this.remorques.forEach(r=>{
+          if(r.id==tId) 
+          {
+            this.trailer2=r;
+            this.transport.trailer2= string0.trim(); //this.trailer2.unite
+            this.transport.idTrailer2=this.trailer2.id
+          }
+        })
+      }
+      
+      if(this.trailer2==undefined || tId!=this.trailer2.id)
+        this.trailer2=null;
+    }
+    else this.trailer2=null;
+  }
+
+  volumeLongueur(){
+    let tot : number = 0;
+    if(this.camion && this.camion.longueur!=undefined) tot = tot+this.camion.longueur
+    if(this.trailer1 && this.trailer1.longueur!=undefined) tot = tot+this.trailer1.longueur
+    if(this.trailer2 && this.trailer2.longueur!=undefined) tot = tot+this.trailer2.longueur
+    return tot
+  }
+
+  volumePoids(){
+    let tot : number = 0;
+    if(this.camion && this.camion.poids!=undefined) tot = tot+this.camion.poids
+    if(this.trailer1 && this.trailer1.poids!=undefined) tot = tot+this.trailer1.poids
+    if(this.trailer2 && this.trailer2.poids!=undefined) tot = tot+this.trailer2.poids
+    return tot
   }
 
   calculTotalpoints(){ // calculate the base price in the same time
@@ -636,7 +855,7 @@ export class TransportProComponent implements OnInit {
   }
 
   async gotoDetailTransport(t:Transport){
-    window.open("/detail-transport-pro/"+t.id, "_blank")
+    window.open("/detail-transport/"+t.id, "_blank")
   }
 
   gotoTop(){
@@ -811,10 +1030,90 @@ export class TransportProComponent implements OnInit {
     return 0;            
   }
 
-  // prix base
-  // prixBase(totalPoints:number){
-  //   this.transport.prixBase = 250.00;
-  // }
+  shipperChange(){
+    // this.transport=new Transport()
+    if(this.shipper!=null){
+      // this.transport=new Transport()
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.shipper.id
+      // attacher idtransporter
+      if(localStorage.getItem('idTransporter')!=undefined)
+        this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
+      this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
+      .subscribe((data:Array<LoadFrequent>)=>{
+        this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
+        this.onRefresh()
+      })
+    }
+    else{
+      this.transport.nomEntreprise=''
+      this.transport.idEntreprise=null
+      this.loadFrequents=[]
+      this.onRefresh()
+    }
+    this.resetSimple(); // when we change shipper, we must begin from scratch the command/evaluate
+  }
+
+  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
+    let modulo_10 = price%10;
+    // console.log('modulo_10 of '+price+': '+modulo_10)
+    if(modulo_10>0 && modulo_10<=5){
+      price = (price - modulo_10) + 5
+    }
+    if(modulo_10>5 && modulo_10<10){
+      price = (price - modulo_10) + 10
+    }
+    // console.log('price after rounded: '+price)
+    return price;
+  }
+
+  onListEvalue(){
+    this.modeListEvalue=true 
+    this.modeListCommande=false
+    // this.onRefresh()
+    this.onRefreshListEvaluated()
+    if(this.subscription!=null) this.subscription.unsubscribe();
+    const intervalIsCs = interval(125000);  // we refresh the Camions/Itineraires each 120 seconde - 125000ms
+    this.subscription=intervalIsCs.subscribe(val=>{
+      // this.onRefresh()
+      this.onRefreshListEvaluated()
+    })
+  }
+
+  onListCommande(){
+    this.modeListEvalue=false 
+    this.modeListCommande=true
+    // this.onRefresh()
+    this.onRefreshListCommand()
+    if(this.subscription!=null) this.subscription.unsubscribe();
+    const intervalIsCs = interval(125000);  // we refresh the Camions/Itineraires each 120 seconde - 125000ms
+    this.subscription=intervalIsCs.subscribe(val=>{
+      // this.onRefresh()
+      this.onRefreshListCommand()
+    })
+  }
+
+  ngOnDestroy(): void {
+    if(this.subscription!=null) {
+      console.log('this.subscription.unsubscribe();')
+      this.subscription.unsubscribe();
+    }
+  }
+
+  resetSimple(){
+    this.modeListEvalue=false
+    this.modeListCommande=false
+    this.transport = new Transport(); 
+    this.loadFrequent=new LoadFrequent();
+    if(this.shipper!=null) {
+      this.transport.nomEntreprise=this.shipper.nom
+      this.transport.idEntreprise=this.shipper.id
+    }
+    // attacher idtransporter
+    if(localStorage.getItem('idTransporter')!=undefined)
+      this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
+  }
+
   loadFrequentChange(){
     // if(this.loadFrequent==null) 
     this.loadDetail=new LoadDetail()
@@ -826,6 +1125,180 @@ export class TransportProComponent implements OnInit {
     
   }
 
+  addLoadSimpleDetail(){
+    let load:LoadDetail=new LoadDetail();
+    load=this.loadDetail
+    this.loadDetails.push(load)
+    this.prixBase(this.transport.totalpoints)
+    this.loadDetail=new LoadDetail(); // after added set equal new
+  }
+
+  originSimpleChangeBusy=false;
+  async originSimpleChange(){
+    // if (this.originSimpleChangeBusy){
+    //   // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
+    // }
+    let geocoding = new GeocodingService()
+    this.originSimpleChangeBusy=true
+    await geocoding.codeAddress(this.transport.origin).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngOrigin= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()                            
+                this.transport.originLat = results[0].geometry.location.lat(),
+                this.transport.originLong = results[0].geometry.location.lng()                            
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+              {
+                if(this.varsGlobal.language.includes('English'))
+                  alert("Can not locate this origin")
+                else alert("Ne pas trouver de coordonnees de ce origin")
+              }
+    });//*/
+    if(this.transport.destination!=null && this.transport.destination.length>0){
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.originSimpleChangeBusy=false)
+      //await this.showMap()
+      //this.typeServiceChange(this.remorquage.typeService)
+    }
+    else {this.originSimpleChangeBusy=false}
+  }
+
+  destinationSimpleChangeBusy = false
+  async destinationSimpleChange(){
+    // if (this.destinationSimpleChangeBusy){
+    //   // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
+    //   await this.sleep(3000);
+    //   // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
+    // }
+    let geocoding = new GeocodingService()
+    this.destinationSimpleChangeBusy = true
+    await geocoding.codeAddress(this.transport.destination).forEach(
+      (results: google.maps.GeocoderResult[]) => {
+            if(results[0].geometry.location.lat()>0){
+              this.latLngDestination= new google.maps.LatLng(
+                //results[0].geometry.location.lat(),
+                //results[0].geometry.location.lng()     
+                this.transport.destLat = results[0].geometry.location.lat(),
+                this.transport.destLong = results[0].geometry.location.lng()                                                   
+              )
+              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
+            }
+            else
+            {
+              if(this.varsGlobal.language.includes('English'))
+                alert("Can not locate this destination")
+              else alert("Ne pas trouver de coordonnees de cet destination")
+            }
+    });//*/
+    if(this.transport.origin!=null && this.transport.origin.length>0){
+      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      then(()=>this.destinationSimpleChangeBusy = false)
+      //await this.showMap()
+      //this.typeServiceChange(this.remorquage.typeService)
+    }
+    else{this.destinationSimpleChangeBusy = false}
+  }
+
+  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
+      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+        // delete on real list
+        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+        // delete on show list
+        this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
+      }, err=>{console.log(err)})
+    }, err=>{
+      console.log()
+    })
+  }
+
+  onDeleteCommand(trCm:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
+    if(this.varsGlobal.language.includes('Francais')){
+      var r = confirm("Etes vous sur d'annuler ce transport ?")
+    }
+    else var r = confirm("Are you sure to cancel this freight ?")
+    if(r==true){
+      this.transportsService.deleteTransport(trCm.transport.id).subscribe(data=>{
+        this.loadDetailsService.deleteLoadDetail(trCm.loadDetail.id).subscribe(data=>{
+          // delete on show list
+          this.listTrsCommandToShow.splice(this.listTrsCommandToShow.indexOf(trCm),1)
+          // delet on real list
+          this.listTrsCommande.splice(this.listTrsCommande.indexOf(trCm),1)
+          // delete Itineraire if there is
+          this.itinerairesService.itineraireDeTransport(trCm.transport.id).subscribe((it:Itineraire)=>{
+            if(it!=null) this.itinerairesService.deleteItineraire(it.id).subscribe((dt:Itineraire)=>{ 
+            }, err=>{console.log(err)})
+          }, err=>{console.log(err)})
+        }, err=>{console.log(err)})
+      }, err=>{
+        console.log(err)
+      })
+    }
+    
+  }
+
+  saveSimple(){
+    this.transport.valid = true; // valid this transport ing saving
+    
+    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0)
+      this.transport.idEntreprise=this.shipper.id // add id shipper if there is
+    this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+      this.transport=data;
+      this.loadDetails.forEach(load=>{
+        load.idTransport=data.id;
+        this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
+          load.id = d.id;
+        }, err=>{
+          console.log(err);
+        })
+      })
+      alert(this.transport.typeDoc==1?"C'est enregistre.":"C'est envoye.")
+      // after create order then create itineraire
+      let route = new Itineraire();
+      route.idEntreprise = this.transport.idEntreprise
+      route.nomEntreprise = this.transport.nomEntreprise
+      route.idTransport = this.transport.id
+      route.idTransporter = this.transport.idTransporter
+
+      route.datePick = this.transport.dateReserve
+      route.timeResrvation = this.transport.timeResrvation
+      route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
+      
+      route.destLat = this.transport.destLat
+      route.destLong = this.transport.destLong
+      route.destination = this.transport.destination
+      
+      route.origin = this.transport.origin
+      route.originLat = this.transport.originLat
+      route.originLong = this.transport.originLong
+
+      route.camionAttribue = this.transport.camionAttribue //= string0.trim(); //this.camion.unite
+      route.idCamion = this.transport.idCamion //=this.camion.id
+
+      this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
+        route=data;
+      }, err=>{console.log()})
+    }, err=>{
+      console.log(err)
+    })
+  }
+
+  showDateLocal(d:Date){
+    d=new Date(d);
+    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
+    return dateLocal;
+  }
+  
+  pickDateChange(event){
+    this.transport.dateReserve=event.target.value;
+  }
+  
   showKm(distance){
     return Math.round(distance / 0.621371)
   }
@@ -835,46 +1308,37 @@ export class TransportProComponent implements OnInit {
       // let loadFrequent : LoadFrequent
       // loadFrequent=this.loadFrequents.find(x=>(x.id=load.idLoadFrequent))
       // load.price
-      let distanceToCharge :number;
+      let distanceToCharge : number;
       let distance : number;
-      
       if(this.mode==1){ // if en mile change distance to km to calculate
         distance = Math.round(this.transport.distance / 0.621371);
-        if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
-          distanceToCharge = distance - loadFrequent.kmInclus
-        else distanceToCharge = distance
       }
       else{ // if already in km, no change
         distance = this.transport.distance;
-        if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
-          distanceToCharge = distance - loadFrequent.kmInclus
-        else distanceToCharge = distance
       }
-      // console.log('distance : ' + distance)
-      // console.log('distanceToCharge : ' + distanceToCharge)
+      if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
+        distanceToCharge = distance - loadFrequent.kmInclus
+      else distanceToCharge = distance
 
       let quantity =(loadDetail.quantity>0?loadDetail.quantity:1)
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
-      // let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distance)
       let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distanceToCharge)
       priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
-      loadDetail.price=Math.round(quantity*priceLoadFrequent*100)/100
+      loadDetail.price=quantity*priceLoadFrequent
     }
   }
-
+  // prix base
   prixBase(totalPoints:number){
     this.transport.prixBase =0.00;
 
     this.transport.loadsFee=0.00;
     let tempLoadsFee=0.00;
     this.loadDetails.forEach(ld=>{
-      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id==ld.idLoadFrequent)))
+      this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
     this.transport.prixBase=this.transport.loadsFee=Math.round(this.roundPrice(tempLoadsFee)*100)/100
-  
-    this.prixCalcul()  // deactive temporary
-  
+    this.prixCalcul()
     // this.loadDetails.forEach(load=>{
     //   //this.priceLoad(load)
     // })
@@ -886,7 +1350,17 @@ export class TransportProComponent implements OnInit {
     this.transport.ptoFee=0.00;
     this.transport.waitingFee=0.00;
   }
-
+  // prix base
+  prixBaseInit(){
+    this.transport.prixBase = 0.00;
+    this.transport.loadsFee= 0.00;
+    this.transport.waitingPrice=0.00;
+    this.transport.waitingTime=0.00;
+    this.transport.ptoPrice=0.00;
+    this.transport.ptoTime=0.00;
+    this.transport.ptoFee=0.00;
+    this.transport.waitingFee=0.00;
+  }
   prixDistance(totalPoints:number){
     
     return 250.00;
@@ -903,132 +1377,7 @@ export class TransportProComponent implements OnInit {
     
     return 0.00;
   }
-
-  originSimpleChangeBusy=false;
-  async originSimpleChange(){
-    // if (this.originSimpleChangeBusy){
-    //   // console.log("originSimpleChangeBusy, we must sleep 3 seconds")
-    //   await this.sleep(3000);
-    //   // console.log("After having Sleeped 3 seconds, originSimpleChangeBusy: " + this.originSimpleChangeBusy)
-    // }
-    let geocoding = new GeocodingService()
-    let found = false;
-    this.originSimpleChangeBusy=true
-    await geocoding.codeAddress(this.transport.origin).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngOrigin= new google.maps.LatLng(
-                //results[0].geometry.location.lat(),
-                //results[0].geometry.location.lng()                            
-                this.transport.originLat = results[0].geometry.location.lat(),
-                this.transport.originLong = results[0].geometry.location.lng()                            
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-              found=true;
-              // this.sleep(2000);
-              // if(this.transport.destination!=null && this.transport.destination.length>0){
-              //   // await 
-              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
-              //   //await this.showMap()
-              //   //this.typeServiceChange(this.remorquage.typeService)
-              // }
-            }
-            else
-              {
-                if(this.transport!=null){
-                  found=false;
-                  this.transport.loadsFee=null
-                  this.transport.origin=''
-                }
-                if(this.varsGlobal.language.includes('English'))
-                  alert("Can not locate this origin")
-                else alert("Ne pas trouver de coordonnees de ce origin")
-              }
-    }).then(()=>{
-      if(found && this.transport.destination!=null && this.transport.destination.length>0){
-        this.setDistanceTravel(this.transport.origin, this.transport.destination).
-        then(()=>this.originSimpleChangeBusy=false)
-        //await this.showMap()
-        //this.typeServiceChange(this.remorquage.typeService)
-        // if(!this.varsGlobal.addressCookie.includes(this.transport.origin)){
-        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.origin + '; '
-        //   this.varsGlobal.addressCookieToList.push(this.transport.origin)
-        // }
-      }
-      else{
-        found=false;
-        this.transport.loadsFee=null
-        this.originSimpleChangeBusy=false
-        // this.transport.origin=''
-      }
-    });//*/
-  }
-
-  destinationSimpleChangeBusy = false
-  async destinationSimpleChange(){
-    // if (this.destinationSimpleChangeBusy){
-    //   // console.log("destinationSimpleChangeBusy, we must sleep 3 seconds")
-    //   await this.sleep(3000);
-    //   // console.log("After having Sleeped 3 seconds, destinationSimpleChangeBusy: " + this.destinationSimpleChangeBusy)
-    // }
-    let geocoding = new GeocodingService()
-    let found = false;
-    this.destinationSimpleChangeBusy=true
-    await geocoding.codeAddress(this.transport.destination).forEach(
-      (results: google.maps.GeocoderResult[]) => {
-            if(results[0].geometry.location.lat()>0){
-              this.latLngDestination= new google.maps.LatLng(
-                //results[0].geometry.location.lat(),
-                //results[0].geometry.location.lng()     
-                this.transport.destLat = results[0].geometry.location.lat(),
-                this.transport.destLong = results[0].geometry.location.lng()                                                   
-              )
-              //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
-              if(this.latLngDestination!=null) {
-                found = true;
-                // console.log("found latLngDestination at "+this.transport.destination)
-                // console.log("results[0].geometry.location.lat(): "+results[0].geometry.location.lat())
-                // console.log("results[0].geometry.location.lng(): "+results[0].geometry.location.lng())
-              }
-              // this.sleep(2000);
-              // if(this.transport.origin!=null && this.transport.origin.length>0){
-              //   // await 
-              //   this.setDistanceTravel(this.transport.origin, this.transport.destination)
-              //   //await this.showMap()
-              //   //this.typeServiceChange(this.remorquage.typeService)
-              // }
-            }
-            else
-            {
-              if(this.transport!=null) {
-                found=false;
-                this.transport.loadsFee=null
-                this.transport.destination=''
-              }
-              if(this.varsGlobal.language.includes('English'))
-                alert("Can not locate this destination")
-              else alert("Ne pas trouver de coordonnees de cet destination")
-            }
-    }).then(()=>{
-      if(found && this.transport.origin!=null && this.transport.origin.length>0){
-        this.setDistanceTravel(this.transport.origin, this.transport.destination).
-        then(()=>this.destinationSimpleChangeBusy=false)
-        //await this.showMap()
-        //this.typeServiceChange(this.remorquage.typeService)
-        // if(!this.varsGlobal.addressCookie.includes(this.transport.destination)){
-        //   this.varsGlobal.addressCookie = this.varsGlobal.addressCookie + this.transport.destination + '; '
-        //   this.varsGlobal.addressCookieToList.push(this.transport.destination)
-        // }
-      }
-      else{
-        found=false;
-        this.transport.loadsFee=null
-        this.destinationSimpleChangeBusy=false
-        // this.transport.destination=''
-      }
-    });//*/
-  }
-  //*
+//*
 async originChange(){
   //*
   if(this.transport.originProvince!=null){
@@ -1075,11 +1424,12 @@ async originChange(){
               //alert("En deplacant, attendre 2 secondes svp, puis press OK.")
             }
             else
-              {
-                if(this.varsGlobal.language.includes('English'))
-                  alert("Can not locate this origin")
-                else alert("Ne pas trouver de coordonnees de ce origin")
+            {
+              if(this.varsGlobal.language.includes('English')){
+                alert('Can not locate this origin !!')
               }
+              else alert("Ne pas trouver de coordonnees de ce origin")
+            }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
       await this.setDistanceTravel(this.transport.origin, this.transport.destination)
@@ -1136,8 +1486,9 @@ async destinationChange(){
             }
             else
             {
-              if(this.varsGlobal.language.includes('English'))
-                alert("Can not locate this destination")
+              if(this.varsGlobal.language.includes('English')){
+                alert('can not locate this destination')
+              }
               else alert("Ne pas trouver de coordonnees de cet destination")
             }
     });//*/
@@ -1157,12 +1508,62 @@ onSortDate(data:Array<Transport>){
     return 0;
   })
 }
+  
+  subscription : Subscription;
   async onRefresh(){
-    this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+    this.tempDatalist=""; // initial the tempdata of datalist
+    if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
+      this.transportsService.getTransportsEntreprise(this.shipper.id).subscribe(async (data:Array<Transport>)=>{
+        this.listTrsCommande=[]
+        this.listTrsEvalue=[]
+      //*
+        data.sort((b, a)=>{
+          if(a.id>b.id)
+            return 1;
+          if(a.id<b.id)
+            return -1;
+          return 0;
+        })//*/
+        data.filter(transport=>(transport.valid)).forEach(async tr=>{
+          if(tr.typeDoc==1) {
+            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+              if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
+            })        
+          }
+          else if(tr.typeDoc==2) {
+            await this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
+            })
+          }
+        })
+        await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+        // sort list evaluate
+        this.listTrsEvalue.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        // sort list Commands
+        this.listTrsCommande.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        //
+      }, err=>{console.log(err)})
+    }
+
+    // if shipper null => find all transports
+    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Transport>)=>{
       // refresh the templates
-      this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
-        this.templates = data; // just for test
-      },err=>{console.log(err)})
+      // this.transportsService.getAllTransportModels().subscribe((data:Array<Transport>)=>{
+      //   this.templates = data; // just for test
+      // },err=>{console.log(err)})
 
       this.listTrs=[]  //data;
       this.listTrsSent=[]
@@ -1170,8 +1571,7 @@ onSortDate(data:Array<Transport>){
       this.listTrsAnnule=[]
       this.listTrsCommande=[]
       this.listTrsEvalue=[]
-      this.listTrsEvalueToDelete=[]
-      //*
+      /*
       data.sort((b, a)=>{
         if(a.id>b.id)
           return 1;
@@ -1179,14 +1579,9 @@ onSortDate(data:Array<Transport>){
           return -1;
         return 0;
       })//*/
-      let timeNow = new Date().getTime();
-      let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
       data.filter(transport=>(transport.valid)).forEach(tr=>{
         if(tr.typeDoc==1) {
-          if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
-            this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
-          else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
-          
+          this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
           // this.loadDetailsService.loadDetailsDeTransport(tr.id).subscribe((data:Array<LoadDetail>)=>{
           //   if(data!=null&&data.length>0) {this.listTrsEvalue.push({transport:tr, loadDetail:data[0] });}
           // })        
@@ -1197,11 +1592,12 @@ onSortDate(data:Array<Transport>){
           // if(data!=null&&data.length>0) {this.listTrsCommande.push({transport:tr, loadDetail:data[0] });}
           // })
         }
-        else if(tr.fini) this.listTrsFini.push(tr)
-        else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
-        else if (tr.sent) this.listTrsSent.push(tr)
-        else if (tr.valid) this.listTrs.push(tr)//*/
+        // else if(tr.fini) this.listTrsFini.push(tr)
+        // else if (tr.driverNote.includes("!!Cancelled!!")) this.listTrsAnnule.push(tr)
+        // else if (tr.sent) this.listTrsSent.push(tr)
+        // else if (tr.valid) this.listTrs.push(tr)//*/
       })
+      //await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
       // sort list evaluate
       if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
         if(a.transport.id>b.transport.id)
@@ -1214,27 +1610,6 @@ onSortDate(data:Array<Transport>){
           if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
         })
       })
-      // check list evaluation delete
-      if(this.listTrsEvalueToDelete.length>0){
-        this.listTrsEvalueToDelete.forEach(trEv=>{
-          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {
-              trEv.loadDetail=data[0] 
-              this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
-            };
-            this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
-              this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
-            }, err=>{console.log(err)})
-          })
-        })
-        // this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-        //   this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-        //     this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-        //   }, err=>{console.log(err)})
-        // }, err=>{
-        //   console.log()
-        // })
-      }
       // sort list Commands
       if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
         if(a.transport.id>b.transport.id)
@@ -1247,12 +1622,11 @@ onSortDate(data:Array<Transport>){
           if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
         })
       })
-
+    //
     }, err=>{
       console.log(err)
     })
-
-    // await this.sleep(1500) // wait 1,5 seconde before sort the list trscomande
+    
     // this.onSortStatuslistTrsCommande(); // sort listTrsCommande by status
   }
 
@@ -1269,15 +1643,9 @@ onSortDate(data:Array<Transport>){
     if(this.modeListEvalue){
       this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
       this.listTrsEvalueToShow.forEach(trEv=>{
-        // if load detail doesn't exist => load it
-        if(trEv.loadDetail.id==null || trEv.loadDetail.id==0){
-          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-          }, err=>{console.log(err)})
-        }
-        // this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-        //   if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-        // }, err=>{console.log(err)})
+        this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+          if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+        }, err=>{console.log(err)})
       })
     }
     if(this.modeListCommande){
@@ -1303,15 +1671,9 @@ onSortDate(data:Array<Transport>){
         this.listTrsEvalue=[]
         this.arrayListTrsEvalueToShow=[]
         this.listTrsEvalueToShow=[]
-        this.listTrsEvalueToDelete=[]
-        //
-        let timeNow = new Date().getTime();
-        let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
         data.filter(transport=>(transport.valid)).forEach(tr=>{
           if(tr.typeDoc==1) {
-            if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
-              this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
-            else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+            this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
           }
         })
         // sort list evaluate
@@ -1339,22 +1701,49 @@ onSortDate(data:Array<Transport>){
             }, err=>{console.log(err)})
           })
         }
-        // check list evaluation delete
-        if(this.listTrsEvalueToDelete.length>0){
-          this.listTrsEvalueToDelete.forEach(trEv=>{
-            this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-              if(data!=null&&data.length>0) {
-                trEv.loadDetail=data[0] 
-                this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
-              };
-              this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
-                this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
-              }, err=>{console.log(err)})
-            })
-          })
-        }
+        
       }, err=>{console.log(err)})
     }
+
+    // if shipper null => find all transports
+    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Transport>)=>{
+      this.listTrsEvalue=[]
+      this.arrayListTrsEvalueToShow=[]
+      this.listTrsEvalueToShow=[]
+      data.filter(transport=>(transport.valid)).forEach(tr=>{
+        if(tr.typeDoc==1) {
+          this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+        }
+      })
+      if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      })
+      // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
+      let size=20
+      for(let i=0; i<this.listTrsEvalue.length; i+=size){
+        this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
+      }
+      if(this.arrayListTrsEvalueToShow.length>0){
+        this.pages=this.arrayListTrsEvalueToShow.length
+        console.log('We found ' + this.pages + ' pages.')
+        // at the first time, get the 25 first transport in list
+        this.pageSelected=0;
+        this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+        this.listTrsEvalueToShow.forEach(trEv=>{
+          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        })
+      }
+      
+    }, err=>{
+      console.log(err)
+    })
   }
   // end refresh for list evaluated
 
@@ -1400,10 +1789,51 @@ onSortDate(data:Array<Transport>){
         }
       }, err=>{console.log(err)})
     }
+
+    // if shipper null => find all transports
+    else this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+    .subscribe((data:Array<Transport>)=>{
+      this.listTrsCommande=[]
+      this.arrayListTrsCommandToShow=[]
+      this.listTrsCommandToShow=[]
+      data.filter(transport=>(transport.valid)).forEach(tr=>{
+        if(tr.typeDoc==2) {
+          this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+        }
+      })
+      if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+        if(a.transport.id>b.transport.id)
+          return 1;
+        if(a.transport.id<b.transport.id)
+          return -1;
+        return 0;
+      })
+      // here ewe must divide this.listTrsCommand in many page or get first 20 transports
+      let size=20
+      for(let i=0; i<this.listTrsCommande.length; i+=size){
+        this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
+      }
+      if(this.arrayListTrsCommandToShow.length>0){
+        this.pages=this.arrayListTrsCommandToShow.length
+        console.log('We found ' + this.pages + ' pages.')
+        // at the first time, get the 25 first transport in list
+        this.pageSelected=0;
+        this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+        this.listTrsCommandToShow.forEach(trCm=>{
+          this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+            if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+          }, err=>{console.log(err)})
+        })
+      }
+    }, err=>{
+      console.log(err)
+    })
   }
   // end refresh for list commands
-  
+
   // sort listTrsCommande by status
+  numListShow = 1; // 1:schedule, 2:waiting, 3:finished, 4:cancelled, 5:archive
+  listTrsCommandeShow: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeFini: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeCancelled: {transport:Transport, loadDetail:LoadDetail}[];
   listTrsCommandeSchedule: {transport:Transport, loadDetail:LoadDetail}[];
@@ -1415,6 +1845,7 @@ onSortDate(data:Array<Transport>){
     this.listTrsCommandeSchedule = [];
     this.listTrsCommandeWaiting = [];
     this.listTrsCommandeArchive = [];
+    
     if(this.listTrsCommande.length>0) {
       this.listTrsCommande.forEach(trCo=>{
         if(trCo.transport.archive && trCo.transport.fini){
@@ -1436,57 +1867,164 @@ onSortDate(data:Array<Transport>){
         }
       })
     }
-    this.listTrsCommande = this.listTrsCommandeSchedule
-    // .concat(
+    // this.listTrsCommande = this.listTrsCommandeSchedule.concat(
     //   this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
     //     this.listTrsCommandeFini)))
+    if(this.numListShow==1) 
+      this.listTrsCommandeShow = this.listTrsCommandeSchedule
+    if(this.numListShow==2) 
+      this.listTrsCommandeShow = this.listTrsCommandeWaiting
+    if(this.numListShow==3) 
+      this.listTrsCommandeShow = this.listTrsCommandeFini
+    if(this.numListShow==4) 
+      this.listTrsCommandeShow = this.listTrsCommandeCancelled
+    if(this.numListShow==5) 
+      this.listTrsCommandeShow = this.listTrsCommandeArchive
   }
 
   allCommands(){
-    this.listTrsCommande = this.listTrsCommandeSchedule.concat(
+    this.listTrsCommandeShow = this.listTrsCommandeSchedule.concat(
       this.listTrsCommandeWaiting.concat(this.listTrsCommandeCancelled.concat(
         this.listTrsCommandeFini)))
   }
+  
   waitingCommands(){
-    this.listTrsCommande = this.listTrsCommandeWaiting
+    this.listTrsCommandeShow = this.listTrsCommandeWaiting
+    this.numListShow = 2; // 2:waiting
   }
+  
   scheduleCommands(){
-    this.listTrsCommande = this.listTrsCommandeSchedule
+    this.listTrsCommandeShow = this.listTrsCommandeSchedule
+    this.numListShow = 1; // 1:schedule
   }
+  
   finishedCommands(){
-    this.listTrsCommande = this.listTrsCommandeFini
+    this.listTrsCommandeShow = this.listTrsCommandeFini
+    this.numListShow = 3; // 3:finished
   }
+  
   cancelledCommands(){
-    this.listTrsCommande = this.listTrsCommandeCancelled
+    this.listTrsCommandeShow = this.listTrsCommandeCancelled
+    this.numListShow = 4; // 4:cancelled
   }
+
   archiveCommands(){
-    this.listTrsCommande = this.listTrsCommandeArchive
+    this.listTrsCommandeShow = this.listTrsCommandeArchive
+    this.numListShow = 5; // 5:archive
   }
 
-  roundPrice(price:number){ // no cent, last unit <=5 =>5; last unit >5 =>10;
-    let modulo_10 = price%10;
-    // console.log('modulo_10 of '+price+': '+modulo_10)
-    if(modulo_10>0 && modulo_10<=5){
-      price = (price - modulo_10) + 5
+  onCancelTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this freight ?")
     }
-    if(modulo_10>5 && modulo_10<10){
-      price = (price - modulo_10) + 10
+    else var r = confirm("Etes vous sur d'annuler ce transport ?")
+    if(r==true){
+      transport.driverNote="!!Cancelled!!";  
+      transport.idCamion=null;   
+      transport.camionAttribue=""   
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.cancelled = true
+            it.camionAttribue = ""
+            it.idCamion = null
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
     }
-    // console.log('price after rounded: '+price)
-    return price;
   }
 
-  showDateLocal(d:Date){
-    d=new Date(d);
-    let dateLocal= new Date(d.getTime() + (new Date().getTimezoneOffset()*60000))
-    return dateLocal;
+  onFinishTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure this freight finished ?")
+    }
+    else var r = confirm("Etes vous sur ce transport a fini ?")
+    if(r==true){
+      transport.fini=true;  
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.fini = true
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
   }
 
-  pickDateChange(event){
-    this.transport.dateReserve=event.target.value;
+  onResumeTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Do you resume this freight ?")
+    }
+    else var r = confirm("Voulez vous reprendre ce transport ?")
+    if(r==true){
+      transport.driverNote="";  
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            // it.fini = false
+            it.cancelled = false;
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
   }
 
-  // trEvTemp:{transport:Transport, loadDetail:LoadDetail}
+  onDeleteTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Would you delete this freight ?")
+    }
+    else var r = confirm("Voulez vous supprimer ce transport ?")
+    if(r==true){
+      this.transportsService.deleteTransport(transport.id).subscribe(data=>{
+        this.loadDetailsService.loadDetailsDeTransport(transport.id).subscribe((lds:Array<LoadDetail>)=>{
+          this.loadDetails=lds;
+          this.loadDetails.forEach(load=>{
+            load.idTransport=this.transport.id;
+            this.loadDetailsService.deleteLoadDetail(load.id).subscribe(data=>{}, err=>{console.log(err)})
+          })
+        }, err=>{
+          console.log(err)
+        })
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            this.itinerairesService.deleteItineraire(it.id).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
+  onArchiveTransportInList(transport:Transport){
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Would you archive this freight ?")
+    }
+    else var r = confirm("Voulez vous archiver ce transport ?")
+    if(r==true){
+      transport.archive = true;
+      this.transportsService.saveTransports(transport).subscribe(data=>{
+        this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
+          if(it!=null){
+            it.archive = true;
+            this.itinerairesService.saveItineraires(it).subscribe(data=>{
+              this.onRefresh();
+            }, err=>{console.log(err)})
+          }
+        }, err=>{console.log(err)})
+      }, err=>{console.log(err)})
+    }
+  }
+
   onCommandEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){
     var r = confirm("Commander cet Evalue : #" + trEv.transport.id + " ?")
     if(r){
@@ -1505,75 +2043,7 @@ onSortDate(data:Array<Transport>){
       })
     }
   }
-
-  onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
-    this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-        // delete on list real
-        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-        // delete on list show
-        this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
-      }, err=>{console.log(err)})
-    }, err=>{
-      console.log()
-    })
-  }
-
-  saveSimple(){
-    if(this.transport.emailContact!=null && this.transport.emailContact.length>8 && this.transport.emailContact.includes('@')) {
-      // it good, do nothing
-    }
-    else{ // set this.transport.emailContact equal null, to don't disturb the sending mail
-      this.transport.emailContact=""
-    }
-      this.transport.valid = true; // valid this transport ing saving
-      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-        this.transport=data;
-        this.loadDetails.forEach(load=>{
-          load.idTransport=data.id;
-          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-            load.id = d.id;
-          }, err=>{
-            console.log(err);
-          })
-        })
-        if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
-        if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
-        // after create order then create itineraire
-        if(this.transport.typeDoc==2){ // if a command, create route
-          let route = new Itineraire();
-          route.idEntreprise = this.transport.idEntreprise
-          route.nomEntreprise = this.transport.nomEntreprise
-          route.idTransport = this.transport.id
-          route.idTransporter = this.transport.idTransporter
-
-          route.datePick = this.transport.dateReserve
-          route.timeResrvation = this.transport.timeResrvation
-          route.dateDrop = route.datePick;  // set date Drop to route.datePick for avoiding the conflict showing
-          
-          route.destLat = this.transport.destLat
-          route.destLong = this.transport.destLong
-          route.destination = this.transport.destination
-          
-          route.origin = this.transport.origin
-          route.originLat = this.transport.originLat
-          route.originLong = this.transport.originLong
-          this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
-            route=data;
-          }, err=>{console.log()}) 
-          if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
-        }
-      }, err=>{
-        console.log(err)
-      })
-    // }
-    // else{
-    //   if(this.varsGlobal.language.includes('Francais')) alert("Entrez votre email, SVP!")
-    //   else alert('Please enter your email !')
-    // }
-    
-  }
-
+  
   sleep(ms){
     return new Promise((resolve)=>{
       setTimeout(resolve, ms);
@@ -1589,9 +2059,25 @@ onSortDate(data:Array<Transport>){
     await this.sleep(400)
 
     if(this.transportSelected.typeDoc==1){
+      // let promise = new Promise(function(resolve, reject){
+      //   setTimeout(function(){
+      //     resolve('Print after 1 seconde')
+      //   },1000);
+      // });
+      // promise.then(function(value){
+      //   console.log('value: ' + value)
+      // });
       this.printBonDeTransport('printevalueselected')
     }
     if(this.transportSelected.typeDoc==2){
+      // let promise = new Promise(function(resolve, reject){
+      //   setTimeout(function(){
+      //     resolve('Print after 1 seconde')
+      //   },1000);
+      // });
+      // promise.then(function(value){
+      //   console.log('value: ' + value)
+      // });
       this.printBonDeTransport('printcommandselected')
     }
   }
@@ -1610,18 +2096,23 @@ onSortDate(data:Array<Transport>){
     WindowPrt.focus();
     WindowPrt.print();
     WindowPrt.close();
-    this.resetSimple();
+    // this.resetSimple();
   }
 
-  prixCalcul(){
-    this.transport.horstax=this.transport.prixBase
+  async prixCalcul(){
+    //this.transport.prixBase +
+    this.transport.horstax= this.transport.loadsFee + this.transport.waitingFee + this.transport.ptoFee
     if((this.transport.distance-this.transport.inclus)>0){
-      this.transport.horstax =this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
+      this.transport.horstax =await this.transport.horstax + (this.transport.distance-this.transport.inclus)*this.transport.prixKm
     }
     this.transport.horstax=Math.round(this.transport.horstax*100)/100  // around to 2 number
     if(this.transport.taxable){
-      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      this.onSelectTax();
+      // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      // we must remember : tps is gsthst and tvq is pst
+      this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+      this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
       this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
     else{
@@ -1629,12 +2120,62 @@ onSortDate(data:Array<Transport>){
       this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
+    this.ifAtPlace()
+    this.ifDebit()
+  }
+
+  // prixCalculWithHorsTax(){
+  //   if(this.remorquage.taxable){
+  //     if(this.remorquage.taxProvince==null || this.remorquage.taxProvince.length==0)
+  //       this.remorquage.taxProvince=this.provinceList[10] // Quebec is the province by default
+  //     this.onSelectTax();
+
+  //     // this.remorquage.tps =Math.round(this.remorquage.horstax*0.05*100)/100
+  //     // this.remorquage.tvq =Math.round(this.remorquage.horstax*0.09975*100)/100
+  //     // we must remember : tps is gsthst and tvq is pst
+  //     this.remorquage.tps =Math.round(this.remorquage.horstax*this.taxProvince.gsthst)/100
+  //     this.remorquage.tvq =Math.round(this.remorquage.horstax*this.taxProvince.pst)/100
+  //     this.remorquage.total= Math.round((this.remorquage.horstax+this.remorquage.tvq+this.remorquage.tps)*100)/100
+  //   }
+  //   else{
+  //     this.remorquage.tps =0.00; 
+  //     this.remorquage.tvq =0.00; 
+  //     this.remorquage.total= this.remorquage.horstax; 
+  //   }
+  // }
+
+  onSelectTax(){
+    if(this.transport.taxProvince==null || this.transport.taxProvince.length==0)
+    {
+      if(this.transporter.taxProvince==null || this.transporter.taxProvince.length==0){
+        this.transport.taxProvince=this.provinceList[10] // Quebec is the province by default
+        this.taxProvince=this.taxList[10]
+      }
+      else{ // exist tax province for this transporter
+        this.transport.taxProvince=this.transporter.taxProvince
+        this.taxList.forEach(tp=>{
+          if(tp.id.localeCompare(this.transport.taxProvince)==0)
+            this.taxProvince=tp
+        })
+      }
+    }
+    else{  // exist tax province for this towing
+      this.taxList.forEach(tp=>{
+        if(tp.id.localeCompare(this.transport.taxProvince)==0)
+          this.taxProvince=tp
+      })
+    }
+    //alert('province: '+this.taxProvince.id +' pst-tvq: '+ this.taxProvince.pst + ' gsthst: ' +this.taxProvince.gsthst)
   }
 
   prixCalculWithHorsTax(){
     if(this.transport.taxable){
-      this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
-      this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      this.onSelectTax();
+      // this.transport.tps =Math.round(this.transport.horstax*0.05*100)/100
+      // this.transport.tvq =Math.round(this.transport.horstax*0.09975*100)/100
+      // we must remember : tps is gsthst and tvq is pst
+      this.transport.tps =Math.round(this.transport.horstax*this.taxProvince.gsthst)/100
+      this.transport.tvq =Math.round(this.transport.horstax*this.taxProvince.pst)/100
       this.transport.total= Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
     else{
@@ -1642,6 +2183,8 @@ onSortDate(data:Array<Transport>){
       this.transport.tvq =0.00; //Math.round(this.transport.horstax*0.09975*100)/100
       this.transport.total= this.transport.horstax; //Math.round((this.transport.horstax+this.transport.tvq+this.transport.tps)*100)/100
     }
+    this.ifAtPlace()
+    this.ifDebit()
   }
 
   async showMap() {
@@ -1779,14 +2322,16 @@ onSortDate(data:Array<Transport>){
   }
 
   onFini(){
-    if(this.varsGlobal.language.includes('English'))
-      var r = confirm("Are you sure this load in finished?")
-    else var r = confirm("Etes vous sur que ce load est fini ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure this case is finished ?")
+    }
+    else var r = confirm("Etes vous sur que ce cas est fini ?")
     if(r==true){
-      // console.log("Le cas est termine.")
+      console.log("Le cas est termine.")
       this.transport.fini=true;
       this.transportsService.saveTransports(this.transport).subscribe(data=>{
         this.transport=new Transport();
+        this.onSelectTax(); // select tax when re-init a transport
       }, err=>{console.log(err)})
     }
     else {
@@ -1796,9 +2341,10 @@ onSortDate(data:Array<Transport>){
   }
 
   onCancel(){
-    if(this.varsGlobal.language.includes('English'))
-      var r = confirm("Do you want to cancel this load ?")
-    else var r = confirm("Etes vous sur d'annuller ce load ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to cancel this case ?")
+    }
+    else var r = confirm("Etes vous sur d'annuler ce cas ?")
     if(r==true){
       console.log("Le cas est annulle.")
       if(this.transport.id>0){
@@ -1806,11 +2352,18 @@ onSortDate(data:Array<Transport>){
           // commence d'envoyer email
           if(this.transport.sent && this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
             this.em.emailDest=this.transport.emailIntervenant
-            this.em.titre="Annuler case numero : " + this.transport.id.toString()
-            this.em.content='<div><p> '+'Annuler case numero : ' + this.transport.id.toString()+' </p></div>'    
+            if(this.varsGlobal.language.includes('English')){
+              this.em.titre="Cancel case #Num : " + this.transport.id.toString()
+              this.em.content='<div><p> '+'Cancel case #Num : ' + this.transport.id.toString()+' </p></div>'
+            }
+            else{
+              this.em.titre="Annuler case #Bon : " + this.transport.id.toString()
+              this.em.content='<div><p> '+'Annuler case #Bon : ' + this.transport.id.toString()+' </p></div>'    
+            }
             this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-              if(this.varsGlobal.language.includes('English'))
-                alert("An email cancel was sent to driver.")
+              if(this.varsGlobal.language.includes('English')){
+                alert('A canceled email was sent to driver.')
+              }
               else alert("Un courriel annulation a ete aussi envoye au chauffeur.")
             }, err=>{
               console.log()
@@ -1818,6 +2371,7 @@ onSortDate(data:Array<Transport>){
           }
           //*/
           this.transport=new Transport();
+          this.onSelectTax(); // select tax when re-init a transport
         }, err=>{console.log(err)})
       }
     }
@@ -1827,45 +2381,36 @@ onSortDate(data:Array<Transport>){
   }
 
   onDelete(tr:Transport){
-    if(this.varsGlobal.language.includes('English'))
-      var r = confirm("Do you want to delete this load ?")
-    else var r = confirm("Etes vous sur de supprimer ce cas ?")
+    if(this.varsGlobal.language.includes('English')){
+      var r = confirm("Are you sure to delete this case ?")
+    }
+    else var r = confirm("Etes vous sur de supprimer ce transport ?")
     if(r==true){
-      // console.log("Le cas est supprime.")
+      console.log("Ce Transport est supprime.")
       if(tr.id>0){
         this.transportsService.deleteTransport(tr.id).subscribe(data=>{
-          if(tr.fini)
-            this.listTrsFini.splice(this.listTrsFini.indexOf(tr),1)
-          else if(tr.sent)
-            this.listTrsSent.splice(this.listTrsSent.indexOf(tr),1)
-          else this.listTrs.splice(this.listTrs.indexOf(tr),1)
-          //this.demandesBlue.splice(this.demandesBlue.indexOf(demande),1); // remove this demande from the list
+          this.listTrsAnnule.splice(this.listTrsAnnule.indexOf(tr),1)
         }, err=>{console.log(err)})
       }
     }
     else {
-      console.log('Le cas est continue.')
+      console.log('Ce Transport est maintenu.')
     }
   }
-
+  
   contactChange(){
-    // let strings:Array<string>=this.transport.nomContact.split("Id.");
-    // let conId:number =  Number(strings[1])
-    // this.contacts.forEach(con=>{
-    //   if(con.id==conId) 
-    //   {
-    //     this.transport.nomContact=con.prenom
-    //     this.transport.telContact=con.tel.toString()
-    //     this.transport.emailContact=con.email
-    //   }
-    // })
-    localStorage.setItem('idContact',this.contact.id.toString() )
-    localStorage.setItem('nomContact',this.contact.prenom )
-    localStorage.setItem('telContact',this.contact.tel.toString() )
-    localStorage.setItem('emailContact',this.contact.email )
-    this.transport.nomContact=this.contact.prenom
-    this.transport.telContact=this.contact.tel.toString()
-    this.transport.emailContact=this.contact.email
+    let strings:Array<string>=this.transport.nomContact.split("Id.");
+    if(strings.length>1){
+      let conId:number =  Number(strings[1])
+      this.contacts.forEach(con=>{
+        if(con.id==conId) 
+        {
+          this.transport.nomContact=con.prenom
+          this.transport.telContact=con.tel.toString()
+          this.transport.emailContact=con.email
+        }
+      })
+    }
   }
 
   async onSaveWithMessage(){  // will save with message confirmation
@@ -1880,8 +2425,9 @@ onSortDate(data:Array<Transport>){
       await this.transportsService.saveTransports(this.transport).subscribe(async(data:Transport)=>{
         if(this.transport.id!=null)
         {
-          if(this.varsGlobal.language.includes('English'))
+          if(this.varsGlobal.language.includes('English')){
             alert("It's saved.")
+          }
           else alert("C'est enregistre.")
         }
         await this.loadDetails.forEach(load=>{
@@ -1900,9 +2446,11 @@ onSortDate(data:Array<Transport>){
         this.back=0;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
-        this.transport=new Transport(); 
-        this.transport.nomEntreprise=this.shipper.nom
-        this.transport.idEntreprise=this.id     
+        this.transport=new Transport();      
+        this.onSelectTax(); // select tax when re-init a transport
+        this.camion=null
+        this.trailer1=null
+        this.trailer2=null
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
       }, 
         err=>{console.log(err)
@@ -1912,11 +2460,13 @@ onSortDate(data:Array<Transport>){
     else{ // mode=1 already, just save
       this.transportsService.saveTransports(this.transport).subscribe(async (data:Transport)=>{
         if(this.transport.id!=null)
-          {
-            if(this.varsGlobal.language.includes('English'))
-              alert("it's saved.")
-            else alert("C'est enregistre.")
+        {
+          if(this.varsGlobal.language.includes('English')){
+            alert("It's saved.")
           }
+          else alert("C'est enregistre.")
+        }
+        //await this.createVoyage() // creer un voyage
         await this.loadDetails.forEach(load=>{
           load.idTransport=data.id;
           this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
@@ -1933,9 +2483,11 @@ onSortDate(data:Array<Transport>){
         this.back=0;
         this.pagePresent=this.back+1;
         this.forward=this.back+2
-        this.transport=new Transport();      
-        this.transport.nomEntreprise=this.shipper.nom
-        this.transport.idEntreprise=this.id
+        this.transport=new Transport();   
+        this.onSelectTax(); // select tax when re-init a transport
+        this.camion=null
+        this.trailer1=null
+        this.trailer2=null   
         if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
         //this.transport=data;
       }, 
@@ -1992,6 +2544,37 @@ onSortDate(data:Array<Transport>){
       })
     }
   }
+
+  createVoyage(){
+    this.voyage.originLat=this.transport.originLat
+    this.voyage.originLong=this.transport.originLong
+    this.voyage.destLat=this.transport.destLat
+    this.voyage.destLong=this.transport.destLong
+    this.voyage.dateDepart = new Date(this.voyage.dateDepart)
+    this.voyage.origin=this.transport.origin
+    this.voyage.originAdresse=this.transport.originAdresse
+    this.voyage.originVille=this.transport.originVille
+    this.voyage.originProvince=this.transport.originProvince
+    this.voyage.destination=this.transport.destination
+    this.voyage.destAdresse=this.transport.destAdresse
+    this.voyage.destVille=this.transport.destVille
+    this.voyage.destProvince=this.transport.destProvince
+    this.voyage.typeCamion=this.transport.typeCamion
+    this.voyage.optionVoyage=this.transport.optionDemande
+    this.voyage.idTransporter=8 // id of sosprestige by default
+    this.voyagesService.saveVoyages(this.voyage).subscribe((data:Voyage)=>{
+      if(this.varsGlobal.language.includes('English')){
+        alert('A voyage was also created.')
+      }
+      else alert('Un voyage est aussi cree.')
+      this.voyage=data
+      this.transport.idVoyage=this.voyage.id
+      this.transportsService.saveTransports(this.transport).subscribe(data=>{},err=>{console.log(err)})
+    }, err=>{
+      console.log(err)
+    })
+  }
+
   onPrint(heure){    
     console.log(heure)
     console.log('this.transport.timeCall : '+this.transport.timeCall)
@@ -2013,31 +2596,14 @@ onSortDate(data:Array<Transport>){
     this.transport.loadsFee=null; // set loadsFee to null while calculating 
     let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
     // calculate load distance - ld
-    // let shortestDistance =0.00; // :  any;
-    let timeNow = new Date();
-    // console.log('timeNow just created in ms: ' + timeNow.getTime())
-    timeNow.setHours(0,0,0,0)
-    // console.log('timeNow after set to midnight in ms: ' + timeNow.getTime())
+    // let trafficModel: google.maps.TrafficModel;
     service.getDistanceMatrix({
-      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING,
+      'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
       drivingOptions: {
-        departureTime: new Date(timeNow.getTime() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
-        // departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+        departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
         trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
       }
-    }, (results: any) => {  
-      // console.log('Check timeNow after set to midnight in ms: ' + timeNow.getTime())  
-      // find shortest route
-      // console.log('results lenght: ' + results.length)
-      // console.log('results.rows lenght: ' + results.rows.length)
-      // console.log('results.rows[0].elements lenght: ' + results.rows[0].elements.length)
-      // results.rows[0].elements.forEach(element => {
-      //   console.log('distance: '+ element.distance.value)
-      //   if(shortestDistance==0) shortestDistance = element.distance.value
-      //   if(shortestDistance>element.distance.value) shortestDistance = element.distance.value
-      // });
-      // console.log('shortestDistance: ' + shortestDistance)
-      // end find shortest route
+    }, (results: any) => {    
       if(results.rows[0].elements[0].distance!=undefined){
         okForWriting = true;
         if(this.mode==1){
@@ -2048,29 +2614,17 @@ onSortDate(data:Array<Transport>){
       else{
         okForWriting = false;
       }
-      
+      // if(this.mode==1){
+      //   this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)*0.621371/1000)  
+      // }
+      // else this.transport.distance= Math.round((results.rows[0].elements[0].distance.value)/1000)  
       // calculate price load actual and total price after distance
-      //this.priceLoad(this.loadDetail, this.loadFrequent)
+      // this.priceLoad(this.loadDetail, this.loadFrequent)
       // this.prixBase(this.transport.totalpoints)
-      //return;
     });  
     await this.sleep(2000);
     if(okForWriting){
       this.prixBase(this.transport.totalpoints)
-      // save 
-      if(this.transport.typeDoc==1) this.transport.valid = true //valid for all evaluating whether save or don't save
-      this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
-        this.transport=data;
-        this.loadDetails.forEach(load=>{
-          load.idTransport=data.id;
-          this.loadDetailsService.saveLoadDetail(load).subscribe((d:LoadDetail)=>{
-            load.id = d.id;
-            if(this.transport.typeDoc==2) this.loadDetail = d; // this is just for type place command
-          }, err=>{
-            console.log(err);
-          })
-        })
-      }, err=>{console.log(err)})
     }
   }
 
@@ -2083,11 +2637,9 @@ onSortDate(data:Array<Transport>){
     
   //   console.log('this.transport.dateDepart : '+this.transport.dateReserve)
   // }
-
   dateChange(event){
     this.transport.dateReserve =event.target.value // new Date(event.target.value);
   }
-  
   nomContactChange(event){
     this.transport.nomContact=event.nom
     this.transport.telContact=event.tel
@@ -2145,6 +2697,9 @@ onSortDate(data:Array<Transport>){
       //this.typeServiceChange(this.remorquage.typeService);
       this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
+        this.loadFrequentsService.loadFrequentsDeShipper(ent.id).subscribe((data:Array<LoadFrequent>)=>{
+          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+        }, err=>{console.log(err)})
       }, err=>{
         console.log(err);
       });
@@ -2165,7 +2720,9 @@ onSortDate(data:Array<Transport>){
   onHistoire(){
     this.modeHistoire=-this.modeHistoire;
     if(this.modeHistoire==1){
-      this.transportsService.getTransportsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
+      //this.transportsService.getAllTransports().subscribe((data:Array<Transport>)=>{
+      this.transportsService.getTransportsTransporter(Number(localStorage.getItem('idTransporter')))
+      .subscribe((data:Array<Transport>)=>{
         //this.templates = data; // just for test
         this.listTrs=[]  //data;
         this.listTrsSent=[]
@@ -2204,36 +2761,51 @@ onSortDate(data:Array<Transport>){
   }
   
   onEnvoyer(){
-    let stringsd:string[]=location.href.split('/transport-pro')
-    this.em.emailDest=myGlobals.emailPrincipal; 
-    if(this.varsGlobal.language.includes('English'))
-      this.em.titre= this.transport.nomEntreprise +" - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
-      ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
-    else this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
-      ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
-    this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
-    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
-    + this.transport.id   //1733  // replace by Number of Bon Transport
-    +"'><h4>Detail</h4></a>" +" </p></div>"    
-    this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-      {
-        if(this.varsGlobal.language.includes('English'))
-          alert("This load was sent")
-        else alert("Ce load a ete envoye.")
+    let stringsd:string[]=location.href.split('/transport-client/')
+    if(this.transport.emailIntervenant!=null && this.transport.emailIntervenant.length>10){
+      this.em.emailDest=this.transport.emailIntervenant
+      if(this.varsGlobal.language.includes('English')){
+        this.em.titre="From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
       }
-      //*/ Also App send confirmation email to client professionnel
-      if(this.transport.emailContact.length>10){
-        let em:EmailMessage=new EmailMessage();
-        em.emailDest=this.transport.emailContact;  // email of professional
-        em.titre= "Recu demande Transport - " + this.transport.origin+' -  A  - '+ this.transport.destination +' -  #Bon : ' + this.transport.id
-        em.content='<div><p> '+ em.titre + " <br>" + 
-          '<div>'+
-            '<div><br></div>'+
-            '<div>Merci de votre collaboration.</div>'+
-            '<div><br></div>'+
-            //'<div>Dispatch Marc-Andre Thiffeault </div>'+
-            '<div>Dispatch - '+this.transporter.nom+' </div>'+
-            '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+      else this.em.titre="De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+      this.em.content='<div><p> '+document.getElementById('toprint').innerHTML+
+      " <br> <a href='"+ stringsd[0] +"/transport-client/"
+      + (this.transport.id*100-5)   //1733  // replace by Number of Bon Transport
+      +"'><h4>Detail</h4></a>" +" </p></div>"    
+      this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+        if(this.varsGlobal.language.includes('English')){
+          alert('Email was sent to driver.')
+        }
+        else alert("Le courriel a ete envoye au chauffeur.")
+        if(this.transport.emailContact.length>10){
+          let em:EmailMessage=new EmailMessage();
+          em.emailDest=this.transport.emailContact;  // email of professional
+          if(this.varsGlobal.language.includes('English')){
+            em.titre= "In progress - " + "From : " + this.transport.originVille + '  -  To: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            "<div> #Num: " + this.transport.id+ " </div>"+
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Thank you for your collaboration.</div>'+
+              '<div><br></div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
+            '</div>'+
+            '<div><font face="garamond,serif" size="4"><b>'+this.transporter.email+'</b></font></div>'+
+            '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
+            " </p></div>"
+          }
+          else{
+            em.titre= "Encours traitement - " + "Transport De : " + this.transport.originVille + '  -  A: ' + this.transport.destVille
+            em.content='<div><p> '+ em.titre + " <br>" + 
+            "<div> #Bon: " + this.transport.id+ " </div>"+
+            '<div>'+
+              '<div><br></div>'+
+              '<div>Merci de votre collaboration.</div>'+
+              '<div><br></div>'+
+              //'<div>Dispatch Marc-Andre Thiffeault </div>'+
+              '<div>Dispatch - '+this.transporter.nom+' </div>'+
+              '<font face="garamond,serif"><b></b><font size="4"></font></font>'+
             '</div>'+
             //'<div><font face="garamond,serif" size="4"><b>SOS Prestige</b></font></div>'+
             
@@ -2242,101 +2814,71 @@ onSortDate(data:Array<Transport>){
             //'<div><font face="garamond,serif" size="4"><b>J7R 5B4</b></font></div>'+
             '<div><font face="garamond,serif" size="4"><b><br>'+this.transporter.tel+'</b></font></div>'+
             //'<div><font face="garamond,serif" size="4"><b><br>450-974-9111</b></font></div>'+
-          " </p></div>"
-        this.bankClientsService.envoyerMail(em).subscribe(data=>{
-          console.log('Vous recevez aussi un courriel confirmation, merci de votre collaboration.')
-        }, err=>{console.log(err)})
-      }
-      //*/
-      this.onSaveWithMessage();
-      this.transport = new Transport() // declare one new case
-      this.back=0;
-      this.pagePresent=this.back+1;
-      this.forward=this.back+2;
-    }, err=>{
-      console.log()
-    })
-    window.scroll({ 
-      top: 0, 
-      left: 0, 
-      behavior: 'smooth' 
-    });  // go to top  
-  }
-
-  onEnvoyerWithSaveSimple(){
-    // let stringsd:string[]=location.href.split('/transport-pro')
-    this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
-    
-    // check validation of this.shipper.email
-    // if(this.shipper.email.length>8 && this.shipper.email.includes('@')) 
-    //   this.em.emailDest=this.em.emailDest + ',' + this.shipper.email // add in list email to send
-    
-    // check validation of this.transport.emailContact
-    if(this.transport.emailContact!=null && this.transport.emailContact.length>8 && this.transport.emailContact.includes('@')) 
-      this.em.emailDest=this.em.emailDest + ',' + this.transport.emailContact // add in list email to send
-    
-    if(this.varsGlobal.language.includes('English'))
-      this.em.titre= this.transport.nomEntreprise + " - Order: " + this.loadFrequent.nom 
-      //+
-      // " - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
-      // ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
-    else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.loadFrequent.nom 
-    // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
-    //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
-    this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom + " - " + 
-    // this.shipper.tel + 
-     " - " + this.transport.emailContact+ " <br> " + "Tel: " + this.shipper.tel + " </h3> <br>"
-    + document.getElementById('sendcommand').innerHTML + " </p></div>"
-    if(this.transport.imgUrl!=null&&this.transport.imgUrl.length>0) 
-    {
-      // this.em.content = this.em.content + ' ' 
-      // +
-      // // '<iframe src="' +this.transport.imgUrl+ '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>' +
-      // '<script> function debugBase64(base64URL){var win = window.open();' +
-    	// 'win.document.write(' +'"<iframe src="'+ '+base64URL+'+ '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'+');'+
-      // '}</script>' + 
-      // '<button class="btn request-callback" onclick="debugBase64('+ this.transport.imgUrl+')">button attached test</button>'
-      // this.em.attachement=this.formData
-      // let text01 ="<script>function debugBase64(base64URL){var win = window.open(); win.document.write('"
-      // let text02 ='<iframe src="'
-      // let text03 ="' + base64URL  + '"
-      // let text04 ='" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
-      // let text05 ="');}</script><button class="
-      // let text06 ='"btn request-callback" onclick="debugBase64('
-      // let text07 ="'"
-      // let text08 = this.transport.imgUrl
-      // let text09 ="')"
-      // let text10 =  '"><h4>button attached test</h4></button>'
-      // this.em.content = this.em.content + ' ' +text01+text02+text03+text04+
-      //   text05+text06+text07+text08+text09+text10
-      // let ahref = ' <br> <a href="' + this.transport.imgUrl + '"><h4>file attached test</h4></a> '
-      // let ahref02 = ' <br> <a href="www.yahoo.com"><h4>Goto Yahoo</h4></a> '
-      // // target="_blank"
-      // this.em.content = this.em.content + ahref + ahref02
-      // console.log('Atachement with this.em.content: '+ this.em.content)
-      this.em.attachement= this.transport.imgUrl
-      this.bankClientsService.envoyerMailAttachment(this.em).
-      subscribe(data=>{this.resetSimple(); }, err=>{console.log()})
+            " </p></div>"
+          }
+          
+          this.bankClientsService.envoyerMail(em).subscribe(data=>{
+            console.log('Le client professionnel recois aussi .')
+          }, err=>{console.log(err)})
+        }
+        this.transport.sent=true;
+        this.onSaveWithMessage();
+        // this.back=0;
+        // this.pagePresent=this.back+1;
+        // this.forward=this.back+2
+        // this.transport=new Transport();      
+        // if(localStorage.getItem('fullName')!=null) this.transport.nomDispatch=localStorage.getItem('fullName')
+        /*this.transportsService.saveTransports(this.transport).subscribe((data:Transport)=>{
+          this.transport=data;
+        }, 
+          err=>{console.log(err)
+        })
+        this.gotoTop();//*/
+      }, err=>{
+        console.log(err)
+      })//*/
     }
-    
-    /*//
-    +
-    " <br> <a href='"+stringsd[0]+"/detail-transport/"   //+"/detail-transport-express/"
-    + this.transport.id   //1733  // replace by Number of Bon Transport
-    +"'><h4>Detail</h4></a>" +" </p></div>"    
-    //*/
-    else this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
-      this.resetSimple(); // reset/new after sent
-      // this.contactChange(); // set transport email contact
-    }, err=>{console.log()})
-
-    window.scroll({ 
-      top: 0, 
-      left: 0, 
-      behavior: 'smooth' 
-    });  // go to top  
+    else 
+    {
+      if(this.varsGlobal.language.includes('English')){
+        alert("Verify drivers' email, please!!")
+      }
+      else alert("Verifier le courriel de chauffer, SVP!!!")
+    }
   }
 
+  ifDebit(){ // porter au compte
+    if(this.transport.debit){
+      this.transport.porterAuCompte=this.transport.total
+      this.transport.collecterArgent=0;
+      this.transport.atPlace=false
+      this.transport.byCash=false
+      this.transport.byCheck=false
+      this.transport.creditCard=false
+      this.transport.byInterac=false
+      this.transport.transfer=false
+    }
+    else{
+      this.transport.porterAuCompte=0;
+    }
+  }
+  
+  ifAtPlace(){ // collecter d'argent
+    if(this.transport.atPlace){
+      this.transport.collecterArgent=this.transport.total
+      this.transport.porterAuCompte=0;
+      this.transport.debit=false
+    }
+    else{
+      this.transport.collecterArgent=0;
+    }
+  }
+
+  onPage1(){
+    this.pagePresent=1;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
   onPage2(){
     this.modifyModels=false;  // must be sure for close list templates
     if(this.transport.id==null){
@@ -2400,28 +2942,58 @@ onSortDate(data:Array<Transport>){
     this.back=this.pagePresent-1;
     this.forward=this.pagePresent+1
   }
-
-  placerCommande(){
-    this.transport.typeDoc=2; 
-    this.modeListEvalue=false; 
-    this.modeListCommande=false;
-  }
-  evaluerTaux(){
-    this.transport.typeDoc=1; 
-    this.modeListEvalue=false; 
-    this.modeListCommande=false
-    if(this.transport.id!=null && this.transport.id>0 && !this.transport.valid){
-      this.transport.valid=true;
-      this.transportsService.saveTransports(this.transport).subscribe(()=>{},err=>{console.log(err)})
+  onPage9(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
     }
+    this.pagePresent=9;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
+  }
+  onPage10(){
+    this.modifyModels=false;  // must be sure for close list templates
+    if(this.transport.id==null){
+      this.onSave();
+    }
+    this.pagePresent=10;
+    this.back=this.pagePresent-1;
+    this.forward=this.pagePresent+1
   }
 
-  logout(){
-    localStorage.clear();
-    //this.router.navigateByUrl("");
-    //this.router.navigateByUrl('/transporters/');
-    this.router.navigate(['']);
+  loadPriceChange(){
+    let tempTotal=0;
+    this.loadDetails.forEach(load=>{
+      tempTotal+=load.price
+    })
+    this.transport.loadsFee=tempTotal
   }
+  // testVar:Shipper=new Shipper();
+  // textreturn(id:number){
+  //   let s:Shipper=new Shipper();
+  //   this.listShipper.forEach(sp=>{if(sp.id==id)s=sp})
+  //   console.log('Shipper : ' + s.nom)
+  //   return ' .aa.' + s.nom
+  // }
+  // onListFrequentChange(e){
+  //   //this.extractLoadFrequent(e.target.value)
+  //   alert('e : '+ e)
+  //   alert('e.target.value : '+ e.target.value)
+  //   //this.extractShipper(e.target.value)
+  // }
+  // extractLoadFrequent(l:LoadFrequent){
+  //   alert('l.idTransporter + l.nom + l.description : '+ l.idTransporter +  ' - ' + l.nom +  ' - ' + l.description)
+  // }
+  // extractShipper(){
+  //   //alert('Shipper : idTransporter + nom + tel : '+ this.testVar.idTransporter +  ' - ' + this.testVar.nom +  ' - ' + this.testVar.tel)
+  // }
+
+  // logout(){
+  //   localStorage.clear();
+  //   //this.router.navigateByUrl("");
+  //   //this.router.navigateByUrl('/transporters/');
+  //   this.router.navigate(['']);
+  // }
 }
 
 interface marker {

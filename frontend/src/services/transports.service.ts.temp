@@ -83,26 +83,7 @@ export class TransportsService{
             return resp;
         }))
     }
-    // All commands transport of un transporter
-    getCommandsTransportTransporter(idTransporter:number)
-    {    
-        this.loadTonken();
-        return this.http.get(this.adServer+":8080/commandsTransportTransporter/"+idTransporter, 
-        {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(resp =>{
-            return resp;
-        }))
-    }
-    // All evaluations transport of un transporter
-    getEvaluationsTransportTransporter(idTransporter:number)
-    {    
-        this.loadTonken();
-        return this.http.get(this.adServer+":8080/evaluationsTransportTransporter/"+idTransporter, 
-        {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(resp =>{
-            return resp;
-        }))
-    }
+
     getTransportsEntreprise(idEntreprise:number)
     {    
         this.loadTonken();
