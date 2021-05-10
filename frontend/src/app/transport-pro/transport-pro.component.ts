@@ -261,18 +261,48 @@ export class TransportProComponent implements OnInit {
     //this.transport.imgUrl=event.target.files[0]
     //this.transport.imgUrl='';
     let selectedFile : File=event.target.files[0];
+    let size : number; // = selectedFile.size
     if(selectedFile){
+      size = selectedFile.size
+      console.log('size file: '+ size)  // in Byte => 25 MByte ~ 26.000.000 Byte
+    }    
+    if(selectedFile && size<26000000 && 
+        (selectedFile.name.includes(".pdf") || 
+        selectedFile.name.includes(".png") ||
+        selectedFile.name.includes(".gif") ||
+        selectedFile.name.includes(".jfif") ||
+        selectedFile.name.includes(".pjeg") ||
+        selectedFile.name.includes(".jpeg") ||
+        selectedFile.name.includes(".pjp") ||
+        selectedFile.name.includes(".jpg")
+        )
+      ){
       // this.formData.append("name", this.transporter.id.toString());
       // this.formData.append("name", selectedFile.name);
       // this.formData.append("file", selectedFile);
       // console.log("form data " + this.formData);
       this.em.nameAttached=selectedFile.name
-      console.log('selectedFile.name : ' + selectedFile.name)
+      // console.log('selectedFile.name : ' + selectedFile.name)
       const reader = new FileReader();
       reader.onload = ()=>{this.transport.imgUrl=reader.result.toString();}
       reader.readAsDataURL(selectedFile)
     }
-    else this.transport.imgUrl='';
+    else {
+      this.transport.imgUrl='';
+      document.getElementById("transportAttachment").innerHTML=""
+      document.getElementById("transportAttachment").nodeValue=""
+      document.getElementById("transportAttachment").innerHTML=null
+      document.getElementById("transportAttachment").nodeValue=null
+      document.getElementById("transportAttachment").innerText=""
+      event.value = null;
+      event = null;
+      (<HTMLFormElement>document.getElementById("formUpload")).reset();
+      if(size >= 26000000){ 
+        if(this.varsGlobal.language.includes('Francais'))
+          alert("Ne pas attacher un fichier plus grand que 25 MB !!!")
+        else alert("Can't upload file more than 25 MB !!!")
+      }
+    }
     //console.log('transport.imgUrl : '+this.transport.imgUrl)
     //this.getImageFromService();
    }
@@ -611,7 +641,7 @@ export class TransportProComponent implements OnInit {
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
     this.loadFrequent=new LoadFrequent();
-    this.contactChange();
+    this.contactChange(); // to set email contact for transport
   }
 
   chauffeurChange(){
@@ -2315,8 +2345,10 @@ onSortDate(data:Array<Transport>){
       // this.em.content = this.em.content + ahref + ahref02
       // console.log('Atachement with this.em.content: '+ this.em.content)
       this.em.attachement= this.transport.imgUrl
-      this.bankClientsService.envoyerMailAttachment(this.em).
-      subscribe(data=>{this.resetSimple(); }, err=>{console.log()})
+      this.bankClientsService.envoyerMailAttachment(this.em).subscribe(data=>{
+        this.resetSimple(); 
+        // this.contactChange();
+      }, err=>{console.log()})
     }
     
     /*//

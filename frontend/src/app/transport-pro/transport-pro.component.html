@@ -301,7 +301,9 @@
           <strong *ngIf="varsGlobal.language.includes('Francais')">Pièce Jointe </strong>
           <strong *ngIf="varsGlobal.language.includes('English')">Attachment </strong>
         </label>
-        <input class="form-control" type="file" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+        <form id="formUpload" action="">
+          <input id="transportAttachment" class="form-control" type="file" (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+        </form>
       </div>
       <!-- <div>
         <label style="text-decoration-line: underline" for="">Piece Jointe</label>
