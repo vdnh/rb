@@ -641,7 +641,8 @@ export class TransportProComponent implements OnInit {
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
     this.loadFrequent=new LoadFrequent();
-    this.contactChange(); // to set email contact for transport
+    if(this.contact!=null) this.contactChange(); // to set email contact for transport
+    this.loadDetails=new Array<LoadDetail>();
   }
 
   chauffeurChange(){
@@ -854,6 +855,48 @@ export class TransportProComponent implements OnInit {
       this.priceLoad(this.loadDetail, this.loadFrequent)
     }
     
+  }
+
+  loadFrequentCheckBox(lf:LoadFrequent){
+    // console.log("Begin loadFrequentCheckBox()")
+    let tempLD:LoadDetail =this.loadDetails.find(x=>(x.idLoadFrequent==lf.id))
+    if(tempLD!=null){
+      // console.log("Found LoadDetail, then delete it from the list")
+      this.loadDetails.splice(this.loadDetails.indexOf(tempLD), 1)
+    }
+    else{
+      // console.log("Not Found LoadDetail, add it to the list")
+      this.loadDetail=new LoadDetail()
+      this.loadDetail.description=lf.nom
+      this.loadDetail.idLoadFrequent=lf.id
+      this.priceLoad(this.loadDetail, lf)
+      // add loadDetail to list 
+      let load:LoadDetail=new LoadDetail();
+      load=this.loadDetail
+      this.loadDetails.push(load)
+      this.loadDetail=new LoadDetail(); // after added set equal new
+      //
+    }
+    this.writeTransportAskDescription()
+    this.prixBase(this.transport.totalpoints)
+  }
+
+  writeTransportAskDescription(){
+    let askDes = ""
+    this.transport.askDescription=""  // at the begin set this.transport.askDescription to ""
+    if(this.loadDetails!=null&&this.loadDetails.length>0){
+      this.loadDetails.forEach(ld=>{
+        // add " \n " here and use tag <p class="multi_lines_text"> with 
+        // transport-pro.css : .multi_lines_text { white-space: pre-line;}
+        this.transport.askDescription=this.transport.askDescription + ld.description + " \n ";
+        askDes = askDes+ "*- " + ld.description + "  "
+      })
+    }
+    else{
+      this.transport.askDescription=""
+      askDes = ""
+    }
+    return askDes;
   }
 
   showKm(distance){
@@ -2306,11 +2349,11 @@ onSortDate(data:Array<Transport>){
       this.em.emailDest=this.em.emailDest + ',' + this.transport.emailContact // add in list email to send
     
     if(this.varsGlobal.language.includes('English'))
-      this.em.titre= this.transport.nomEntreprise + " - Order: " + this.loadFrequent.nom 
+      this.em.titre= this.transport.nomEntreprise + " - Order: " + this.writeTransportAskDescription() // this.loadFrequent.nom 
       //+
       // " - Freight From: - " + this.transport.originVille+', '+this.transport.originProvince +
       // ' To: - ' + this.transport.destVille+', '+this.transport.destProvince
-    else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.loadFrequent.nom 
+    else this.em.titre= this.transport.nomEntreprise + " - Commande: " + this.writeTransportAskDescription() // this.loadFrequent.nom 
     // this.em.titre= this.transport.nomEntreprise +" - Transport De: - " + this.transport.originVille+', '+this.transport.originProvince +
     //   ' A: - ' + this.transport.destVille+', '+this.transport.destProvince
     this.em.content='<div><p> '+ "<h3>"+ this.shipper.nom + " - " + 
