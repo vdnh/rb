@@ -74,7 +74,14 @@
         <td>{{trCm.transport.id}}</td>
         <td>{{trCm.transport.nomEntreprise}}</td>
         <td>{{trCm.transport.emailContact}}</td>
-        <td>{{trCm.loadDetail.description}}</td>
+        <td *ngIf="trCm.transport.askDescription!=null && trCm.transport.askDescription.length>0">
+          <p class="multi_lines_text">
+            {{trCm.transport.askDescription}}
+          </p>
+        </td>
+        <td *ngIf="trCm.transport.askDescription==null || trCm.transport.askDescription.length==0">
+          {{trCm.loadDetail.description}}
+        </td>
         <td>{{showDateLocal(trCm.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <!-- <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td> -->
         <td style="text-align: right;">
@@ -262,7 +269,14 @@
       <tr *ngFor="let trEv of listTrsEvalueToShow">
         <!-- <td>{{trEv.transport.id}}</td> -->
         <td>{{trEv.transport.nomEntreprise}}</td>
-        <td>{{trEv.loadDetail.description}}</td>
+        <td *ngIf="trEv.transport.askDescription!=null && trEv.transport.askDescription.length>0">
+          <p class="multi_lines_text">
+            {{trEv.transport.askDescription}}
+          </p>
+        </td>
+        <td *ngIf="trEv.transport.askDescription==null || trEv.transport.askDescription.length==0">
+          {{trEv.loadDetail.description}}
+        </td>
         <td>{{showDateLocal(trEv.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <td style="text-align: right;">{{trEv.transport.loadsFee}} $</td>
         <td>{{trEv.transport.origin}}</td>
@@ -285,7 +299,7 @@
   
   <table *ngIf="transport.typeDoc!=0 && (transport.id==null || transport.id==0)" class="table-responsive">
     <tr><th colspan="2">Type Transport</th></tr>
-    <tr>
+    <!-- <tr>
       <th style="width: 100%;">
         <span *ngFor="let lf of loadFrequents; let i = index">
           <button (click)="loadFrequent=lf; loadFrequentChange(); 
@@ -296,9 +310,23 @@
         </span>
       </th>
       
+    </tr> -->
+    <!-- begin test checkbox -->
+    <tr *ngIf="loadFrequents.length>0">
+      <th style="width: 100%;">
+        <span *ngFor="let lf of loadFrequents">
+          <button style="background-color: white; color: black;">
+            <input type="checkbox" (change)="loadFrequentCheckBox(lf)">
+              {{lf.nom}}
+          </button>
+        </span>
+      </th>
     </tr>
+    <!-- end test checkbox -->
+    
   </table>
-  <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
+  <!-- <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0"> -->
+  <div *ngIf="loadDetails!=null&&loadDetails.length>0">
     <br>
     <strong *ngIf="transport.id!=null">#{{transport.id}} &nbsp;</strong> 
     <strong *ngIf="transport.typeDoc==1">
@@ -306,7 +334,9 @@
       <span *ngIf="varsGlobal.language.includes('English')">Evaluate &nbsp;</span>
     </strong>
     <strong *ngIf="transport.typeDoc==2">Commande &nbsp;</strong>
-    <strong>{{loadFrequent.nom}}</strong>
+    <br>
+    <!-- <strong>{{loadFrequent.nom}}</strong> -->
+    <strong *ngFor="let ld of loadDetails">&nbsp;&nbsp;. {{ld.description}} <br></strong>
   </div>
 <!-- </div>
 <div> -->
@@ -319,36 +349,39 @@
     <strong>Adresse de Livraison </strong> 
     <span><input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()"></span>
   </div> -->
-  <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0">
-    <strong>
-      <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Depart </span>
-      <span *ngIf="varsGlobal.language.includes('English')">From </span>
-    </strong>
-    <span>
-      <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies"> -->
-      <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
-      (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
-      (change)="originSimpleChange()" list="adCookies">
-      <datalist id="adCookies">
-        <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
-      </datalist>
-    </span>
-  </div>
+  <!-- <div *ngIf="loadFrequent!=null&&loadFrequent.id!=null&&loadFrequent.id>0"> -->
+  <div *ngIf="loadDetails!=null&&loadDetails.length>0">
+    <div>
+      <strong>
+        <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Depart </span>
+        <span *ngIf="varsGlobal.language.includes('English')">From </span>
+      </strong>
+      <span>
+        <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies"> -->
+        <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+        (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
+        (change)="originSimpleChange()" list="adCookies">
+        <datalist id="adCookies">
+          <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
+        </datalist>
+      </span>
+    </div>
 
-  <div *ngIf="transport.origin.length>8">
-    <strong>
-      <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Livraison </span>
-      <span *ngIf="varsGlobal.language.includes('English')">To </span>
-    </strong> 
-    <span>
-      <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
-      <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
-      (onAddressChange)="handleAddressDestinationChange($event)" type="text" [(ngModel)]="transport.destination" 
-      (change)="destinationSimpleChange()" list="adCookies">
-      <datalist id="adCookies">
-        <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
-      </datalist>
-    </span>
+    <div *ngIf="transport.origin.length>8">
+      <strong>
+        <span *ngIf="varsGlobal.language.includes('Francais')">Adresse de Livraison </span>
+        <span *ngIf="varsGlobal.language.includes('English')">To </span>
+      </strong> 
+      <span>
+        <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
+        <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+        (onAddressChange)="handleAddressDestinationChange($event)" type="text" [(ngModel)]="transport.destination" 
+        (change)="destinationSimpleChange()" list="adCookies">
+        <datalist id="adCookies">
+          <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
+        </datalist>
+      </span>
+    </div>
   </div>
   <br>
   <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">

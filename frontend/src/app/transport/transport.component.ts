@@ -1112,6 +1112,9 @@ export class TransportComponent implements OnInit, OnDestroy {
     // attacher idtransporter
     if(localStorage.getItem('idTransporter')!=undefined)
       this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
+    
+    // renew loadlist
+    this.loadDetails=new Array<LoadDetail>();
   }
 
   loadFrequentChange(){
@@ -1123,6 +1126,30 @@ export class TransportComponent implements OnInit, OnDestroy {
       this.priceLoad(this.loadDetail, this.loadFrequent)
     }
     
+  }
+
+  loadFrequentCheckBox(lf:LoadFrequent){
+    console.log("Begin loadFrequentCheckBox()")
+    let tempLD:LoadDetail =this.loadDetails.find(x=>(x.idLoadFrequent==lf.id))
+    if(tempLD!=null){
+      console.log("Found LoadDetail, then delete it from the list")
+      this.loadDetails.splice(this.loadDetails.indexOf(tempLD), 1)
+    }
+    else{
+      console.log("Not Found LoadDetail, add it to the list")
+      this.loadDetail=new LoadDetail()
+      this.loadDetail.description=lf.nom
+      this.loadDetail.idLoadFrequent=lf.id
+      this.priceLoad(this.loadDetail, lf)
+      // add loadDetail to list 
+      let load:LoadDetail=new LoadDetail();
+      load=this.loadDetail
+      this.loadDetails.push(load)
+      this.loadDetail=new LoadDetail(); // after added set equal new
+      //
+    }
+    // this.writeTransportAskDescription()
+    // this.prixBase(this.transport.totalpoints)
   }
 
   addLoadSimpleDetail(){
@@ -1316,7 +1343,9 @@ export class TransportComponent implements OnInit, OnDestroy {
       else{ // if already in km, no change
         distance = this.transport.distance;
       }
-      if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
+      if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance<=loadFrequent.kmInclus)
+        distanceToCharge = 0
+      else if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
         distanceToCharge = distance - loadFrequent.kmInclus
       else distanceToCharge = distance
 
