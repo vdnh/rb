@@ -50,12 +50,11 @@ public class TransportRestService {
 //    Page<Transport>
     @RequestMapping(value = "/commandsTransportTransporterPaged", method = RequestMethod.GET)
     public Page<Transport> getCommandsTransportTransporterPaged(
-        @RequestParam(name = "idTransporter", defaultValue = "0") int idTransporter,
+        @RequestParam(name = "idTransporter", defaultValue = "0") Long idTransporter,
         @RequestParam(name = "page", defaultValue = "0")int page, 
         @RequestParam(name = "size", defaultValue = "5")int size){
+        System.out.println("Done commandsTransportTransporterPaged");
         return transportRepository.commandsOfTransporterPaged(idTransporter,PageRequest.of(page, size));
-//        return  pagesResult;
-//        return  transportRepository.chercher("",PageRequest.of(page, size));
     }
     // All commands transport of un transporter
     @RequestMapping(value = "/commandsTransportTransporter/{idTransporter}", method = RequestMethod.GET)

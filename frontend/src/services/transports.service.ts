@@ -93,6 +93,16 @@ export class TransportsService{
             return resp;
         }))
     }
+    // All commands transport of un transporter - Paged
+    getCommandsTransportTransporterPaged(idTransporter:number, page:number, size:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/commandsTransportTransporterPaged?idTransporter="+idTransporter+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
     // All evaluations transport of un transporter
     getEvaluationsTransportTransporter(idTransporter:number)
     {    

@@ -20,6 +20,6 @@ public interface TransportRepository  extends JpaRepository<Transport, Long>{
     
     public List<Transport> findByIdTransporter(Long idTransporter);
     
-    @Query("select t from Transport t where t.idTransporter = x ")
-    public Page<Transport> commandsOfTransporterPaged(@Param("x") int idTransporter,  Pageable pageable);  
+    @Query("select t from Transport t where (t.idTransporter = :y and t.typeDoc = 2 and t.valid = 1) order by t.id desc ")
+    public Page<Transport> commandsOfTransporterPaged(@Param("y") Long idTransporter,  Pageable pageable);  
 }

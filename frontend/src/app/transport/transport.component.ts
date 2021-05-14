@@ -610,6 +610,10 @@ export class TransportComponent implements OnInit, OnDestroy {
     // this.prixBaseInit();
     // this.prixCalcul()
     // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
+
+    // begin test page for transports
+    this.getPagesCommandsTransport()
+    // end test page for transports
   }
   
   async chauffeurChange(){
@@ -1832,7 +1836,7 @@ onSortDate(data:Array<Transport>){
           return 0;
         })
         // here ewe must divide this.listTrsCommande in many page or get first 20 transports
-        let size=20
+        let size=10
         for(let i=0; i<this.listTrsCommande.length; i+=size){
           this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
         }
@@ -1852,43 +1856,46 @@ onSortDate(data:Array<Transport>){
     }
 
     // if shipper null => find all transports
-    else this.transportsService.getCommandsTransportTransporter(Number(localStorage.getItem('idTransporter')))
-    .subscribe((data:Array<Transport>)=>{
-      this.listTrsCommande=[]
-      this.arrayListTrsCommandToShow=[]
-      this.listTrsCommandToShow=[]
-      data.filter(transport=>(transport.valid)).forEach(tr=>{
-        if(tr.typeDoc==2) {
-          this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
-        }
-      })
-      if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
-        if(a.transport.id>b.transport.id)
-          return 1;
-        if(a.transport.id<b.transport.id)
-          return -1;
-        return 0;
-      })
-      // here ewe must divide this.listTrsCommand in many page or get first 20 transports
-      let size=20
-      for(let i=0; i<this.listTrsCommande.length; i+=size){
-        this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
-      }
-      if(this.arrayListTrsCommandToShow.length>0){
-        this.pages=this.arrayListTrsCommandToShow.length
-        console.log('We found ' + this.pages + ' pages.')
-        // at the first time, get the 25 first transport in list
-        this.pageSelected=0;
-        this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
-        this.listTrsCommandToShow.forEach(trCm=>{
-          this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
-          }, err=>{console.log(err)})
-        })
-      }
-    }, err=>{
-      console.log(err)
-    })
+    else this.getPagesCommandsTransport();
+    // {
+    //   this.transportsService.getCommandsTransportTransporter(Number(localStorage.getItem('idTransporter')))
+    //   .subscribe((data:Array<Transport>)=>{
+    //     this.listTrsCommande=[]
+    //     this.arrayListTrsCommandToShow=[]
+    //     this.listTrsCommandToShow=[]
+    //     data.filter(transport=>(transport.valid)).forEach(tr=>{
+    //       if(tr.typeDoc==2) {
+    //         this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+    //       }
+    //     })
+    //     if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+    //       if(a.transport.id>b.transport.id)
+    //         return 1;
+    //       if(a.transport.id<b.transport.id)
+    //         return -1;
+    //       return 0;
+    //     })
+    //     // here ewe must divide this.listTrsCommand in many page or get first 20 transports
+    //     let size=20
+    //     for(let i=0; i<this.listTrsCommande.length; i+=size){
+    //       this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
+    //     }
+    //     if(this.arrayListTrsCommandToShow.length>0){
+    //       this.pages=this.arrayListTrsCommandToShow.length
+    //       console.log('We found ' + this.pages + ' pages.')
+    //       // at the first time, get the 25 first transport in list
+    //       this.pageSelected=0;
+    //       this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+    //       this.listTrsCommandToShow.forEach(trCm=>{
+    //         this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+    //           if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+    //         }, err=>{console.log(err)})
+    //       })
+    //     }
+    //   }, err=>{
+    //     console.log(err)
+    //   })
+    // }
   }
   // end refresh for list commands
 
@@ -3063,6 +3070,86 @@ onSortDate(data:Array<Transport>){
   //   //this.router.navigateByUrl('/transporters/');
   //   this.router.navigate(['']);
   // }
+
+  // begin code paged for transports
+  pageTransport:PageTransport = new  PageTransport();  // pour tenir des Transpors
+  currentPage:number=0;
+  size:number=10;
+  pagesPaged:Array<number>;  // pour tenir des numeros des pages
+
+  getPagesCommandsTransport(){
+    if(localStorage.getItem('idTransporter')!=undefined)
+    {
+      let idTransporter = Number(localStorage.getItem('idTransporter'))
+      this.transportsService.getCommandsTransportTransporterPaged(idTransporter, this.currentPage, this.size).subscribe((data:PageTransport)=>{
+        this.pageTransport=data;
+        // sort list of transports
+        // this.pageTransport.content.sort((a, b)=>{
+        //   if(a.id>b.id)
+        //     return 1;
+        //   if(a.id<b.id)
+        //     return -1;
+        //   return 0;
+        // })
+        // //
+        // console.log('this.pageTransport.content.length: '+ this.pageTransport.content.length)
+        // console.log('this.pageTransport.totalPages: ' +  this.pageTransport.totalPages)
+        // this.pagesPaged=new Array(data.totalPages);
+        this.pagesPaged=new Array(data.totalPages);
+        this.listTrsCommande=[]
+        this.arrayListTrsCommandToShow=[]
+        this.listTrsCommandToShow=[]
+        this.pageTransport.content.filter(transport=>(transport.valid)).forEach(tr=>{
+          if(tr.typeDoc==2) {
+            this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
+          }
+        })
+        if(this.modeListCommande) this.listTrsCommande.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        // here ewe must divide this.listTrsCommand in many page or get first 20 transports
+        let size=10
+        for(let i=0; i<this.listTrsCommande.length; i+=size){
+          this.arrayListTrsCommandToShow.push(this.listTrsCommande.slice(i, i+size))
+        }
+        if(this.arrayListTrsCommandToShow.length>0){
+          this.pages=this.arrayListTrsCommandToShow.length
+          console.log('We found ' + this.pages + ' pages.')
+          // at the first time, get the 25 first transport in list
+          this.pageSelected=0;
+          this.listTrsCommandToShow = this.arrayListTrsCommandToShow[this.pageSelected]
+          this.listTrsCommandToShow.forEach(trCm=>{
+            this.loadDetailsService.loadDetailsDeTransport(trCm.transport.id).subscribe((data:Array<LoadDetail>)=>{
+              if(data!=null&&data.length>0) {trCm.loadDetail=data[0] };
+            }, err=>{console.log(err)})
+          })
+        }
+      }, err=>{
+        console.log(err);
+      })
+    }
+  }
+
+  gotoPage(i:number){
+    this.currentPage=i;
+    this.getPagesCommandsTransport()
+  }
+  // end code paged for transport
+}
+
+class PageTransport{
+  content:Transport[];
+  totalPages:number;
+  totalElements:number;
+  last:boolean;
+  size:number;
+  first:boolean;
+  sort:string;
+  numberofElements:number
 }
 
 interface marker {

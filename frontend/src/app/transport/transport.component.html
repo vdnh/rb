@@ -86,9 +86,10 @@
         <!-- <td style="text-align: right;">{{trCm.transport.loadsFee}} $</td> -->
         <td style="text-align: right;">
           <span>
-            <input type="number" [(ngModel)]="trCm.transport.loadsFee" 
+            <!-- <input type="number" [(ngModel)]="trCm.transport.loadsFee" 
             (focus)="getPriceActual(trCm.transport)" (focusout)="subPriceChange(trCm.transport)"
-            style="width: 7ch; border: 0; text-align: right; margin-right: 0;"/>$
+            style="width: 7ch; border: 0; text-align: right; margin-right: 0;"/> -->
+            {{trCm.transport.loadsFee}} $
           </span>
         </td>
         <td>{{trCm.transport.origin}}</td>
@@ -116,11 +117,21 @@
     </table>
     <span>
       <br><strong>Page:&nbsp;</strong> 
-      <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
-      *ngFor="let in of counter(pages); let i = index">
-        <small *ngIf="pageSelected!=i">{{i}}</small>
-        <strong *ngIf="pageSelected==i">{{i}}</strong>
-      </button>
+      <span *ngIf="(shipper!=null && shipper.id!=null && shipper.id>0)" >
+        <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
+        *ngFor="let in of counter(pages); let i = index">
+          <small *ngIf="pageSelected!=i">{{i}}</small>
+          <strong *ngIf="pageSelected==i">{{i}}</strong>
+        </button>
+      </span>
+      <span *ngIf="(shipper==null || shipper.id==null || shipper.id==0)">
+        <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
+        *ngFor="let in of pagesPaged; let i = index">
+          <small *ngIf="pageSelected!=i">{{i}}</small>
+          <strong *ngIf="pageSelected==i">{{i}}</strong>
+        </button>
+      </span>
+      
     </span>
   </div>
   <!-- <div *ngIf="modeListCommande">
