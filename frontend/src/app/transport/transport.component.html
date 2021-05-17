@@ -125,8 +125,8 @@
         </button>
       </span>
       <span *ngIf="(shipper==null || shipper.id==null || shipper.id==0)">
-        <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
-        *ngFor="let in of pagesPaged; let i = index">
+        <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPageCm(i)"
+        *ngFor="let in of pagesPagedCm; let i = index">
           <small *ngIf="pageSelected!=i">{{i}}</small>
           <strong *ngIf="pageSelected==i">{{i}}</strong>
         </button>
@@ -300,11 +300,20 @@
     </table>
     <span>
       <br><strong>Page:&nbsp;</strong> 
-      <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
-      *ngFor="let in of counter(pages); let i = index">
-        <small *ngIf="pageSelected!=i">{{i}}</small>
-        <strong *ngIf="pageSelected==i">{{i}}</strong>
-      </button>
+      <span *ngIf="(shipper!=null && shipper.id!=null && shipper.id>0)" >
+        <button style="margin-right: 1ch;" class="btn btn-link" (click)="selectPage(i)"
+        *ngFor="let in of counter(pages); let i = index">
+          <small *ngIf="pageSelected!=i">{{i}}</small>
+          <strong *ngIf="pageSelected==i">{{i}}</strong>
+        </button>
+      </span>
+      <span *ngIf="(shipper==null || shipper.id==null || shipper.id==0)">
+        <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPageEv(i)"
+        *ngFor="let in of pagesPagedEv; let i = index">
+          <small *ngIf="pageSelected!=i">{{i}}</small>
+          <strong *ngIf="pageSelected==i">{{i}}</strong>
+        </button>
+      </span>
     </span>
   </div>
   

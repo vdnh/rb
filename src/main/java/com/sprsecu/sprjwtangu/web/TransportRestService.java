@@ -1,10 +1,13 @@
 package com.sprsecu.sprjwtangu.web;
 
+import com.sprsecu.sprjwtangu.dao.LoadDetailRepository;
 import com.sprsecu.sprjwtangu.dao.TransportModelRepository;
 import com.sprsecu.sprjwtangu.dao.TransportRepository;
+import com.sprsecu.sprjwtangu.entities.LoadDetail;
 import com.sprsecu.sprjwtangu.entities.Transport;
 import com.sprsecu.sprjwtangu.entities.TransportModel;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +32,8 @@ public class TransportRestService {
     private TransportRepository transportRepository;
     @Autowired
     private TransportModelRepository transportModelRepository;
-    
+    @Autowired
+    private LoadDetailRepository loadDetailRepository;
     //* functions for TransportModel
     @RequestMapping(value = "/transportModels", method = RequestMethod.GET)
     public List<TransportModel> getTransportModels(){
@@ -47,7 +51,7 @@ public class TransportRestService {
     public List<Transport> getTransportsTransporter(@PathVariable Long idTransporter){
         return transportRepository.findByIdTransporter(idTransporter);
     }
-//    Page<Transport>
+//    Page<Transport> for commands
     @RequestMapping(value = "/commandsTransportTransporterPaged", method = RequestMethod.GET)
     public Page<Transport> getCommandsTransportTransporterPaged(
         @RequestParam(name = "idTransporter", defaultValue = "0") Long idTransporter,
@@ -156,5 +160,43 @@ public class TransportRestService {
         @RequestParam(name = "page", defaultValue = "0")int page, 
         @RequestParam(name = "size", defaultValue = "5")int size){
         return transportRepository.chercher("%"+mc+"%", PageRequest.of(page, size));
+    }
+
+    // Delete All evaluations longer 1 months transport of un transporter 
+    @RequestMapping(value = "/cleanEvaluationsTransportTransporter/{idTransporter}", method = RequestMethod.GET)
+    public void getCleanEvaluationsTransportTransporter(@PathVariable Long idTransporter){
+        // the first get all evaluations of this transporter longer than 1 month
+        long timeNow =  new Date().getTime(); // time now in ms
+        long msOf30Days = (1000l * 60l * 60l * 24l * 30l); // ms of 30 days
+        System.out.println("timeNow: "+ timeNow);
+        System.out.println("msOf30Days: "+ msOf30Days);                
+//        List<Transport> evaluationsToDelete= new ArrayList<>();
+//        List<LoadDetail> loadDetails= new ArrayList<>();
+        System.out.println("Enter in the Evaluations list");
+        transportRepository.findByIdTransporter(idTransporter).forEach(t -> {
+        // 
+            if(t.getTypeDoc()!=null && t.getTypeDoc()==1 && 
+               (timeNow - ((Date)t.getDateDepart()).getTime()>msOf30Days)){
+                // evaluationsToDelete.add(u);
+                System.out.println("");
+                loadDetailRepository.findByIdTransport(t.getId()).forEach(l->{
+                    loadDetailRepository.delete(l);
+                    System.out.println("Delete loadDetail: "+ l.getId());
+                });
+                transportRepository.delete(t);
+                System.out.println("Delete transport: "+ t.getId());
+            }
+        });
+        System.out.println("End of Evaluations list");
+    }
+    
+    //    Page<Transport> for evaluations
+    @RequestMapping(value = "/evaluationsTransportTransporterPaged", method = RequestMethod.GET)
+    public Page<Transport> getEvaluationsTransportTransporterPaged(
+        @RequestParam(name = "idTransporter", defaultValue = "0") Long idTransporter,
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        System.out.println("Done evaluatiosOfTransporterPaged");
+        return transportRepository.evaluatiosOfTransporterPaged(idTransporter,PageRequest.of(page, size));
     }
 }

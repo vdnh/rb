@@ -103,6 +103,7 @@ export class TransportsService{
             return resp;
         }))
     }
+    
     // All evaluations transport of un transporter
     getEvaluationsTransportTransporter(idTransporter:number)
     {    
@@ -113,6 +114,25 @@ export class TransportsService{
             return resp;
         }))
     }
+    
+    // All commands transport of un transporter - Paged
+    getEvaluationsTransportTransporterPaged(idTransporter:number, page:number, size:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/evaluationsTransportTransporterPaged?idTransporter="+idTransporter+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+    // cleanEvaluationsTransportTransporter
+    cleanEvaluationsTransportTransporter(idTransporter:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/cleanEvaluationsTransportTransporter/"+idTransporter, 
+        {headers:new HttpHeaders({'Authorization':this.jwToken})}).pipe()
+    }
+
     getTransportsEntreprise(idEntreprise:number)
     {    
         this.loadTonken();

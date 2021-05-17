@@ -612,8 +612,14 @@ export class TransportComponent implements OnInit, OnDestroy {
     // this.onSave();  // replace in onForward() when this.back==0 or this.presentPage==1
 
     // begin test page for transports
-    this.getPagesCommandsTransport()
+    // this.getPagesCommandsTransport()
     // end test page for transports
+    
+    // begin clean Evaluations longer than 1 month, each time dispatch logging in
+    this.transportsService.cleanEvaluationsTransportTransporter(Number(localStorage.getItem('idTransporter'))).subscribe(
+      ()=>{console.log('OK, Cleaned Evaluations of this transporter: ' + Number(localStorage.getItem('idTransporter')))}, err=>{console.log(err)}
+    )
+    // end clean Evaluations
   }
   
   async chauffeurChange(){
@@ -1153,7 +1159,7 @@ export class TransportComponent implements OnInit, OnDestroy {
       //
     }
     // this.writeTransportAskDescription()
-    // this.prixBase(this.transport.totalpoints)
+    this.prixBase(this.transport.totalpoints)
   }
 
   addLoadSimpleDetail(){
@@ -1746,69 +1752,70 @@ onSortDate(data:Array<Transport>){
     }
 
     // if shipper null => find all transports
-    else this.transportsService.getEvaluationsTransportTransporter(Number(localStorage.getItem('idTransporter')))
-    .subscribe((data:Array<Transport>)=>{
-      this.listTrsEvalue=[]
-      this.arrayListTrsEvalueToShow=[]
-      this.listTrsEvalueToShow=[]
-      this.listTrsEvalueToDelete=[]
-      let timeNow = new Date().getTime();
-      let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
-      // data.filter(transport=>(transport.valid)).forEach(tr=>{
-      //   if(tr.typeDoc==1) {
-      //     this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
-      //   }
-      // })
-      data.filter(transport=>(transport.valid)).forEach(tr=>{
-        if(tr.typeDoc==1) {
-          if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
-            this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
-          else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
-        }
-      })
-      if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
-        if(a.transport.id>b.transport.id)
-          return 1;
-        if(a.transport.id<b.transport.id)
-          return -1;
-        return 0;
-      })
-      // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
-      let size=20
-      for(let i=0; i<this.listTrsEvalue.length; i+=size){
-        this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
-      }
-      if(this.arrayListTrsEvalueToShow.length>0){
-        this.pages=this.arrayListTrsEvalueToShow.length
-        console.log('We found ' + this.pages + ' pages.')
-        // at the first time, get the 25 first transport in list
-        this.pageSelected=0;
-        this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
-        this.listTrsEvalueToShow.forEach(trEv=>{
-          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
-          }, err=>{console.log(err)})
-        })
-      }
+    else this.getPagesEvaluationsTransport();
+    // this.transportsService.getEvaluationsTransportTransporter(Number(localStorage.getItem('idTransporter')))
+    // .subscribe((data:Array<Transport>)=>{
+    //   this.listTrsEvalue=[]
+    //   this.arrayListTrsEvalueToShow=[]
+    //   this.listTrsEvalueToShow=[]
+    //   this.listTrsEvalueToDelete=[]
+    //   let timeNow = new Date().getTime();
+    //   let msOf30Days = 1000 * 60 * 60 * 24 * 30 // limit save evaluations for 30 days
+    //   // data.filter(transport=>(transport.valid)).forEach(tr=>{
+    //   //   if(tr.typeDoc==1) {
+    //   //     this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+    //   //   }
+    //   // })
+    //   data.filter(transport=>(transport.valid)).forEach(tr=>{
+    //     if(tr.typeDoc==1) {
+    //       if((timeNow - new Date(tr.dateDepart).getTime())>msOf30Days)
+    //         this.listTrsEvalueToDelete.push({transport:tr, loadDetail:new LoadDetail() });
+    //       else this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+    //     }
+    //   })
+    //   if(this.modeListEvalue) this.listTrsEvalue.sort((b,a)=>{
+    //     if(a.transport.id>b.transport.id)
+    //       return 1;
+    //     if(a.transport.id<b.transport.id)
+    //       return -1;
+    //     return 0;
+    //   })
+    //   // here ewe must divide this.listTrsEvalue in many page or get first 20 transports
+    //   let size=20
+    //   for(let i=0; i<this.listTrsEvalue.length; i+=size){
+    //     this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
+    //   }
+    //   if(this.arrayListTrsEvalueToShow.length>0){
+    //     this.pages=this.arrayListTrsEvalueToShow.length
+    //     console.log('We found ' + this.pages + ' pages.')
+    //     // at the first time, get the 25 first transport in list
+    //     this.pageSelected=0;
+    //     this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+    //     this.listTrsEvalueToShow.forEach(trEv=>{
+    //       this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+    //         if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+    //       }, err=>{console.log(err)})
+    //     })
+    //   }
 
-      // check list evaluation delete
-      if(this.listTrsEvalueToDelete.length>0){
-        this.listTrsEvalueToDelete.forEach(trEv=>{
-          this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
-            if(data!=null&&data.length>0) {
-              trEv.loadDetail=data[0] 
-              this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
-            };
-            this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
-              this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
-            }, err=>{console.log(err)})
-          })
-        })
-      }
+    //   // check list evaluation delete
+    //   if(this.listTrsEvalueToDelete.length>0){
+    //     this.listTrsEvalueToDelete.forEach(trEv=>{
+    //       this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+    //         if(data!=null&&data.length>0) {
+    //           trEv.loadDetail=data[0] 
+    //           this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(()=>{}, err=>{console.log(err)})
+    //         };
+    //         this.transportsService.deleteTransport(trEv.transport.id).subscribe(()=>{
+    //           this.listTrsEvalueToDelete.splice(this.listTrsEvalueToDelete.indexOf(trEv),1)
+    //         }, err=>{console.log(err)})
+    //       })
+    //     })
+    //   }
       
-    }, err=>{
-      console.log(err)
-    })
+    // }, err=>{
+    //   console.log(err)
+    // })
   }
   // end refresh for list evaluated
 
@@ -3072,17 +3079,17 @@ onSortDate(data:Array<Transport>){
   // }
 
   // begin code paged for transports
-  pageTransport:PageTransport = new  PageTransport();  // pour tenir des Transpors
-  currentPage:number=0;
-  size:number=10;
-  pagesPaged:Array<number>;  // pour tenir des numeros des pages
+  pageTransportCm:PageTransport = new  PageTransport();  // pour tenir des Transpors
+  currentPageCm:number=0;
+  sizeCm:number=10;
+  pagesPagedCm:Array<number>;  // pour tenir des numeros des pages
 
   getPagesCommandsTransport(){
     if(localStorage.getItem('idTransporter')!=undefined)
     {
       let idTransporter = Number(localStorage.getItem('idTransporter'))
-      this.transportsService.getCommandsTransportTransporterPaged(idTransporter, this.currentPage, this.size).subscribe((data:PageTransport)=>{
-        this.pageTransport=data;
+      this.transportsService.getCommandsTransportTransporterPaged(idTransporter, this.currentPageCm, this.sizeCm).subscribe((data:PageTransport)=>{
+        this.pageTransportCm=data;
         // sort list of transports
         // this.pageTransport.content.sort((a, b)=>{
         //   if(a.id>b.id)
@@ -3095,11 +3102,11 @@ onSortDate(data:Array<Transport>){
         // console.log('this.pageTransport.content.length: '+ this.pageTransport.content.length)
         // console.log('this.pageTransport.totalPages: ' +  this.pageTransport.totalPages)
         // this.pagesPaged=new Array(data.totalPages);
-        this.pagesPaged=new Array(data.totalPages);
+        this.pagesPagedCm=new Array(data.totalPages);
         this.listTrsCommande=[]
         this.arrayListTrsCommandToShow=[]
         this.listTrsCommandToShow=[]
-        this.pageTransport.content.filter(transport=>(transport.valid)).forEach(tr=>{
+        this.pageTransportCm.content.filter(transport=>(transport.valid)).forEach(tr=>{
           if(tr.typeDoc==2) {
             this.listTrsCommande.push({transport:tr, loadDetail:new LoadDetail() });
           }
@@ -3134,11 +3141,67 @@ onSortDate(data:Array<Transport>){
     }
   }
 
-  gotoPage(i:number){
-    this.currentPage=i;
+  gotoPageCm(i:number){
+    this.currentPageCm=i;
     this.getPagesCommandsTransport()
   }
   // end code paged for transport
+
+  // begin code evaluationsTransportTransporterPaged
+  pageTransportEv:PageTransport = new  PageTransport();  // pour tenir des Transpors
+  currentPageEv:number=0;
+  sizeEv:number=20;
+  pagesPagedEv:Array<number>;  // pour tenir des numeros des pages
+
+  getPagesEvaluationsTransport(){
+    if(localStorage.getItem('idTransporter')!=undefined)
+    {
+      let idTransporter = Number(localStorage.getItem('idTransporter'))
+      this.transportsService.getEvaluationsTransportTransporterPaged(idTransporter, this.currentPageEv, this.sizeEv).subscribe((data:PageTransport)=>{
+        this.pageTransportEv=data;
+        this.pagesPagedEv=new Array(data.totalPages);
+        this.listTrsEvalue=[]
+        this.arrayListTrsEvalueToShow=[]
+        this.listTrsEvalueToShow=[]
+        this.pageTransportEv.content.forEach(tr=>{
+          if(tr.typeDoc==1) {
+            this.listTrsEvalue.push({transport:tr, loadDetail:new LoadDetail() });
+          }
+        })
+        if(this.modeListEvalue) this.listTrsCommande.sort((b,a)=>{
+          if(a.transport.id>b.transport.id)
+            return 1;
+          if(a.transport.id<b.transport.id)
+            return -1;
+          return 0;
+        })
+        let size=20
+        for(let i=0; i<this.listTrsEvalue.length; i+=size){
+          this.arrayListTrsEvalueToShow.push(this.listTrsEvalue.slice(i, i+size))
+        }
+        if(this.arrayListTrsEvalueToShow.length>0){
+          this.pages=this.arrayListTrsEvalueToShow.length
+          console.log('We found ' + this.pages + ' pages.')
+          // at the first time, get the 25 first transport in list
+          this.pageSelected=0;
+          this.listTrsEvalueToShow = this.arrayListTrsEvalueToShow[this.pageSelected]
+          this.listTrsEvalueToShow.forEach(trEv=>{
+            this.loadDetailsService.loadDetailsDeTransport(trEv.transport.id).subscribe((data:Array<LoadDetail>)=>{
+              if(data!=null&&data.length>0) {trEv.loadDetail=data[0] };
+            }, err=>{console.log(err)})
+          })
+        }
+      }, err=>{
+        console.log(err);
+      })
+    }
+  }
+
+  gotoPageEv(i:number){
+    this.currentPageEv=i;
+    this.getPagesEvaluationsTransport()
+  }
+  // end code evaluationsTransportTransporterPaged
 }
 
 class PageTransport{
