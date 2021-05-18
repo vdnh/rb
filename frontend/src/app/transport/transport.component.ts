@@ -1710,6 +1710,7 @@ onSortDate(data:Array<Transport>){
   listTrsEvalueToDelete : {transport:Transport, loadDetail:LoadDetail}[]=[]; //Transports command to delete
   onRefreshListEvaluated(){
     // this.tempDatalist=""; // initial the tempdata of datalist
+    this.currentPageEv=0;
     this.pageSelected=0;
     this.pages=0;
     if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){
@@ -1822,6 +1823,7 @@ onSortDate(data:Array<Transport>){
   // for list commands
   onRefreshListCommand(){
     // this.tempDatalist=""; // initial the tempdata of datalist
+    this.currentPageCm=0;
     this.pageSelected=0;
     this.pages=0;
     if(this.shipper!=null && this.shipper.id!=null && this.shipper.id>0){

@@ -192,15 +192,8 @@
         <span *ngFor="let lf of loadFrequents">
           <button style="background-color: white; color: black;">
             <input type="checkbox" (change)="loadFrequentCheckBox(lf)">
-            <!-- [disabled]="loadFrequent.id!=null && loadFrequent.id==lf.id" 
-            [checked]="loadFrequent.id!=null && loadFrequent.id==lf.id" -->
-            <!-- loadDetails=[]; -->
-            <!--  [formControlName]='x' (change)="onChangeOption()" -->
-            <!-- <label> -->
               {{lf.nom}}
-            <!-- </label> -->
           </button>
-          <!-- <span>&nbsp;&nbsp;</span> -->
         </span>
       </th>
     </tr>

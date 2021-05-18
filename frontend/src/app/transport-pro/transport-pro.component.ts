@@ -924,7 +924,7 @@ export class TransportProComponent implements OnInit {
         if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance<=loadFrequent.kmInclus)
           distanceToCharge = 0
         else if(loadFrequent.kmInclus!=null && loadFrequent.kmInclus>0 && distance>loadFrequent.kmInclus)
-            distanceToCharge = distance - loadFrequent.kmInclus
+          distanceToCharge = distance - loadFrequent.kmInclus
         else distanceToCharge = distance
       }
       // console.log('distance : ' + distance)
