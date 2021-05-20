@@ -90,6 +90,14 @@ public class CamionRestService {
         return camionRepository.chercherPlaque("%"+mc+"%", PageRequest.of(page, size));
     }    
     
+    @RequestMapping(value = "/camionsDeTransporterPaged", method = RequestMethod.GET)
+    public Page<Camion> camionsDeTransporterPaged(
+        @RequestParam(name = "idTransporter", defaultValue = "") Long idTransporter, 
+        @RequestParam(name = "page", defaultValue = "0")int page, 
+        @RequestParam(name = "size", defaultValue = "5")int size){
+        return camionRepository.camionsDeTransporterPaged(idTransporter, PageRequest.of(page, size));
+    }
+    
     @RequestMapping(value = "/camionsDeTransporter", method = RequestMethod.GET)
     public List<Camion> chercherCDT(@RequestParam(name = "idTransporter", defaultValue = "-1" ) Long idTransporter) 
     {

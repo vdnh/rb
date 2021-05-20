@@ -9,7 +9,7 @@ import { ContactsService } from '../../services/contacts.service';
 import { AdressesService } from '../../services/adresses.service';
 import { CamionsService } from '../../services/camions.service';
 import { ServicesOffre } from 'src/model/model.servicesOffre';
-import { Camion } from 'src/model/model.camion';
+import { Camion, PageCamion } from 'src/model/model.camion';
 import { FichePhysiqueEntretien } from 'src/model/model.fichePhysiqueEntretien';
 import { FichePhysiqueEntretienCont } from 'src/model/model.fichePhysiqueEntretienCont';
 import { FichePhysiquesService } from 'src/services/fichePhysiques.service';
@@ -232,6 +232,12 @@ export class DetailTransporterComponent implements OnInit {
     camion.message08="Changement huile differentiel.";
   }
 
+  pageCamion:PageCamion = new  PageCamion();  // pour tenir des Camions
+  currentPage:number=0;
+  size:number=20;
+  pagesPaged:Array<number>;  // pour tenir des numeros des pages
+  //pagesPaged=new Array(data.totalPages); don't forget do this after get data
+
   ngOnInit() {
     
     if(this.varsGlobal.language.includes('Francais'))
@@ -253,7 +259,7 @@ export class DetailTransporterComponent implements OnInit {
       else if(localStorage.getItem('role').includes('SHIPPER')){  // in the cas Shipper want to view detail contact
         this.mode=3;
       }
-      else if(localStorage.getItem('role').includes('DISPATCH')){  // in the cas Dispatch SOSPrestige want to modify drivers
+      else if(localStorage.getItem('role').includes('DISPATCH') && !this.varsGlobal.dispatchSee){  // in the cas Dispatch SOSPrestige want to modify drivers
         this.mode=4;
       }
       else{ // in the cas Transporter want to view detail himsefl
@@ -290,7 +296,16 @@ export class DetailTransporterComponent implements OnInit {
       console.log();
     });    
 
+    //*//
+    this.camionsService.camionsDeTransporterPaged(this.id, this.currentPage, this.size).subscribe(async (pg:PageCamion)=>{
+      this.pageCamion=pg;
+      this.pagesPaged=new Array(pg.totalPages);
+      let data: Camion[];
+      data=this.pageCamion.content
+      //*/
+    /*// })
     this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+    //*/
       //check number trucks follow plan pay
       if(data.length>this.transporter.trucks){
         // console.log('camions before splice : ' +data.length)
@@ -515,6 +530,7 @@ export class DetailTransporterComponent implements OnInit {
             this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.fichePhysiqueEntretienCont).subscribe((data:FichePhysiqueEntretienCont)=>{              
               if(this.varsGlobal.language.includes('Francais')) alert("Unite a ete bien ajoute.")              
               else alert("Unit was added.")
+              this.refreshListCamions()
             }, err=>{
               console.log(err)
             });
@@ -625,7 +641,7 @@ export class DetailTransporterComponent implements OnInit {
 
   gotoDetailCamion(id:number){
     //console.log('this is test of camion detail');
-    this.router.navigate(['camion',id]);
+    this.router.navigate(['camion',id], {skipLocationChange: true});
   }
 
   /* Just for test direct link
@@ -717,9 +733,24 @@ export class DetailTransporterComponent implements OnInit {
     this.map.setCenter(new google.maps.LatLng(this.camionMap.latitude, this.camionMap.longtitude));
   }
 
+
+  gotoPage(i:number){
+    this.currentPage=i;
+    this.refreshListCamions()
+  }
+
   refreshListCamions(){
+    this.currentPage=0;
     this.arrayArrayEnts=[]
-    this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
+    //*/
+    this.camionsService.camionsDeTransporterPaged(this.id, this.currentPage, this.size).subscribe(async (pg:PageCamion)=>{
+      this.pageCamion=pg;
+      this.pagesPaged=new Array(pg.totalPages);
+      let data: Camion[];
+      data=this.pageCamion.content
+      //*/
+    // })
+    // this.camionsService.camionsDeTransporter(this.id).subscribe(async (data:Array<Camion>)=>{
       //check number trucks follow plan pay
       if(data.length>this.transporter.trucks){
         // console.log('camions before splice : ' +data.length)

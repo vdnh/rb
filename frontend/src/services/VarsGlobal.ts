@@ -16,6 +16,8 @@ export class VarsGlobal{
   addressCookieToList:Array<string>=[]; // reform by varsGlobal.addressCookie.split(";;-;; ")
   userLogs : UserLogs = new UserLogs();
 
+  //parameter for dispatch see the fleet
+  dispatchSee:boolean=false;
   // parameters for check 
   transporter:Transporter;
   

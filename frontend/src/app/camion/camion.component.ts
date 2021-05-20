@@ -422,10 +422,10 @@ export class CamionComponent implements OnInit {
     this.modeListReparation=0;
   }
   gotoDetailTransporter(id:number){
-    this.router.navigate(['detail-transporter',id]);
+    this.router.navigate(['detail-transporter',id], {skipLocationChange: true});
   }
   gotoCamion(id:number){
-    this.router.navigate(['camion',id]);
+    this.router.navigate(['camion',id], {skipLocationChange: true});
   }
   async saveCamion(){
     await this.camionsService.saveCamions(this.camion).subscribe(async (data:Camion)=>{
@@ -482,7 +482,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });//*/
-    this.router.navigate(['detail-transporter',this.camion.idTransporter]);
+    this.router.navigate(['detail-transporter',this.camion.idTransporter], {skipLocationChange: true});
   }
   //*
   codeCouleurEnt1(camion:Camion){

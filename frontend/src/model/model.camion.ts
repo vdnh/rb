@@ -94,3 +94,15 @@ export class Camion{
     gps=false; // gps or no, by default is no
 
 }
+
+export class PageCamion{
+    content:Camion[];
+    totalPages:number;
+    totalElements:number;
+    last:boolean;
+    size:number;
+    first:boolean;
+    sort:string;
+    numberofElements:number
+  }
+  

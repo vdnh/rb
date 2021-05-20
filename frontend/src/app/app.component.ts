@@ -980,13 +980,31 @@ export class AppComponent implements OnInit{
       
   }
 
-  //for dispatch switch role : remor - trans - ressource - suivi
+  //for dispatch switch role : remor - trans - ressource - suivi - fleet
+  fleet:boolean=false;
   remor:boolean=false;
   trans:boolean=false;
   ressource:boolean=false;
   suivi:boolean=false;
   camsItiners=true;
+  
+  onFleet(){
+    this.fleet=true;
+    this.varsGlobal.dispatchSee=true;
+
+    this.camsItiners=false;
+    this.remor=false;
+    this.trans=false;
+    this.ressource=false;
+    this.suivi=false;
+    this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
+    this.router.navigate(['/detail-transporter/'+ this.idTransporter], {skipLocationChange: true});
+  }
+
   onCamsItiners(){
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=false;
+
     this.camsItiners=true;
     this.remor=  false;
     this.trans=false;
@@ -996,6 +1014,9 @@ export class AppComponent implements OnInit{
     this.router.navigateByUrl('/camions-list', {skipLocationChange: true})
   }
   onRemor(){
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=false;
+    
     this.camsItiners=false;
     this.remor=true;
     this.trans=false;
@@ -1004,6 +1025,9 @@ export class AppComponent implements OnInit{
     this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
   onTrans(){
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=false;
+    
     this.camsItiners=false;
     this.camsItiners=false;
     this.remor=false;
@@ -1014,6 +1038,9 @@ export class AppComponent implements OnInit{
   }
 
   onRessource(){
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=false;
+    
     this.camsItiners=false;
     this.remor=false;
     this.trans=false;
@@ -1023,6 +1050,9 @@ export class AppComponent implements OnInit{
   }
 
   onSuivi(){
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=false;
+    
     this.camsItiners=false;
     this.remor=false;
     this.trans=false;
@@ -1032,6 +1062,7 @@ export class AppComponent implements OnInit{
   }
 
   onAccountInfos(){
+    this.varsGlobal.dispatchSee=false;
     this.router.navigate(['/detail-transporter/'+ this.transporter.id], {skipLocationChange: true});
   }
   alertComingSoon(){

@@ -1,9 +1,9 @@
 <div *ngIf="varsGlobal.language.includes('Francais')">
     <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
-    <div *ngIf="mode==1"> 
+    <div *ngIf="mode==1 || varsGlobal.dispatchSee"> 
         <strong>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </strong>
         <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
-        <span class="btn btn-link" (click)="onPress()">{{carteText}}</span>
+        <!-- <span class="btn btn-link" (click)="onPress()">{{carteText}}</span> -->
         <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
         <span class="btn btn-link" *ngIf='quitButton.includes("TRANSPORTER")'>
             <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Traffic</a>
@@ -31,26 +31,36 @@
             </div>
         </div>
     </div>
-    <div *ngIf="mode==1">
+    <div *ngIf="mode==1 || varsGlobal.dispatchSee">
     <h3>
         <button class="btn btn-link" (click)="onCoordonnees()" *ngIf='quitButton.includes("TRANSPORTER")||quitButton.includes("ADMIN")'>
             <strong *ngIf="modeCoordonnes">Coordonnees</strong>
             <span *ngIf="!modeCoordonnes">Coordonnees</span> 
         </button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onCamions()">
-            <strong *ngIf="modeCamions">Liste de Camions</strong>
-            <span *ngIf="!modeCamions">Liste de Camions</span> 
+            <strong *ngIf="modeCamions">Unités</strong>
+            <span *ngIf="!modeCamions">Unités</span> 
         </button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onTableau()">
             <strong *ngIf="modeTableau">Tableau d'Entretiens</strong>
             <span *ngIf="!modeTableau">Tableau d'Entretiens</span> 
         </button>
     </h3>
+    <h3>
+        <strong>Page:&nbsp;</strong> 
+        <strong>
+            <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
+            *ngFor="let in of pagesPaged; let i = index">
+                <small *ngIf="currentPage!=i">{{i}}</small>
+                <strong *ngIf="currentPage==i">{{i}}</strong>
+            </button>
+        </strong>
+    </h3>
     </div>
     <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
     <div *ngIf="modeCamions==1">modeCamions</div>
     <div *ngIf="modeTableau==1">modeTableau</div-->
-    <div class="panel panel-primary" *ngIf="mode==1">
+    <div class="panel panel-primary" *ngIf="mode==1 || varsGlobal.dispatchSee">
     <div class="panel-body">
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCoordonnes==1" >
             <tr>
@@ -201,18 +211,18 @@
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
             <tr>
                 <button class="btn btn-link" (click)="onCamList()">
-                    <strong *ngIf="camList">Camions</strong>
-                    <span *ngIf="!camList">Camions</span> 
+                    <strong *ngIf="camList">Unités</strong>
+                    <span *ngIf="!camList">Unités</span> 
                 </button>&nbsp;&nbsp;
                 <button class="btn btn-link" (click)="onCamAdd()">
-                    <strong *ngIf="camAdd">Add Camion</strong>
-                    <span *ngIf="!camAdd">Add Camion</span> 
+                    <strong *ngIf="camAdd">Ajout Unité</strong>
+                    <span *ngIf="!camAdd">Ajout Unité</span> 
                 </button>
             </tr>
             <div *ngIf="camList==1">   
             <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
             <tr>
-                <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th colspan="2">N.I.V</th>
+                <th># Unité</th><th>Plaque</th><th>Marque</th><th>Modèle</th><th colspan="2">N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
             </tr>
             <tr *ngFor="let camion of camionsInOperation">
@@ -224,10 +234,10 @@
                 <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
-                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detail</button></td>
                 <!-- <td *ngIf='quitButton.includes("ADMIN")||quitButton.includes("MANAGER")'><button class="btn btn-link" (click)="deleteCamion(camion, camionsInOperation)">Delete</button></td> -->
             </tr>
-            <tr><th colspan="4">Camions Antecedents</th></tr>
+            <tr><th colspan="4">Unités Antecedents</th></tr>
             <tr *ngFor="let camion of camionsOutOperation" style="background-color: darkgray;">
                 <td>
                     {{camion.unite}}
@@ -252,11 +262,11 @@
                 <!--td><input class="form-control" type="checkbox" [(ngModel)]="camion.status" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.localDepart" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="camion.destination" /></td-->
-                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detail</button></td>
                 <td><button class="btn btn-link" (click)="deleteCamion(camion, camionsOutOperation)">Delete</button></td>
             </tr>            
 
-            <tr><th colspan="4">Camions Brokers</th></tr>
+            <tr><th colspan="4">Unités Brokers</th></tr>
             <tr *ngFor="let camion of camionsBroker" style="background-color: darkgray;">
                 <td>
                     {{camion.unite}}
@@ -273,13 +283,13 @@
                 <td colspan="2">
                     {{camion.niv}}
                 </td>
-                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detailler</button></td>
+                <td><button class="btn btn-link" (click)="gotoDetailCamion(camion.id)">Detail</button></td>
                 <td><button class="btn btn-link" (click)="deleteCamion(camion, camionsBroker)">Delete</button></td>
             </tr>
 
             </div>   
             <div *ngIf="camAdd==1">
-            <tr><td colspan="2"><strong>Ajouter de camion</strong></td></tr>     
+            <tr><td colspan="2"><strong>Ajouter d'Unité</strong></td></tr>     
             <tr>
                 <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th colspan="2">N.I.V</th>
                 <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
@@ -362,7 +372,17 @@
                 <!--th>Autres Entretiens</th-->                             
                 <!--th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(entretien.odometre, entretien.odoFait, entretien.kmTrage)}}" [disabled]="disableButton(entretien.odometre, entretien.odoFait, entretien.kmTrage)" (click)="onAutreEntretien(entretien)">{{codeText(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}</button></th-->
             </tr>                                     
-        </table>     
+        </table>  
+        <h3>
+            <strong>Page:&nbsp;</strong> 
+            <strong>
+                <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
+                *ngFor="let in of pagesPaged; let i = index">
+                    <small *ngIf="currentPage!=i">{{i}}</small>
+                    <strong *ngIf="currentPage==i">{{i}}</strong>
+                </button>
+            </strong>
+        </h3>   
     </div>   
     <div>
         <table class="table table-striped table-responsive"> 
@@ -585,7 +605,7 @@
     </div>   
     </div>
     <!--Use for the case of Dispatch want to add driver-->
-    <div class="panel panel-primary" *ngIf="mode==4">
+    <div class="panel panel-primary" *ngIf="mode==4 && !varsGlobal.dispatchSee">
         <span><button class="btn btn-link" (click)="onInfosTransporter()">Infos</button></span>
         <span><button class="btn btn-link" (click)="onPlanActual()">Plan Actuel</button></span>
         <span><button class="btn btn-link" (click)="onPlansHistoric()">Plans Historique</button></span>

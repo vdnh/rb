@@ -26,6 +26,23 @@ export class CamionsService{
         .pipe(map(res => {return res}));
     }
 
+    camionsDeTransporterPaged(idTransporter:number, page:number, size:number){
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/camionsDeTransporterPaged?idTransporter="+idTransporter+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(res => {return res}));
+    }
+/*//
+getEvaluationsTransportTransporterPaged(idTransporter:number, page:number, size:number)
+    {    
+        this.loadTonken();
+        return this.http.get(this.adServer+":8080/evaluationsTransportTransporterPaged?idTransporter="+idTransporter+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        .pipe(map(resp =>{
+            return resp;
+        }))
+    }
+//*/
     saveCamions(camion:Camion){
         this.loadTonken();
         return this.http.post(this.adServer+":8080/camions",camion
