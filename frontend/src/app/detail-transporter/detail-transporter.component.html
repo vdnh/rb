@@ -1,7 +1,7 @@
 <div *ngIf="varsGlobal.language.includes('Francais')">
     <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
     <div *ngIf="mode==1 || varsGlobal.dispatchSee"> 
-        <strong>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </strong>
+        <!-- <strong>Flotte de {{transporter.nom}}  &nbsp;&nbsp;&nbsp; </strong> -->
         <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
         <!-- <span class="btn btn-link" (click)="onPress()">{{carteText}}</span> -->
         <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
@@ -38,8 +38,8 @@
             <span *ngIf="!modeCoordonnes">Coordonnees</span> 
         </button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onCamions()">
-            <strong *ngIf="modeCamions">Unités</strong>
-            <span *ngIf="!modeCamions">Unités</span> 
+            <strong *ngIf="modeCamions">Flotte</strong>
+            <span *ngIf="!modeCamions">Flotte</span> 
         </button>&nbsp;&nbsp;&nbsp;
         <button class="btn btn-link" (click)="onTableau()">
             <strong *ngIf="modeTableau">Tableau d'Entretiens</strong>
@@ -47,6 +47,7 @@
         </button>
     </h3>
     <h3>
+        <strong><button class="btn btn-link" (click)="addCamionNew()">Ajout Unité</button></strong>
         <strong>Page:&nbsp;</strong> 
         <strong>
             <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
@@ -209,7 +210,7 @@
         </table>
         
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
-            <tr>
+            <!-- <tr>
                 <button class="btn btn-link" (click)="onCamList()">
                     <strong *ngIf="camList">Unités</strong>
                     <span *ngIf="!camList">Unités</span> 
@@ -218,8 +219,8 @@
                     <strong *ngIf="camAdd">Ajout Unité</strong>
                     <span *ngIf="!camAdd">Ajout Unité</span> 
                 </button>
-            </tr>
-            <div *ngIf="camList==1">   
+            </tr> -->
+            <!-- <div *ngIf="camList==1">    -->
             <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
             <tr>
                 <th># Unité</th><th>Plaque</th><th>Marque</th><th>Modèle</th><th colspan="2">N.I.V</th>
@@ -287,12 +288,11 @@
                 <td><button class="btn btn-link" (click)="deleteCamion(camion, camionsBroker)">Delete</button></td>
             </tr>
 
-            </div>   
-            <div *ngIf="camAdd==1">
+            <!-- </div>    -->
+            <!-- <div *ngIf="camAdd==1">
             <tr><td colspan="2"><strong>Ajouter d'Unité</strong></td></tr>     
             <tr>
                 <th>Numero Unite</th><th>Plaque</th><th>Marque</th><th>Modele</th><th colspan="2">N.I.V</th>
-                <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
             </tr>    
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.unite" /></td>
@@ -300,12 +300,9 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.modele" /></td>
                 <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
-                <!--td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="addcamion.localDepart" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td-->
                 <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
             </tr>      
-            </div>              
+            </div>               -->
         </table>      
         <!-- <h4 *ngIf="modeTableau==1">Entretiens Reguliers</h4> -->
         <h5 *ngIf="modeTableau==1" style="font-weight: bold;">Code couleur - &nbsp;&nbsp;&nbsp; 
@@ -847,9 +844,9 @@
 <div *ngIf="varsGlobal.language.includes('English')">
     <!--div *ngIf='!quitButton.includes("DISPATCH")'-->
     <div *ngIf="mode==1"> 
-        <strong>{{transporter.nom}} Fleet &nbsp;&nbsp;&nbsp; </strong>
+        <!-- <strong>{{transporter.nom}} Fleet &nbsp;&nbsp;&nbsp; </strong> -->
         <!--button class="btn btn-link" (click)="testLinkDirect()">Test Link - detail-demande 1240</button-->
-        <span class="btn btn-link" (click)="onPress()">{{carteText}}</span>
+        <!-- <span class="btn btn-link" (click)="onPress()">{{carteText}}</span> -->
         <!--button class="btn btn-link" (click)="onQuebec511()">{{textQuebec511}}</button-->
         <span class="btn btn-link" *ngIf='quitButton.includes("TRANSPORTER")'>
             <a href="http://www.quebec511.info/en/Carte/Default.aspx" target="_blank">Traffic</a>
@@ -891,6 +888,17 @@
             <strong *ngIf="modeTableau">Maintenance Table</strong>
             <span *ngIf="!modeTableau">Maintenance Table</span> 
         </button>
+    </h3>
+    <h3>
+        <strong><button class="btn btn-link" (click)="addCamionNew()">Add Unit</button></strong>
+        <strong>Page:&nbsp;</strong> 
+        <strong>
+            <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
+            *ngFor="let in of pagesPaged; let i = index">
+                <small *ngIf="currentPage!=i">{{i}}</small>
+                <strong *ngIf="currentPage==i">{{i}}</strong>
+            </button>
+        </strong>
     </h3>
     </div>
     <!--div *ngIf="modeCoordonnees==1">modeCoordonnes</div>  
@@ -1046,7 +1054,7 @@
         </table>
         
         <table class="table table-striped table-sm table-responsive" *ngIf="modeCamions==1">
-            <tr>
+            <!-- <tr>
                 <button class="btn btn-link" (click)="onCamList()">
                     <strong *ngIf="camList">Units</strong>
                     <span *ngIf="!camList">Units</span> 
@@ -1055,8 +1063,8 @@
                     <strong *ngIf="camAdd">Add Unit</strong>
                     <span *ngIf="!camAdd">Add Unit</span> 
                 </button>
-            </tr>
-            <div *ngIf="camList==1">   
+            </tr> -->
+            <!-- <div *ngIf="camList==1">    -->
             <!--tr><td colspan="2"><strong>List de camions</strong></td></tr-->
             <tr>
                 <th>#Unit</th><th>Plate</th><th>Mark</th><th>Model</th><th colspan="2">N.I.V</th>
@@ -1124,12 +1132,12 @@
                 <td><button class="btn btn-link" (click)="deleteCamion(camion, camionsBroker)">Delete</button></td>
             </tr>
 
-            </div>   
-            <div *ngIf="camAdd==1">
-            <!-- <tr><td colspan="2"><strong>Add Unit</strong></td></tr>      -->
+            <!-- </div>    -->
+            <!-- <div *ngIf="camAdd==1">
+            
             <tr>
                 <th>#Unite</th><th>Plate</th><th>Mark</th><th>Model</th><th colspan="2">N.I.V</th>
-                <!--th>En Mission</th><th>Local Depart</th><th>Destination</th-->
+
             </tr>    
             <tr>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.unite" /></td>
@@ -1137,12 +1145,9 @@
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.marque" /></td>
                 <td><input class="form-control" type="text" [(ngModel)]="addcamion.modele" /></td>
                 <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="addcamion.niv" /></td>
-                <!--td><input class="form-control" type="checkbox" [(ngModel)]="addcamion.status" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="addcamion.localDepart" /></td>
-                <td><input class="form-control" type="text" [(ngModel)]="addcamion.destination" /></td-->
                 <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
             </tr>      
-            </div>              
+            </div>               -->
         </table>      
         <!-- <h4 *ngIf="modeTableau==1">Entretiens Reguliers</h4> -->
         <h5 *ngIf="modeTableau==1" style="font-weight: bold;">Color Code - &nbsp;&nbsp;&nbsp; 
@@ -1210,7 +1215,17 @@
                 <!--th>Autres Entretiens</th-->                             
                 <!--th *ngFor="let camion of camions"><button class="btn btn-sm {{codeCouleur(entretien.odometre, entretien.odoFait, entretien.kmTrage)}}" [disabled]="disableButton(entretien.odometre, entretien.odoFait, entretien.kmTrage)" (click)="onAutreEntretien(entretien)">{{codeText(camion.odometre, camion.odo8Fait, camion.huileDifferentiel)}}</button></th-->
             </tr>                                     
-        </table>     
+        </table>   
+        <h3>
+            <strong>Page:&nbsp;</strong> 
+            <strong>
+                <button style="margin-right: 1ch;" class="btn btn-link" (click)="gotoPage(i)"
+                *ngFor="let in of pagesPaged; let i = index">
+                    <small *ngIf="currentPage!=i">{{i}}</small>
+                    <strong *ngIf="currentPage==i">{{i}}</strong>
+                </button>
+            </strong>
+        </h3>  
     </div>   
     <div>
         <table class="table table-striped table-responsive"> 

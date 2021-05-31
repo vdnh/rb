@@ -71,6 +71,7 @@ export class NewShipperComponent implements OnInit {
     public router:Router) { }
 
   ngOnInit() {
+    this.shipper.createdBy=localStorage.getItem('usernameLogin')
     this.role=localStorage.getItem('role');
     this.shipper.password='dispatch';
     if(localStorage.getItem('idTransporter')!=undefined) {

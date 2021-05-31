@@ -164,7 +164,13 @@ export class CamionComponent implements OnInit {
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
-    await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
+    // here is when we create new camion from the page detail-transporter
+    if(this.id==null || this.id<=0){
+      this.modeBonDeTravail=0; // do not show the part WorkOrder first 
+      this.modeInfos=1; // show the part Infos first
+      this.camion.idTransporter=Number(localStorage.getItem('idTransporter'))
+    }
+    else await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
       this.camion=data;
       // this.couleur01=this.codeCouleur(this.camion.odo1Fait, this.camion.ent1)
       // this.couleur02=this.codeCouleur(this.camion.odo2Fait, this.camion.ent2)

@@ -51,4 +51,6 @@ export class ShipperParticulier{
 
     loginName:string;
     password:string;    
+
+    createdBy:string=''; // name of dispatch/seller who created
 }

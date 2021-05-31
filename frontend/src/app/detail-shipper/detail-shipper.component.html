@@ -2,6 +2,7 @@
   <!--div class="container spacer"-->
   <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-heading"><h2>{{shipper.nom | uppercase}}</h2></div>
+    <div class="panel-heading"><H4><strong>Créé par : <input style="width: 35ch;" type="text" [(ngModel)]="shipper.createdBy"></strong></H4></div>
       <div class="panel-body">
         <!-- <table class="table table-striped"> -->
           <table border="1">
@@ -399,6 +400,7 @@
   <!--div class="container spacer"-->
   <div class="panel panel-primary" *ngIf="mode==1">
     <div class="panel-heading"><h2>{{shipper.nom | uppercase}}</h2></div>
+    <div class="panel-heading"><H4><strong>Créé par : <input style="width: 35ch;" type="text" [(ngModel)]="shipper.createdBy"></strong></H4></div>
       <div class="panel-body">
         <!-- <table class="table table-striped"> -->
           <table border="1">

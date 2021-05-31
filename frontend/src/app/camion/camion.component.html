@@ -36,15 +36,15 @@
         <span *ngIf="!modeDefinirEnt">Entretiens a Definir</span> 
       </button>
       <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
-      <button class="btn btn-link" (click)="onBonDeTravail()">        
-        <strong *ngIf="modeBonDeTravail">Entretien-BonDeTravail</strong>
-        <span *ngIf="!modeBonDeTravail">Entretien-BonDeTravail</span> 
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onBonDeTravail()">        
+        <strong *ngIf="modeBonDeTravail">BonDeTravail</strong>
+        <span *ngIf="!modeBonDeTravail">BonDeTravail</span> 
       </button>
-      <button class="btn btn-link" (click)="onListReparation()">
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListReparation()">
         <strong *ngIf="modeListReparation">Historique & Print</strong>
         <span *ngIf="!modeListReparation">Historique & Print</span> 
       </button>
-      <button class="btn btn-link" (click)="onListGarantie()">        
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListGarantie()">        
         <strong *ngIf="modeListGarantie">Garanties</strong>
         <span *ngIf="!modeListGarantie">Garanties</span> 
       </button>
@@ -809,7 +809,7 @@
 
     <div  *ngIf="modeInfos==1 || modeFiche==1 || modeDefinirEnt==1">
         <table class="table table-striped table-responsive"> 
-            <td><button class="btn btn-primary" (click)="saveCamion()">Ok - Modifier</button></td>
+            <td><button class="btn btn-primary" (click)="saveCamion()">Enregistrer/Modifier</button></td>
             <!-- <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</button></td>  -->
             <td></td>
             <td></td>
@@ -858,15 +858,15 @@
         <span *ngIf="!modeDefinirEnt">Programs Setting</span> 
       </button>
       <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
-      <button class="btn btn-link" (click)="onBonDeTravail()">        
-        <strong *ngIf="modeBonDeTravail">WorkOrders</strong>
-        <span *ngIf="!modeBonDeTravail">WorkOrders</span> 
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onBonDeTravail()">        
+        <strong *ngIf="modeBonDeTravail">WorkOrder</strong>
+        <span *ngIf="!modeBonDeTravail">WorkOrder</span> 
       </button>
-      <button class="btn btn-link" (click)="onListReparation()">
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListReparation()">
         <strong *ngIf="modeListReparation">History & Print</strong>
         <span *ngIf="!modeListReparation">History & Print</span> 
       </button>
-      <button class="btn btn-link" (click)="onListGarantie()">        
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListGarantie()">        
         <strong *ngIf="modeListGarantie">Warranty</strong>
         <span *ngIf="!modeListGarantie">Warranty</span> 
       </button>
@@ -1631,7 +1631,7 @@
 
     <div  *ngIf="modeInfos==1 || modeFiche==1 || modeDefinirEnt==1">
         <table class="table table-striped table-responsive"> 
-            <td><button class="btn btn-primary" (click)="saveCamion()">Ok - Modify</button></td>
+            <td><button class="btn btn-primary" (click)="saveCamion()">Save/Modify</button></td>
             <!-- <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Return the Fleet</button></td>  -->
             <td></td>
             <td></td>

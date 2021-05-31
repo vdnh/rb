@@ -22,7 +22,7 @@ export class ShippersComponent implements OnInit
   pageShipper:PageShipper = new  PageShipper();  // pour tenir des Shippers
   motCle:string="";
   currentPage:number=0;
-  size:number=50;
+  size:number=20;
   pages:Array<number>;  // pour tenir des numeros des pages
   role: string;
   shippersOfTransporter:Array<Shipper>=[]

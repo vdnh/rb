@@ -495,6 +495,10 @@ export class DetailTransporterComponent implements OnInit {
   }  
 
   listNumberUnite:Array<string>=[];// collection of list number unite
+  // new function addCamionNew replace addCamion()??? must be well tested
+  addCamionNew(){
+    this.gotoDetailCamion(0); // we test here with idCamion=0; it means new Camion must be created
+  }
   addCamion(){
     this.addcamion.idTransporter=this.id;
     if(this.addcamion.unite!=null && this.addcamion.unite.length>0){
@@ -740,7 +744,7 @@ export class DetailTransporterComponent implements OnInit {
   }
 
   refreshListCamions(){
-    this.currentPage=0;
+    // this.currentPage=0;
     this.arrayArrayEnts=[]
     //*/
     this.camionsService.camionsDeTransporterPaged(this.id, this.currentPage, this.size).subscribe(async (pg:PageCamion)=>{
