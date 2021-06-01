@@ -47,7 +47,10 @@
       </table>
       <div>
         <strong>page: </strong><span *ngFor="let p of pages; let i=index">
-          <button class="btn btn-link" (click)="gotoPage(i)"> <strong>{{i + "  "}}</strong> </button>
+          <button class="btn btn-link" (click)="gotoPage(i)"> 
+            <small *ngIf="currentPage!=i" >{{i + "  "}}</small>
+            <strong *ngIf="currentPage==i">{{i + "  "}}</strong> 
+          </button>
         </span>
         <!-- <ul class="nav nav-pills"><strong>page: </strong>
           <li *ngFor="let p of pages; let i=index">
@@ -105,7 +108,10 @@
       </table>
       <div>
         <strong>page: </strong><span *ngFor="let p of pages; let i=index">
-                <button class="btn btn-link" (click)="gotoPage(i)"> <strong>{{i + "  "}}</strong> </button>
+                <button class="btn btn-link" (click)="gotoPage(i)"> 
+                  <small *ngIf="currentPage!=i" >{{i + "  "}}</small>
+                  <strong *ngIf="currentPage==i">{{i + "  "}}</strong> 
+                </button>
               </span>
         <!-- <ul class="nav nav-pills"><strong>page: </strong>
           <li *ngFor="let p of pages; let i=index">
