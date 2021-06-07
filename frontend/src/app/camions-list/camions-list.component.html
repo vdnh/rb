@@ -121,8 +121,8 @@
 <!-- </div> -->
 <div>
     <button (click)="modeProfil=false;modeConfirm=false;camionsList=true; itineraire=false; repere=false;" class="btn btn-link">
-        <span *ngIf="!camionsList">Camions</span>
-        <strong *ngIf="camionsList">Camions</strong>
+        <span *ngIf="!camionsList">Unités</span>
+        <strong *ngIf="camionsList">Unités</strong>
     </button>
 <!-- disabled -->
     <button (click)="modeProfil=false;modeConfirm=false;itineraire=true; camionsList=false; repere=false; detailCamion=false" class="btn btn-link">        
@@ -220,9 +220,23 @@
         </table>
     </div>
     <div *ngIf="camionsList" id="toprint" class="col-md-7 col-lg-7">
-        <table *ngIf="camionsSurMap!=null" border="1">
+        <div>
+            <button class="btn btn-link" (click)="showUnitsGPS()">
+                <small *ngIf="!showingUnitsGps">Unités GPS</small>
+                <strong *ngIf="showingUnitsGps">Unités GPS</strong>
+            </button>
+            <button class="btn btn-link" (click)="showUnitsNoGPS()">
+                <small *ngIf="!showingUnitsNoGps">Unités sans GPS</small>
+                <strong *ngIf="showingUnitsNoGps">Unités sans GPS</strong>
+            </button>
+            <button class="btn btn-link" (click)="showTrailers()">
+                <small *ngIf="!showingTrailers">Trailers</small>
+                <strong *ngIf="showingTrailers">Trailers</strong>
+            </button>
+        </div>
+        <table *ngIf="camionsSurMap!=null && showingUnitsGps" border="1">
             <tr>
-                <th style="width: 30%;"><h4><strong>Unite avec GPS</strong></h4></th> 
+                <th style="width: 30%;"><h4><strong>Unité GPS</strong></h4></th> 
                 <th style="width: 30%;"><h4><strong>Emplacement</strong></h4></th>
                 <th style="width: 40%;"><h4><strong>Itineraires</strong></h4></th>
                 
@@ -312,9 +326,9 @@
                 <!-- <td>520 Guindon, St Eustach, QC</td> -->
             </tr>
         </table>
-        <table *ngIf="camionsNoGPS!=null" border="1">
+        <table *ngIf="camionsNoGPS!=null && showingUnitsNoGps" border="1">
             <tr>
-                <th style="width: 30%;"><h4><strong>Unite sans GPS</strong></h4></th> 
+                <th style="width: 30%;"><h4><strong>Unité sans GPS</strong></h4></th> 
                 <!-- <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th> -->
                 <th style="width: 40%;"><h4><strong>Itineraires</strong></h4></th>
                 
@@ -358,7 +372,7 @@
                 </td>
             </tr>
         </table>
-        <table *ngIf="remorques!=null" border="1">
+        <table *ngIf="remorques!=null && showingTrailers" border="1">
             <tr>
                 <th style="width: 30%;"><h4><strong>Trailer</strong></h4></th> 
                 <th style="width: 30%;"><h4><strong>Attache</strong></h4></th> 
@@ -431,7 +445,7 @@
                 </td>
             </tr>
         </table>
-        <table border="1">
+        <!-- <table border="1">
             <tr><br></tr>
             <tr>
                 <th colspan="2">
@@ -488,33 +502,7 @@
                     </th>
                     <td><button class="btn btn-link" (click)="addCamion()">Ajouter</button></td>
                 </tr>
-                <!-- <tr>
-                    <th colspan="4"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueurTop">&nbsp;ft</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueur">&nbsp;ft</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.hauteur">&nbsp;po</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="addcamion.poids">&nbsp;lbs</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4">
-                        <p>
-                            Rampe&nbsp;<input type="checkbox" [(ngModel)]="addcamion.rampe" />&nbsp;&nbsp;&nbsp;
-                        
-                            Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="addcamion.loadLeveler" />&nbsp;&nbsp;&nbsp;
-                            
-                            Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="addcamion.backTilt" />
-                        </p>
-                        <p>
-                            Trailer&nbsp;<input type="checkbox" [(ngModel)]="addcamion.trailer" />&nbsp;&nbsp;&nbsp;                        
-                            Unite de Broker&nbsp;<input type="checkbox" [(ngModel)]="addcamion.broker" />&nbsp;&nbsp;&nbsp;                        
-                        </p>
-                    </th>
-                </tr> -->
+                
                 <tr>
                     <td colspan="4" *ngIf="addcamion.imgUrl!=null && addcamion.imgUrl.length>0" style="border: 2px dotted gray">
                         <img [src]="addcamion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
@@ -531,7 +519,7 @@
                 </tr>
                 <tr><p></p></tr>
             </ng-container>
-        </table>
+        </table> -->
     </div>
     <div *ngIf="itineraire" id="toprint" class="col-md-7 col-lg-7">
         <table border="1"  id="truck" hidden>
@@ -1526,9 +1514,23 @@
         </table>
     </div>
     <div *ngIf="camionsList" id="toprint" class="col-md-7 col-lg-7">
-        <table *ngIf="camionsSurMap!=null" border="1">
+        <div>
+            <button class="btn btn-link" (click)="showUnitsGPS()">
+                <small *ngIf="!showingUnitsGps">Unités GPS</small>
+                <strong *ngIf="showingUnitsGps">Unités GPS</strong>
+            </button>
+            <button class="btn btn-link" (click)="showUnitsNoGPS()">
+                <small *ngIf="!showingUnitsNoGps">Unités sans GPS</small>
+                <strong *ngIf="showingUnitsNoGps">Unités sans GPS</strong>
+            </button>
+            <button class="btn btn-link" (click)="showTrailers()">
+                <small *ngIf="!showingTrailers">Trailers</small>
+                <strong *ngIf="showingTrailers">Trailers</strong>
+            </button>
+        </div>
+        <table *ngIf="camionsSurMap!=null && showingUnitsGps" border="1">
             <tr>
-                <th style="width: 30%;"><h4><strong>Unit with GPS</strong></h4></th> 
+                <th style="width: 30%;"><h4><strong>Unit GPS</strong></h4></th> 
                 <th style="width: 30%;"><h4><strong>Location</strong></h4></th>
                 <th style="width: 40%;"><h4><strong>Routes</strong></h4></th>
                 
@@ -1618,9 +1620,9 @@
                 <!-- <td>520 Guindon, St Eustach, QC</td> -->
             </tr>
         </table>
-        <table *ngIf="camionsNoGPS!=null" border="1">
+        <table *ngIf="camionsNoGPS!=null && showingUnitsNoGps" border="1">
             <tr>
-                <th style="width: 30%;"><h4><strong>Unit No-GPS</strong></h4></th> 
+                <th style="width: 30%;"><h4><strong>Unit No GPS</strong></h4></th> 
                 <!-- <th style="width: 30%;"><h5><strong>Emplacement</strong></h5></th> -->
                 <th style="width: 40%;"><h4><strong>Routes</strong></h4></th>
                 
@@ -1665,7 +1667,7 @@
                 </td>
             </tr>
         </table>
-        <table *ngIf="remorques!=null" border="1">
+        <table *ngIf="remorques!=null && showingTrailers" border="1">
             <tr>
                 <th style="width: 30%;"><h4><strong>Trailer</strong></h4></th> 
                 <th style="width: 30%;"><h4><strong>Attached</strong></h4></th> 
@@ -1738,7 +1740,7 @@
                 </td>
             </tr>
         </table>
-        <table border="1">
+        <!-- <table border="1">
             <tr><br></tr>
             <tr>
                 <th colspan="2">
@@ -1795,33 +1797,7 @@
                     </th>
                     <td><button class="btn btn-link" (click)="addCamion()">Add</button></td>
                 </tr>
-                <!-- <tr>
-                    <th colspan="4"><p>Longueur deck haut <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueurTop">&nbsp;ft</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Longueur deck bas <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.longueur">&nbsp;ft</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Hauteur Plateforme <input type="number" style="width: 8ch;" [(ngModel)]="addcamion.hauteur">&nbsp;po</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4"><p>Capacite de charge <input type="number" style="width: 10ch;" [(ngModel)]="addcamion.poids">&nbsp;lbs</p> </th>
-                </tr>
-                <tr>
-                    <th colspan="4">
-                        <p>
-                            Rampe&nbsp;<input type="checkbox" [(ngModel)]="addcamion.rampe" />&nbsp;&nbsp;&nbsp;
-                        
-                            Load Leveler&nbsp;<input type="checkbox" [(ngModel)]="addcamion.loadLeveler" />&nbsp;&nbsp;&nbsp;
-                            
-                            Inclinaison derriere&nbsp;<input type="checkbox" [(ngModel)]="addcamion.backTilt" />
-                        </p>
-                        <p>
-                            Trailer&nbsp;<input type="checkbox" [(ngModel)]="addcamion.trailer" />&nbsp;&nbsp;&nbsp;                        
-                            Unite de Broker&nbsp;<input type="checkbox" [(ngModel)]="addcamion.broker" />&nbsp;&nbsp;&nbsp;                        
-                        </p>
-                    </th>
-                </tr> -->
+                
                 <tr>
                     <td colspan="4" *ngIf="addcamion.imgUrl!=null && addcamion.imgUrl.length>0" style="border: 2px dotted gray">
                         <img [src]="addcamion.imgUrl" alt="piece joint" class="img-responsive" width="300px">
@@ -1838,7 +1814,7 @@
                 </tr>
                 <tr><p></p></tr>
             </ng-container>
-        </table>
+        </table> -->
     </div>
     <div *ngIf="itineraire" id="toprint" class="col-md-7 col-lg-7">
         <table border="1"  id="truck" hidden>

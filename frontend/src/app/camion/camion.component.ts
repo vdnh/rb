@@ -63,7 +63,7 @@ export class CamionComponent implements OnInit {
   id:number;
 
   autreEntretien:AutreEntretien=new AutreEntretien(); // to add more entretien
-  entretiens:Array<AutreEntretien>; // liste autreEntretien
+  entretiens:Array<AutreEntretien>=[]; // liste autreEntretien
 
   //mode:number=1;
   couleur01:string="btn-danger";
@@ -144,7 +144,7 @@ export class CamionComponent implements OnInit {
   }
   //test ngOnDestroy
     ngOnDestroy(){
-      if(this.subscription!=null)
+      if(this.subscription!=null) 
         this.subscription.unsubscribe();
     }
   //*/
@@ -164,11 +164,12 @@ export class CamionComponent implements OnInit {
     this.modeFiche=0;
     this.modeEntretiens=0;
     this.modeDefinirEnt=0;
-    // here is when we create new camion from the page detail-transporter
-    if(this.id==null || this.id<=0){
-      this.modeBonDeTravail=0; // do not show the part WorkOrder first 
-      this.modeInfos=1; // show the part Infos first
-      this.camion.idTransporter=Number(localStorage.getItem('idTransporter'))
+    // here is when we create new camion from the page detail-transporter 
+    if(this.id==null || this.id<=0)
+    {
+      this.modeBonDeTravail=0;  // ne pas voir la partie Entretien-BonDetravail au premier
+      this.modeInfos=1; // voir la partie Infos au premier
+      this.camion.idTransporter=Number (localStorage.getItem("idTransporter"))
     }
     else await this.camionsService.getDetailCamion(this.id).subscribe((data:Camion)=>{
       this.camion=data;
@@ -428,14 +429,18 @@ export class CamionComponent implements OnInit {
     this.modeListReparation=0;
   }
   gotoDetailTransporter(id:number){
-    this.router.navigate(['detail-transporter',id], {skipLocationChange: true});
+    this.router.navigate(['detail-transporter',id], {skipLocationChange:true});
   }
   gotoCamion(id:number){
-    this.router.navigate(['camion',id], {skipLocationChange: true});
+    this.router.navigate(['camion',id], {skipLocationChange:true});
   }
-  async saveCamion(){
-    await this.camionsService.saveCamions(this.camion).subscribe(async (data:Camion)=>{
+  saveCamion(){
+    this.camionsService.saveCamions(this.camion).subscribe((data:Camion)=>{
       this.camion=data;
+      // here we try attach idCamion for fiche and ficheCont even if they exist already
+      this.fiche.idCamion=this.camion.id
+      this.ficheCont.idCamion=this.camion.id
+      //
       this.couleur01=this.codeCouleurEnt1(this.camion)
       this.couleur02=this.codeCouleurEnt2(this.camion)
       this.couleur03=this.codeCouleurEnt3(this.camion)
@@ -446,11 +451,7 @@ export class CamionComponent implements OnInit {
       this.couleur08=this.codeCouleur(this.camion.odo8Fait, this.camion.huileDifferentiel)
       this.couleur09=this.codeCouleurInspect();
       this.couleur10=this.codeCouleurVignette();
-    //*
-    }, err=>{
-      console.log(err);
-    });//*/
-      await this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
+      this.fichePhysiquesService.saveFichePhysiqueEntretiens(this.fiche).subscribe((data:FichePhysiqueEntretien)=>{
         this.fiche=data;
         if(data!=null)
           console.log("Existe fiche")
@@ -459,7 +460,7 @@ export class CamionComponent implements OnInit {
       }, err=>{
         console.log()
       })
-      await this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
+      this.fichePhysiqueContsService.saveFichePhysiqueEntretienConts(this.ficheCont).subscribe((data:FichePhysiqueEntretienCont)=>{
         this.ficheCont=data;
         if(data!=null)
           console.log("Existe fiche")
@@ -468,12 +469,19 @@ export class CamionComponent implements OnInit {
       }, err=>{
         console.log()
       })
-      await this.entretiens.forEach(obj => {
+      this.entretiens.forEach(obj => {
+        // here we try attach idCamion for entretien even if they exist already
+        obj.idCamion=this.camion.id
         this.autreEntretiensService.saveAutreEntretiens(obj).subscribe(data=>{
         }, err=>{
           console.log(err)
         })
       });
+    //*
+    }, err=>{
+      console.log(err);
+    });//*/
+      
       // await this.bonDeTravailsService.saveBonDeTravail(this.bonDeTravail).subscribe(data=>{      
       // }, err=>{
       //   console.log()
@@ -488,7 +496,7 @@ export class CamionComponent implements OnInit {
     }, err=>{
       console.log(err);
     });//*/
-    this.router.navigate(['detail-transporter',this.camion.idTransporter], {skipLocationChange: true});
+    this.router.navigate(['detail-transporter',this.camion.idTransporter], {skipLocationChange:true});
   }
   //*
   codeCouleurEnt1(camion:Camion){
@@ -1072,14 +1080,16 @@ export class CamionComponent implements OnInit {
     });
   }
   addEntretien(){
-    this.autreEntretien.idCamion=this.id;
-    this.autreEntretiensService.saveAutreEntretiens(this.autreEntretien).subscribe(data=>{
-      alert("Ok, it's added.");
-      this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
-        this.entretiens=data;
-      }, err=>{
-        console.log(err);
-      });
+    if(this.id!=null && this.id>0) this.autreEntretien.idCamion=this.id;
+    this.autreEntretiensService.saveAutreEntretiens(this.autreEntretien).subscribe((data:AutreEntretien)=>{
+      // alert("Ok, it's added.");
+      this.entretiens.push(data)
+      // if(this.id==null || this.id==0) this.entretiens.push(data)
+      // else this.autreEntretiensService.autreEntretienDeCamion(this.id).subscribe((data:Array<AutreEntretien>)=>{
+      //   this.entretiens=data;
+      // }, err=>{
+      //   console.log(err);
+      // });
     }, err=>{
       console.log(err)
     })

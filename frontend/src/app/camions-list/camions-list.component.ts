@@ -2616,6 +2616,27 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     }
   }
 
+  // variables for showing the unites 
+  showingUnitsGps=true
+  showingUnitsNoGps=false
+  showingTrailers=false
+  showUnitsGPS(){
+    this.showingUnitsGps=true
+    this.showingUnitsNoGps=false
+    this.showingTrailers=false
+  }
+  showUnitsNoGPS(){
+    this.showingUnitsGps=false
+    this.showingUnitsNoGps=true
+    this.showingTrailers=false
+  }
+  showTrailers(){
+    this.showingUnitsGps=false
+    this.showingUnitsNoGps=false
+    this.showingTrailers=true
+  }
+
+
   print(cmpId){
     //let envoy = document.getElementById('toprint').innerHTML;
     //console.log('Toprint : ' + document.getElementById('toprint').innerHTML + ' endOfToprint')

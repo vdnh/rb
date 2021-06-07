@@ -1,18 +1,18 @@
 <div *ngIf="varsGlobal.language.includes('Francais')">
-  <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
-    <div class="panel-heading"> 
+  <div> <!--*ngIf="mode==1"-->
+    <div> 
       <h3> 
-        <strong>Camion : {{camion.unite}}</strong>  &nbsp;&nbsp;&nbsp; 
+        <strong>Unité : {{camion.unite}}</strong>  &nbsp;&nbsp;&nbsp; 
         <span class="btn btn-link" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</span>
       </h3>
-      <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span>
+      <!-- <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span> -->
       <!-- <button *ngIf="(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && 
         (camion.monitor.length!=0 && camion.monitor.length!=0) && 
         !camion.uniteMonitor.includes('no-gps'))"
         class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button> -->
       <!-- <br> -->
     </div>
-    <div class="panel-body" *ngIf="carte==1">
+    <div *ngIf="carte==1">
       <div class="col-md-12">
         <div class="text-center">
           <h3>
@@ -61,10 +61,10 @@
     </div>
     <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div> -->
 
-    <div class="panel-body">
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
+    <div>
+        <table border="1" *ngIf="modeInfos==1">
             <tr>
-              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th>
+              <th>#Unité</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
               <!-- <th>Vignette SAAQ</th> -->
             </tr>
             <tr>
@@ -72,11 +72,11 @@
               <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+              <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
               <!-- <td><input class="form-control" type="date" [(ngModel)]="camion.vignetteSaaq" /></td> -->
             </tr>
             <tr>
-                <th>Annee</th><th>Type</th><th>Odometre</th><th>Mass Net</th><th>Inspection 6 Mois</th><th>Vignette SAAQ</th>
+                <th>Année</th><th>Type</th><th>Odometre</th><th>Mass Net</th><th>Inspection 6 Mois</th><th>Vignette SAAQ</th>
                 <!-- <th>UniteMonitor</th><th>Monitor</th> -->
             </tr>
             <tr>                
@@ -119,11 +119,15 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.hauteur" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.poids" /></td>
             </tr> -->
-            <tr><th colspan="8">Status </th></tr>
+          </table>  
+          <br>
+          <table border="1" *ngIf="modeInfos==1">
+            <tr><th colspan="7">Status </th></tr>
             <tr>              
               <td style="width: 12%;">
                 Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+              <td>  
                 Panne&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />
               </td>
               <td>
@@ -151,9 +155,9 @@
               <!-- <td>
                 <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
               </td> -->
-              <td colspan="7" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+              <td colspan="6" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
                 <a href="{{camion.imgUrl}}" target="_blank">
-                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="25%">
                 </a>
               </td>
             </tr>
@@ -354,74 +358,76 @@
                   <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroitePiece" /></td>
                 </tr>  
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeDefinirEnt==1">          
+        <table border="1" *ngIf="modeDefinirEnt==1">          
           <!--tr><th colspan="3">A definir - Kilometrage a faire des entretiens suivants :</th><th></th><th></th><th></th></tr-->
           <tr>
-            <th>Entretiens</th><th>Nombre Km A Faire</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
+            <th>Nom d'Entretien</th><th>Nombre Km A Faire</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
           </tr>          
           <tr>
-            <th>Entretien 1</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent1" /></td>
+            <th>Entretien 1</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent1" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message01"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo1Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo1Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 2</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent2" /></td>
+            <th>Entretien 2</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent2" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message02"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo2Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo2Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 3</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent3" /></td>
+            <th>Entretien 3</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent3" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message03"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo3Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo3Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 4<br>Hydrolique</th><td><input class="form-control" type="text" [(ngModel)]="camion.filHydrolique" /></td>
+            <th>Entretien 4<br>Hydrolique</th><td><input class="form-control" type="number" [(ngModel)]="camion.filHydrolique" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message04"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo4Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo4Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 5<br>Antigel-fil</th><td><input class="form-control" type="text" [(ngModel)]="camion.filAntigel" /></td>
+            <th>Entretien 5<br>Antigel-fil</th><td><input class="form-control" type="number" [(ngModel)]="camion.filAntigel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message05"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo5Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo5Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 6<br>Antigel-huile</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileAntigel" /></td>
+            <th>Entretien 6<br>Antigel-huile</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileAntigel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message06"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo6Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo6Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 7<br>Transmission</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
+            <th>Entretien 7<br>Transmission</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileTransmission" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message07"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo7Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo7Fait" /></td>
           </tr>
           <tr>
-            <th>Entretien 8<br>Differentiel</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>
+            <th>Entretien 8<br>Differentiel</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileDifferentiel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message08"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo8Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo8Fait" /></td>
           </tr>
             <!--tr>
                 <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
             </tr-->
           <tr *ngFor="let entretien of entretiens">
             <th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmTrage" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="entretien.kmTrage" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.odoFait" /></td>
-            <th>Avertir avant : </th>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmAvertir" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="entretien.odoFait" /></td>
+            <td>Avertir avant: <input type="number" [(ngModel)]="entretien.kmAvertir" /></td>
             <td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td>
           </tr>           
-          <tr><td colspan="2"><strong>Ajouter d'entretien</strong></td></tr>   
+          <tr><td colspan="2"><strong>Ajout d'entretien</strong></td></tr>   
           <tr>
-            <th>Entretiens</th><th>Kms A Faire</th><th>Avertir avant</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
+            <th>Nom d'Entretien</th><th>Kms A Faire</th>
+            <!-- <th>Avertir avant</th> -->
+            <th colspan="4">Consignes</th><th>Odometre Dernier Fait</th><th>Avertir avant</th>
           </tr>  
           <tr>
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmTrage" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmAvertir" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="autreEntretien.kmTrage" /></td>
+            <!-- <td><input class="form-control" type="number" [(ngModel)]="autreEntretien.kmAvertir" /></td> -->
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="autreEntretien.message"></textarea></td>                
-            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.odoFait" /></td>
-            <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>
+            <td><input class="form-control" type="number" [(ngModel)]="autreEntretien.odoFait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="autreEntretien.kmAvertir" /></td>
+            <td><button class="btn btn-link" (click)="addEntretien()">Ajout</button></td>
           </tr>           
         </table>
         <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
@@ -448,7 +454,7 @@
               <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection aux 6 mois {{codeTextInspect()}}</button></td>
             </tr>
         </table>          
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
+        <table border="1" *ngIf="modeBonDeTravail==1">
           <!--entretien - begin-->
           <tr><th colspan="8">Entretiens a faire (code couleur - <span style="color: green;">Vert : Bon-etat</span>, <span style="color:rgb(255, 196, 0);">Jaune : Attention</span>, <span style="color: red;">Rouge : Urgent</span>) </th></tr>
           <tr>
@@ -475,15 +481,16 @@
           <!--entretien - end-->
         </table>
         <!--div id="toprint"-->
-        <table *ngIf="modeBonDeTravail==1">
+        <br>
+        <table border="1" *ngIf="modeBonDeTravail==1">
           <tr>
             <th *ngIf="bonDeTravail.id!=null && bonDeTravail.id>0">#Bon {{bonDeTravail.id}} &nbsp;</th>            
-            <th>Date</th><td><input class="form-control" type="date" [(ngModel)]="bonDeTravail.date"/></td> <!--name="dateReparation" min="{{today | date: 'yyyy-MM-dd'}}"-->
-            <th>Technicien</th><td><input class="form-control" type="text" [(ngModel)]="bonDeTravail.technicien"/></td>
+            <th colspan="2">Date <input type="date" [(ngModel)]="bonDeTravail.date" required pattern="\d{4}-\d{2}-\d{2}"/></th> <!--name="dateReparation" min="{{today | date: 'yyyy-MM-dd'}}"-->
+            <th colspan="2">Technicien <input type="text" [(ngModel)]="bonDeTravail.technicien"/></th>
           </tr>
-        </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
-          <tr><br></tr>
+        <!-- </table>
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1"> -->
+          <!-- <tr><br></tr> -->
           <tr>    
             <th>Mecanique : <input type="checkbox" [(ngModel)]="bonDeTravail.mecanique"></th>
             <th>Carrosserie : <input type="checkbox" [(ngModel)]="bonDeTravail.carrosserie"></th>
@@ -492,7 +499,7 @@
             <th>Entreposage : <input type="checkbox" [(ngModel)]="bonDeTravail.entreposage"></th>
           </tr>                              
           <tr>
-              <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+              <th>#Unité</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
           </tr>
           <tr>
               <td><input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/></td>
@@ -502,7 +509,7 @@
               <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" disabled/></td>
           </tr>
           <tr>
-              <th>Annee</th><th>Odometre</th><th>Moteur</th><th>Transmission</th><th>Couleur</th>
+              <th>Année</th><th>Odometre</th><th>Moteur</th><th>Transmission</th><th>Couleur</th>
           </tr>
           <tr>                
               <td><input class="form-control" type="text" [(ngModel)]="camion.annee" disabled/></td>              
@@ -512,9 +519,10 @@
               <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur" disabled/></td>
           </tr>
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <br>
           <tr>
-            <th>ReparationAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><th>$/heure</th><th>Prix &nbsp;&nbsp;&nbsp;&nbsp;</th>                        
+            <th>ReparationsAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Quantité</th><th>$/unité</th><th>Heures</th><th>$/heure</th><th>Prix &nbsp;&nbsp;&nbsp;&nbsp;</th>                        
           </tr>
           <tr *ngFor="let rep of reparations">
             <!--let reparation of reparations - add line reparation-->
@@ -553,7 +561,7 @@
             <td *ngIf="reparations.length>1"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
           </tr>  
           <tr>
-            <th colspan="2">Ajouter des Reparations</th>
+            <th colspan="2">&nbsp;</th>
           </tr>
           <tr>
             <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.reparationEffectuer"></td-->
@@ -568,13 +576,14 @@
             <td><input type="number" class="form-control" [(ngModel)]="reparation.heures" (change)="prixChange()"></td>
             <td><input type="number" class="form-control" [(ngModel)]="reparation.taux" (change)="prixChange()"></td>
             <td><input type="number" class="form-control" [(ngModel)]="reparation.prix" style="width: 8pc"></td>
-            <td><button class="btn btn-link" (click)="addReparation()">Ajouter</button></td>
+            <td><button class="btn btn-link" (click)="addReparation()">Ajout</button></td>
           </tr>           
           <!--tr>
             <th colspan="=6">Remarques / Travaux A Prevoir</th>
           </tr-->
 
         </table>  
+        <br>
         <table *ngIf="modeBonDeTravail==1">
           <tr>
             <th colspan="5">Remarques / Travaux A Prevoir</th>
@@ -647,7 +656,7 @@
             </td> -->
           </tr>                              
         </table>
-        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
           <tr>
             <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
           </tr>
@@ -734,7 +743,7 @@
           Reprendre ce #Bon
         </button>
         <!--Review BonDeTravail - end-->
-        <table  class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==0">
+        <table  border="1" *ngIf="modeListReparation==1 && modeBonhist==0">
           <tr>
             <th>Numero</th>
             <th>Technicien</th>
@@ -742,7 +751,7 @@
             <th>Prix(hors-tax)</th>
             <th>Remarques - Travaux a prevoir</th>
             <th>Status</th>
-            <th>Detailler</th>
+            <th>Detail</th>
           </tr>
           <tr *ngFor="let bon of bonDeTravails">
             <td>{{bon.id}}</td>
@@ -754,56 +763,66 @@
               style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea>
             </td>
             <td><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>
-            <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td> -->
-            <td><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detailler</button></td>
+            <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detail</button></td> -->
+            <td><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detail</button></td>
           </tr>
         </table>
         <div class="row" *ngIf="modeListGarantie==1">
-          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 48%">
-            <tr>
-              <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
-              <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Chercher Piece</button></td>
-            </tr>
-            <tr>
-              <th>Piece</th><th>Fournisseur</th><th>Prix</th><th>Expiration</th>
-            </tr>
-            <tr *ngFor="let rep of reparations">
-              <td>{{rep.piece}}</td>
-              <td>{{rep.fournisseur}}</td>
-              <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
-              <td>{{rep.garantie}}</td>
-              <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
-            </tr>
-          </table>
-          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 4%">
-            <tr></tr>
-          </table>
-          <table class="table table-sm table-responsive" style="border: slategray; float: right; width: 48%">
+          <div style="float: left; width: 48%">
+            <table border="1" style="border: slategray; width: 100%">
               <tr>
-                <td style="font-size: 14pt; font-weight: bold" colspan="2">Autre Garantie</td>
+                <!-- <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td> -->
+                <th colspan="3">
+                  <input type="text"  [(ngModel)]="pieceChercher" /> 
+                  <button class="btn btn-link" (click)="onListGarantie()" >
+                    <!-- [disabled]="(pieceChercher==null || pieceChercher.length==0)" -->
+                    Chercher Piece
+                  </button>
+                </th>
               </tr>
-            <tr>
-              <th>Garantie</th>
-              <th>Prix</th>
-              <th>Expiration</th>
-              <th>Note</th>
-            </tr>
-            <tr>
-              <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
-              <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
-              <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
-              <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
-              <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
-            </tr>
-            <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
-            <tr  *ngFor="let g of garanties">
-                <td>{{g.nom}}</td>
-                <td>{{g.prix}}</td>
-                <td>{{g.expiration}}</td>
-                <td>{{g.note}}</td>
-                <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
-            </tr>
-          </table>
+              <tr>
+                <th>Piece</th><th>Fournisseur</th><th>Prix</th><th>Expiration</th>
+              </tr>
+              <tr *ngFor="let rep of reparations">
+                <td>{{rep.piece}}</td>
+                <td>{{rep.fournisseur}}</td>
+                <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
+                <td>{{rep.garantie}}</td>
+                <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
+              </tr>
+            </table>
+          </div>
+          <!-- <table style="border: slategray; float: left; width: 4%">
+            <tr></tr>
+          </table> -->
+          <div style="float: right; width: 48%; margin-left: 2pt">
+            <table border="1" style="border: slategray; margin-left: 2pt; width: 100%">
+                <tr>
+                  <td style="font-weight: bold" colspan="4">Autres Garanties</td>
+                </tr>
+              <tr>
+                <th>Garantie</th>
+                <th>Prix</th>
+                <th>Expiration</th>
+                <th>Note</th>
+              </tr>
+              <tr>
+                <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+                <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+                <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+                <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+                <td><button class="btn btn-link"  (click)="onAddGarantie()">Ajout</button></td>
+              </tr>
+              <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
+              <tr  *ngFor="let g of garanties">
+                  <td>{{g.nom}}</td>
+                  <td>{{g.prix}}</td>
+                  <td st>{{g.expiration | date: 'dd-MMM-yyyy'}}</td>
+                  <td>{{g.note}}</td>
+                  <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
+              </tr>
+            </table>
+          </div>
         </div>
     </div>  
 
@@ -821,20 +840,20 @@
 </div>
 
 <div *ngIf="varsGlobal.language.includes('English')">
-  <div class="panel panel-primary"> <!--*ngIf="mode==1"-->
-    <div class="panel-heading"> 
+  <div> <!--*ngIf="mode==1"-->
+    <div> 
       <h3> 
         <strong>Unit : {{camion.unite}}</strong>  &nbsp;&nbsp;&nbsp; 
         <span class="btn btn-link" (click)="gotoDetailTransporter(camion.idTransporter)">Return the Fleet</span>
       </h3>
-      <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span>
+      <!-- <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span> -->
       <!-- <button *ngIf="(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && 
         (camion.monitor.length!=0 && camion.monitor.length!=0) && 
         !camion.uniteMonitor.includes('no-gps'))"
         class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button> -->
       <!-- <br> -->
     </div>
-    <div class="panel-body" *ngIf="carte==1">
+    <div *ngIf="carte==1">
       <div class="col-md-12">
         <div class="text-center">
           <h3>
@@ -883,10 +902,10 @@
     </div>
     <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div> -->
 
-    <div class="panel-body">
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeInfos==1">
+    <div>
+        <table border="1" *ngIf="modeInfos==1">
             <tr>
-              <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th>N.I.V</th>
+              <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th colspan="2">N.I.V</th>
               <!-- <th>Vignette SAAQ</th> -->
             </tr>
             <tr>
@@ -894,7 +913,7 @@
               <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
               <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
-              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+              <td colspan="2"><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
               <!-- <td><input class="form-control" type="date" [(ngModel)]="camion.vignetteSaaq" /></td> -->
             </tr>
             <tr>
@@ -941,11 +960,15 @@
               <td><input class="form-control" type="number" [(ngModel)]="camion.hauteur" /></td>
               <td><input class="form-control" type="number" [(ngModel)]="camion.poids" /></td>
             </tr> -->
-            <tr><th colspan="8">Status </th></tr>
+        </table>
+        <br>
+        <table border="1" *ngIf="modeInfos==1">
+            <tr><th colspan="7">Status </th></tr>
             <tr>              
               <td style="width: 12%;">
                 Exploiting&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+              <td>
                 OutService&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />
               </td>
               <td>
@@ -973,9 +996,9 @@
               <!-- <td>
                 <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
               </td> -->
-              <td colspan="7" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+              <td colspan="6" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
                 <a href="{{camion.imgUrl}}" target="_blank">
-                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="100%">
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="25%">
                 </a>
               </td>
             </tr>
@@ -1176,77 +1199,76 @@
                   <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroitePiece" /></td>
                 </tr>  
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeDefinirEnt==1">          
+        <table border="1" *ngIf="modeDefinirEnt==1">          
           <!--tr><th colspan="3">A definir - Kilometrage a faire des entretiens suivants :</th><th></th><th></th><th></th></tr-->
           <tr>
             <th>Program</th><th>Nunber Km to Do</th><th colspan="4">Instructions</th><th>LastMade Odometer</th>
           </tr>          
           <tr>
-            <th>Program 1</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent1" /></td>
+            <th>Program 1</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent1" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message01"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo1Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo1Fait" /></td>
           </tr>
           <tr>
-            <th>Program 2</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent2" /></td>
+            <th>Program 2</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent2" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message02"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo2Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo2Fait" /></td>
           </tr>
           <tr>
-            <th>Program 3</th><td><input class="form-control" type="text" [(ngModel)]="camion.ent3" /></td>
+            <th>Program 3</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent3" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message03"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo3Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo3Fait" /></td>
           </tr>
           <tr>
-            <th>Program 4<br>Hydraulic</th><td><input class="form-control" type="text" [(ngModel)]="camion.filHydrolique" /></td>
+            <th>Program 4<br>Hydraulic</th><td><input class="form-control" type="number" [(ngModel)]="camion.filHydrolique" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message04"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo4Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo4Fait" /></td>
           </tr>
           <tr>
-            <th>Program 5<br>AntiFreeze-Filter</th><td><input class="form-control" type="text" [(ngModel)]="camion.filAntigel" /></td>
+            <th>Program 5<br>AntiFreeze-Filter</th><td><input class="form-control" type="number" [(ngModel)]="camion.filAntigel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message05"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo5Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo5Fait" /></td>
           </tr>
           <tr>
-            <th>Program 6<br>AntiFreeze-Oil</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileAntigel" /></td>
+            <th>Program 6<br>AntiFreeze-Oil</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileAntigel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message06"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo6Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo6Fait" /></td>
           </tr>
           <tr>
-            <th>Program 7<br>Transmission</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileTransmission" /></td>
+            <th>Program 7<br>Transmission</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileTransmission" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message07"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo7Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo7Fait" /></td>
           </tr>
           <tr>
-            <th>Program 8<br>Differentiel</th><td><input class="form-control" type="text" [(ngModel)]="camion.huileDifferentiel" /></td>
+            <th>Program 8<br>Differentiel</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileDifferentiel" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message08"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="camion.odo8Fait" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo8Fait" /></td>
           </tr>
             <!--tr>
                 <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
             </tr-->
           <tr *ngFor="let entretien of entretiens">
             <th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmTrage" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="entretien.kmTrage" /></td>
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.odoFait" /></td>
-            <th>Avertir avant : </th>
-            <td><input class="form-control" type="text" [(ngModel)]="entretien.kmAvertir" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="entretien.odoFait" /></td>
+            <td>Warn before : <input type="text" [(ngModel)]="entretien.kmAvertir" /></td>
             <td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Delete</button></td>
           </tr>           
           <tr><td colspan="2"><strong>Add Program</strong></td></tr>   
           <tr>
-            <th>Program</th><th>Kms to Do</th><th>Warn Before</th><th colspan="4">Instructions</th><th>LastMade Odometer</th>
+            <th>Program</th><th>Kms to Do</th><th colspan="4">Instructions</th><th>LastMade Odometer</th><th>Warn before</th>
           </tr>  
           <tr>
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmTrage" /></td>
-            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmAvertir" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmTrage" /></td>            
             <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="autreEntretien.message"></textarea></td>                
             <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.odoFait" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.kmAvertir" /></td>
             <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>
           </tr>           
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
+        <table border="1" *ngIf="modeEntretiens==1">
             <tr><th colspan="8">Programs to Do (color code - <span style="color: green;">Green : Good</span>, <span style="color:rgb(255, 196, 0);">Yellow : Attention</span>, <span style="color: red;">Red : Urgent</span>) </th></tr>
             <tr>
               <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Program 1 {{codeTextEnt1(camion)}}</button></td>
@@ -1269,8 +1291,9 @@
             <tr>
               <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection 6 Months {{codeTextInspect()}}</button></td>
             </tr>
-        </table>          
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
+        </table>     
+     
+        <table border="1" *ngIf="modeBonDeTravail==1">
           <!--entretien - begin-->
           <tr><th colspan="8">Programs to Do (color code - <span style="color: green;">Green : Good</span>, <span style="color:rgb(255, 196, 0);">Yellow : Attention</span>, <span style="color: red;">Red : Urgent</span>) </th></tr>
           <tr>
@@ -1297,14 +1320,15 @@
           <!--entretien - end-->
         </table>
         <!--div id="toprint"-->
-        <table *ngIf="modeBonDeTravail==1">
+        <!-- <br> -->
+        <table border="1" *ngIf="modeBonDeTravail==1">
           <tr>
             <th *ngIf="bonDeTravail.id!=null && bonDeTravail.id>0">#Num {{bonDeTravail.id}} &nbsp;</th>            
-            <th>Date</th><td><input class="form-control" type="date" [(ngModel)]="bonDeTravail.date"/></td> <!--name="dateReparation" min="{{today | date: 'yyyy-MM-dd'}}"-->
-            <th>Technician</th><td><input class="form-control" type="text" [(ngModel)]="bonDeTravail.technicien"/></td>
+            <th colspan="2">Date <input type="date" [(ngModel)]="bonDeTravail.date"/></th> <!--name="dateReparation" min="{{today | date: 'yyyy-MM-dd'}}"-->
+            <th colspan="2">Technician <input type="text" [(ngModel)]="bonDeTravail.technicien"/></th>
           </tr>
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
+        <table border="1" *ngIf="modeBonDeTravail==1">
           <tr><br></tr>
           <tr>    
             <th>Mecanical : <input type="checkbox" [(ngModel)]="bonDeTravail.mecanique"></th>
@@ -1334,7 +1358,8 @@
               <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur" disabled/></td>
           </tr>
         </table>
-        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1">
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <br>
           <tr>
             <th>TaskToDo</th><th>Piece</th><th>Supplier</th><th>Warranty</th><th>Quantity</th><th>$/unit</th><th>Hours</th><th>$/hour</th><th>Price &nbsp;&nbsp;&nbsp;&nbsp;</th>                        
           </tr>
@@ -1375,7 +1400,7 @@
             <td *ngIf="reparations.length>1"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
           </tr>  
           <tr>
-            <th colspan="2">Add Task</th>
+            <th colspan="2">&nbsp;</th>
           </tr>
           <tr>
             <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.reparationEffectuer"></td-->
@@ -1469,7 +1494,7 @@
             </td> -->
           </tr>                              
         </table>
-        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
           <tr>
             <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th colspan="2">N.I.V</th>
           </tr>
@@ -1491,7 +1516,7 @@
             <td>{{fiche.couleur}}</td>
           </tr>
         </table>
-        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
           <tr>
             <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
             <th>TaskToDo</th><th>Piece</th><th>Supplier</th><th>Warranty</th><th>Quantity</th><th>$/unit</th><th>Hours</th><th>$/hour</th><th style="text-align: center">Price</th>                    
@@ -1556,7 +1581,7 @@
           Resume
         </button>
         <!--Review BonDeTravail - end-->
-        <table  class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==0">
+        <table  border="1" *ngIf="modeListReparation==1 && modeBonhist==0">
           <tr>
             <th>Number</th>
             <th>Technician</th>
@@ -1576,56 +1601,60 @@
               style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea>
             </td>
             <td><span *ngIf="bon.fini">Finished</span><span *ngIf="!bon.fini">Open</span></td>
-            <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detailler</button></td> -->
+            <!-- <td><button class="btn btn-link" (click)="onHistoireDetailler(bon)">Detail</button></td> -->
             <td><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detail</button></td>
           </tr>
         </table>
         <div class="row" *ngIf="modeListGarantie==1">
-          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 48%">
-            <tr>
-              <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
-              <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Search Piece</button></td>
-            </tr>
-            <tr>
-              <th>Piece</th><th>Supplier</th><th>Price</th><th>Expiration</th>
-            </tr>
-            <tr *ngFor="let rep of reparations">
-              <td>{{rep.piece}}</td>
-              <td>{{rep.fournisseur}}</td>
-              <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
-              <td>{{rep.garantie}}</td>
-              <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
-            </tr>
-          </table>
-          <table class="table table-sm table-responsive" style="border: slategray; float: left; width: 4%">
-            <tr></tr>
-          </table>
-          <table class="table table-sm table-responsive" style="border: slategray; float: right; width: 48%">
+          <div style="float: left; width: 48%">
+            <table border="1" style="border: slategray; width: 100%">
               <tr>
-                <td style="font-size: 14pt; font-weight: bold" colspan="2">Another Warranty</td>
+                <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
+                <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Search Piece</button></td>
               </tr>
-            <tr>
-              <th>Warranty</th>
-              <th>Price</th>
-              <th>Expiration</th>
-              <th>Note</th>
-            </tr>
-            <tr>
-              <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
-              <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
-              <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
-              <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
-              <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
-            </tr>
-            <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
-            <tr  *ngFor="let g of garanties">
-                <td>{{g.nom}}</td>
-                <td>{{g.prix}}</td>
-                <td>{{g.expiration}}</td>
-                <td>{{g.note}}</td>
-                <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
-            </tr>
-          </table>
+              <tr>
+                <th>Piece</th><th>Supplier</th><th>Price</th><th>Expiration</th>
+              </tr>
+              <tr *ngFor="let rep of reparations">
+                <td>{{rep.piece}}</td>
+                <td>{{rep.fournisseur}}</td>
+                <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
+                <td>{{rep.garantie}}</td>
+                <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
+              </tr>
+            </table>
+          </div>
+          <!-- <table border="1" style="border: slategray; float: left; width: 4%">
+            <tr></tr>
+          </table> -->
+          <div style="float: right; width: 48%; margin-left: 2pt">
+            <table border="1" style="border: slategray; width: 100%; margin-left: 2pt;">
+                <tr>
+                  <td style="font-weight: bold" colspan="4">Another Warranty</td>
+                </tr>
+              <tr>
+                <th>Warranty</th>
+                <th>Price</th>
+                <th>Expiration</th>
+                <th>Note</th>
+              </tr>
+              <tr>
+                <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+                <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+                <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+                <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+                <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
+              </tr>
+              <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
+              <tr  *ngFor="let g of garanties">
+                  <td>{{g.nom}}</td>
+                  <td>{{g.prix}}</td>
+                  <td>{{g.expiration | date: 'dd-MMM-yyyy'}}</td>
+                  <td>{{g.note}}</td>
+                  <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
+              </tr>
+            </table>
+          </div>
         </div>
     </div>  
 
