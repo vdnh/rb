@@ -3204,6 +3204,24 @@ onSortDate(data:Array<Transport>){
     this.getPagesEvaluationsTransport()
   }
   // end code evaluationsTransportTransporterPaged
+
+  // begin for transit address
+  addressTransit=""
+  listAddressTransit=[]
+  showBarTransit=false;
+  addAddressTransit(){
+    this.showBarTransit=true
+    this.addressTransit=""
+  }
+
+  public async handleAddressTransit(address: Address) {
+    this.addressTransit=await address.formatted_address;
+    this.listAddressTransit.push(this.addressTransit)
+    console.log("this.listAddressTransit: "+this.listAddressTransit)
+    this.showBarTransit=false
+  }
+  // end of transit address
+
 }
 
 class PageTransport{

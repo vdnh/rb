@@ -385,6 +385,11 @@
           <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
         </datalist>
       </span>
+      <div *ngIf="listAddressTransit.length>0" style="margin-left: 15pt;">
+        <strong *ngFor="let adTransit of listAddressTransit; let i = index">
+          {{"Transit "+(i+1)+": "}} {{adTransit}} <button class="btn btn-link" (click)="listAddressTransit.splice(i,1)">x</button><br>
+        </strong>
+      </div>
     </div>
 
     <div *ngIf="transport.origin.length>8">
@@ -453,6 +458,12 @@
     <strong *ngIf="transport.loadsFee!=null && transport.distance!=null">
       <!-- {{transport.loadsFee}} -->
       <input style="width: 10ch;" type="number" [(ngModel)]="transport.loadsFee">
+      <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressTransit()">Add Transit Address</button>
+      <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressTransit()">Ajout Adresse de Transit</button>
+      <span *ngIf="showBarTransit">
+        <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+        (onAddressChange)="handleAddressTransit($event)" type="text" [(ngModel)]="addressTransit">
+      </span>
     </strong>
     <!-- <br> -->
     <span *ngIf="transport.loadsFee==null">en estimation</span>
