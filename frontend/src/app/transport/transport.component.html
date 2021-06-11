@@ -385,11 +385,35 @@
           <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
         </datalist>
       </span>
-      <div *ngIf="listAddressTransit.length>0" style="margin-left: 15pt;">
+      <div *ngIf="listAddressPick.length>0" style="margin-left: 25pt;">
+        <strong *ngFor="let adPick of listAddressPick; let i = index">
+          <strong *ngIf="varsGlobal.language.includes('English')">
+            {{"Pick "+(i+2)+": "}} {{adPick}} <button class="btn btn-link" (click)="listAddressPick.splice(i,1)">x</button><br>
+          </strong>
+          <strong *ngIf="varsGlobal.language.includes('Francais')">
+            {{"Ramasse "+(i+2)+": "}} {{adPick}} <button class="btn btn-link" (click)="listAddressPick.splice(i,1)">x</button><br>
+          </strong>
+        </strong>
+      </div>
+      <div *ngIf="transport.origin.length>8" style="margin-left: 15pt;">
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressPick()">
+          <span *ngIf="showBarPick">Cancel</span>
+          <span *ngIf="!showBarPick">Add Pick Address</span>
+        </button>
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressPick()">
+          <span *ngIf="showBarPick">Annuler</span>
+          <span *ngIf="!showBarPick">Ajout Adresse Ramasse</span>
+        </button>
+        <span *ngIf="showBarPick">
+          <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+          (onAddressChange)="handleAddressPick($event)" type="text" [(ngModel)]="addressPick">
+        </span>
+      </div>
+      <!-- <div *ngIf="listAddressTransit.length>0" style="margin-left: 15pt;">
         <strong *ngFor="let adTransit of listAddressTransit; let i = index">
           {{"Transit "+(i+1)+": "}} {{adTransit}} <button class="btn btn-link" (click)="listAddressTransit.splice(i,1)">x</button><br>
         </strong>
-      </div>
+      </div> -->
     </div>
 
     <div *ngIf="transport.origin.length>8">
@@ -406,6 +430,25 @@
           <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
         </datalist>
       </span>
+      <div *ngIf="listAddressDrop.length>0" style="margin-left: 25pt;">
+        <strong *ngFor="let adDrop of listAddressDrop; let i = index">
+          {{"Drop "+(i+2)+": "}} {{adDrop}} <button class="btn btn-link" (click)="listAddressDrop.splice(i,1)">x</button><br>
+        </strong>
+      </div>
+      <div *ngIf="transport.destination.length>8" style="margin-left: 15pt;">
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressDrop()">
+          <span *ngIf="showBarDrop">Cancel</span>
+          <span *ngIf="!showBarDrop">Add Drop Address</span>
+        </button>
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressDrop()">
+          <span *ngIf="showBarDrop">Annuler</span>
+          <span *ngIf="!showBarDrop">Ajout Drop Adresse</span>          
+        </button>
+        <span *ngIf="showBarDrop">
+          <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+          (onAddressChange)="handleAddressDrop($event)" type="text" [(ngModel)]="addressDrop">
+        </span>
+      </div>
     </div>
   </div>
   <br>
@@ -458,12 +501,12 @@
     <strong *ngIf="transport.loadsFee!=null && transport.distance!=null">
       <!-- {{transport.loadsFee}} -->
       <input style="width: 10ch;" type="number" [(ngModel)]="transport.loadsFee">
-      <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressTransit()">Add Transit Address</button>
+      <!-- <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressTransit()">Add Transit Address</button>
       <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressTransit()">Ajout Adresse de Transit</button>
       <span *ngIf="showBarTransit">
         <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
         (onAddressChange)="handleAddressTransit($event)" type="text" [(ngModel)]="addressTransit">
-      </span>
+      </span> -->
     </strong>
     <!-- <br> -->
     <span *ngIf="transport.loadsFee==null">en estimation</span>

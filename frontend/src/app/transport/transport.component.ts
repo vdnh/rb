@@ -1125,6 +1125,16 @@ export class TransportComponent implements OnInit, OnDestroy {
     
     // renew loadlist
     this.loadDetails=new Array<LoadDetail>();
+
+    // reset for multiaddress
+    this.addressPick=""
+    this.listAddressPick=[]
+    this.showBarPick=false;  
+    
+    this.addressDrop=""
+    this.listAddressDrop=[]
+    this.showBarDrop=false;
+
   }
 
   loadFrequentChange(){
@@ -3210,7 +3220,7 @@ onSortDate(data:Array<Transport>){
   listAddressTransit=[]
   showBarTransit=false;
   addAddressTransit(){
-    this.showBarTransit=true
+    this.showBarTransit=!this.showBarTransit
     this.addressTransit=""
   }
 
@@ -3221,6 +3231,40 @@ onSortDate(data:Array<Transport>){
     this.showBarTransit=false
   }
   // end of transit address
+
+  // begin for adding pick address
+  addressPick=""
+  listAddressPick=[]
+  showBarPick=false;
+  addAddressPick(){
+    this.showBarPick=!this.showBarPick
+    this.addressPick=""
+  }
+
+  public async handleAddressPick(address: Address) {
+    this.addressPick=await address.formatted_address;
+    this.listAddressPick.push(this.addressPick)
+    console.log("this.listAddressPick: "+this.listAddressPick)
+    this.showBarPick=false
+  }
+  // end of adding Pick address
+
+  // begin for adding Drop address
+  addressDrop=""
+  listAddressDrop=[]
+  showBarDrop=false;
+  addAddressDrop(){
+    this.showBarDrop=!this.showBarDrop
+    this.addressDrop=""
+  }
+
+  public async handleAddressDrop(address: Address) {
+    this.addressDrop=await address.formatted_address;
+    this.listAddressDrop.push(this.addressDrop)
+    console.log("this.listAddressDrop: "+this.listAddressDrop)
+    this.showBarDrop=false
+  }
+  // end of adding Drop address
 
 }
 

@@ -136,6 +136,7 @@
                 <tr>
                   <th>Load</th>
                   <th>Prix de Base</th>
+                  <th>PrixMultiAdresses</th>
                   <th>Km Inclus</th>
                   <th>$/Km</th>
                   <!-- <th>$/Km(plus100km)</th> -->
@@ -144,6 +145,7 @@
                 <tr *ngFor="let lf of loadFrequents">
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
+                  <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pBMultiAddress" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.kmInclus" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
                   <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
@@ -534,6 +536,7 @@
                 <tr>
                   <th>Load</th>
                   <th>Price Base</th>
+                  <th>PriceMultiAddress</th>
                   <th>Km Included</th>
                   <th>$/Km</th>
                   <!-- <th>$/Km(more100km)</th> -->
@@ -542,6 +545,7 @@
                 <tr *ngFor="let lf of loadFrequents">
                   <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
+                  <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pBMultiAddress" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.kmInclus" /></td>
                   <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
                   <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
