@@ -32,5 +32,5 @@ public class LoadFrequent implements Serializable{
     private Float priceKmType1; // <=100 kms // actually, we need this to calculate price
     private Float priceKmType2; // >100 kms // actually, we don't need the 2nd type
     private Float kmInclus; // km included in the base price
-    private Float pBMultiAddress; // from 2nd charge
+    private Float pbmultiAddress; // from 2nd charge
 }

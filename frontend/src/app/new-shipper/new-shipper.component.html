@@ -142,9 +142,12 @@
               <th>Prix Minimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+              <td width="16%">
+                <textarea  class="form-control" type="text" [(ngModel)]="lf.nom" cols="30" rows="2"></textarea>
+                <!-- <input class="form-control" type="text" [(ngModel)]="lf.nom" /> -->
+              </td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pBMultiAddress" /></td>
+              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pbmultiAddress" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.kmInclus" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
@@ -517,9 +520,12 @@
               <th>Price Minimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
-              <td width="14%"><input class="form-control" type="text" [(ngModel)]="lf.nom" /></td>
+              <td width="16%">
+                <textarea  class="form-control" type="text" [(ngModel)]="lf.nom" cols="30" rows="2"></textarea>
+                <!-- <input class="form-control" type="text" [(ngModel)]="lf.nom" /> -->
+              </td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceBase" /></td>
-              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pBMultiAddress" /></td>
+              <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.pbmultiAddress" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.kmInclus" /></td>
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->

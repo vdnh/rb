@@ -116,7 +116,7 @@ export class TransportComponent implements OnInit, OnDestroy {
   
   YukonVilles=myGlobals.YukonVilles;
 //*/
-  mode=1; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
+  mode=2; // Si : mode = 2 on est en cm et kg // Si : mode = 1 en pouce et lbs
   
   transport:Transport=new Transport();
 
@@ -1134,7 +1134,6 @@ export class TransportComponent implements OnInit, OnDestroy {
     this.addressDrop=""
     this.listAddressDrop=[]
     this.showBarDrop=false;
-
   }
 
   loadFrequentChange(){
@@ -1208,7 +1207,8 @@ export class TransportComponent implements OnInit, OnDestroy {
               }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      // await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      await this.buildListAllAddressAndCalculateDistance().
       then(()=>this.originSimpleChangeBusy=false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1244,7 +1244,8 @@ export class TransportComponent implements OnInit, OnDestroy {
             }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      // await this.setDistanceTravel(this.transport.origin, this.transport.destination).
+      await this.buildListAllAddressAndCalculateDistance().
       then(()=>this.destinationSimpleChangeBusy = false)
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
@@ -1371,18 +1372,18 @@ export class TransportComponent implements OnInit, OnDestroy {
 
       let quantity =(loadDetail.quantity>0?loadDetail.quantity:1)
       let priceKm = loadFrequent.priceKmType1 // just one type price now - (distance<=100?loadFrequent.priceKmType1:loadFrequent.priceKmType2)
-      let priceLoadFrequent=(loadFrequent.priceBase + priceKm*distanceToCharge)
+      let priceLoadFrequent=(loadFrequent.priceBase + (loadFrequent.pbmultiAddress*this.timesMultiAddress) + priceKm*distanceToCharge)
       priceLoadFrequent = (priceLoadFrequent>loadFrequent.priceMinimum?priceLoadFrequent:loadFrequent.priceMinimum)
       loadDetail.price=quantity*priceLoadFrequent
     }
   }
   // prix base
-  prixBase(totalPoints:number){
+  async prixBase(totalPoints:number){
     this.transport.prixBase =0.00;
 
     this.transport.loadsFee=0.00;
     let tempLoadsFee=0.00;
-    this.loadDetails.forEach(ld=>{
+    await this.loadDetails.forEach(ld=>{
       this.priceLoad(ld, this.loadFrequents.find(x=>(x.id===ld.idLoadFrequent)))
       tempLoadsFee+=ld.price
     })
@@ -1481,7 +1482,8 @@ async originChange(){
             }
     });//*/
     if(this.transport.destination!=null && this.transport.destination.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      // await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.buildListAllAddressAndCalculateDistance()
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
@@ -1542,7 +1544,8 @@ async destinationChange(){
             }
     });//*/
     if(this.transport.origin!=null && this.transport.origin.length>0){
-      await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      // await this.setDistanceTravel(this.transport.origin, this.transport.destination)
+      await this.buildListAllAddressAndCalculateDistance()
       //await this.showMap()
       //this.typeServiceChange(this.remorquage.typeService)
     }
@@ -2685,9 +2688,9 @@ onSortDate(data:Array<Transport>){
     // calculate load distance - ld
     // let trafficModel: google.maps.TrafficModel;
     let timeNow = new Date();
-    console.log('timeNow just created in ms: ' + timeNow.getTime())
+    // console.log('timeNow just created in ms: ' + timeNow.getTime())
     timeNow.setHours(0,0,0,0)
-    console.log('timeNow after set to midnight in ms: ' + timeNow.getTime())
+    // console.log('timeNow after set to midnight in ms: ' + timeNow.getTime())
     service.getDistanceMatrix({
       'origins': [address1], 'destinations': [address2], travelMode:google.maps.TravelMode.DRIVING, 
       drivingOptions: {
@@ -2696,9 +2699,9 @@ onSortDate(data:Array<Transport>){
         trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
       }
     }, (results: any) => {    
-      console.log('Check timeNow after set to midnight in ms: ' + timeNow.getTime())  
-      console.log('Check time actual: ' + new Date().getTime())  
-      console.log('Check timeNow after add 10 days in ms: ' + new Date(timeNow.getTime() + 1000*60*60*24*10).getTime())  
+      // console.log('Check timeNow after set to midnight in ms: ' + timeNow.getTime())  
+      // console.log('Check time actual: ' + new Date().getTime())  
+      // console.log('Check timeNow after add 10 days in ms: ' + new Date(timeNow.getTime() + 1000*60*60*24*10).getTime())  
       if(results.rows[0].elements[0].distance!=undefined){
         okForWriting = true;
         if(this.mode==1){
@@ -3245,6 +3248,7 @@ onSortDate(data:Array<Transport>){
     this.addressPick=await address.formatted_address;
     this.listAddressPick.push(this.addressPick)
     console.log("this.listAddressPick: "+this.listAddressPick)
+    this.buildListAllAddressAndCalculateDistance()
     this.showBarPick=false
   }
   // end of adding Pick address
@@ -3262,10 +3266,116 @@ onSortDate(data:Array<Transport>){
     this.addressDrop=await address.formatted_address;
     this.listAddressDrop.push(this.addressDrop)
     console.log("this.listAddressDrop: "+this.listAddressDrop)
+    this.buildListAllAddressAndCalculateDistance()
     this.showBarDrop=false
   }
   // end of adding Drop address
 
+  // begin build list all address to calculate
+  distanceTotal=0;
+  listAllAddress=[]
+  timesMultiAddress=0
+  listOrigins:Array<string>=[]
+  listDestinations:Array<string>=[]
+  async buildListAllAddressAndCalculateDistance(){
+    
+    // build listOrigins 
+    this.listOrigins=[]
+    this.listOrigins.push(this.transport.origin)
+    this.listOrigins=this.listOrigins.concat(this.listAddressPick)
+    this.listOrigins.push(this.transport.destination)
+    this.listOrigins=this.listOrigins.concat(this.listAddressDrop)
+    // build listDestinations 
+    this.listDestinations=[]
+    this.listDestinations=this.listDestinations.concat(this.listAddressPick)
+    this.listDestinations.push(this.transport.destination)
+    this.listDestinations=this.listDestinations.concat(this.listAddressDrop)
+    
+
+    this.listAllAddress=[]
+    this.distanceTotal=0;
+    this.transport.loadsFee=null; // set transport.loadsFee=null to show text "estimating"
+    this.listAllAddress.push(this.transport.origin)
+    this.listAllAddress=this.listAllAddress.concat(this.listAddressPick)
+    this.listAllAddress.push(this.transport.destination)
+    this.listAllAddress=this.listAllAddress.concat(this.listAddressDrop)
+    console.log("this.listAllAddress : "+ this.listAllAddress)
+    this.timesMultiAddress=this.listAllAddress.length-2; //  -2 because of 1 time always with priceMinimun
+    console.log("this.timesMultiAddress : "+ this.timesMultiAddress)
+    if(this.transport.destination.length>0 || this.listAddressDrop.length>0){
+      // let i = 0; // the first place in this.listAllAddress
+      this.calculateMultiDistances();
+
+    }
+  }
+
+  calculateMultiDistances(){ // i here is index in this.listAllAddress
+    // for(let i:number=0;i<this.listAllAddress.length-1;i++){
+      // console.log(this.listAllAddress[i]+" **---**"+this.listAllAddress[i+1])
+      //begin get distance between 2 points
+      // let distance=null; // set distance to null, before calculate
+      let service = new google.maps.DistanceMatrixService;// = new google.maps.DistanceMatrixService()
+      
+      let timeNow = new Date();
+      
+      timeNow.setHours(0,0,0,0)
+      
+      service.getDistanceMatrix({
+        // 'origins': [this.listAllAddress[i]], 'destinations': [this.listAllAddress[i+1]], travelMode:google.maps.TravelMode.DRIVING, 
+        'origins': this.listOrigins, 'destinations': this.listDestinations, travelMode:google.maps.TravelMode.DRIVING,
+        drivingOptions: {
+          departureTime: new Date(timeNow.getTime() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+          // departureTime: new Date(Date.now() + 1000*60*60*24*10), // this time for 10 days after, to avoid the actual traffic
+          trafficModel: google.maps.TrafficModel.OPTIMISTIC //'optimistic'
+        }
+      },async (response, status) => {    
+        if (status !== "OK") {
+          alert("Error was: " + status);
+        }
+        else{
+          // const originList = this.listOrigins;// response.originAddresses;
+          // const destinationList = this.listDestinations; // response.destinationAddresses;
+          for (let i = 0; i < this.listOrigins.length-1; i++) {
+            const results = response.rows[i].elements;
+            console.log(i+": " + this.listOrigins[i]+ " - " + this.listDestinations[i]+" : "+Math.round(results[i].distance.value/1000))
+            this.distanceTotal+= Math.round(results[i].distance.value/1000)
+          }
+          this.transport.distance=this.distanceTotal
+          await this.prixBase(this.transport.totalpoints)
+          this.sleep(1000)
+          console.log("this.transport.loadsFee: "+this.transport.loadsFee+"$")
+          console.log("this.transport.distance = this.distanceTotal = "+this.transport.distance)
+        }
+
+        /*/ temporaire deactivate
+        if(response.rows[0].elements[0].distance!=undefined){
+          distance= Math.round((response.rows[0].elements[0].distance.value)/1000) 
+          console.log("distance: "+distance+" km") 
+          this.distanceTotal=this.distanceTotal+distance
+          console.log("this.distanceTotal: "+this.distanceTotal+" km") 
+          // here we call recursive to calculate the next travel in the this.listAllAddress
+          // if(i<this.listAllAddress.length-2) {
+          //   i=i+1;
+          //   this.calculateMultiDistances(i);
+          // }
+          // else{
+            // here we calculate the price travel            
+            this.transport.distance=this.distanceTotal
+            await this.prixBase(this.transport.totalpoints)
+            this.sleep(1000)
+            console.log("this.transport.loadsFee: "+this.transport.loadsFee+"$")
+            // alert("Finished calculate kms total. DistanceTotal: "+this.transport.distance+" km")
+            // alert("Finished calculate kms total. DistanceTotal: "+this.transport.distance+" km")
+            // this.sleep(2000);
+          // }
+        }
+        // end of deactivate */
+      
+      });
+      //end get distance between 2 points
+    // }
+  }
+  // end build list address to calculate
 }
 
 class PageTransport{
