@@ -230,12 +230,38 @@
         <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.origin" (change)="originSimpleChange()" list="adCookies"> -->
         <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
         (onAddressChange)="handleAddressOriginChange($event)" type="text" [(ngModel)]="transport.origin" 
-        (change)="originSimpleChange()" list="adCookies" 
         [disabled]="(transport.loadsFee!=null && transport.distance!=null)">
+        <!-- (change)="originSimpleChange()" list="adCookies" 
         <datalist id="adCookies">
           <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
-        </datalist>
+        </datalist> -->
       </span>
+      <div *ngIf="listAddressPick.length>0" style="margin-left: 25pt;">
+        <strong *ngFor="let adPick of listAddressPick; let i = index">
+          <strong *ngIf="varsGlobal.language.includes('English')">
+            {{"Pick "+(i+2)+": "}} {{adPick}} <button class="btn btn-link" 
+            (click)="listAddressPick.splice(i,1); buildListAllAddressAndCalculateDistance()">x</button><br>
+          </strong>
+          <strong *ngIf="varsGlobal.language.includes('Francais')">
+            {{"Ramasse "+(i+2)+": "}} {{adPick}} <button class="btn btn-link" 
+            (click)="listAddressPick.splice(i,1); buildListAllAddressAndCalculateDistance()">x</button><br>
+          </strong>
+        </strong>
+      </div>
+      <div *ngIf="transport.origin.length>8" style="margin-left: 15pt;">
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressPick()">
+          <span *ngIf="showBarPick">Cancel</span>
+          <span *ngIf="!showBarPick">Add Pick Address</span>
+        </button>
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressPick()">
+          <span *ngIf="showBarPick">Annuler</span>
+          <span *ngIf="!showBarPick">Ajout Adresse Ramasse</span>
+        </button>
+        <span *ngIf="showBarPick">
+          <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+          (onAddressChange)="handleAddressPick($event)" type="text" [(ngModel)]="addressPick">
+        </span>
+      </div>
     </div>
 
     <div *ngIf="transport.origin.length>8">
@@ -245,12 +271,32 @@
         <!-- <input style="width: 50ch;" type="text" [(ngModel)]="transport.destination" (change)="destinationSimpleChange()" list="adCookies"> -->
         <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
         (onAddressChange)="handleAddressDestinationChange($event)" type="text" [(ngModel)]="transport.destination" 
-        (change)="destinationSimpleChange()" list="adCookies" 
         [disabled]="(transport.loadsFee!=null && transport.distance!=null)">
+        <!-- (change)="destinationSimpleChange()" list="adCookies" 
         <datalist id="adCookies">
           <option *ngFor="let address of varsGlobal.addressCookieToList" [ngValue]="address">{{address}}</option>
-        </datalist>
+        </datalist> -->
       </span>
+      <div *ngIf="listAddressDrop.length>0" style="margin-left: 25pt;">
+        <strong *ngFor="let adDrop of listAddressDrop; let i = index">
+          {{"Drop "+(i+2)+": "}} {{adDrop}} <button class="btn btn-link" 
+          (click)="listAddressDrop.splice(i,1); buildListAllAddressAndCalculateDistance()">x</button><br>
+        </strong>
+      </div>
+      <div *ngIf="transport.destination.length>8" style="margin-left: 15pt;">
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('English')" (click)="addAddressDrop()">
+          <span *ngIf="showBarDrop">Cancel</span>
+          <span *ngIf="!showBarDrop">Add Drop Address</span>
+        </button>
+        <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressDrop()">
+          <span *ngIf="showBarDrop">Annuler</span>
+          <span *ngIf="!showBarDrop">Ajout Drop Adresse</span>          
+        </button>
+        <span *ngIf="showBarDrop">
+          <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+          (onAddressChange)="handleAddressDrop($event)" type="text" [(ngModel)]="addressDrop">
+        </span>
+      </div>
     </div>
     
     <div *ngIf="transport.typeDoc==2 && transport.origin.length>8 && transport.destination.length>8 && transport.loadsFee!=null && transport.distance!=null">
@@ -403,8 +449,10 @@
       Order: {{writeTransportAskDescription()}}</h3> <!-- {{loadFrequent.nom}} -->
     <h4>Price: {{transport.loadsFee}}</h4>
     <h4>From: {{transport.origin}}</h4>
+    <h4 *ngFor="let addrPick of listAddressPick; let i=index" style="margin-left: 15pt;">Pick{{(i+2)+": "+ addrPick}}</h4>
     <h4 *ngIf="transport.nomClient!=null">Departures' Contact: {{transport.nomClient}}</h4>
     <h4>To: {{transport.destination}}</h4>
+    <h4 *ngFor="let addrDrop of listAddressDrop; let i=index" style="margin-left: 15pt;">Drop{{(i+2)+": "+ addrDrop}}</h4>
     <h4 *ngIf="transport.contactDest!=null">Deliverys' Contact: {{transport.contactDest}}</h4>
     <h4 *ngIf="transport.comments!=null">More Infos: {{transport.comments}}</h4>
   </div>
@@ -414,8 +462,10 @@
       Commande: {{writeTransportAskDescription()}}</h3> <!-- {{loadFrequent.nom}} -->
     <h4>Prix: {{transport.loadsFee}}</h4>
     <h4>De: {{transport.origin}}</h4>
+    <h4 *ngFor="let addrPick of listAddressPick; let i=index" style="margin-left: 15pt;">Ramasse{{(i+2)+": "+ addrPick}}</h4>
     <h4 *ngIf="transport.nomClient!=null">Contact de Depart: {{transport.nomClient}}</h4>
     <h4>A: {{transport.destination}}</h4>
+    <h4 *ngFor="let addrDrop of listAddressDrop; let i=index" style="margin-left: 15pt;">Drop{{(i+2)+": "+ addrDrop}}</h4>
     <h4 *ngIf="transport.contactDest!=null">Contact de Livraison: {{transport.contactDest}}</h4>
     <h4 *ngIf="transport.comments!=null">Plus Infos: {{transport.comments}}</h4>
   </div>
