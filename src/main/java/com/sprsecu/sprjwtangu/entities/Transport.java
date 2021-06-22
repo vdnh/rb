@@ -170,6 +170,10 @@ public class Transport implements Serializable{
     
     private Boolean archive=false; // Transport archived after finished, false by default
     
+    // multi address
+    private String pickAddress; // all pick address beside principal origin address; separated by **--**
+    private String dropAddress; // all drop address beside principal destination address; separated by **--**
+    
     private Integer evaluatedTimes = 0;
     
     private String textTimes = "";

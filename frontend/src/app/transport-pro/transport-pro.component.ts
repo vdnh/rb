@@ -653,6 +653,7 @@ export class TransportProComponent implements OnInit {
     this.listAddressDrop=[]
     this.showBarDrop=false;
 
+    this.inSending = false;
   }
 
   chauffeurChange(){
@@ -1626,8 +1627,8 @@ onSortDate(data:Array<Transport>){
             console.log(err);
           })
         })
-        if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
-        if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
+        // if(this.varsGlobal.language.includes('Francais')) alert(this.transport.typeDoc==1?"C'est enregistre.":"Votre commande a ete envoye.")
+        // if(this.varsGlobal.language.includes('English')) alert(this.transport.typeDoc==1?"It's saved.":"Your order was sent.")
         // after create order then create itineraire
         if(this.transport.typeDoc==2){ // if a command, create route
           let route = new Itineraire();
@@ -1647,10 +1648,16 @@ onSortDate(data:Array<Transport>){
           route.origin = this.transport.origin
           route.originLat = this.transport.originLat
           route.originLong = this.transport.originLong
+          
+          // Here, pickAddress and dropAddress are multiaddress from transport
+          route.pickAddress = this.transport.pickAddress
+          route.dropAddress = this.transport.dropAddress
+
           this.itinerairesService.saveItineraires(route).subscribe((data:Itineraire)=>{
             route=data;
           }, err=>{console.log()}) 
-          if(this.transport.typeDoc==2) this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
+          this.onEnvoyerWithSaveSimple(); // essayer de envoyer to cts.solution.transport@gmail.com
+          this.sleep(2000)  // sleep 2 seconds while sending email
         }
       }, err=>{
         console.log(err)
@@ -2352,7 +2359,9 @@ onSortDate(data:Array<Transport>){
     });  // go to top  
   }
 
+  inSending = false;
   onEnvoyerWithSaveSimple(){
+    this.inSending = true;
     // let stringsd:string[]=location.href.split('/transport-pro')
     this.em.emailDest= this.transporter.email; // myGlobals.emailPrincipal; //
     
@@ -2405,6 +2414,8 @@ onSortDate(data:Array<Transport>){
       // console.log('Atachement with this.em.content: '+ this.em.content)
       this.em.attachement= this.transport.imgUrl
       this.bankClientsService.envoyerMailAttachment(this.em).subscribe(data=>{
+        if(this.varsGlobal.language.includes('Francais')) alert("Votre commande a ete envoye.")
+        if(this.varsGlobal.language.includes('English')) alert("Your order was sent.")
         this.resetSimple(); 
         // this.contactChange();
       }, err=>{console.log()})
@@ -2417,6 +2428,8 @@ onSortDate(data:Array<Transport>){
     +"'><h4>Detail</h4></a>" +" </p></div>"    
     //*/
     else this.bankClientsService.envoyerMail(this.em).subscribe(data=>{
+      if(this.varsGlobal.language.includes('Francais')) alert("Votre commande a ete envoye.")
+      if(this.varsGlobal.language.includes('English')) alert("Your order was sent.")
       this.resetSimple(); // reset/new after sent
       // this.contactChange(); // set transport email contact
     }, err=>{console.log()})
@@ -2587,6 +2600,11 @@ onSortDate(data:Array<Transport>){
     this.listDestinations.push(this.transport.destination)
     this.listDestinations=this.listDestinations.concat(this.listAddressDrop)
     
+    // set multi address to entity transport
+    this.transport.pickAddress=""; // all pick address beside principal origin address; separated by **--**
+    this.listAddressPick.forEach(pickAd=>{this.transport.pickAddress=this.transport.pickAddress+pickAd+"**--**"})
+    this.transport.dropAddress=""; // all drop address beside principal destination address; separated by **--**
+    this.listAddressDrop.forEach(dropAd=>{this.transport.dropAddress=this.transport.dropAddress+dropAd+"**--**"})
 
     this.listAllAddress=[]
     this.distanceTotal=0;
@@ -2603,6 +2621,16 @@ onSortDate(data:Array<Transport>){
       this.calculateMultiDistances();
 
     }
+  }
+
+  renderMultiAddress(multiAd:string){
+    let listReturn = []
+    if(multiAd!=null){
+      listReturn = multiAd.split("**--**")
+      listReturn.pop();   // always remove last element as it is always null or ""
+      if(listReturn==null) listReturn=[]
+    }
+    return listReturn;
   }
 
   calculateMultiDistances(){ // i here is index in this.listAllAddress

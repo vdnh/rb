@@ -152,8 +152,18 @@
         </td>
         <td>{{showDateLocal(trEv.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <td style="text-align: right;">{{trEv.transport.loadsFee}} $</td>
-        <td>{{trEv.transport.origin}}</td>
-        <td>{{trEv.transport.destination}}</td>
+        <td>
+          {{trEv.transport.origin}}
+          <h5 *ngFor="let addrPick of renderMultiAddress(trEv.transport.pickAddress); let i=index" style="margin-left: 5pt;">
+            Pick{{(i+2)+": "+ addrPick}}
+          </h5>
+        </td>
+        <td>
+          {{trEv.transport.destination}}
+          <h5 *ngFor="let addrDrop of renderMultiAddress(trEv.transport.dropAddress); let i=index" style="margin-left: 5pt;">
+            Drop{{(i+2)+": "+ addrDrop}}
+          </h5>
+        </td>
         <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td> -->
         <td><span class="btn btn-link" (click)="onDeleteEvalue(trEv)">Delete</span></td>
       </tr>
@@ -392,7 +402,7 @@
       <!--Save Evaluation-->
       <!-- <button class="btn btn-link" *ngIf="transport.typeDoc==1" (click)="saveSimple()">Save</button>  -->
       <!--Send command-->
-      <button class="btn btn-link" *ngIf="transport.typeDoc==2" (click)="saveSimple()">
+      <button class="btn btn-link" *ngIf="transport.typeDoc==2" (click)="saveSimple()" [disabled]="inSending">
         <span *ngIf="varsGlobal.language.includes('English')">Send</span>
         <span *ngIf="varsGlobal.language.includes('Francais')">Envoyer</span>
       </button>

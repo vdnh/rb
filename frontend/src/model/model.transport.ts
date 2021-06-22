@@ -140,6 +140,10 @@ export class Transport{
 
     archive=false; // Transport archived after finished, false by default
 
+    // multi address
+    pickAddress=""; // all pick address beside principal origin address; separated by **--**
+    dropAddress=""; // all drop address beside principal destination address; separated by **--**
+
     evaluatedTimes = 0;
     
     textTimes = "";

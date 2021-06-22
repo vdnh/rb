@@ -51,4 +51,8 @@ export class Itineraire{
     idTransport:number;
     idRemorquage:number;
     timeResrvation="";
+
+    // multi address
+    pickAddress=""; // all pick address beside principal origin address; separated by **--**
+    dropAddress=""; // all drop address beside principal destination address; separated by **--**
 }

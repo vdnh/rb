@@ -92,8 +92,18 @@
             {{trCm.transport.loadsFee}} $
           </span>
         </td>
-        <td>{{trCm.transport.origin}}</td>
-        <td>{{trCm.transport.destination}}</td>
+        <td>
+          {{trCm.transport.origin}}
+          <h5 *ngFor="let addrPick of renderMultiAddress(trCm.transport.pickAddress); let i=index" style="margin-left: 5pt;">
+            Pick{{(i+2)+": "+ addrPick}}
+          </h5>
+        </td>
+        <td>
+          {{trCm.transport.destination}}
+          <h5 *ngFor="let addrDrop of renderMultiAddress(trCm.transport.dropAddress); let i=index" style="margin-left: 5pt;">
+            Drop{{(i+2)+": "+ addrDrop}}
+          </h5>
+        </td>
         <td>
           <input type="text" [(ngModel)]="trCm.transport.camionAttribue" 
           name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCm.transport)" 
@@ -290,8 +300,18 @@
         </td>
         <td>{{showDateLocal(trEv.transport.dateDepart) | date: 'dd-MMM-yyyy'}}</td>
         <td style="text-align: right;">{{trEv.transport.loadsFee}} $</td>
-        <td>{{trEv.transport.origin}}</td>
-        <td>{{trEv.transport.destination}}</td>
+        <td>
+          {{trEv.transport.origin}}
+          <h5 *ngFor="let addrPick of renderMultiAddress(trEv.transport.pickAddress); let i=index" style="margin-left: 5pt;">
+            Pick{{(i+2)+": "+ addrPick}}
+          </h5>
+        </td>
+        <td>
+          {{trEv.transport.destination}}
+          <h5 *ngFor="let addrDrop of renderMultiAddress(trEv.transport.dropAddress); let i=index" style="margin-left: 5pt;">
+            Drop{{(i+2)+": "+ addrDrop}}
+          </h5>
+        </td>
         <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td> -->
         <!-- <td><span class="btn btn-link" (click)="onCommandEvalue(trEv)">Commander</span></td>
         <td><span class="btn btn-link" (click)="printTransportSelected(trEv)">print</span></td> -->

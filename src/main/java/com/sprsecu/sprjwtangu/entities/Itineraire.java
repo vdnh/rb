@@ -80,4 +80,8 @@ public class Itineraire  implements Serializable{
     private Long idTransport;
     private Long idRemorquage;
     private String timeResrvation;
+    
+    // multi address
+    private String pickAddress; // all pick address beside principal origin address; separated by **--**
+    private String dropAddress; // all drop address beside principal destination address; separated by **--**
 }

@@ -3291,7 +3291,12 @@ onSortDate(data:Array<Transport>){
     this.listDestinations.push(this.transport.destination)
     this.listDestinations=this.listDestinations.concat(this.listAddressDrop)
     
-
+    // set multi address to entity transport
+    this.transport.pickAddress=""; // all pick address beside principal origin address; separated by **--**
+    this.listAddressPick.forEach(pickAd=>{this.transport.pickAddress=this.transport.pickAddress+pickAd+"**--**"})
+    this.transport.dropAddress=""; // all drop address beside principal destination address; separated by **--**
+    this.listAddressDrop.forEach(dropAd=>{this.transport.dropAddress=this.transport.dropAddress+dropAd+"**--**"})
+    
     this.listAllAddress=[]
     this.distanceTotal=0;
     this.transport.loadsFee=null; // set transport.loadsFee=null to show text "estimating"
@@ -3307,6 +3312,16 @@ onSortDate(data:Array<Transport>){
       this.calculateMultiDistances();
 
     }
+  }
+
+  renderMultiAddress(multiAd:string){
+    let listReturn = []
+    if(multiAd!=null){
+      listReturn = multiAd.split("**--**")
+      listReturn.pop();   // always remove last element as it is always null or ""
+      if(listReturn==null) listReturn=[]
+    }
+    return listReturn;
   }
 
   calculateMultiDistances(){ // i here is index in this.listAllAddress
