@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
-import {SignaturePad} from 'angular2-signaturepad/signature-pad';
+import {SignaturePad} from 'angular2-signaturepad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
@@ -240,7 +240,7 @@ export class AppelExpressVisitorComponent implements OnInit {
         this.shipper=this.shipperParticulier;
         localStorage.clear();  //  erase localstorage after taken particular price 
         //console.clear(); // try to clear infos 
-        this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+        this.geolocation.getCurrentPosition().subscribe(async (data)=>{
           let tempEtatCountry=''
           // let tempEtat=''
           // let tempCountry=''
@@ -1171,7 +1171,7 @@ async showMap() {
                 this.varsGlobal.userLogs.loginTime=new Date();
                 this.http.get('https://api.ipify.org?format=json').subscribe(async data => {
                   this.varsGlobal.userLogs.ipPublic=data['ip'];
-                  await this.geolocation.getCurrentPosition().subscribe(async (data:Position)=>{
+                  await this.geolocation.getCurrentPosition().subscribe(async (data)=>{
                     let geocoding = new GeocodingService()
                     await geocoding.geocode(new google.maps.LatLng(              
                       this.varsGlobal.userLogs.latitude=data.coords.latitude,

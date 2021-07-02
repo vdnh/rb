@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
-import {SignaturePad} from 'angular2-signaturepad/signature-pad';
+import {SignaturePad} from 'angular2-signaturepad';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';

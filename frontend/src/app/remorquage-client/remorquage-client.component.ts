@@ -13,7 +13,7 @@ import { Contact } from 'src/model/model.contact';
 import { BankClientsService } from 'src/services/bankClients.service';
 import { EmailMessage } from 'src/model/model.emailMessage';
 import { Camion } from 'src/model/model.camion';
-import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+import { SignaturePad } from 'angular2-signaturepad/';
 import { CamionsService } from 'src/services/camions.service';
 import { Title } from '@angular/platform-browser';
 import { VarsGlobal } from 'src/services/VarsGlobal';
@@ -1167,7 +1167,7 @@ async showMap() {
     //https://www.google.com/maps/dir/45.5689027,-73.9183723/Galeries Terrebonne,1185 Boulevard Moody,Terrebonne,Quebec
     let url='https://www.google.com/maps/dir/'
 
-    await this.geolocation.getCurrentPosition().subscribe( (data:Position)=>{
+    await this.geolocation.getCurrentPosition().subscribe( (data)=>{
       url=url+data.coords.latitude+','+data.coords.longitude+'/'+address;
       window.open(url, "_blank")  // to test open in new tab
     },err=>{console.log(err)})

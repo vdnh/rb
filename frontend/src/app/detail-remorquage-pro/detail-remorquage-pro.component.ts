@@ -1,5 +1,5 @@
 import {Title} from '@angular/platform-browser';
-import {SignaturePad} from 'angular2-signaturepad/signature-pad';
+import {SignaturePad} from 'angular2-signaturepad';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeocodingService } from 'src/services/geocoding.service';
 import { Router, ActivatedRoute } from '@angular/router';

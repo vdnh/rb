@@ -30,7 +30,7 @@ constructor(
      if (isPlatformServer(this.platformId)) {
       this.listFiles((err, files) => {
         this.fileList = files;
-        this.transferState.set(transferKey, this.fileList);
+        // this.transferState.set(transferKey, this.fileList);
       });
      } else {
        this.fileList = this.transferState.get<string[]>(transferKey, []);
