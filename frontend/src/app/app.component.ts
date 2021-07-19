@@ -1061,6 +1061,10 @@ export class AppComponent implements OnInit{
     this.varsGlobal.switchLanguage=true;
   }
 
+  onSpecsMachine(){
+
+  }
+  
   onAccountInfos(){
     this.varsGlobal.dispatchSee=false;
     this.router.navigate(['/detail-transporter/'+ this.transporter.id], {skipLocationChange: true});

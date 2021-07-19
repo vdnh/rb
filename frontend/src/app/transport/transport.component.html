@@ -25,7 +25,7 @@
     <span *ngIf="varsGlobal.language.includes('English')">Prices Evaluated</span>
   </button>
   <span *ngIf="shipper!=null && shipper.id!=null && shipper.id>0">
-    <button class="btn btn-link" (click)="transport.typeDoc=1; modeListEvalue=false; modeListCommande=false" [disabled]="transport.typeDoc==1 || transport.id>0">
+    <button class="btn btn-link" (click)="onEvaluateRate()" [disabled]="transport.typeDoc==1 || transport.id>0">
       <span *ngIf="varsGlobal.language.includes('Francais')">Evaluer un Taux</span>
       <span *ngIf="varsGlobal.language.includes('English')">Evaluate a Rate</span>
     </button>
@@ -464,7 +464,7 @@
         </button>
         <button class="btn btn-link" *ngIf="varsGlobal.language.includes('Francais')" (click)="addAddressDrop()">
           <span *ngIf="showBarDrop">Annuler</span>
-          <span *ngIf="!showBarDrop">Ajout Drop Adresse</span>          
+          <span *ngIf="!showBarDrop">Ajout Adresse Drop</span>          
         </button>
         <span *ngIf="showBarDrop">
           <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 

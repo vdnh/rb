@@ -207,7 +207,12 @@ export class DetailTransporterComponent implements OnInit {
     }
   }
 //*/
-
+ngOnDestroy(){
+  if(this.subscription!=null)
+   this.subscription.unsubscribe();
+  if(this.subscriptionRefresh!=null)
+   this.subscriptionRefresh.unsubscribe();
+}
   setMessagesToEnglish(camion:Camion){
     // set truck/unit in english
     camion.message01="Change engine oil, oil filter, lubrication, brake adjustment.";

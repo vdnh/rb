@@ -1052,14 +1052,14 @@ export class TransportComponent implements OnInit, OnDestroy {
       this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
       .subscribe((data:Array<LoadFrequent>)=>{
         this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
-        this.onRefresh()
+        // this.onRefresh()
       })
     }
     else{
       this.transport.nomEntreprise=''
       this.transport.idEntreprise=null
       this.loadFrequents=[]
-      this.onRefresh()
+      // this.onRefresh()
     }
     this.resetSimple(); // when we change shipper, we must begin from scratch the command/evaluate
   }
@@ -1101,6 +1101,15 @@ export class TransportComponent implements OnInit, OnDestroy {
       // this.onRefresh()
       this.onRefreshListCommand()
     })
+  }
+
+  onEvaluateRate(){
+    this.transport.typeDoc=1; 
+    this.modeListEvalue=false; 
+    this.modeListCommande=false
+    if(this.subscription!=null) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnDestroy(): void {

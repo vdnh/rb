@@ -103,6 +103,7 @@ import { LoadFrequentsService } from 'src/services/loadFrequents.Service';
 import { PlanOrderService } from 'src/services/planOrder.service';
 import { PlanPriceService } from 'src/services/planPrice.service';
 import { AppTestComponent } from './app-test/app-test.component';
+import { MachinerySpecificationsComponent } from './machinery-specifications/machinery-specifications.component';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -159,6 +160,7 @@ const appRoutes:Routes=[
   {path: 'new-terminal', component:  NewTerminalComponent},
   {path: 'terminals', component:  TerminalsComponent},
   {path: 'app-test', component: AppTestComponent},
+  {path: 'machine-specs', component: MachinerySpecificationsComponent},
   {path:"", redirectTo:"", pathMatch:"full"}
 ]
 
@@ -218,6 +220,7 @@ const appRoutes:Routes=[
     // LogoutComponent,
     TransportExpressVisitorComponent,
     AppTestComponent,
+    MachinerySpecificationsComponent,
     //MapComponent,
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]

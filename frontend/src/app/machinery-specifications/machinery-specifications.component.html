@@ -1,0 +1,104 @@
+<div id="showgen">
+    <h2 style="text-align: center;"><strong>Machinery Specs</strong><br></h2>
+    <input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" list="listMachine" placeholder="Search/Recherche">
+    <datalist id="listMachine">
+        <option *ngFor="let machine of machines" [ngValue]="machine">{{machine}}</option>
+    </datalist>
+    <br>
+</div>
+
+<div id="addmodifyspec" style="border: 1px solid black;">
+    <br>
+    <h3><strong>Ajout/Modification</strong></h3>
+    <table>
+        <tr>
+            <th><span>Machine &nbsp;</span><input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" (change)="nameMachineChange()"></th>
+        </tr>
+        <tr>
+            <td>
+                <table border="1">
+                    <tr><th>Photos</th></tr>
+                    <tr>
+                        <td>
+                            <span>Photo01: </span>
+                            <input type="file" title="Attach photo01 " (change)="onFileUpLoadTest($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo01">
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <span>Photo02: </span>
+                            <input type="file" title="Attach photo02 " (change)="onFileUpLoadTest02($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo02">
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <span>Photo03: </span>
+                            <input type="file" title="Attach photo03 " (change)="onFileUpLoadTest03($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo03">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td><span>&nbsp;</span></td>
+            <td>
+                <table border="1">
+                    <tr><th colspan="2">Specs</th></tr>
+                    <tr>
+                        <td><input type="text" [(ngModel)]="spec.name"></td>
+                        <td><input type="text" [(ngModel)]="spec.descrip"></td>
+                        <td><button class="btn btn-link" (click)="specs.push(spec); spec={name:'', descrip:''}">Ajout</button></td>
+                    </tr>
+                    <tr *ngFor="let sp of specs">
+                        <td><input type="text" [(ngModel)]="sp.name"></td>
+                        <td><input type="text" [(ngModel)]="sp.descrip"></td>
+                        <td><button class="btn btn-link" (click)="(specs.splice(specs.indexOf(sp), 1))">Delete</button></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    
+    <strong>Site Reference &nbsp;</strong><input type="text" [(ngModel)]="url" style="width: 100ch;" (change)="onSiteReferChange()"><br>
+</div>
+
+<div id="showspec" style="border: 1px solid black;">
+    <br>
+    <h3 *ngIf="nameMachine.length>0"><strong>Specification &nbsp;{{nameMachine}}</strong></h3>
+    <table border="1">
+        <th *ngIf="imgUrl.length>0 || imgUrl02.length>0 || imgUrl03.length>0" colspan="3">Photos</th>
+        <tr>
+            <td *ngIf="imgUrl.length>0" style="width: 33%;"><img [src]="imgUrlSafe" alt="photo01" class="img-responsive" width="100%" ></td>
+            <td *ngIf="imgUrl02.length>0" style="width: 33%;"><img [src]="imgUrlSafe02" alt="photo02" class="img-responsive" width="100%" ></td>
+            <td *ngIf="imgUrl03.length>0" style="width: 33%;"><img [src]="imgUrlSafe03" alt="photo03" class="img-responsive" width="100%" ></td>
+        </tr>
+    </table>
+    <table border="1">
+        <tr *ngIf="specs.length>0">
+            <th colspan="2">Specs</th>
+            <!-- <th>Detail</th> -->
+        </tr>
+        <tr *ngFor="let sp of specs">
+            <td><input type="text" [(ngModel)]="sp.name" disabled></td>
+            <td><input type="text" [(ngModel)]="sp.descrip" disabled></td>
+            <!-- <td>{{sp.descrip}}</td> -->
+        </tr>
+    </table>
+    <h3><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
+    <iframe *ngIf="url.length>0" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
+</div>
+<!-- <div id="reservespecs"></div> -->
+
+
+<!-- <p>machinery-specifications works!</p> -->
+
+
+<!-- <span>Search/Recherche</span> -->
+
+
+
+
+<!-- <img [src]="imgUrlSafe" alt="photo01" class="img-responsive" width="245" height="300"> -->
+
+
+<!-- iframe good for show file svg -->
+<!-- <iframe [src]="imgUrlSafe" sandbox></iframe> --> 
+
+
