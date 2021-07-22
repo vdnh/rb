@@ -1264,12 +1264,14 @@ export class TransportComponent implements OnInit, OnDestroy {
 
   onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
     this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-        // delete on real list
-        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-        // delete on show list
-        this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
-      }, err=>{console.log(err)})
+      if(trEv.loadDetail!=null && trEv.loadDetail.id!=null)
+        this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+          // delete on real list
+          this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+          // delete on show list
+          this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
+        }, err=>{console.log(err)})
+      this.getPagesEvaluationsTransport() // refresh list evaluated
     }, err=>{
       console.log()
     })

@@ -1,3 +1,4 @@
+import {AutocompleteLibModule} from 'angular-ng-autocomplete';
 import { GooglePlaceModule } from "ngx-google-places-autocomplete";
 import { BrowserModule} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -104,6 +105,7 @@ import { PlanOrderService } from 'src/services/planOrder.service';
 import { PlanPriceService } from 'src/services/planPrice.service';
 import { AppTestComponent } from './app-test/app-test.component';
 import { MachinerySpecificationsComponent } from './machinery-specifications/machinery-specifications.component';
+import { MachineSpecsService } from 'src/services/machineSpecs.service';
 
 const appRoutes:Routes=[
   {path:"login", component:LoginComponent},
@@ -225,6 +227,7 @@ const appRoutes:Routes=[
   ],
   // imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})]
   imports: [
+    AutocompleteLibModule,
     GooglePlaceModule,
     BrowserModule, 
     RouterModule.forRoot(appRoutes, { anchorScrolling: 'enabled'}), 
@@ -250,7 +253,7 @@ const appRoutes:Routes=[
     BonDeTravailsService, ReparationsService, BankClientsService, MessagesService, VarsGlobal, 
     RemorquagesService, GarantiesService, TransportsService, ImageService, LoadDetailsService, UserLogsService,
     ItinerairesService, ReperesService, ConfirmTransportService, TerminalsService, LoadFrequentsService, 
-    PlanOrderService, PlanPriceService],
+    PlanOrderService, PlanPriceService, MachineSpecsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,15 +1,34 @@
 <div id="showgen">
     <h2 style="text-align: center;"><strong>Machinery Specs</strong><br></h2>
-    <input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" list="listMachine" placeholder="Search/Recherche">
+    <h3 *ngIf="!(userId.length>0)"><button class="btn btn-link">Ajout Machine Specs</button></h3>
+    <!-- <input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" list="listMachine" placeholder="Search/Recherche">
     <datalist id="listMachine">
         <option *ngFor="let machine of machines" [ngValue]="machine">{{machine}}</option>
-    </datalist>
+    </datalist> -->
+    <div class="ng-autocomplete">
+        <ng-autocomplete
+          [data]="machines"
+          [searchKeyword]="keyword01"
+          placeholder="Machine"
+          (selected)='selectEvent01($event)'
+          (inputChanged)='onChangeSearch01($event)'
+          (inputFocused)='onFocused01($event)'
+          (inputCleared)='clearInput()'
+          [itemTemplate]="itemTemplate01"
+          [notFoundTemplate]="notFoundTemplate01">
+        </ng-autocomplete>
+        <ng-template #itemTemplate01 let-item>
+          <a [innerHTML]="item"></a>
+        </ng-template>
+        <ng-template #notFoundTemplate01 let-notFound>
+          <div [innerHTML]="notFound"></div>
+        </ng-template>
+    </div>    
     <br>
 </div>
 
-<div id="addmodifyspec" style="border: 1px solid black;">
+<div id="addmodifyspec" *ngIf="!(userId.length>0)" style="border: 1px solid black;">
     <br>
-    <h3><strong>Ajout/Modification</strong></h3>
     <table>
         <tr>
             <th><span>Machine &nbsp;</span><input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" (change)="nameMachineChange()"></th>
@@ -81,8 +100,9 @@
             <!-- <td>{{sp.descrip}}</td> -->
         </tr>
     </table>
-    <h3><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
-    <iframe *ngIf="url.length>0" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
+    <h4 *ngIf="!(userId.length>0)"><strong><button class="btn btn-link">Modify</button></strong>&nbsp;&nbsp;<strong><button class="btn btn-link">Delete</button></strong></h4>
+    <h3 *ngIf="url.length>7"><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
+    <iframe *ngIf="url.length>7" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
 </div>
 <!-- <div id="reservespecs"></div> -->
 
@@ -91,8 +111,49 @@
 
 
 <!-- <span>Search/Recherche</span> -->
+<!-- historyIdentifier="countries" -->
 
-
+<!-- div class="ng-autocomplete">
+    <ng-autocomplete
+      [data]="countries"
+      [searchKeyword]="keyword"
+      placeholder="Enter the Country Name"
+      (selected)='selectEvent($event)'
+      (inputChanged)='onChangeSearch($event)'
+      (inputFocused)='onFocused($event)'
+      [itemTemplate]="itemTemplate"
+      [notFoundTemplate]="notFoundTemplate">
+    </ng-autocomplete>
+  
+    <ng-template #itemTemplate let-item>
+      <a [innerHTML]="item.name"></a>
+    </ng-template>
+  
+    <ng-template #notFoundTemplate let-notFound>
+      <div [innerHTML]="notFound"></div>
+    </ng-template>
+</div -->
+<!-- historyIdentifier="machines" -->
+<!-- <div class="ng-autocomplete">
+    <ng-autocomplete
+      [data]="machines"
+      [searchKeyword]="keyword01"
+      placeholder="Machine"
+      (selected)='selectEvent01($event)'
+      (inputChanged)='onChangeSearch01($event)'
+      (inputFocused)='onFocused01($event)'
+      [itemTemplate]="itemTemplate01"
+      [notFoundTemplate]="notFoundTemplate01">
+    </ng-autocomplete>
+  
+    <ng-template #itemTemplate01 let-item>
+      <a [innerHTML]="item"></a>
+    </ng-template>
+  
+    <ng-template #notFoundTemplate01 let-notFound>
+      <div [innerHTML]="notFound"></div>
+    </ng-template>
+</div> -->
 
 
 <!-- <img [src]="imgUrlSafe" alt="photo01" class="img-responsive" width="245" height="300"> -->

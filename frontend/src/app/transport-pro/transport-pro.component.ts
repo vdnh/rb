@@ -1598,12 +1598,14 @@ onSortDate(data:Array<Transport>){
 
   onDeleteEvalue(trEv:{transport:Transport, loadDetail:LoadDetail}){ // delete transport + loadDetail
     this.transportsService.deleteTransport(trEv.transport.id).subscribe(data=>{
-      this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
-        // delete on list real
-        this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
-        // delete on list show
-        this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
-      }, err=>{console.log(err)})
+      if(trEv.loadDetail!=null && trEv.loadDetail.id!=null)
+        this.loadDetailsService.deleteLoadDetail(trEv.loadDetail.id).subscribe(data=>{
+          // delete on list real
+          this.listTrsEvalue.splice(this.listTrsEvalue.indexOf(trEv),1)
+          // delete on list show
+          this.listTrsEvalueToShow.splice(this.listTrsEvalueToShow.indexOf(trEv),1)
+        }, err=>{console.log(err)})
+      this.onRefreshListEvaluated() // refresh list evaluated
     }, err=>{
       console.log()
     })

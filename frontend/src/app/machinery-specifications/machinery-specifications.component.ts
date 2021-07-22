@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MachineSpecsService } from 'src/services/machineSpecs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
@@ -25,14 +26,123 @@ export class MachinerySpecificationsComponent implements OnInit {
   imgUrl03='';
   imgUrlSafe03: SafeResourceUrl;
   
+  userId=""; // use to identify dispatch of shipper or dispatch general (by defaul "" general)
+  
   // specs
   spec:{name:string, descrip:string}={name:"", descrip:""}
   specs=[] //:[{name:string, descrip:string}, ]
-  constructor(public sanitizer: DomSanitizer, public varsGlobal:VarsGlobal,) {}
+
+  // begin test ng-autocomplete
+  
+  keyword01 = 'machine';
+  clearInput(){
+    console.log("clearInput")
+    this.nameMachine=''
+  }
+  selectEvent01(item) {
+    // do something with selected item
+    console.log('selectEvent01');
+    console.log('item: ' + item);
+    this.nameMachine=item
+    // console.log('item.name: ' + item.name);
+  }
+
+  onChangeSearch01(search: string) {
+    // fetch remote data from here
+    // And reassign the 'data' which is binded to 'data' property.
+    // console.log('onChangeSearch01');
+    this.nameMachine=''
+  }
+
+  onFocused01(e) {
+    // do something
+    // console.log('onFocused01');
+    // this.nameMachine=e
+  }
+
+  // keyword = 'name';
+  // public countries = [
+  //   {
+  //     id: 1,
+  //     name: 'Albania country'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Belgium nation'
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Denmark'
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Montenegro'
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Turkey'
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Ukraine'
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Macedonia'
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Slovenia'
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'Georgia'
+  //   },
+  //   {
+  //     id: 10,
+  //     name: 'India'
+  //   },
+  //   {
+  //     id: 11,
+  //     name: 'Russia'
+  //   },
+  //   {
+  //     id: 12,
+  //     name: 'Switzerland'
+  //   }
+  // ];
+  // selectEvent(item) {
+  //   // do something with selected item
+  //   console.log('selectEvent');
+  //   console.log('item.id: ' + item.id);
+  //   console.log('item.name: ' + item.name);
+  // }
+
+  // onChangeSearch(search: string) {
+  //   // fetch remote data from here
+  //   // And reassign the 'data' which is binded to 'data' property.
+  //   console.log('onChangeSearch');
+  // }
+
+  // onFocused(e) {
+  //   // do something
+  //   console.log('onFocused');
+  // }
+  // end test ng-autocomplete 
+
+  allLightMachines:Map<number, string>=new Map<number, string>();
+
+  constructor(public sanitizer: DomSanitizer, public varsGlobal:VarsGlobal, public machineSpecsService:MachineSpecsService) {}
 
   ngOnInit():void {
+    this.userId=localStorage.getItem('userId')
+    if(this.userId==null) this.userId=""
     // this.specs.push(this.spec)
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+    this.machineSpecsService.getAllLightMachines().subscribe((data:Map<number, string>)=>{
+      if(data==null) console.log('No Machine for now')
+      else this.allLightMachines=data
+    }, err=>{console.log(err)})
   }
 
   nameMachineChange(){
@@ -41,7 +151,12 @@ export class MachinerySpecificationsComponent implements OnInit {
   }
 
   onSiteReferChange(){
-    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+    if(this.url.length>0 && (this.url.includes("http://")||this.url.includes("https://")))
+      this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+    else {
+      this.urlSafe = null
+      this.url=""
+    }
   }
 
   onFileUpLoad(event, imgUrl="", imgUrlSafe:SafeResourceUrl){
