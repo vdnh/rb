@@ -140,8 +140,36 @@ export class MachinerySpecificationsComponent implements OnInit {
     // this.specs.push(this.spec)
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
     this.machineSpecsService.getAllLightMachines().subscribe((data:Map<number, string>)=>{
+      // :Map<number, string>
       if(data==null) console.log('No Machine for now')
-      else this.allLightMachines=data
+      else {
+        // console.log('data.size: '+data.size)
+        const keysorigin = Object.keys(data)
+        const values = Object.keys(data).map(value=>data[value])
+        // const values = Object.values(data).map(value=>data[value])
+        console.log('keysorigin.toString() : '+ keysorigin.toString())
+        console.log('values.toString() : '+ values.toString()) 
+        console.log("Ok done.")
+        keysorigin.forEach(key=>{
+          this.allLightMachines.set(Number(key), values[keysorigin.indexOf(key)])
+        })
+        this.allLightMachines.set(103, 'machin03')
+        console.log("allLightMachines.size: " + this.allLightMachines.size)
+        console.log("allLightMachines.get(101): " + this.allLightMachines.get(101))
+        console.log("allLightMachines.get(102): " + this.allLightMachines.get(102))
+        console.log("allLightMachines.get(103): " + this.allLightMachines.get(103))
+        // console.log("keys.length: "+ keys.length + ' - ' + keys.toString())
+        // console.log('values.length: '+ values.length + ' - ' + values.toString())
+        
+        // this.allLightMachines = data.keys(key => data[key]).map(value=>data[value])
+        // console.log("data.keys.length: "+data.keys.length) 
+        // console.log("data.values.length: "+data.values.length) 
+        // this.allLightMachines=data
+        // console.log("data.lenght: " + data.entries.length)
+        // console.log("data.entry: " + data.entries.toString())
+        // console.log("allLightMachines.lenght: " + this.allLightMachines.entries.length)
+        // console.log("allLightMachines.entry: " + this.allLightMachines.entries.toString())
+      }
     }, err=>{console.log(err)})
   }
 

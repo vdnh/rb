@@ -2,6 +2,8 @@ package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.entities.MachineSpecs;
 import com.sprsecu.sprjwtangu.entities.MachineSpecsRepository;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +28,21 @@ public class MachineSpecsRestService {
     // All Machines light data (id and name)
     @RequestMapping(value = "/allLightMachines", method = RequestMethod.GET)
     public Map<Long, String> getAllLightMachines(){
-        return machineSpecsRepository.getAllLightMachines();
+        Map<Long, String> results = new HashMap<Long, String>();
+
+//   EntityManager em = entityManagerFactory.createEntityManager();
+
+   // Construct and run query
+   
+   List<Object[]> resultList = machineSpecsRepository.getAllLightMachines();
+
+   // Place results in map
+   for (Object[] borderTypes: resultList) {
+      results.put((Long)borderTypes[0], (String)borderTypes[1]);
+   }
+
+   return results;
+//        return machineSpecsRepository.getAllLightMachines();
     }
     @RequestMapping(value = "/machines/{id}", method = RequestMethod.GET)
     public MachineSpecs findById(@PathVariable Long id){

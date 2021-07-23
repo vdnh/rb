@@ -12,5 +12,6 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface MachineSpecsRepository extends JpaRepository<MachineSpecs, Long> {
     @Query("select ms.id, ms.name from MachineSpecs ms")
-    public Map<Long, String> getAllLightMachines();  
+    public List<Object[]> getAllLightMachines();
+//    public Map<Long, String> getAllLightMachines();  
 }

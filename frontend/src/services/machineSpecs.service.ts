@@ -19,7 +19,7 @@ export class MachineSpecsService{
     
     getAllLightMachines(){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/allLightMachines", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.get(this.adServer+":8080/allLightMachines", {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
