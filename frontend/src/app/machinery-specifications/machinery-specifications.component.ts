@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MachineSpecs } from 'src/model/model.machineSpecs';
 import { MachineSpecsService } from 'src/services/machineSpecs.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
@@ -15,7 +16,10 @@ export class MachinerySpecificationsComponent implements OnInit {
   urlSafe: SafeResourceUrl;
 
   nameMachine=''
-  machines=['mach01 test genie 1506','engin02 roller 65p','roller03 nacelle t 890']
+  // machines=['mach01 test genie 1506','engin02 roller 65p','roller03 nacelle t 890']
+  machines=[]
+  ids=[]
+  machineSpecs:MachineSpecs = new MachineSpecs();
 
   imgUrl='';
   imgUrlSafe: SafeResourceUrl;
@@ -35,23 +39,59 @@ export class MachinerySpecificationsComponent implements OnInit {
   // begin test ng-autocomplete
   
   keyword01 = 'machine';
+  // keyword01 = 'value';
   clearInput(){
-    console.log("clearInput")
-    this.nameMachine=''
+    // console.log("clearInput")
+    // this.nameMachine=''
+    this.onChangeSearch01("")
   }
   selectEvent01(item) {
     // do something with selected item
+    this.machineSpecs=new MachineSpecs()
+    this.nameMachine=''
+    this.imgUrl=''
+    this.imgUrl02=''
+    this.imgUrl03=''
+    this.url=''
+    this.specs=[]
+
     console.log('selectEvent01');
     console.log('item: ' + item);
     this.nameMachine=item
-    // console.log('item.name: ' + item.name);
+    console.log('machines.indexOf : '+ this.machines.indexOf(item))
+    
+    console.log('id machine : '+ this.ids[this.machines.indexOf(item)])
+    this.machineSpecsService.getDetailMachineSpecs(Number(this.ids[this.machines.indexOf(item)])).subscribe((data:MachineSpecs)=>{
+      this.machineSpecs=data
+      if(this.machineSpecs.name!=null) this.nameMachine=this.machineSpecs.name
+      if(this.machineSpecs.photo01!=null) this.imgUrl=this.machineSpecs.photo01
+      if(this.machineSpecs.photo02!=null) this.imgUrl02=this.machineSpecs.photo02
+      if(this.machineSpecs.photo03!=null) this.imgUrl03=this.machineSpecs.photo03
+      if(this.machineSpecs.link!=null) this.url=this.machineSpecs.link
+      // this.specs=this.machineSpecs.specs.split('****')   see later
+      this.sanitizerAfterLoad()
+    }, err=>{console.log(err)})
   }
 
+  sanitizerAfterLoad(){
+    this.onSiteReferChange()
+    this.imgUrlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl);
+    this.imgUrlSafe02 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl02);
+    this.imgUrlSafe03 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl03);
+  }
   onChangeSearch01(search: string) {
     // fetch remote data from here
     // And reassign the 'data' which is binded to 'data' property.
     // console.log('onChangeSearch01');
+    // this.nameMachine=''
+    this.machineSpecs=new MachineSpecs()
     this.nameMachine=''
+    this.imgUrl=''
+    this.imgUrl02=''
+    this.imgUrl03=''
+    this.url=''
+    this.specs=[]
+    this.sanitizerAfterLoad()
   }
 
   onFocused01(e) {
@@ -60,6 +100,15 @@ export class MachinerySpecificationsComponent implements OnInit {
     // this.nameMachine=e
   }
 
+  onModify(){
+    this.machineSpecsService.saveMachineSpecs(this.machineSpecs).subscribe(()=>{},err=>{console.log(err)})
+  }
+
+  onDelete(){
+    this.machineSpecsService.deleteMachineSpecs(this.machineSpecs.id).subscribe(()=>{},err=>{console.log(err)})
+    this.ids.splice(this.ids.indexOf(this.machineSpecs.id),1)
+    this.machines.splice(this.machines.indexOf(this.machineSpecs.name),1)
+  }
   // keyword = 'name';
   // public countries = [
   //   {
@@ -146,6 +195,8 @@ export class MachinerySpecificationsComponent implements OnInit {
         // console.log('data.size: '+data.size)
         const keysorigin = Object.keys(data)
         const values = Object.keys(data).map(value=>data[value])
+        this.ids=keysorigin;
+        this.machines=values;
         // const values = Object.values(data).map(value=>data[value])
         console.log('keysorigin.toString() : '+ keysorigin.toString())
         console.log('values.toString() : '+ values.toString()) 
@@ -185,6 +236,7 @@ export class MachinerySpecificationsComponent implements OnInit {
       this.urlSafe = null
       this.url=""
     }
+    this.machineSpecs.link=this.url
   }
 
   onFileUpLoad(event, imgUrl="", imgUrlSafe:SafeResourceUrl){
@@ -258,13 +310,15 @@ export class MachinerySpecificationsComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = ()=>{
         this.imgUrl=reader.result.toString();
-        console.log("imgUrl:  "+this.imgUrl)
+        this.machineSpecs.photo01=this.imgUrl
+        // console.log("imgUrl:  "+this.imgUrl)
         this.imgUrlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl);
       }
       reader.readAsDataURL(selectedFile)
     }
     else {
       this.imgUrl='';
+      this.machineSpecs.photo01=this.imgUrl
       this.imgUrlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl);
       event.value = null;
       event = null;
@@ -303,13 +357,15 @@ export class MachinerySpecificationsComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = ()=>{
         this.imgUrl02=reader.result.toString();
-        console.log("imgUrl02:  "+this.imgUrl02)
+        // console.log("imgUrl02:  "+this.imgUrl02)
+        this.machineSpecs.photo02=this.imgUrl02
         this.imgUrlSafe02 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl02);
       }
       reader.readAsDataURL(selectedFile)
     }
     else {
       this.imgUrl02='';
+      this.machineSpecs.photo02=this.imgUrl02
       this.imgUrlSafe02 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl02);
       event.value = null;
       event = null;
@@ -348,13 +404,15 @@ export class MachinerySpecificationsComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = ()=>{
         this.imgUrl03=reader.result.toString();
-        console.log("imgUrl03:  "+this.imgUrl03)
+        this.machineSpecs.photo03=this.imgUrl03
+        // console.log("imgUrl03:  "+this.imgUrl03)
         this.imgUrlSafe03 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl03);
       }
       reader.readAsDataURL(selectedFile)
     }
     else {
       this.imgUrl03='';
+      this.machineSpecs.photo03=this.imgUrl03
       this.imgUrlSafe03 = this.sanitizer.bypassSecurityTrustResourceUrl(this.imgUrl03);
       event.value = null;
       event = null;

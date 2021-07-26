@@ -100,7 +100,8 @@
             <!-- <td>{{sp.descrip}}</td> -->
         </tr>
     </table>
-    <h4 *ngIf="!(userId.length>0)"><strong><button class="btn btn-link">Modify</button></strong>&nbsp;&nbsp;<strong><button class="btn btn-link">Delete</button></strong></h4>
+    <h4 *ngIf="!(userId.length>0)"><strong><button class="btn btn-link" (click)="onModify()">Modify</button></strong>
+        &nbsp;&nbsp;<strong><button class="btn btn-link" (click)="onDelete()">Delete</button></strong></h4>
     <h3 *ngIf="url.length>7"><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
     <iframe *ngIf="url.length>7" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
 </div>
