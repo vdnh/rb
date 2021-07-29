@@ -117,6 +117,7 @@ export class NewShipperComponent implements OnInit {
             //   console.log(err)
             // })
           })
+          this.sortThisLoadFrequents()
         }, err=>{
           console.log();
         });
@@ -176,6 +177,7 @@ export class NewShipperComponent implements OnInit {
 
   addLoadFrequent(){
     this.loadFrequents.push(this.loadFrequent)
+    this.sortThisLoadFrequents()
     this.loadFrequent=new LoadFrequent()
   }
   
@@ -278,5 +280,17 @@ export class NewShipperComponent implements OnInit {
 
   deleteLoadFrequent(lf:LoadFrequent){
     this.loadFrequents.splice(this.loadFrequents.indexOf(lf),1)
+    this.sortThisLoadFrequents()
+  }
+
+  sortThisLoadFrequents(){
+    this.loadFrequents.sort((a, b)=>{
+      if(a.orderLine==null) a.orderLine=''
+      if(b.orderLine==null) b.orderLine=''
+      let resultCompare=0;
+      resultCompare= a.orderLine.localeCompare(b.orderLine) 
+      if(resultCompare==0) resultCompare= a.nom.localeCompare(b.nom)
+      return resultCompare;
+    })
   }
 }

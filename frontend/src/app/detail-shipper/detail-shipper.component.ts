@@ -84,7 +84,8 @@ export class DetailShipperComponent implements OnInit {
       console.log();
     });
     this.loadFrequentService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
-      this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+      this.loadFrequents=data//.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+      this.sortThisLoadFrequents()
       // this.adresses.forEach(a=>{
       //   console.log("Adress : "+a.num+" "+a.rue )
       // })
@@ -241,13 +242,25 @@ export class DetailShipperComponent implements OnInit {
     })
   }
 
+  sortThisLoadFrequents(){
+    this.loadFrequents.sort((a, b)=>{
+      if(a.orderLine==null) a.orderLine=''
+      if(b.orderLine==null) b.orderLine=''
+      let resultCompare=0;
+      resultCompare= a.orderLine.localeCompare(b.orderLine) 
+      if(resultCompare==0) resultCompare= a.nom.localeCompare(b.nom)
+      return resultCompare;
+    })
+  }
+
   addLoadFrequent(){
     this.loadFrequent.idShipper=this.id;
     this.loadFrequentService.saveLoadFrequent(this.loadFrequent).subscribe((data:LoadFrequent)=>{
       alert("LoadFrequent added.");
       this.loadFrequents.push(data)
       this.loadFrequent=new LoadFrequent();
-      this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
+      // this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
+      this.sortThisLoadFrequents()
     }, err=>{
       console.log(err)
     })
@@ -257,7 +270,8 @@ export class DetailShipperComponent implements OnInit {
     this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
       alert('Ok, modified.')
       lf=data;
-      this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
+      // this.loadFrequents.sort((a,b)=>{return a.nom.localeCompare(b.nom)})
+      this.sortThisLoadFrequents()
     }, err=>{console.log(err)})
   }
 
@@ -308,7 +322,8 @@ export class DetailShipperComponent implements OnInit {
             lf.idShipper=this.id;
             this.loadFrequentService.saveLoadFrequent(lf).subscribe((data:LoadFrequent)=>{
               this.loadFrequents.push(data)
-              this.loadFrequents.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
+              // this.loadFrequents.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
+              this.sortThisLoadFrequents()
             }, err=>{
               console.log(err)
             })

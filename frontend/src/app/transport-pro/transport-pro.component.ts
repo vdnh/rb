@@ -573,7 +573,14 @@ export class TransportProComponent implements OnInit {
           this.contactChange()
         }
         this.loadFrequentsService.loadFrequentsDeShipper(this.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+          this.loadFrequents=data.sort((a, b)=>{
+            if(a.orderLine==null) a.orderLine=''
+            if(b.orderLine==null) b.orderLine=''
+            let resultCompare=0;
+            resultCompare= a.orderLine.localeCompare(b.orderLine) 
+            if(resultCompare==0) resultCompare= a.nom.localeCompare(b.nom)
+            return resultCompare;
+          });
         }, err=>{console.log(err)})
         this.transportsService.getTransportModelsEntreprise(this.id).subscribe((data:Array<Transport>)=>{
           this.templates = data; // just for test

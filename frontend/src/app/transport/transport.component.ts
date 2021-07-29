@@ -1051,7 +1051,14 @@ export class TransportComponent implements OnInit, OnDestroy {
         this.transport.idTransporter=Number(localStorage.getItem('idTransporter'))
       this.loadFrequentsService.loadFrequentsDeShipper(this.shipper.id)
       .subscribe((data:Array<LoadFrequent>)=>{
-        this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)})
+        this.loadFrequents=data.sort((a, b)=>{
+          if(a.orderLine==null) a.orderLine=''
+            if(b.orderLine==null) b.orderLine=''
+            let resultCompare=0;
+            resultCompare= a.orderLine.localeCompare(b.orderLine) 
+            if(resultCompare==0) resultCompare= a.nom.localeCompare(b.nom)
+            return resultCompare;
+        })
         // this.onRefresh()
       })
     }
@@ -2807,7 +2814,14 @@ onSortDate(data:Array<Transport>){
       this.contactsService.contactsDeShipper(ent.id).subscribe((data:Array<Contact>)=>{
         this.contacts=data;
         this.loadFrequentsService.loadFrequentsDeShipper(ent.id).subscribe((data:Array<LoadFrequent>)=>{
-          this.loadFrequents=data.sort((a, b)=>{return a.nom.localeCompare(b.nom)});
+          this.loadFrequents=data.sort((a, b)=>{
+            if(a.orderLine==null) a.orderLine=''
+            if(b.orderLine==null) b.orderLine=''
+            let resultCompare=0;
+            resultCompare= a.orderLine.localeCompare(b.orderLine) 
+            if(resultCompare==0) resultCompare= a.nom.localeCompare(b.nom)
+            return resultCompare;
+          });
         }, err=>{console.log(err)})
       }, err=>{
         console.log(err);

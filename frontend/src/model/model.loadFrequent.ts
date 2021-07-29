@@ -15,4 +15,5 @@ export class LoadFrequent{
     priceKmType2:number; // >100 kms // actually, we don't need the 2nd type
     kmInclus:number; // km included in the base price
     pbmultiAddress:number; // from 2nd charge
+    orderLine=''; // to put in order
 }

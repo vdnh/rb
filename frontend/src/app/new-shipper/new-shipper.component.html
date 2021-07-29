@@ -133,6 +133,7 @@
               </td>
             </tr>     
             <tr>
+              <th>OrdreA-Z</th>
               <th>Load</th>
               <th>Prix de Base</th>
               <th>PrixMultiAdresses</th>
@@ -142,6 +143,9 @@
               <th>Prix Minimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
+              <td width="6%">
+                <input class="form-control" type="text" [(ngModel)]="lf.orderLine" style="width: 8ch;"/>
+              </td>
               <td width="16%">
                 <textarea  class="form-control" type="text" [(ngModel)]="lf.nom" cols="30" rows="2"></textarea>
                 <!-- <input class="form-control" type="text" [(ngModel)]="lf.nom" /> -->
@@ -152,9 +156,12 @@
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
-              <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
+              <td width="8%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
             </tr>
             <tr>
+              <td width="6%">
+                <input class="form-control" type="text" [(ngModel)]="loadFrequent.orderLine" style="width: 8ch;"/>
+              </td>
               <td width="16%">
                 <textarea  class="form-control" type="text" [(ngModel)]="loadFrequent.nom" cols="30" rows="2"></textarea>
                 <!-- <input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /> -->
@@ -165,7 +172,7 @@
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceMinimum" /></td>
-              <td width="14%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+              <td width="8%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
             </tr>
           </table>
 
@@ -515,6 +522,7 @@
               </td>
             </tr>     
             <tr>
+              <th>OrderA-Z</th>
               <th>Load</th>
               <th>Price Base</th>
               <th>PriceMultiAddress</th>
@@ -524,6 +532,9 @@
               <th>Price Minimum</th>
             </tr>
             <tr *ngFor="let lf of loadFrequents">
+              <td width="6%">
+                <input class="form-control" type="text" [(ngModel)]="lf.orderLine" style="width: 8ch;"/>
+              </td>
               <td width="16%">
                 <textarea  class="form-control" type="text" [(ngModel)]="lf.nom" cols="30" rows="2"></textarea>
                 <!-- <input class="form-control" type="text" [(ngModel)]="lf.nom" /> -->
@@ -534,9 +545,12 @@
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="lf.priceMinimum" /></td>
-              <td width="14%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
+              <td width="8%"><button class="btn btn-link" (click)="deleteLoadFrequent(lf)">Delete</button></td>
             </tr>
             <tr>
+              <td width="6%">
+                <input class="form-control" type="text" [(ngModel)]="loadFrequent.orderLine" style="width: 8ch;"/>
+              </td>
               <td width="16%">
                 <textarea  class="form-control" type="text" [(ngModel)]="loadFrequent.nom" cols="30" rows="2"></textarea>
                 <!-- <input class="form-control" type="text" [(ngModel)]="loadFrequent.nom" /> -->
@@ -547,7 +561,7 @@
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType1" /></td>
               <!-- <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceKmType2" /></td> -->
               <td width="14%"><input class="form-control" type="number" [(ngModel)]="loadFrequent.priceMinimum" /></td>
-              <td width="14%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
+              <td width="8%"><button class="btn btn-link" (click)="addLoadFrequent()">Add</button></td>
             </tr>
           </table>
 
