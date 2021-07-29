@@ -17,9 +17,10 @@ export class MachineSpecsService{
         this.jwToken=localStorage.getItem('tonken');
     }
     
-    getAllLightMachines(){
+    // for each transporter - identified by idTransporter
+    getAllLightMachines(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/allLightMachines", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.get(this.adServer+":8080/allLightMachines?idTransporter="+idTransporter, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 

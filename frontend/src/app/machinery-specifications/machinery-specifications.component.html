@@ -58,16 +58,17 @@
             <td><span>&nbsp;</span></td>
             <td>
                 <table border="1">
-                    <tr><th colspan="2">Specs</th></tr>
+                    <tr><th colspan="2">Specifications</th></tr>
+                    <tr><th>Spec</th><th>Description</th></tr>
                     <tr>
                         <td><input type="text" [(ngModel)]="spec.name"></td>
                         <td><input type="text" [(ngModel)]="spec.descrip"></td>
-                        <td><button class="btn btn-link" (click)="specs.push(spec); spec={name:'', descrip:''}">Ajout</button></td>
+                        <td><button class="btn btn-link" (click)="onAddingSpec()">Ajout</button></td>
                     </tr>
                     <tr *ngFor="let sp of specs">
-                        <td><input type="text" [(ngModel)]="sp.name"></td>
-                        <td><input type="text" [(ngModel)]="sp.descrip"></td>
-                        <td><button class="btn btn-link" (click)="(specs.splice(specs.indexOf(sp), 1))">Delete</button></td>
+                        <td><input type="text" [(ngModel)]="sp.name" (change)="buildSpecs()"></td>
+                        <td><input type="text" [(ngModel)]="sp.descrip" (change)="buildSpecs()"></td>
+                        <td><button class="btn btn-link" (click)="onDeletingSpec(sp)">Delete</button></td>
                     </tr>
                 </table>
             </td>
@@ -80,7 +81,7 @@
 
 <div id="showspec" style="border: 1px solid black;">
     <br>
-    <h3 *ngIf="nameMachine.length>0"><strong>Specification &nbsp;{{nameMachine}}</strong></h3>
+    <h3 *ngIf="nameMachine.length>0" style="text-align: center;"><strong>&nbsp;{{nameMachine}}</strong></h3>
     <table border="1">
         <th *ngIf="imgUrl.length>0 || imgUrl02.length>0 || imgUrl03.length>0" colspan="3">Photos</th>
         <tr>
@@ -89,9 +90,10 @@
             <td *ngIf="imgUrl03.length>0" style="width: 33%;"><img [src]="imgUrlSafe03" alt="photo03" class="img-responsive" width="100%" ></td>
         </tr>
     </table>
+    <br><br>
     <table border="1">
         <tr *ngIf="specs.length>0">
-            <th colspan="2">Specs</th>
+            <th colspan="2">Specifications</th>
             <!-- <th>Detail</th> -->
         </tr>
         <tr *ngFor="let sp of specs">
@@ -100,10 +102,12 @@
             <!-- <td>{{sp.descrip}}</td> -->
         </tr>
     </table>
+    <br><br>
     <h4 *ngIf="!(userId.length>0)"><strong><button class="btn btn-link" (click)="onModify()">Modify</button></strong>
         &nbsp;&nbsp;<strong><button class="btn btn-link" (click)="onDelete()">Delete</button></strong></h4>
+        <br><br>
     <h3 *ngIf="url.length>7"><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
-    <iframe *ngIf="url.length>7" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
+    <iframe *ngIf="url.length>7" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px; border: 2px solid black;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
 </div>
 <!-- <div id="reservespecs"></div> -->
 

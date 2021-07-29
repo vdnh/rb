@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class MachineSpecs  implements Serializable{
     @Id @GeneratedValue
     private Long id;
+    private Long idTransporter;
     private String name="";
     private String photo01="";
     private String photo02="";

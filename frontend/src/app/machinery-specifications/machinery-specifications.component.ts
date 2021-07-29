@@ -69,6 +69,7 @@ export class MachinerySpecificationsComponent implements OnInit {
       if(this.machineSpecs.photo03!=null) this.imgUrl03=this.machineSpecs.photo03
       if(this.machineSpecs.link!=null) this.url=this.machineSpecs.link
       // this.specs=this.machineSpecs.specs.split('****')   see later
+      this.rebuildSpecs(this.machineSpecs.specs)
       this.sanitizerAfterLoad()
     }, err=>{console.log(err)})
   }
@@ -180,15 +181,16 @@ export class MachinerySpecificationsComponent implements OnInit {
   // end test ng-autocomplete 
 
   allLightMachines:Map<number, string>=new Map<number, string>();
-
+  idTransporter:number;
   constructor(public sanitizer: DomSanitizer, public varsGlobal:VarsGlobal, public machineSpecsService:MachineSpecsService) {}
 
   ngOnInit():void {
     this.userId=localStorage.getItem('userId')
+    this.idTransporter=Number(localStorage.getItem('idTransporter'))
     if(this.userId==null) this.userId=""
     // this.specs.push(this.spec)
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
-    this.machineSpecsService.getAllLightMachines().subscribe((data:Map<number, string>)=>{
+    this.machineSpecsService.getAllLightMachines(this.idTransporter).subscribe((data:Map<number, string>)=>{
       // :Map<number, string>
       if(data==null) console.log('No Machine for now')
       else {
@@ -285,6 +287,7 @@ export class MachinerySpecificationsComponent implements OnInit {
   }
 
   onFileUpLoadTest(event){
+    console.log('event : ' + ((event)?"yes" : "null or no choix"))
     let selectedFile : File=event.target.files[0];
     let size : number; // = selectedFile.size
     // let imgUrl=""
@@ -423,5 +426,45 @@ export class MachinerySpecificationsComponent implements OnInit {
         else alert("Can't upload file more than 25 MB !!!")
       }
     }
+  }
+
+  // from specs in database
+  rebuildSpecs(stringSpecs:string){
+    this.specs=[]
+    let spec:{name:string, descrip:string}={name:"", descrip:""}
+    let listString=stringSpecs.split("**..**")
+    // let i=0;
+    listString.forEach(str=>{
+      // console.log('time: '+ i++ +"str: " + str)
+      if(str!=null && str.length>0){
+        let listSupStr=str.split("**--**")
+        spec={name:listSupStr[0], descrip:listSupStr[1]}
+        this.specs.push(spec); 
+        // spec={name:'', descrip:''}
+      }
+    })
+  }
+
+  // from specs of frontend
+  buildSpecs(){
+    this.machineSpecs.specs=''
+    this.specs.forEach(sp=>{
+      let tempspec=sp.name+"**--**"+sp.descrip+"**..**"
+      this.machineSpecs.specs=this.machineSpecs.specs + tempspec
+    })
+  }
+
+  onAddingSpec(){
+    // let tempspec=this.spec.name+"**--**"+this.spec.descrip+"**..**"
+    this.specs.push(this.spec); 
+    this.spec={name:'', descrip:''}
+    // this.machineSpecs.specs=this.machineSpecs.specs + tempspec
+    this.buildSpecs()
+  }
+  onDeletingSpec(sp:{name:string, descrip:string}){
+    // let tempspec=sp.name+"**--**"+sp.descrip+"**..**"
+    this.specs.splice(this.specs.indexOf(sp), 1)
+    // this.machineSpecs.specs=this.machineSpecs.specs.replace(tempspec,"")
+    this.buildSpecs()
   }
 }

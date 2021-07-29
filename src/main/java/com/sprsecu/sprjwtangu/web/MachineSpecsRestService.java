@@ -27,14 +27,14 @@ public class MachineSpecsRestService {
     
     // All Machines light data (id and name)
     @RequestMapping(value = "/allLightMachines", method = RequestMethod.GET)
-    public Map<Long, String> getAllLightMachines(){
+    public Map<Long, String> getAllLightMachines(@RequestParam(name = "idTransporter", defaultValue = "-1" ) Long idTransporter){
         Map<Long, String> results = new HashMap<Long, String>();
 
 //   EntityManager em = entityManagerFactory.createEntityManager();
 
    // Construct and run query
    
-   List<Object[]> resultList = machineSpecsRepository.getAllLightMachines();
+   List<Object[]> resultList = machineSpecsRepository.getAllLightMachines(idTransporter);
 
    // Place results in map
    for (Object[] borderTypes: resultList) {
