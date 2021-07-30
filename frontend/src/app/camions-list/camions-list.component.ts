@@ -469,7 +469,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   // fillOpacity: 1,
                   // fillColor: "#7FFF00", //"#FFFFFF"
                   strokeWeight: 3,
-                  strokeColor: "#008088", //"#FFFFFF",//"red",
+                  // strokeColor: "#008088", //"#FFFFFF",//"red",
+                  strokeColor: ((camion.speed!=null&&camion.speed>0)?"#008088":"red"), //"#FFFFFF",//"red",
                 },
                 // icon:"assets/images/circles-animated.gif",
                 title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)),
@@ -825,7 +826,8 @@ export class CamionsListComponent implements OnInit, OnDestroy {
                   // fillOpacity: 1,
                   // fillColor: "#7FFF00", //"#FFFFFF"
                   strokeWeight: 3,
-                  strokeColor: "#008088", //"#FFFFFF",//"red",
+                  // strokeColor: "#008088", //"#FFFFFF",//"red",
+                  strokeColor: ((camion.speed!=null&&camion.speed>0)?"#008088":"red"), //"#FFFFFF",//"red",
                 },
                 title: ((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)),
                 label: {text:((camion.foreignName!=null && camion.foreignName.length>0) ? camion.foreignName : ("#"+camion.unite+" "+camion.marque+" "+camion.modele)), color:"orange"},
