@@ -272,7 +272,20 @@ export class TerminalComponent implements OnInit {
 
   }
 
+  // sort with order by A-Z
   sortItiners(itiners){
+    itiners.sort((a,b)=>{
+      if(a.orderLine==null) a.orderLine=''
+      if(b.orderLine==null) b.orderLine=''
+      let resultCompare=0;
+      resultCompare= a.orderLine.localeCompare(b.orderLine)
+      if(resultCompare==0) resultCompare = (a.id-b.id)
+      return resultCompare;
+    })
+    return itiners
+  }
+  
+  sortItiners_backup(itiners){
     // let cIsL= this.cIsLList.find(res=>res.camionId==idCamion)
     // if(cIsL!=null)
     // {

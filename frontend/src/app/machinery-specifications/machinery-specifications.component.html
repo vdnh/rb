@@ -1,11 +1,11 @@
 <div id="showgen">
-    <h2 style="text-align: center;"><strong>Machinery Specs</strong><br></h2>
-    <h3 *ngIf="!(userId.length>0)"><button class="btn btn-link">Ajout Machine Specs</button></h3>
+    <!-- <h2 style="text-align: center;"><strong>Machinery Specs</strong><br></h2> -->
+    <h3 *ngIf="!(userId.length>0)"><button class="btn btn-link" (click)="newMachineSpecs()">Ajout Machine Specs</button></h3>
     <!-- <input style="width: 50ch;" type="text" [(ngModel)]="nameMachine" list="listMachine" placeholder="Search/Recherche">
     <datalist id="listMachine">
         <option *ngFor="let machine of machines" [ngValue]="machine">{{machine}}</option>
     </datalist> -->
-    <div class="ng-autocomplete">
+    <div class="ng-autocomplete" *ngIf="mode==0">
         <ng-autocomplete
           [data]="machines"
           [searchKeyword]="keyword01"
@@ -23,11 +23,14 @@
         <ng-template #notFoundTemplate01 let-notFound>
           <div [innerHTML]="notFound"></div>
         </ng-template>
+        <h4 *ngIf="!userId.length>0 && machineSpecs!=null"><strong><button class="btn btn-link" (click)="onModify()">Modify</button></strong>
+            &nbsp;&nbsp;<strong><button class="btn btn-link" (click)="onDelete()">Delete</button></strong></h4>
+            <br>
     </div>    
     <br>
 </div>
 
-<div id="addmodifyspec" *ngIf="!(userId.length>0)" style="border: 1px solid black;">
+<div id="addmodifyspec" *ngIf="mode==1 && !(userId.length>0) && machineSpecs!=null" style="border: 1px solid black;">
     <br>
     <table>
         <tr>
@@ -40,17 +43,20 @@
                     <tr>
                         <td>
                             <span>Photo01: </span>
-                            <input type="file" title="Attach photo01 " (change)="onFileUpLoadTest($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo01">
+                            <input *ngIf="imgUrl.length==0" type="file" title="Attach photo01 " (change)="onFileUpLoadTest($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo01">
+                            <button *ngIf="imgUrl.length>0" class="btn btn-link" (click)="onDeletePhoto01()">Change Photo01</button>
                         </td>
                     </tr><tr>
                         <td>
                             <span>Photo02: </span>
-                            <input type="file" title="Attach photo02 " (change)="onFileUpLoadTest02($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo02">
+                            <input *ngIf="imgUrl02.length==0" type="file" title="Attach photo02 " (change)="onFileUpLoadTest02($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo02">
+                            <button *ngIf="imgUrl02.length>0" class="btn btn-link" (click)="onDeletePhoto02()">Change Photo02</button>
                         </td>
                     </tr><tr>
                         <td>
                             <span>Photo03: </span>
-                            <input type="file" title="Attach photo03 " (change)="onFileUpLoadTest03($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo03">
+                            <input *ngIf="imgUrl03.length==0" type="file" title="Attach photo03 " (change)="onFileUpLoadTest03($event)" accept="image/x-png,image/gif,image/jpeg,.svg" placeholder="photo03">
+                            <button *ngIf="imgUrl03.length>0" class="btn btn-link" (click)="onDeletePhoto03()">Change Photo03</button>
                         </td>
                     </tr>
                 </table>
@@ -78,16 +84,16 @@
     
     <strong>Site Reference &nbsp;</strong><input type="text" [(ngModel)]="url" style="width: 100ch;" (change)="onSiteReferChange()"><br>
 </div>
-
-<div id="showspec" style="border: 1px solid black;">
+<!-- style="border: 1px solid black;" -->
+<div id="showspec">
     <br>
     <h3 *ngIf="nameMachine.length>0" style="text-align: center;"><strong>&nbsp;{{nameMachine}}</strong></h3>
     <table border="1">
         <th *ngIf="imgUrl.length>0 || imgUrl02.length>0 || imgUrl03.length>0" colspan="3">Photos</th>
         <tr>
-            <td *ngIf="imgUrl.length>0" style="width: 33%;"><img [src]="imgUrlSafe" alt="photo01" class="img-responsive" width="100%" ></td>
-            <td *ngIf="imgUrl02.length>0" style="width: 33%;"><img [src]="imgUrlSafe02" alt="photo02" class="img-responsive" width="100%" ></td>
-            <td *ngIf="imgUrl03.length>0" style="width: 33%;"><img [src]="imgUrlSafe03" alt="photo03" class="img-responsive" width="100%" ></td>
+            <td *ngIf="imgUrl.length>0" style="width: 33%;"><img [src]="imgUrlSafe" alt="photo01" class="img-responsive" style="min-width: 300px;" width="100%" ></td>
+            <td *ngIf="imgUrl02.length>0" style="width: 33%;"><img [src]="imgUrlSafe02" alt="photo02" class="img-responsive" style="min-width: 300px;" width="100%" ></td>
+            <td *ngIf="imgUrl03.length>0" style="width: 33%;"><img [src]="imgUrlSafe03" alt="photo03" class="img-responsive" style="min-width: 300px;" width="100%" ></td>
         </tr>
     </table>
     <br><br>
@@ -103,9 +109,7 @@
         </tr>
     </table>
     <br><br>
-    <h4 *ngIf="!(userId.length>0)"><strong><button class="btn btn-link" (click)="onModify()">Modify</button></strong>
-        &nbsp;&nbsp;<strong><button class="btn btn-link" (click)="onDelete()">Delete</button></strong></h4>
-        <br><br>
+    
     <h3 *ngIf="url.length>7"><strong>Site Reference &nbsp;<a href={{url}} target="_blank">{{url}}</a></strong></h3>
     <iframe *ngIf="url.length>7" style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px; border: 2px solid black;" frameBorder="2" [src]="urlSafe" sandbox></iframe>
 </div>

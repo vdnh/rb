@@ -275,9 +275,9 @@
                 <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
                 <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
                 <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')"
-                (click)="onSpecsMachine(); router.navigateByUrl('/machine-specs', {skipLocationChange: true})">
-                  <strong *ngIf="suivi">Specifications Machinerie</strong>
-                  <span *ngIf="!suivi">Specifications Machinerie</span> 
+                (click)="onSpecs(); router.navigateByUrl('/machine-specs', {skipLocationChange: true})">
+                  <strong *ngIf="specs">Specifications Machinerie</strong>
+                  <span *ngIf="!specs">Specifications Machinerie</span> 
                 </button>
                 <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
                   <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->
@@ -694,9 +694,9 @@
                 <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Calcul-Express</button-->
                 <!--button routerLink="/appel-express-visitor" class="btn btn-link" *ngIf="(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Demande-Express</button--> 
                 <button class="btn btn-link" *ngIf="varsGlobal.session.includes('no')"
-                (click)="onSpecsMachine(); router.navigateByUrl('/machine-specs', {skipLocationChange: true})">
-                  <strong *ngIf="suivi">Specifications Machinery</strong>
-                  <span *ngIf="!suivi">Specifications Machinery</span> 
+                (click)="onSpecs(); router.navigateByUrl('/machine-specs', {skipLocationChange: true})">
+                  <strong *ngIf="specs">Specifications Machinery</strong>
+                  <span *ngIf="!specs">Specifications Machinery</span> 
                 </button>
                 <!-- <div class="col-md-4 col-sm-4 col-lg-4"> -->
                   <!-- <button routerLink="/feuille-communication" class="btn btn-link" *ngIf="!(userId.length>0)" [disabled]="!varsGlobal.session.includes('no')">Communication</button> -->

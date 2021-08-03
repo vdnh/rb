@@ -84,4 +84,6 @@ public class Itineraire  implements Serializable{
     // multi address
     private String pickAddress; // all pick address beside principal origin address; separated by **--**
     private String dropAddress; // all drop address beside principal destination address; separated by **--**
+    
+    private String orderLine=""; // to put in order
 }

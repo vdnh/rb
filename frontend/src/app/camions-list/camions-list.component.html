@@ -299,10 +299,13 @@
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}}
+                                        <br><strong>Drop</strong> {{iti.destination}} <br>
                                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                                         <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
                                     <!-- </td> -->
+                                        <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
+                                            (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
+                                            <!--  [(ngModel)]="iti.orderLine" -->
                                 </p>
                                 <!-- <tr>
                                     <td colspan="4" style="text-align: center;font-weight: bold;">{{iti.origin +"  -  "+ iti.destination}}</td> 
@@ -1158,7 +1161,7 @@
     <div id="dtc" *ngIf="detailCamion && detailCamionWindown && !modeConfirm" class="col-md-5 col-lg-5" style="margin-top: 0px;">
         <div>
             <select type="text" [(ngModel)]="camion" (ngModelChange)="onChangeCamionCapacity()">
-                <!--  (ngModelChange)="onChangeCamionCapacity()" -->
+                     <!--  (ngModelChange)="onChangeCamionCapacity()" -->
                 <optgroup label="Unite avec GPS">
                     <option *ngFor="let c of camionsSurMap" [ngValue]="c">
                         {{(c.foreignName!=null && c.foreignName.length>0) ? c.foreignName : (c.unite+ ' '+c.marque +' ' +c.type+ ' ' +c.modele)}}

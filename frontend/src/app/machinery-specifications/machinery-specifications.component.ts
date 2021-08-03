@@ -11,6 +11,7 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 })
 export class MachinerySpecificationsComponent implements OnInit {
 
+  mode=0; // 0: just view, 1: add or modify
   name = 'Set iframe source';
   url: string = '';
   urlSafe: SafeResourceUrl;
@@ -19,7 +20,7 @@ export class MachinerySpecificationsComponent implements OnInit {
   // machines=['mach01 test genie 1506','engin02 roller 65p','roller03 nacelle t 890']
   machines=[]
   ids=[]
-  machineSpecs:MachineSpecs = new MachineSpecs();
+  machineSpecs:MachineSpecs; // = new MachineSpecs();
 
   imgUrl='';
   imgUrlSafe: SafeResourceUrl;
@@ -61,6 +62,7 @@ export class MachinerySpecificationsComponent implements OnInit {
     console.log('machines.indexOf : '+ this.machines.indexOf(item))
     
     console.log('id machine : '+ this.ids[this.machines.indexOf(item)])
+
     this.machineSpecsService.getDetailMachineSpecs(Number(this.ids[this.machines.indexOf(item)])).subscribe((data:MachineSpecs)=>{
       this.machineSpecs=data
       if(this.machineSpecs.name!=null) this.nameMachine=this.machineSpecs.name
@@ -85,7 +87,7 @@ export class MachinerySpecificationsComponent implements OnInit {
     // And reassign the 'data' which is binded to 'data' property.
     // console.log('onChangeSearch01');
     // this.nameMachine=''
-    this.machineSpecs=new MachineSpecs()
+    this.machineSpecs=null; //new MachineSpecs()
     this.nameMachine=''
     this.imgUrl=''
     this.imgUrl02=''
@@ -102,13 +104,15 @@ export class MachinerySpecificationsComponent implements OnInit {
   }
 
   onModify(){
-    this.machineSpecsService.saveMachineSpecs(this.machineSpecs).subscribe(()=>{},err=>{console.log(err)})
+    this.mode=1;
+    // this.machineSpecsService.saveMachineSpecs(this.machineSpecs).subscribe(()=>{},err=>{console.log(err)})
   }
 
   onDelete(){
     this.machineSpecsService.deleteMachineSpecs(this.machineSpecs.id).subscribe(()=>{},err=>{console.log(err)})
     this.ids.splice(this.ids.indexOf(this.machineSpecs.id),1)
     this.machines.splice(this.machines.indexOf(this.machineSpecs.name),1)
+    this.mode=0;
   }
   // keyword = 'name';
   // public countries = [
@@ -187,7 +191,10 @@ export class MachinerySpecificationsComponent implements OnInit {
   ngOnInit():void {
     this.userId=localStorage.getItem('userId')
     this.idTransporter=Number(localStorage.getItem('idTransporter'))
-    if(this.userId==null) this.userId=""
+    if(this.userId==null) { // it is transporter
+      this.userId=""
+      // this.mode=1; // dispatch transporter
+    }
     // this.specs.push(this.spec)
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
     this.machineSpecsService.getAllLightMachines(this.idTransporter).subscribe((data:Map<number, string>)=>{
@@ -226,6 +233,19 @@ export class MachinerySpecificationsComponent implements OnInit {
     }, err=>{console.log(err)})
   }
 
+  newMachineSpecs(){
+    this.machineSpecs= new MachineSpecs()
+    if(this.machineSpecs.name!=null) this.nameMachine=this.machineSpecs.name
+    if(this.machineSpecs.photo01!=null) this.imgUrl=this.machineSpecs.photo01
+    if(this.machineSpecs.photo02!=null) this.imgUrl02=this.machineSpecs.photo02
+    if(this.machineSpecs.photo03!=null) this.imgUrl03=this.machineSpecs.photo03
+    if(this.machineSpecs.link!=null) this.url=this.machineSpecs.link
+    this.rebuildSpecs(this.machineSpecs.specs)
+    this.sanitizerAfterLoad()
+    
+    this.mode=1
+  }
+  
   nameMachineChange(){
     if(!this.machines.includes(this.nameMachine)) this.machines.push(this.nameMachine)
     else alert(this.nameMachine + " exist")
@@ -284,6 +304,22 @@ export class MachinerySpecificationsComponent implements OnInit {
       }
     }
 
+  }
+
+  onDeletePhoto01(){
+    this.imgUrl='';
+    this.machineSpecs.photo01=this.imgUrl
+    this.sanitizerAfterLoad()
+  }
+  onDeletePhoto02(){
+    this.imgUrl02='';
+    this.machineSpecs.photo02=this.imgUrl02
+    this.sanitizerAfterLoad()
+  }
+  onDeletePhoto03(){
+    this.imgUrl03='';
+    this.machineSpecs.photo03=this.imgUrl03
+    this.sanitizerAfterLoad()
   }
 
   onFileUpLoadTest(event){

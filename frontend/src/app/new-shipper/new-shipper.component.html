@@ -123,7 +123,7 @@
           <br>
           <table border="1"  class="table table-responsive">
             <tr>
-              <th>Prix de Transport</th>
+              <th colspan="2">Prix de Transport</th>
               <td *ngIf="shippers.length>0" colspan="3" style="font-style: italic;">
                 Copier & Modifier de 
                 <select [(ngModel)]="shipperCopy" (ngModelChange)="shipperCopyChange()" style="width: 25ch;">
@@ -512,7 +512,7 @@
           <br>
           <table border="1"  class="table table-responsive">
             <tr>
-              <th>Freight Price</th>
+              <th colspan="2">Freight Price</th>
               <td *ngIf="shippers.length>0" colspan="3" style="font-style: italic;">
                 Copy & Modify from 
                 <select [(ngModel)]="shipperCopy" (ngModelChange)="shipperCopyChange()" style="width: 25ch;">

@@ -987,8 +987,24 @@ export class AppComponent implements OnInit{
   ressource:boolean=false;
   suivi:boolean=false;
   camsItiners=true;
+  specs:boolean=false;
   
+  onSpecs(){
+    this.specs=true;
+    this.fleet=false;
+    this.varsGlobal.dispatchSee=true;
+
+    this.camsItiners=false;
+    this.remor=false;
+    this.trans=false;
+    this.ressource=false;
+    this.suivi=false;
+    this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
+    this.router.navigate(['/detail-transporter/'+ this.idTransporter], {skipLocationChange: true});
+  }
+
   onFleet(){
+    this.specs=false;
     this.fleet=true;
     this.varsGlobal.dispatchSee=true;
 
@@ -1002,6 +1018,7 @@ export class AppComponent implements OnInit{
   }
 
   onCamsItiners(){
+    this.specs=false;
     this.fleet=false;
     this.varsGlobal.dispatchSee=false;
 
@@ -1014,6 +1031,7 @@ export class AppComponent implements OnInit{
     this.router.navigateByUrl('/camions-list', {skipLocationChange: true})
   }
   onRemor(){
+    this.specs=false;
     this.fleet=false;
     this.varsGlobal.dispatchSee=false;
     
@@ -1025,6 +1043,7 @@ export class AppComponent implements OnInit{
     this.varsGlobal.switchLanguage=true; //false; // do not allow switch language
   }
   onTrans(){
+    this.specs=false;
     this.fleet=false;
     this.varsGlobal.dispatchSee=false;
     
@@ -1038,6 +1057,7 @@ export class AppComponent implements OnInit{
   }
 
   onRessource(){
+    this.specs=false;
     this.fleet=false;
     this.varsGlobal.dispatchSee=false;
     
@@ -1050,6 +1070,7 @@ export class AppComponent implements OnInit{
   }
 
   onSuivi(){
+    this.specs=false;
     this.fleet=false;
     this.varsGlobal.dispatchSee=false;
     
@@ -1059,10 +1080,6 @@ export class AppComponent implements OnInit{
     this.ressource=false;
     this.suivi=true;
     this.varsGlobal.switchLanguage=true;
-  }
-
-  onSpecsMachine(){
-
   }
   
   onAccountInfos(){

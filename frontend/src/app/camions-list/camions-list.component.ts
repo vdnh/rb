@@ -991,6 +991,18 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.infoWindow.open(this.map);//*/      
   }
   
+  sortItinersOrderAZ(itiners){
+    itiners.sort((a,b)=>{
+      if(a.orderLine==null) a.orderLine=''
+      if(b.orderLine==null) b.orderLine=''
+      let resultCompare=0;
+      resultCompare= a.orderLine.localeCompare(b.orderLine)
+      if(resultCompare==0) resultCompare = (a.id-b.id)
+      return resultCompare;
+    })
+    return itiners
+  }
+
   sortItiners(itiners){
     itiners.sort((a,b)=>{
       // (a.id-b.id)
@@ -1056,7 +1068,10 @@ export class CamionsListComponent implements OnInit, OnDestroy {
       //   }
       //   return 0;
       // }) 
-      return this.sortItiners(cIsL.itiners)
+
+      // return this.sortItiners(cIsL.itiners)
+      // use sortItinersOrderAZ to order by a-z OrderLine first, then id
+      return this.sortItinersOrderAZ(cIsL.itiners)
     }
     else return null
   }

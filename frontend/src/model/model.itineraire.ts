@@ -55,4 +55,6 @@ export class Itineraire{
     // multi address
     pickAddress=""; // all pick address beside principal origin address; separated by **--**
     dropAddress=""; // all drop address beside principal destination address; separated by **--**
+
+    orderLine=''; // to put in order
 }
