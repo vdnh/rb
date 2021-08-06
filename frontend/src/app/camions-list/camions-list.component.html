@@ -300,10 +300,7 @@
                                 <!-- <tr> -->
                                     <!-- <td> -->
                                         <br><strong>Drop</strong> {{iti.destination}} <br>
-                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
-                                    <!-- </td> -->
-                                        <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
+                                        <strong>&nbsp;( OrdreA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
                                             (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                             <!--  [(ngModel)]="iti.orderLine" -->
                                 </p>
@@ -366,9 +363,9 @@
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>    
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
-                                        <br><strong>Drop</strong> {{iti.destination}}
-                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
+                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <strong>&nbsp;( OrdreA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
+                                        (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
                         </tr>
                     </table>
@@ -1596,10 +1593,9 @@
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}}
-                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
-                                    <!-- </td> -->
+                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
+                                        (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
                                 <!-- <tr>
                                     <td colspan="4" style="text-align: center;font-weight: bold;">{{iti.origin +"  -  "+ iti.destination}}</td> 
@@ -1661,9 +1657,9 @@
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
 
-                                        <br><strong>Drop</strong> {{iti.destination}}
-                                         <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
-                                        <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
+                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
+                                        (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
                         </tr>
                     </table>

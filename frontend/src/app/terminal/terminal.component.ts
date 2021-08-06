@@ -272,6 +272,18 @@ export class TerminalComponent implements OnInit {
 
   }
 
+  renderMultiAddress(multiAd:string){
+    console.log('Begin renderMultiAddress() in Terminal')
+    let listReturn = []
+    if(multiAd!=null){
+      listReturn = multiAd.split("**--**")
+      listReturn.pop();   // always remove last element as it is always null or ""
+      if(listReturn==null) listReturn=[]
+    }
+    console.log('listReturn: '+listReturn)
+    return listReturn;
+  }
+  
   // sort with order by A-Z
   sortItiners(itiners){
     itiners.sort((a,b)=>{

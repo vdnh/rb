@@ -991,6 +991,17 @@ export class CamionsListComponent implements OnInit, OnDestroy {
     // this.infoWindow.open(this.map);//*/      
   }
   
+  renderMultiAddress(multiAd:string){
+    console.log('Begin renderMultiAddress() in Camion-List')
+    let listReturn = []
+    if(multiAd!=null){
+      listReturn = multiAd.split("**--**")
+      listReturn.pop();   // always remove last element as it is always null or ""
+      if(listReturn==null) listReturn=[]
+    }
+    return listReturn;
+  }
+
   sortItinersOrderAZ(itiners){
     itiners.sort((a,b)=>{
       if(a.orderLine==null) a.orderLine=''

@@ -107,7 +107,7 @@
         <td>
           <input type="text" [(ngModel)]="trCm.transport.camionAttribue" 
           name="camionAttribue" list="defaultCamions" class="form-control" (change)="subCamionChange(trCm.transport)" 
-          (click)="clickDatalist(trCm.transport)" (mouseleave)="mouseleaveDatalist(trCm.transport)" 
+          (focus)="focusDatalist(trCm.transport)" (mouseleave)="mouseleaveDatalist(trCm.transport)" 
           [disabled]="trCm.transport.fini || trCm.transport.driverNote.includes('!!Cancelled!!')">
           <datalist id="defaultCamions">
             <option >Waiting</option>

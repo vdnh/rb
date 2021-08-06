@@ -649,14 +649,43 @@ export class TransportComponent implements OnInit, OnDestroy {
   // this is to help the datalist show all 
   tempDatalist="";
   clickDatalist(transport:Transport){
-    if(this.tempDatalist.length==0) this.tempDatalist=transport.camionAttribue
+    console.log('ClickDatalist captured!')
+    if(transport.camionAttribue!=null) this.tempDatalist=transport.camionAttribue
+    else this.tempDatalist=''
     transport.camionAttribue=""
   }
+  tempDatalistToRecovery=''; // to recovery when cancel truck choosen
   mouseleaveDatalist(transport:Transport){
     if(transport.camionAttribue.length==0 && this.tempDatalist.length>0){
+      this.tempDatalistToRecovery= this.tempDatalist // save to recovery 
       transport.camionAttribue=this.tempDatalist
+      this.tempDatalist=''
+      console.log('this.tempDatalist after mouseleaveDatalist: '+ this.tempDatalist)
     }
-   }
+  }
+  
+  focusbusy=false;
+  focusDatalist(transport:Transport){
+    if(!this.focusbusy){
+      console.log('focusDatalist captured!')
+      if(transport.camionAttribue!=null) this.tempDatalist=transport.camionAttribue
+      else this.tempDatalist=''
+      transport.camionAttribue=""
+      console.log('this.tempDatalist after focusDatalist: '+ this.tempDatalist)
+      console.log('transport.camionAttribue focusDatalist: '+ transport.camionAttribue)
+    }
+    else this.focusbusy=false
+    
+  }
+
+  // in case lost focus
+  blurDatalist(transport:Transport){
+    if(transport.camionAttribue.length==0 && this.tempDatalist.length>0){
+      transport.camionAttribue=this.tempDatalist
+      // this.tempDatalist=''
+      console.log('this.tempDatalist after blurDatalist: '+ this.tempDatalist)
+    }
+  }
   
   priceTemp=0;
   getPriceActual(transport:Transport){
@@ -683,6 +712,10 @@ export class TransportComponent implements OnInit, OnDestroy {
   }
 
   subCamionChange(transport:Transport){
+    this.focusbusy=true
+    console.log('subCamionChange begin')
+    console.log('this.tempDatalist after subCamionChange begin: '+ this.tempDatalist)
+    console.log('transport.camionAttribue after subCamionChange begin: '+ transport.camionAttribue)
     if(transport.camionAttribue.includes('Waiting')){
       transport.camionAttribue="";
       transport.idCamion=null
@@ -697,8 +730,10 @@ export class TransportComponent implements OnInit, OnDestroy {
               if(it!=null){
                 it.camionAttribue = ""
                 it.idCamion = null
+                it.orderLine = ''  // always set orderline to '' when hook in or hook out truck 
                 this.itinerairesService.saveItineraires(it).subscribe(data=>{
                   this.onRefresh();
+                  this.focusbusy=false
                 }, err=>{console.log(err)})
               }
             }, err=>{console.log(err)})
@@ -706,6 +741,7 @@ export class TransportComponent implements OnInit, OnDestroy {
         }
         else { 
           this.onRefresh();
+          // this.focusbusy=false
         }
     }
     else{ // it is not the text Waiting
@@ -720,7 +756,10 @@ export class TransportComponent implements OnInit, OnDestroy {
           if(c.id==cId) 
           {
             camion=c;
+            // this.tempDatalist= string0.trim();
             transport.camionAttribue= string0.trim();
+            console.log('this.tempDatalist after choosen: '+ this.tempDatalist)
+            console.log('transport.camionAttribue after choosen: '+ transport.camionAttribue)
             transport.idCamion=c.id
           }
         })
@@ -729,30 +768,54 @@ export class TransportComponent implements OnInit, OnDestroy {
             var r = confirm("Do you want "+transport.camionAttribue+" ?")
           }
           else var r = confirm("Voulez vous prendre "+transport.camionAttribue+" ?")
+          console.log('check var r after replied: ' + r)
           if(r)
           {
+            this.focusbusy=true
             this.transportsService.saveTransports(transport).subscribe((data:Transport)=>{
+              // 
+              transport=data;
+              this.tempDatalist= transport.camionAttribue;
+            
+              console.log('check var r after saveTransport: ' + r)
+              console.log('this.tempDatalist after saveTransport: '+ this.tempDatalist)
+              console.log('transport.camionAttribue after saveTransport: '+ transport.camionAttribue)
+              // 
               this.itinerairesService.itineraireDeTransport(transport.id).subscribe((it:Itineraire)=>{
                 if(it!=null){
                   it.camionAttribue = transport.camionAttribue
                   it.idCamion = transport.idCamion
+                  it.orderLine = ''  // always set orderline to '' when hook in or hook out truck
                   this.itinerairesService.saveItineraires(it).subscribe(data=>{
                     this.onRefresh();
+                    console.log('Refresh after save itineraire.')
+                    // this.focusbusy=false
                   }, err=>{console.log(err)})
                 }
               }, err=>{console.log(err)})
             }, err=>{console.log(err)})    
           }
           else { 
+            console.log("in case cancel truck choosen")
+            console.log("in case cancel truck choosen focusbusy: "+ this.focusbusy)
+            transport.camionAttribue = this.tempDatalistToRecovery;  // recovery when cancel truck choosen
+            // this.tempDatalist= transport.camionAttribue;
             this.onRefresh();
+            // this.focusbusy=false
           }
         }
         else{ // don't find out truck
+          transport.camionAttribue = this.tempDatalist;
           this.onRefresh();
+          // this.focusbusy=false
         }
       }
       else  // name dosen't correspond to truck
+      {
+        transport.camionAttribue = this.tempDatalist;
         this.onRefresh();    
+        // this.focusbusy=false
+      }
     }    
   }
 
