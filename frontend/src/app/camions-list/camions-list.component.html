@@ -62,8 +62,14 @@
                 </li> -->
                 <li *ngFor="let iti of camionItinersFind(camion.id); let i = index" >
                     <!-- (click)="onModify(iti)" -->
-                    <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <strong><u>{{i+1}}. Pick:</u></strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                        <br> Pick{{(i+2)+": "+ addrPick}}
+                    </span>
                     <br><strong>Drop:</strong> {{iti.destination}}
+                    <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                        <br> Drop{{(i+2)+": "+ addrDrop}}
+                    </span>
                      <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                     <!-- <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
                 </li>
@@ -83,8 +89,14 @@
 
             <li *ngFor="let iti of camionItinersFind(camionClicked.id); let i = index" >
                 <!-- (click)="onModify(iti)" -->
-                <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <strong><u>{{i+1}}. Pick:</u></strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                    <br> Pick{{(i+2)+": "+ addrPick}}
+                </span>
                 <br><strong>Drop:</strong> {{iti.destination}}
+                <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                    <br> Drop{{(i+2)+": "+ addrDrop}}
+                </span>
                  <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                 <!-- <small (click)="itinerFini(iti)"><u>Finir</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Annuler</u></small> -->
             </li>
@@ -295,11 +307,18 @@
                                     <!-- <td> -->
                                         <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                         <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                        <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Pick{{(i+2)+": "+ addrPick}}
+                                        </span>
                                     <!-- </td> -->
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <br><strong>Drop</strong> {{iti.destination}} 
+                                        <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                                        </span>
+                                        <br>
                                         <strong>&nbsp;( OrdreA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
                                             (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                             <!--  [(ngModel)]="iti.orderLine" -->
@@ -362,8 +381,14 @@
                                 <p>
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>    
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-
-                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Pick{{(i+2)+": "+ addrPick}}
+                                        </span>
+                                        <br><strong>Drop</strong> {{iti.destination}} 
+                                        <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                                        </span>
+                                        <br>
                                         <strong>&nbsp;( OrdreA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
                                         (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
@@ -855,7 +880,13 @@
                     <p>
                         <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
+                        <span *ngFor="let addrPick of renderMultiAddress(it.pickAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Pick{{(i+2)+": "+ addrPick}}
+                        </span>
                         <br><strong>Drop</strong> {{it.destination}}
+                        <span *ngFor="let addrDrop of renderMultiAddress(it.dropAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                        </span>
                          <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>
@@ -1356,8 +1387,14 @@
                 </li> -->
                 <li *ngFor="let iti of camionItinersFind(camion.id); let i = index" >
                     <!-- (click)="onModify(iti)" -->
-                    <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <strong><u>{{i+1}}. Pick:</u></strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                    <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                        <br> Pick{{(i+2)+": "+ addrPick}}
+                    </span>
                     <br><strong>Drop:</strong> {{iti.destination}}
+                    <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                        <br> Drop{{(i+2)+": "+ addrDrop}}
+                    </span>
                      <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                     <!-- <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                 </li>
@@ -1377,8 +1414,14 @@
 
             <li *ngFor="let iti of camionItinersFind(camionClicked.id); let i = index" >
                 <!-- (click)="onModify(iti)" -->
-                <strong>{{i+1}}. Pick:</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <strong><u>{{i+1}}. Pick:</u></strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                    <br> Pick{{(i+2)+": "+ addrPick}}
+                </span>
                 <br><strong>Drop:</strong> {{iti.destination}}
+                <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                    <br> Drop{{(i+2)+": "+ addrDrop}}
+                </span>
                  <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                 <!-- <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
             </li>
@@ -1589,11 +1632,18 @@
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                     <!-- <td> -->
                                         <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
+                                        <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Pick{{(i+2)+": "+ addrPick}}
+                                        </span>
                                     <!-- </td> -->
                                 <!-- </tr> -->
                                 <!-- <tr> -->
                                     <!-- <td> -->
-                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                        <br><strong>Drop</strong> {{iti.destination}} 
+                                        <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                                        </span>
+                                        <br>
                                         <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
                                         (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
@@ -1656,8 +1706,14 @@
                                         
                                     <span *ngIf="iti.nomEntreprise!=null && iti.nomEntreprise.length>0">{{iti.nomEntreprise +" #Num:"+iti.idTransport}} <br></span>
                                     <strong>{{i+1}}. Pick</strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-
-                                        <br><strong>Drop</strong> {{iti.destination}} <br>
+                                    <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                                        <br> Pick{{(i+2)+": "+ addrPick}}
+                                    </span>
+                                        <br><strong>Drop</strong> {{iti.destination}} 
+                                        <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                                        </span>
+                                        <br>
                                         <strong>&nbsp;( OrderA-Z <input style="width: 6ch;" type="text" [ngModel]="iti.orderLine"
                                         (change)="iti.orderLine=$event.target.value; itinerairesService.saveItineraires(iti).subscribe()"> )</strong>
                                 </p>
@@ -2134,7 +2190,13 @@
                     <p>
                         <span *ngIf="it.nomEntreprise!=null && it.nomEntreprise.length>0">{{it.nomEntreprise +" #Num:"+it.idTransport}} <br></span>
                         <strong>Pick</strong> {{it.origin}} &nbsp;&nbsp;  {{showDateLocal(it.datePick) | date: 'dd-MM-yyyy'}} &nbsp;{{it.timeResrvation}}&nbsp;  {{(it.longueur!=null ? it.longueur+"'" : '')}}
+                        <span *ngFor="let addrPick of renderMultiAddress(it.pickAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Pick{{(i+2)+": "+ addrPick}}
+                        </span>
                         <br><strong>Drop</strong> {{it.destination}}
+                        <span *ngFor="let addrDrop of renderMultiAddress(it.dropAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                        </span>
                          <!-- &nbsp;&nbsp; {{showDateLocal(it.dateDrop) | date: 'dd-MM-yyyy'}}   -->
                     </p>
                 </td>

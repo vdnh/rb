@@ -41,13 +41,13 @@
                     <td>
                         <!-- <p> -->
                         <strong>Pick: </strong> {{iti.origin}} &nbsp;&nbsp;  {{showDateLocal(iti.datePick) | date: 'dd-MM-yyyy'}} &nbsp;&nbsp;{{(iti.timeResrvation.length>0)?iti.timeResrvation:" "}}&nbsp;&nbsp;  {{(iti.longueur!=null ? iti.longueur+"'" : '')}}
-                        <br><h5 *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
-                            Pick{{(i+2)+": "+ addrPick}}
-                        </h5>
+                        <span *ngFor="let addrPick of renderMultiAddress(iti.pickAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Pick{{(i+2)+": "+ addrPick}}
+                        </span>
                         <br><strong>Drop: </strong> {{iti.destination}}
-                        <br><h5 *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
-                            Drop{{(i+2)+": "+ addrDrop}}
-                        </h5>
+                        <span *ngFor="let addrDrop of renderMultiAddress(iti.dropAddress); let i=index" style="margin-left: 5pt;">
+                            <br> Drop{{(i+2)+": "+ addrDrop}}
+                        </span>
                          <!-- &nbsp;&nbsp; {{showDateLocal(iti.dateDrop) | date: 'dd-MM-yyyy'}} -->
                             <!-- &nbsp;&nbsp; <small (click)="itinerFini(iti)"><u>Finish</u></small> &nbsp;&nbsp; <small (click)="itinerCancel(iti)"><u>Cancel</u></small> -->
                             <!-- &nbsp;&nbsp; 
