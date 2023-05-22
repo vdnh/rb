@@ -33,7 +33,7 @@ export class ShippersService{
     getShippers(motCle:string, page:number, size:number)    //:Observable<PageShipper>
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherShippers?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherShippers?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -43,7 +43,7 @@ export class ShippersService{
     getShippersByIdTransporter(motCle:string, id:number, page:number, size:number)    //:Observable<PageShipper>
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherShippersByIdTransporter?mc="+motCle+"&id="+id+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherShippersByIdTransporter?mc="+motCle+"&id="+id+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -53,7 +53,7 @@ export class ShippersService{
     getAllShippers()    //
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shippers", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.get(this.adServer+":8443/shippers", {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
         }))
@@ -61,33 +61,33 @@ export class ShippersService{
 
     getShippersTransporter(id:number){    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shippersTransporter/"+id
+        return this.http.get(this.adServer+":8443/shippersTransporter/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveShippers(shipper:Shipper){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/shippers",shipper
+        return this.http.post(this.adServer+":8443/shippers",shipper
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res;}));
     }
 
     getDetailShipper(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shippers/"+id
+        return this.http.get(this.adServer+":8443/shippers/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     deleteShipper(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/shippers/"+id
+        return this.http.delete(this.adServer+":8443/shippers/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res=> {return res}));
     }
     // for sign up no need authentication
     signUpShipper(shipper:Shipper){
-        return this.http.post(this.adServer+":8080/shipperSignUp",shipper).pipe(map(res => {return res;}));
+        return this.http.post(this.adServer+":8443/shipperSignUp",shipper).pipe(map(res => {return res;}));
     }
 }

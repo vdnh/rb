@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import javafx.scene.shape.Path;
-//import javax.mail.Address;
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-//import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.codec.binary.Base64;
 /**
  *
@@ -112,7 +112,8 @@ import org.apache.commons.codec.binary.Base64;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 
         Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+//	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        transport.connect("smtp.gmail.com", "automate.cts@gmail.com", "jfglprtpuhlqffwz");
         
         // begin treatment file attachment
         //
@@ -184,8 +185,8 @@ import org.apache.commons.codec.binary.Base64;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 
         Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
-        //transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
+//	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        transport.connect("smtp.gmail.com", "automate.cts@gmail.com", "jfglprtpuhlqffwz");
         //*/
         // check list if valid or not
         //System.out.println("em.getEmailDest() : " + em.getEmailDest());
@@ -240,8 +241,8 @@ import org.apache.commons.codec.binary.Base64;
 	getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 
         Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
-        //transport.connect("smtp.gmail.com", "ventesosprestige@gmail.com", "Ctsprestige$$$9");
+//	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        transport.connect("smtp.gmail.com", "automate.cts@gmail.com", "jfglprtpuhlqffwz");
         
         //*/
 	        

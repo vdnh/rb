@@ -19,35 +19,35 @@ loadTonken(){
 
 userLogsDeEntreprise(entrepriseId:number){
     this.loadTonken();
-    return this.http.get(this.adServer+":8080/userLogsDeEntreprise?entrepriseId="+entrepriseId
+    return this.http.get(this.adServer+":8443/userLogsDeEntreprise?entrepriseId="+entrepriseId
     , {headers:new HttpHeaders({'Authorization':this.jwToken})})
     .pipe(map(res => {return res}));
 }
 
 saveUserLogs(userLogs:UserLogs){
     this.loadTonken();
-    return this.http.post(this.adServer+":8080/userLogs",userLogs
+    return this.http.post(this.adServer+":8443/userLogs",userLogs
     , {headers:new HttpHeaders({'Authorization':this.jwToken})})
     .pipe(map(res => {return res}));
 }
 
 getDetailUserLogs(id:number){
     this.loadTonken();
-    return this.http.get(this.adServer+":8080/userLogs/"+id
+    return this.http.get(this.adServer+":8443/userLogs/"+id
     , {headers:new HttpHeaders({'Authorization':this.jwToken})})
     .pipe(map(res => {return res}));
 }
 
 updateUserLogs(id:number, userLogs:UserLogs){
     this.loadTonken();
-   return this.http.put(this.adServer+":8080/userLogs/"+id, userLogs
+   return this.http.put(this.adServer+":8443/userLogs/"+id, userLogs
    , {headers:new HttpHeaders({'Authorization':this.jwToken})})
    .pipe(map(res => {return res}));
 }
 
 deleteUserLogs(id:number){
     this.loadTonken();
-    return this.http.delete(this.adServer+":8080/userLogs/"+id
+    return this.http.delete(this.adServer+":8443/userLogs/"+id
     , {headers:new HttpHeaders({'Authorization':this.jwToken})})
     .pipe(map(res => {return res}));
 }

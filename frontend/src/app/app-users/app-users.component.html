@@ -1,247 +1,146 @@
-<div *ngIf="role=='ADMIN'">
-  <span><button class="btn btn-link" (click)="onUsers()">
-    <strong *ngIf="usersMode">Users</strong>
-    <span *ngIf="!usersMode">Users</span>
-  </button></span>
-  <span><button class="btn btn-link" (click)="onPlanSetting()">
-    <strong *ngIf="planSettingMode">Plan Setting</strong>
-    <span *ngIf="!planSettingMode">Plan Setting</span>
-  </button></span>
-  <span><button class="btn btn-link" (click)="onOrders()">
-    <strong *ngIf="ordersMode">Orders</strong>
-    <span *ngIf="!ordersMode">Orders</span>
-  </button></span>
-  <span><button class="btn btn-link" (click)="onOrdersHistoric()">
-    <strong *ngIf="ordersHistoricMode">Orders Historic</strong>
-    <span *ngIf="!ordersHistoricMode">Orders Historic</span>
-  </button></span>
-  
-  <!-- <hr style="border: 1px dotted black"/> -->
-  <!-- 
-    usersMode = false;
-    planSettingMode = false;
-    ordersMode = true;  // to show ordersMode for first view
-    ordersHistoricMode = false;
-   -->
-  
-  <!-- <div [hidden]="!planSettingMode">
-    <span>PlanSettingMode</span>
-  </div>
-  <div [hidden]="!ordersMode">
-    <span>OrdersMode</span>
-  </div>
-  <div [hidden]="!ordersHistoricMode">
-    <span>OrdersHistoricMode</span>
-  </div> -->
 
-  <div [hidden]="!planSettingMode">
-    <table border="1">
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Trucks</th>
-        <th>ClientsPros</th>
-        <th>Terminals</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td><input type="text"  [(ngModel)]="planPrice.plan" style="border: none;"></td>
-        <td><input type="number" [(ngModel)]="planPrice.price" style="width: 10ch; border: none;"></td>
-        <td><input type="number" [(ngModel)]="planPrice.trucks" style="width: 10ch; border: none;"></td>
-        <td><input type="number" [(ngModel)]="planPrice.clientsPros" style="width: 10ch; border: none;"></td>
-        <td><input type="number" [(ngModel)]="planPrice.terminals" style="width: 10ch; border: none;"></td>
-        <td>
-          <!-- <input type="text" [(ngModel)]="planPrice.description" style="border: none;"> -->
-          <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="planPrice.description"></textarea>
-        </td>
-        <td><button (click)="setPlanPrice()">Set Plan Price</button></td>
-      </tr>
-    </table>
-  </div>
-  <table border="1" [hidden]="!ordersMode">
-    <tr>Orders Waittings</tr>
-    <tr>
-      <th>#Num</th>
-      <th>Transporter - Infos</th>
-      <th>PlanOrder</th><th>Trucks</th><th>Sub-Dispatchs</th><th>Terminals</th>
-      <th>Demande</th><th>Ending</th><th>Price</th><th>PayedProof</th><th>Valid</th>
-      <!-- <th>Invoice</th> -->
-    </tr>
-    <tr *ngFor="let pO of listPlanOrders">
-      <td>{{pO.planOrder.id}}</td>
-      <td>{{pO.transporter.nom + " - " + pO.transporter.tel + " - " + pO.transporter.email}}</td>
-      <td>{{pO.planOrder.planName}}</td><td>{{pO.planOrder.trucks}}</td><td>{{pO.planOrder.clientsPros}}</td><td>{{pO.planOrder.terminals}}</td>
-      <td>{{pO.planOrder.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
-      <td style="text-align: right;">{{pO.planOrder.price}} $</td><td><button>LoadProof</button></td>
-      <td><button (click)="onValidPlanOrder(pO)">Valid</button></td>
-      <!-- <td><button>Invoice</button></td> -->
-    </tr>
-  </table>
-  <table border="1" [hidden]="!ordersHistoricMode">
-    <tr>Orders History</tr>
-    <tr>
-      <th>#Num</th>
-      <th>Transporter - Infos</th>
-      <th>PlanOrder</th><th>Trucks</th><th>Sub-Dispatchs</th><th>Terminals</th>
-      <th>Demande</th><th>Ending</th><th>Price</th><th>PayProof</th><th>Invoice</th>
-    </tr>
-    <tr *ngFor="let pO of listPlanOrdersArchived">
-      <td>{{pO.planOrder.id}}</td>
-      <td>{{pO.transporter.nom + " - " + pO.transporter.tel + " - " + pO.transporter.email}}</td>
-      <td>{{pO.planOrder.planName}}</td><td>{{pO.planOrder.trucks}}</td><td>{{pO.planOrder.clientsPros}}</td><td>{{pO.planOrder.terminals}}</td>
-      <td>{{pO.planOrder.dateOrder | date: 'dd-MMM-yyyy'}}</td><td>{{pO.planOrder.dateEnding | date: 'dd-MMM-yyyy'}}</td>
-      <td style="text-align: right;">{{pO.planOrder.price}} $</td><td><button>PayProof</button></td>
-      <td><button>Invoice</button></td>
-    </tr>
-    <!-- <tr><td></td><td></td><td></td><td></td><td></td></tr> -->
-</table>
-</div>
 
-<div [hidden]="appUser.roleSimple.includes('ADMIN') && !usersMode">
-  <!-- <span>UserMode</span> -->
-  <hr style="border: 1px dotted black"/>
-  <h3>Create User</h3>
-  <hr style="border: 1px dotted black"/>
-  <div class="panel-body">
-    <div class="row">
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Username</label>
-          <input type="text"  [(ngModel)]="appUser.username" name="username" class="form-control"/>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Password</label>
-          <input type="password"  [(ngModel)]="appUser.password" name="password" placeholder="Password" 
-          class="form-control" required #password="ngModel" />
-          <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
-            <div *ngIf="password.errors.required"> Password required. </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Confirm Password</label>
-          <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
-          class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
-        <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
-          <div *ngIf="confirmpassword.errors.required"> Confirm password is required. </div>
-          <div *ngIf="confirmpassword.errors.pattern"> Password & Confirm Password does not match.</div>
-        </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Role</label>
-          <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
-            (ngModelChange)="typeRoleChange($event)" required>
-            <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
-          </select>
-        </div>
-      </div>
-      <!-- <div class="col-sm-12 col-md-2 col-lg-2" *ngIf="!appUser.roleSimple.includes('DISPATCH')">
-        <label class="control-label">For </label>
-        <select class="form-control" [(ngModel)]="appUser.idUser">
-          <option [hidden]="appUser.roleSimple.includes('SHIPPER')" 
-          *ngFor="let e of listTrans" [ngValue]="e.id" >{{e.nom}}</option>
-          <option [hidden]="appUser.roleSimple.includes('TRANSPORTER')  
-          || appUser.roleSimple.includes('TECHNICIEN') || appUser.roleSimple.includes('TERMINAL')" 
-          *ngFor="let e of listShippers" [ngValue]="e.id" >{{e.nom}}
-          </option>
-        </select>
-      </div> -->
-      <!-- <div class="col-sm-12 col-md-1 col-lg-1">
-        <div class="form-group">
-          <label >IdSecond(Sh/Tr)</label>
-          
-          <input type="text" [(ngModel)]="appUser.idSecond"
-            name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
-            [disabled]="disabledIdSecond || appUser.idUser==''"/>
-          <datalist id="defaultPros2em">
-            <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
-          </datalist>
-        </div>
-      </div> -->
-      <!-- <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Full Name</label>
-          <input type="text" [(ngModel)]="appUser.fullName" name="fullName"/>
-        </div>
-      </div> -->
-    </div>
-    <div class="form-group">
-      <button [disabled]="!(passwordCheck==appUser.password && passwordCheck!='')" (click)="onCreatUser()">OK</button>
-    </div>
-  </div>
-  <hr style="border: 1px dotted black"/>
-  <h3>Modify User</h3>
-  <hr style="border: 1px dotted black"/>
+<h3>Create User</h3>
+<hr style="border: 1px dotted black"/>
+<div class="panel-body">
   <div class="row">
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Username</label>        
-          <select type="text" class="form-control" [(ngModel)]="appUserToMod">
-            <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
-          </select>
-        </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Username</label>
+        <input type="text"  [(ngModel)]="appUser.username" name="username" class="form-control"/>
       </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Password</label>
-          <input type="password"  [(ngModel)]="appUserToMod.password" name="passwordToMod" placeholder="Password" 
-          class="form-control" required #passwordToMod="ngModel" />
-          <div *ngIf="passwordToMod.invalid && passwordToMod.touched" class="alert alert-danger">
-            <div *ngIf="passwordToMod.errors.required"> Password required. </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Confirm Password</label>
-          <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
-          class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
-        <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
-          <div *ngIf="confirmpasswordToMod.errors.required"> Confirm password is required. </div>
-          <div *ngIf="confirmpasswordToMod.errors.pattern"> Password & Confirm Password does not match.</div>
-        </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Role</label>
-          <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
-            (ngModelChange)="typeRoleChange($event)" required disabled>
-            <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
-          </select>
-        </div>
-      </div>
-      <!-- <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >For</label>
-          <input type="text" [(ngModel)]="appUserToMod.entrepriseNom" class="form-control" disabled>
-        </div>
-      </div> -->
-      <!-- <div class="col-sm-12 col-md-1 col-lg-1">
-        <div class="form-group">
-          <label >IdSecond(Sh/Tr)</label>
-          
-          <input type="text" [(ngModel)]="appUserToMod.idSecond"
-            name="idSecondToMod" class="form-control" disabled/>
-        </div>
-      </div> -->
-      <!-- <div class="col-sm-12 col-md-2 col-lg-2">
-        <div class="form-group">
-          <label >Full Name</label>
-          <input type="text" [(ngModel)]="appUserToMod.fullName" name="fullName"/>
-        </div>
-      </div> -->
     </div>
-    <div class="form-group">
-      <button (click)="onModifyUser()" [disabled]="(!(appUserToMod.id>0) || !(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!=''))">Modify</button>
-      <span>&nbsp;&nbsp;</span>
-      <button [disabled]="!(appUserToMod.id>0)" (click)="onDeleteUser()">Delete</button>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Password</label>
+        <input type="password"  [(ngModel)]="appUser.password" name="password" placeholder="Password" 
+        class="form-control" required #password="ngModel" />
+        <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
+          <div *ngIf="password.errors.required"> Password required. </div>
+        </div>
+      </div>
     </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Confirm Password</label>
+        <input type="password"  [(ngModel)]="passwordCheck" name="confirmpassword" placeholder="Confirm Password" 
+        class="form-control" required #confirmpassword="ngModel" pattern="{{ appUser.password }}" />
+      <div *ngIf=" confirmpassword.invalid && confirmpassword.touched" class="alert alert-danger">
+        <div *ngIf="confirmpassword.errors.required"> Confirm password is required. </div>
+        <div *ngIf="confirmpassword.errors.pattern"> Password & Confirm Password does not match.</div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Role</label>
+        <select type="text"  class="form-control" [ngModel]="appUser.roleSimple" 
+          (ngModelChange)="typeRoleChange($event)" required>
+          <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
+        </select>
+      </div>
+    </div>
+    <!-- <div class="col-sm-12 col-md-2 col-lg-2">
+      <label class="control-label">For </label>
+      <select class="form-control" [(ngModel)]="appUser.idUser">
+        <option [hidden]="appUser.roleSimple.includes('SHIPPER')" 
+        *ngFor="let e of listTrans" [ngValue]="e.id" >{{e.nom}}</option>
+        <option [hidden]="appUser.roleSimple.includes('TRANSPORTER')  
+        || appUser.roleSimple.includes('TECHNICIEN') || appUser.roleSimple.includes('TERMINAL')" 
+          *ngFor="let e of listShippers" [ngValue]="e.id" >{{e.nom}}
+        </option>
+      </select>
+    </div> -->
+    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
+      <div class="form-group">
+        <label >IdSecond(Sh/Tr)</label>
+        
+        <input type="text" [(ngModel)]="appUser.idSecond"
+          name="idSecond" (change)="idSecondChange()" class="form-control" list="defaultPros2em"
+          [disabled]="disabledIdSecond || appUser.idUser==''"/>
+         <datalist id="defaultPros2em">
+           <option *ngFor="let e of listPros2em" [ngValue]="e" >Ship {{e.id}} {{e.nom}}</option>
+         </datalist>
+      </div>
+    </div> -->
+    <!-- <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Full Name</label>
+        <input type="text" [(ngModel)]="appUser.fullName" name="fullName"/>
+      </div>
+    </div> -->
+  </div>
+  <div class="form-group">
+    <button [disabled]="!(passwordCheck==appUser.password && passwordCheck!='')" (click)="onCreatUser()">OK</button>
+  </div>
 </div>
+<hr style="border: 1px dotted black"/>
+<h3>Modify User</h3>
+<hr style="border: 1px dotted black"/>
+<div class="row">
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Username</label>        
+        <select type="text" class="form-control" [(ngModel)]="appUserToMod">
+          <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Password</label>
+        <input type="password"  [(ngModel)]="appUserToMod.password" name="passwordToMod" placeholder="Password" 
+        class="form-control" required #passwordToMod="ngModel" />
+        <div *ngIf="passwordToMod.invalid && passwordToMod.touched" class="alert alert-danger">
+          <div *ngIf="passwordToMod.errors.required"> Password required. </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Confirm Password</label>
+        <input type="password"  [(ngModel)]="passwordCheckToMod" name="confirmpasswordToMod" placeholder="Confirm Password" 
+        class="form-control" required #confirmpasswordToMod="ngModel" pattern="{{ appUserToMod.password }}" />
+      <div *ngIf=" confirmpasswordToMod.invalid && confirmpasswordToMod.touched" class="alert alert-danger">
+        <div *ngIf="confirmpasswordToMod.errors.required"> Confirm password is required. </div>
+        <div *ngIf="confirmpasswordToMod.errors.pattern"> Password & Confirm Password does not match.</div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Role</label>
+        <select type="text"  class="form-control" [ngModel]="appUserToMod.roleSimple" 
+          (ngModelChange)="typeRoleChange($event)" required disabled>
+          <option *ngFor="let r of roleTypes" [ngValue]="r">{{roleTypesWriteInEnglish(r)}}</option>
+        </select>
+      </div>
+    </div>
+    <!-- <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label>For</label>
+        <input type="text" [(ngModel)]="appUserToMod.entrepriseNom" class="form-control" disabled>
+      </div>
+    </div> -->
+    <!-- <div class="col-sm-12 col-md-1 col-lg-1">
+      <div class="form-group">
+        <label >IdSecond(Sh/Tr)</label>
+        
+        <input type="text" [(ngModel)]="appUserToMod.idSecond"
+          name="idSecondToMod" class="form-control" disabled/>
+      </div>
+    </div> -->
+    <!-- <div class="col-sm-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <label >Full Name</label>
+        <input type="text" [(ngModel)]="appUserToMod.fullName" name="fullName"/>
+      </div>
+    </div> -->
+  </div>
+  <div class="form-group">
+    <button (click)='onModifyUser()' [disabled]='(!(appUserToMod.id>0) || !(passwordCheckToMod==appUserToMod.password && passwordCheckToMod!=""))'>Modify</button>
+    <span>&nbsp;&nbsp;</span>
+    <button [disabled]="!(appUserToMod.id>0)" (click)="onDeleteUser()">Delete</button>
+  </div>
 <hr style="border: 1px dotted black"/>
 

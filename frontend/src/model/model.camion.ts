@@ -30,8 +30,18 @@ export class Camion{
     message07:string="Changement huile transmission.";
     message08:string="Changement huile differentiel.";
     
-    latitude:number; //=45.568806;
-    longtitude:number; //=-73.918333;    
+    dateAchat:Date; //(add in Camion, delete in fiche)
+    price:number; // price buy truck
+    payDown:number; // sum paydown
+    payPerMonth:number; // pay per month
+    termPayment:number; // number of month to pay
+    pricePlate:number;
+    buyBack:number;
+    numberAxles:number;
+    dateSolde:Date;
+    
+    latitude:number=0; //=45.568806;
+    longtitude:number=0; //=-73.918333;    
     direction:number; // 0.00 - 359.99 -- north-east-south-west;    
     speed: number;
     stopDuration:number=0; // in minute
@@ -75,6 +85,7 @@ export class Camion{
     rampe:boolean=false; // Rampe
     loadLeveler:boolean=false; // Load Leveler
     backTilt:boolean=false; // Inclinaison du derriere
+    hauteurDeck:number; // par defaul est Hauteur de la deck - en pouce
     
     // Camions' location and name of location
     location:string=""; // address in AVL
@@ -92,7 +103,16 @@ export class Camion{
     outService=false; // out of service for some reason, false by default
     trailer=false; // Truck or trailer
     gps=false; // gps or no, by default is no
+    l100km:number; // liters per 100km
+    mpg:number; // miles per km
 
+    inspect6mLog=''; // save all date inspect6m, then plus \r\n to show new line in message
+    vignetteLog=''; // save all date vignette, then plus \r\n to show new line in message
+
+    equipment=""; // List equipment
+    inventory=""; // stuff in the truck
+
+    notes =""; 
 }
 
 export class PageCamion{
@@ -104,5 +124,8 @@ export class PageCamion{
     first:boolean;
     sort:string;
     numberofElements:number
+
+    idDriver:number; // id chauffeur
+    driverName=''; // firstname + lastname
   }
   

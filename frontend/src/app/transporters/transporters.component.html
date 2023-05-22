@@ -1,28 +1,27 @@
 <!--div class="container"-->
-  <!-- <button routerLink="/new-transporter" class="btn btn-link">New Transporter</button>&nbsp;&nbsp;&nbsp; -->
+  <button routerLink="/new-transporter" class="btn btn-info">Nouveau</button>&nbsp;&nbsp;&nbsp;
   <!-- <button routerLink="/calcule-prix" class="btn btn-info">Estimation le prix </button> -->
-  <br>
+  <p></p>
 <!--/div-->
 
 <!--div class="container spacer"-->
   <div class="panel panel-primary">
-    <!-- <div class="panel-heading"><h3>Liste des transporters</h3></div> -->
+    <div class="panel-heading"><h3>Liste des transporters</h3></div>
     <div class="panel-body">
       <div class="form-group">
         <label for="Mot cle : "></label>
         <input type="text" [(ngModel)]="motCle" #ctrl="ngModel"/>&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-link" (click)="chercher()">search</button>&nbsp;&nbsp;&nbsp;
-        <button routerLink="/new-transporter" class="btn btn-link">New</button>
+        <button class="btn btn-primary" (click)="chercher()">Chercher</button>
       </div>
       <table border="1"> 
       <!-- class="table table-striped"> -->
         <tr>
-          <th>Name</th><th>Social Reason</th><th>Email</th><th>Phone</th>
+          <th>Nom</th><th>Raison Sociale</th><th>Email</th><th>Telephone</th>
         </tr>
         <tr *ngFor="let t of pageTransporter.content">
             <td>{{t.nom}}</td><td>{{t.raison_sociale}}</td><td>{{t.email}}</td><td>{{t.tel}}</td>
-            <td><button class="btn btn-link" (click)="gotoDetailTransporter(t.id)">Detail</button></td>
-            <td><button class="btn btn-link" (click)="deleteTransporter(t)">Delete</button></td>
+            <td><button class="btn btn-link" (click)="gotoDetailTransporter(t.id)">Gerer</button></td>
+            <td><button class="btn btn-link" (click)="deleteTransporter(t.id)">Delete</button></td>
         </tr>
       </table>
       <div class="container">

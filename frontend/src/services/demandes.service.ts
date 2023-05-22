@@ -22,7 +22,7 @@ export class DemandesService{
     getDemandes01(motCle:string, id:string, page:number, size:number) //id of shipper or transporter
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&id="+id+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherDemandes?mc="+motCle+"&id="+id+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -32,7 +32,7 @@ export class DemandesService{
     getDemandes(motCle:string, page:number, size:number)
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherDemandes?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherDemandes?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -42,7 +42,7 @@ export class DemandesService{
     getAllDemandes()
     {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandes", 
+        return this.http.get(this.adServer+":8443/demandes", 
         {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -50,42 +50,42 @@ export class DemandesService{
     }
     demandesDeTransporter(idDemander:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeTransporter?idDemander="+idDemander
+        return this.http.get(this.adServer+":8443/demandesDeTransporter?idDemander="+idDemander
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     
     demandesDeShipper(idDemander:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandesDeShipper?idDemander="+idDemander
+        return this.http.get(this.adServer+":8443/demandesDeShipper?idDemander="+idDemander
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveDemandes(demande:Demande){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/demandes",demande
+        return this.http.post(this.adServer+":8443/demandes",demande
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailDemande(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/demandes/"+id
+        return this.http.get(this.adServer+":8443/demandes/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateDemande(id:number, d:Demande){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/demandes/"+id, d
+       return this.http.put(this.adServer+":8443/demandes/"+id, d
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteDemande(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/demandes/"+id
+        return this.http.delete(this.adServer+":8443/demandes/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 public interface CamionFermeeRepository extends JpaRepository<CamionFermee, Long>{
     @Query("select c from CamionFermee c where c.id_camion = :x")

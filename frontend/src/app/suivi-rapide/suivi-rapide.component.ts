@@ -12,6 +12,8 @@ import { LoadDetail } from 'src/model/model.loadDetail';
 import { LoadDetailsService } from 'src/services/loadDetails.Service';
 import { Shipper } from 'src/model/model.shipper';
 import { ShippersService } from 'src/services/shippers.service';
+import { Itineraire } from 'src/model/model.itineraire';
+import { ItinerairesService } from 'src/services/itineraires.service';
 
 //import {SignaturePad} from 'angular2-signaturepad/signature-pad';
 
@@ -22,16 +24,15 @@ import { ShippersService } from 'src/services/shippers.service';
 })
 export class SuiviRapideComponent implements OnInit {
   transporter: Transporter = new Transporter();
-  loadDetails: LoadDetail[]=[];
-  shipper: Shipper = new Shipper()
+  // loadDetails: LoadDetail[]=[];
 
   constructor(private transportService: TransportsService, 
     private remorquageService: RemorquagesService,
     private authService:AuthenticationService,
     private fb:FormBuilder,
     public transportersService:TransportersService,
-    public shippersService: ShippersService,
-    public loadDetailsService:LoadDetailsService,
+    public shippersService : ShippersService,
+    public itinerairesService:ItinerairesService,
     public varsGlobal:VarsGlobal) 
   {
     this.form = fb.group({
@@ -42,6 +43,8 @@ export class SuiviRapideComponent implements OnInit {
 
   remorquage: Remorquage = new Remorquage();
   transport: Transport = new Transport();
+  route:Itineraire=new Itineraire();
+  shipper: Shipper = new Shipper();
   numBon:number; // #bon ou #reference pour chercher
   result="";
   userId:any=null; // userId!=null c'est dispatch-pro
@@ -116,7 +119,7 @@ export class SuiviRapideComponent implements OnInit {
           }
           else {
             this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
-              if(data!=null){
+              if(data!=null && data.valid){
                 if(data.typeDoc!=1){
                   this.textResult(data.sent, data.fini, data.driverNote)
                   if(this.varsGlobal.language.includes('Francais')){
@@ -175,12 +178,12 @@ export class SuiviRapideComponent implements OnInit {
         }
         else{
           this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
-            if(data!=null){
-              this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
-                this.loadDetails=lds;
-              }, err=>{
-                console.log(err)
-              })
+            if(data!=null && data.valid){
+              // this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
+              //   this.loadDetails=lds;
+              // }, err=>{
+              //   console.log(err)
+              // })
               this.transport=data;
               this.textResult(data.sent, data.fini, data.driverNote)
               if(this.varsGlobal.language.includes('Francais')){
@@ -191,6 +194,11 @@ export class SuiviRapideComponent implements OnInit {
               }
               this.transportersService.getDetailTransporter(data.idTransporter).subscribe((tr:Transporter)=>{
                 this.transporter = tr;
+                if(this.transport.idEntreprise!=null && this.transport.idEntreprise>0){
+                  this.shippersService.getDetailShipper(this.transport.idEntreprise).subscribe(
+                    (data:Shipper)=>{this.shipper=data}, err=>{console.log(err)}
+                  )
+                }
               }, err=>{console.log(err)})
             }
             else{
@@ -219,14 +227,22 @@ export class SuiviRapideComponent implements OnInit {
         {
           if(localStorage.getItem('userId')!=undefined){ // si c'est dispatch-pro - parce userId pas null
             //alert('data.nomEntreprise : '+data.nomEntreprise + "localStorage.getItem('entrepriseNom'): "+localStorage.getItem('entrepriseNom'))
-            if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
+            // if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
+            if(data.idEntreprise.toString().length==localStorage.getItem('userId').length &&
+              data.idEntreprise.toString().includes(localStorage.getItem('userId'))
+              )
+            { // on verifie entrepriseId
               this.remorquage=data;
               this.textResult(data.sent, data.fini, data.driverNote)
               if(this.varsGlobal.language.includes('Francais')){
-                this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+                // this.result = "Remorquage #Bon " +this.numBon+ ': ' + this.result
+                // set to "" in temporary
+                this.result = ""  //"Remorquage #Bon " +this.numBon+ ': ' + this.result
               }
               if(this.varsGlobal.language.includes('English')){
-                this.result = "Towing #Num " +this.numBon+ ': ' + this.result
+                // this.result = "Towing #Num " +this.numBon+ ': ' + this.result
+                // set to "" in temporary
+                this.result = ""  //"Towing #Num " +this.numBon+ ': ' + this.result
               }
             }
             else {
@@ -261,31 +277,37 @@ export class SuiviRapideComponent implements OnInit {
       }
       else{  // in case don't find out remorquage
         this.transportService.getDetailTransport(this.numBon).subscribe((data:Transport)=>{
-          if(data!=null){
+          if(data!=null && data.valid){
             if(data.idEntreprise!=null && data.idEntreprise>0){
               this.shippersService.getDetailShipper(data.idEntreprise).subscribe(
                 (data:Shipper)=>{this.shipper=data}, err=>{console.log(err)}
               )
             }
-            this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
-              this.loadDetails=lds;
-            }, err=>{
-              console.log(err)
-            })
+            // this.loadDetailsService.loadDetailsDeTransport(data.id).subscribe((lds:Array<LoadDetail>)=>{
+            //   this.loadDetails=lds;
+            // }, err=>{
+            //   console.log(err)
+            // })
             if(data.idTransporter==Number(localStorage.getItem('idTransporter')))
           {
             if(localStorage.getItem('userId')!=undefined){ // si c'est dispatch-pro - parce userId pas null
               //alert('data.nomEntreprise : '+data.nomEntreprise + "localStorage.getItem('entrepriseNom'): "+localStorage.getItem('entrepriseNom'))
-              if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
+              // if(data.nomEntreprise.includes(localStorage.getItem('entrepriseNom'))){ // on verifie entreprisename
+              if(data.idEntreprise.toString().length==localStorage.getItem('userId').length &&
+                data.idEntreprise.toString().includes(localStorage.getItem('userId'))
+                )
+              { // on verifie entrepriseId
                 this.transport=data;
                 this.textResult(data.sent, data.fini, data.driverNote)
                 if(this.varsGlobal.language.includes('Francais')){
-                  // set to "" temporary
+                  // this.result = "Transport #Bon " +this.numBon+ ': ' + this.result
+                  // set to "" in temporary
                   this.result = ""  //"Transport #Bon " +this.numBon+ ': ' + this.result
                 }
                 if(this.varsGlobal.language.includes('English')){
-                  // set to "" temporary
-                  this.result = "" // "Freight #Num " +this.numBon+ ': ' + this.result
+                  // this.result = "Freight #Num " +this.numBon+ ': ' + this.result
+                  // set to "" in temporary
+                  this.result = ""  //"Transport #Bon " +this.numBon+ ': ' + this.result
                 }
                 //alert('this is a transport')  
               }
@@ -304,13 +326,17 @@ export class SuiviRapideComponent implements OnInit {
               this.textResult(data.sent, data.fini, data.driverNote)
               if(this.varsGlobal.language.includes('Francais')){
                 // set to "" temporary
-                this.result = "" // "Transport #Bon " +this.numBon+ ': ' + this.result
+                this.result = "" //"Transport #Bon " +this.numBon+ ': ' + this.result
               }
               if(this.varsGlobal.language.includes('English')){
+                // set to "" temporary
                 this.result = "" // "Freight #Num " +this.numBon+ ': ' + this.result
               }
               //alert('this is a transport')
             }
+            this.itinerairesService.itineraireDeTransport(this.transport.id).subscribe((rte:Itineraire)=>{
+              this.route=rte
+            }, err=>{console.log(err)})
           }
           else{ 
             if(this.varsGlobal.language.includes('Francais')){
@@ -388,5 +414,106 @@ export class SuiviRapideComponent implements OnInit {
 
   gotoDetailTransport(t:Transport){
     window.open("/detail-transport/"+t.id, "_blank")
+  }
+
+  renderMultiAddress(multiAd:string){
+    let listReturn = []
+    if(multiAd!=null){
+      listReturn = multiAd.split("**--**")
+      listReturn.pop();   // always remove last element as it is always null or ""
+      if(listReturn==null) listReturn=[]
+    }
+    return listReturn;
+  }
+
+  // begin test - download from suivie rapide
+  // @ViewChild('myForm', {static: true}) myForm: NgForm;
+  
+  // onSubmit(){
+  //   this.download();
+  // }
+
+  downloadAttachment(){
+    var link = document.createElement('a');
+    link.innerHTML = 'Download file';
+    let filename = ''
+    if(this.transport.imgUrl.includes("pdf;base64")){
+      filename="cts_attachment"+".pdf"
+    }
+    if(this.transport.imgUrl.includes("png;base64")){
+      filename="cts_attachment"+".png"
+    }
+    if(this.transport.imgUrl.includes("gif;base64")){
+      filename="cts_attachment"+".gif"
+    }
+    if(this.transport.imgUrl.includes("jfif;base64")){
+      filename="cts_attachment"+".jfif"
+    }
+    if(this.transport.imgUrl.includes("pjeg;base64")){
+      filename="cts_attachment"+".pjeg"
+    }
+    if(this.transport.imgUrl.includes("jpeg;base64")){
+      filename="cts_attachment"+".jpeg"
+    }  
+    if(this.transport.imgUrl.includes("pjp;base64")){
+      filename="cts_attachment"+".pjp"
+    }
+    if(this.transport.imgUrl.includes("jpg;base64")){
+      filename="cts_attachment"+".jpg"
+    }
+    link.download = filename//'file.pdf';
+    link.href =  this.transport.imgUrl;
+    // 'data:application/octet-stream;base64,' +
+    document.body.appendChild(link);
+    link.click();
+        setTimeout(function() {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(link.href);  
+        }, 0);
+  }
+  download_test_txt() {
+    let temptext="Nhat Hung VO DINH"
+    // var file = new Blob([this.myForm.form.value.myText], {type: '.txt'});
+    var file = new Blob(temptext.split(''), {type: '.txt'});
+    // if (window.navigator.msSaveOrOpenBlob) // IE10+
+    //     window.navigator.msSaveOrOpenBlob(file, this.myForm.form.value.filename);
+    // else 
+    { // Others
+        var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = 'HungText';//this.myForm.form.value.fileName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+  }
+
+  // end test - download from suivie rapide
+
+  infosCorrect=''
+  postedBy=''
+  infosAdd(transport:Transport){
+    if(this.infosCorrect.length>0) {
+      if(localStorage.getItem('userId')!=undefined){ // this is dispatch-pro or shipper
+        this.postedBy = ' - (posted by: ' +transport.nomEntreprise+')'
+      }
+      else{
+        this.postedBy = ' - (posted by: dispatch' +')'
+      }
+      if(!transport.comments.includes('Infos Corrections:')) transport.comments = transport.comments + '\r\n Infos Corrections: \r\n' + this.infosCorrect + this.postedBy
+      else transport.comments = transport.comments + ' \r\n' + this.infosCorrect + this.postedBy
+      this.route.comments=transport.comments
+      this.transportService.saveTransports(transport).subscribe(()=>{
+        this.itinerairesService.saveItineraires(this.route).subscribe(()=>{
+          alert('Ok')
+          this.infosCorrect=''
+          this.postedBy=''
+        }, err=>{console.log(err)})        
+      }, err=>{console.log(err)})
+    }
   }
 }

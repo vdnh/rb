@@ -19,41 +19,41 @@ export class LoadFrequentsService{
     
     loadFrequentsDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadFrequentsDeTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8443/loadFrequentsDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     
     loadFrequentsDeShipper(idShipper:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadFrequentsDeShipper?idShipper="+idShipper
+        return this.http.get(this.adServer+":8443/loadFrequentsDeShipper?idShipper="+idShipper
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     saveLoadFrequent(loadFrequent:LoadFrequent){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/loadFrequents", loadFrequent
+        return this.http.post(this.adServer+":8443/loadFrequents", loadFrequent
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailLoadFrequent(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadFrequents/"+id
+        return this.http.get(this.adServer+":8443/loadFrequents/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateLoadFrequent(id:number, l:LoadFrequent){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/loadFrequents/"+id, l
+       return this.http.put(this.adServer+":8443/loadFrequents/"+id, l
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteLoadFrequent(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/loadFrequents/"+id
+        return this.http.delete(this.adServer+":8443/loadFrequents/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

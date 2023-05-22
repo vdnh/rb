@@ -21,35 +21,35 @@ export class FichePhysiqueContsService{
     
     fichePhysiqueEntretienContDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/fichePhysiqueEntretienContDeCamion?idCamion="+idCamion
+        return this.http.get(this.adServer+":8443/fichePhysiqueEntretienContDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveFichePhysiqueEntretienConts(fichePhysiqueEntretienCont:FichePhysiqueEntretienCont){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/fichePhysiqueEntretienConts", fichePhysiqueEntretienCont
+        return this.http.post(this.adServer+":8443/fichePhysiqueEntretienConts", fichePhysiqueEntretienCont
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailFichePhysiqueEntretienCont(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/fichePhysiqueEntretienConts/"+id
+        return this.http.get(this.adServer+":8443/fichePhysiqueEntretienConts/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateFichePhysiqueEntretienCont(id:number, c:FichePhysiqueEntretienCont){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/fichePhysiqueEntretienConts/"+id, c
+       return this.http.put(this.adServer+":8443/fichePhysiqueEntretienConts/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteFichePhysiqueEntretienCont(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/fichePhysiqueEntretienConts/"+id
+        return this.http.delete(this.adServer+":8443/fichePhysiqueEntretienConts/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

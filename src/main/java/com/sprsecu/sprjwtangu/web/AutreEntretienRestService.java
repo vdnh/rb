@@ -2,7 +2,9 @@ package com.sprsecu.sprjwtangu.web;
 
 import com.sprsecu.sprjwtangu.dao.AutreEntretienRepository;
 import com.sprsecu.sprjwtangu.entities.AutreEntretien;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +61,23 @@ public class AutreEntretienRestService {
     @RequestMapping(value = "/autreEntretienDeCamion", method = RequestMethod.GET)
     public List<AutreEntretien> chercherFcDC(@RequestParam(name = "idCamion", defaultValue = "-1" ) Long idCamion) 
     {
-        return autreEntretienRepository.findByIdCamion(idCamion);
+        TimeZone currentTimeZone = TimeZone.getDefault();
+        Date d = new Date();
+        long offsetInMilliseconds= currentTimeZone.getOffset(d.getTime());
+        List<AutreEntretien> tempEntres = autreEntretienRepository.findByIdCamion(idCamion);
+        tempEntres.forEach(ent->{
+            if(ent.getDateFait()!=null){
+                if(ent.getDateFaitMiliseconds()!=null){
+                    ent.setDateFait(new Date(ent.getDateFaitMiliseconds()));
+                }
+                else{
+                    Date tempDate = ent.getDateFait();
+                    long tempTime = tempDate.getTime() + offsetInMilliseconds;
+                    ent.setDateFait(new Date(tempTime));
+                }
+            }
+        });
+        return tempEntres;
+//        return autreEntretienRepository.findByIdCamion(idCamion);
     }    
 }

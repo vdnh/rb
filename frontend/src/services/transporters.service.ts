@@ -18,7 +18,7 @@ export class TransportersService{
     getAllTransporters()    //
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/transporters", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.get(this.adServer+":8443/transporters", {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
         }))
@@ -27,10 +27,10 @@ export class TransportersService{
     getTransporters(motCle:string, page:number, size:number){
         this.loadTonken();
         /*
-        return this.http.get(this.adServer+":8080/chercherTransporters?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherTransporters?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         //.pipe(map(res => res.json()));//*/
-        return this.http.get(this.adServer+":8080/chercherTransporters?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherTransporters?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res =>{
             return res;
@@ -39,26 +39,26 @@ export class TransportersService{
 
     saveTransporters(transporter:Transporter){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/transporters",transporter
+        return this.http.post(this.adServer+":8443/transporters",transporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailTransporter(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/transporters/"+id
+        return this.http.get(this.adServer+":8443/transporters/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     deleteTransporter(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/transporters/"+id
+        return this.http.delete(this.adServer+":8443/transporters/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     signUpTransporter(transporter:Transporter){
-        return this.http.post(this.adServer+":8080/transporterSignUp",transporter).pipe(map(res => {return res}));
+        return this.http.post(this.adServer+":8443/transporterSignUp",transporter).pipe(map(res => {return res}));
     }
 }

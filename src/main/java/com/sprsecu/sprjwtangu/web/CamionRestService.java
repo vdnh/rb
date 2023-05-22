@@ -92,9 +92,10 @@ public class CamionRestService {
     
     @RequestMapping(value = "/camionsDeTransporterPaged", method = RequestMethod.GET)
     public Page<Camion> camionsDeTransporterPaged(
-        @RequestParam(name = "idTransporter", defaultValue = "") Long idTransporter, 
-        @RequestParam(name = "page", defaultValue = "0")int page, 
-        @RequestParam(name = "size", defaultValue = "5")int size){
+        @RequestParam(name = "idTransporter", defaultValue = "") Long idTransporter,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "5") int size)
+    {
         return camionRepository.camionsDeTransporterPaged(idTransporter, PageRequest.of(page, size));
     }
     

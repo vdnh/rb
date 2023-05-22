@@ -21,41 +21,41 @@ export class ConfirmTransportService{
     
     confirmTransportsDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/confirmTransportsDeTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8443/confirmTransportsDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveConfirmTransports(confirmTransport:ConfirmTransport){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/confirmTransports",confirmTransport
+        return this.http.post(this.adServer+":8443/confirmTransports",confirmTransport
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailConfirmTransport(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/confirmTransports/"+id
+        return this.http.get(this.adServer+":8443/confirmTransports/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateConfirmTransport(id:number, c:ConfirmTransport){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/confirmTransports/"+id, c
+       return this.http.put(this.adServer+":8443/confirmTransports/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteConfirmTransport(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/confirmTransports/"+id
+        return this.http.delete(this.adServer+":8443/confirmTransports/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     getConfirmTransportByFormNumero(idTransporter:number, formNumero:string){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/confirmTransportByFormNumero?idTransporter="+idTransporter+"&formNumero="+formNumero
+        return this.http.get(this.adServer+":8443/confirmTransportByFormNumero?idTransporter="+idTransporter+"&formNumero="+formNumero
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

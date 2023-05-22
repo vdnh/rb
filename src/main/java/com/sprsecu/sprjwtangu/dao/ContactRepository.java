@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 //@RepositoryRestResource
 public interface ContactRepository extends JpaRepository<Contact, Long>{

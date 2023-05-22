@@ -20,35 +20,35 @@ export class ReparationsService{
     
     reparationDeBon(idBon:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reparationsDeBon?idBon="+idBon
+        return this.http.get(this.adServer+":8443/reparationsDeBon?idBon="+idBon
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveReparation(reparation:Reparation){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/reparations", reparation
+        return this.http.post(this.adServer+":8443/reparations", reparation
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailReparation(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reparations/"+id
+        return this.http.get(this.adServer+":8443/reparations/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateReparation(id:number, r:Reparation){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/reparations/"+id, r
+       return this.http.put(this.adServer+":8443/reparations/"+id, r
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteReparation(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/reparations/"+id
+        return this.http.delete(this.adServer+":8443/reparations/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

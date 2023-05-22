@@ -22,42 +22,42 @@ export class BankClientsService{
 
     getBankClients(){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/bankClients"
+        return this.http.get(this.adServer+":8443/bankClients"
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveClients(client:BankClient){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/bankClients",client
+        return this.http.post(this.adServer+":8443/bankClients",client
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailClient(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/bankClients/"+id
+        return this.http.get(this.adServer+":8443/bankClients/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateClient(id:number, c:BankClient){
         this.loadTonken();
-        return this.http.put(this.adServer+":8080/bankClients/"+id, c
+        return this.http.put(this.adServer+":8443/bankClients/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteClient(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/bankClients/"+id
+        return this.http.delete(this.adServer+":8443/bankClients/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     envoyerMail(em:EmailMessage){  // to use with remorquage
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/email",em
+        return this.http.post(this.adServer+":8443/email",em
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
 
@@ -65,7 +65,7 @@ export class BankClientsService{
 
     envoyerMailAttachment(em:EmailMessage){  // to use with remorquage
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/emailAttachment",em
+        return this.http.post(this.adServer+":8443/emailAttachment",em
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
 
@@ -74,7 +74,7 @@ export class BankClientsService{
     
     envoyerMailToAll(em:EmailMessage){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/emailToAll",em
+        return this.http.post(this.adServer+":8443/emailToAll",em
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
 
@@ -83,7 +83,7 @@ export class BankClientsService{
     chercher(motCle:string)  
     {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherClients?mc="+motCle
+        return this.http.get(this.adServer+":8443/chercherClients?mc="+motCle
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;

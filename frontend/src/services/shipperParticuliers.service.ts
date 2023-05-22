@@ -21,7 +21,7 @@ export class ShipperParticuliersService{
     getShipperParticuliers(motCle:string, page:number, size:number)    //:Observable<PageShipperParticulier>
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherShipperParticuliers?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherShipperParticuliers?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -31,40 +31,40 @@ export class ShipperParticuliersService{
     getAllShipperParticuliers()    //
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shipperParticuliers", {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.get(this.adServer+":8443/shipperParticuliers", {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
         }))
     }
     saveShipperParticuliers(shipperParticulier:ShipperParticulier){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/shipperParticuliers",shipperParticulier
+        return this.http.post(this.adServer+":8443/shipperParticuliers",shipperParticulier
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res;}));
     }
 
     getDetailShipperParticulier(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shipperParticuliers/"+id
+        return this.http.get(this.adServer+":8443/shipperParticuliers/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailShipperParticulierByIdTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/shipperParticuliersByIdTransporter/"+idTransporter
+        return this.http.get(this.adServer+":8443/shipperParticuliersByIdTransporter/"+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     deleteShipperParticulier(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/shipperParticuliers/"+id
+        return this.http.delete(this.adServer+":8443/shipperParticuliers/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res=> {return res}));
     }
     // for sign up no need authentication
     signUpShipperParticulier(shipperParticulier:ShipperParticulier){
-        return this.http.post(this.adServer+":8080/shipperParticulierSignUp",shipperParticulier).pipe(map(res => {return res;}));
+        return this.http.post(this.adServer+":8443/shipperParticulierSignUp",shipperParticulier).pipe(map(res => {return res;}));
     }
 }

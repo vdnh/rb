@@ -6,9 +6,6 @@ import { Adresse } from 'src/model/model.adresse';
 import { AdressesService } from '../../services/adresses.service';
 import { ContactsService } from '../../services/contacts.service';
 import { VarsGlobal } from 'src/services/VarsGlobal';
-// import { Shipper } from 'src/model/model.shipper';
-import { AppUser } from 'src/model/model.appUser';
-import * as myGlobals from 'src/services/globals';
 
 @Component({
   selector: 'app-new-transporter',
@@ -20,47 +17,6 @@ export class NewTransporterComponent implements OnInit {
   mode:number=1;
   contact:Contact=new Contact();
   adresse:Adresse=new Adresse();
-  
-  // shipper:Shipper=new Shipper();
-  
-  contacts:Array<Contact>=[];
-  adresses:Array<Adresse>=[];
-  
-  appUser : AppUser = new AppUser();
-  role:string="";
-  //listAppUsers : Array<AppUser> = [];
-  listLoginName:Array<string>=[];
-  
-  provinceList=myGlobals.provinceList ;
-  villeList= myGlobals.QuebecVilles; //villeList;
-  AlbertaVilles=myGlobals.AlbertaVilles;
-  
-  BritishColumbiaVilles=myGlobals.BritishColumbiaVilles;
-  
-  ManitobaVilles=myGlobals.ManitobaVilles;
-  
-  NewBrunswickVilles=myGlobals.NewBrunswickVilles;
-  
-  NewfoundlandLabradorVilles=myGlobals.NewfoundlandLabradorVilles;
-  
-  NorthwestTerritoriesVilles=myGlobals.NorthwestTerritoriesVilles;
-  
-  NovaScotiaVilles=myGlobals.NovaScotiaVilles;
-  
-  NunavutVilles=myGlobals.NunavutVilles;
-  
-  OntarioVilles=myGlobals.OntarioVilles;
-  
-  PrinceEdwardIslandVilles=myGlobals.PrinceEdwardIslandVilles;
-  
-  QuebecVilles=myGlobals.QuebecVilles;
-  
-  SaskatchewanVilles=myGlobals.SaskatchewanVilles;
-  
-  YukonVilles=myGlobals.YukonVilles;
-
-  // shippers: Array<Shipper>=[];
-
   constructor(public transportersService:TransportersService, public contactsService:ContactsService, 
     public varsGlobal:VarsGlobal, public adressesService:AdressesService) { }
 
@@ -106,73 +62,13 @@ export class NewTransporterComponent implements OnInit {
       console.log(err);
     })
   }
- 
-  // signUpContact(): any {
-  //   this.contactsService.signupContact(this.contact).subscribe((data:Contact)=>{
-  //     console.log("Created Contact")
-  //     this.contact=new Contact()
-  //   }, err=>{
-  //     console.log(err);
-  //   })
-  // }
-
-  signUpContact(){
-    if(this.contacts.length>0)
-      this.contacts.forEach(ct=>{
-        ct.id_transporter=this.transporter.id;
-        this.contactsService.signupContact(ct).subscribe((data:Contact)=>{}, 
-        err=>{console.log(err);})   
-      })  
-  }
-
-  reformTelEvent(tel:any){
-    if(tel.target.value.indexOf('-')<0)
-      {
-        let sub1 = tel.target.value.substr(0,3)
-        let sub2 = tel.target.value.substr(3,3)
-        let sub3 = tel.target.value.substr(6,tel.target.value.length-6)
-        tel.target.value=sub1+'-'+sub2+'-'+sub3
-      }
-    return tel.target.value;
-  }
-
-  async villeChange(){
-    //*
-    if(this.adresse.province!=null){
-      // check the province to limit the cities
-      if(this.adresse.province==this.provinceList[0])
-        this.villeList=this.AlbertaVilles;
-      if(this.adresse.province==this.provinceList[1])
-        this.villeList=this.BritishColumbiaVilles;        
-      if(this.adresse.province==this.provinceList[2])
-        this.villeList=this.ManitobaVilles;
-      if(this.adresse.province==this.provinceList[3])
-        this.villeList=this.NewBrunswickVilles;    
-      if(this.adresse.province==this.provinceList[4])
-        this.villeList=this.NewfoundlandLabradorVilles;    
-      if(this.adresse.province==this.provinceList[5])
-        this.villeList=this.NorthwestTerritoriesVilles;
-      if(this.adresse.province==this.provinceList[6])
-        this.villeList=this.NovaScotiaVilles;
-      if(this.adresse.province==this.provinceList[7])
-        this.villeList=this.NunavutVilles;
-      if(this.adresse.province==this.provinceList[8])
-        this.villeList=this.OntarioVilles;
-      if(this.adresse.province==this.provinceList[9])
-        this.villeList=this.PrinceEdwardIslandVilles;
-      if(this.adresse.province==this.provinceList[10])
-        this.villeList=this.QuebecVilles;
-      if(this.adresse.province==this.provinceList[11])
-        this.villeList=this.SaskatchewanVilles;  
-      if(this.adresse.province==this.provinceList[12])
-        this.villeList=this.YukonVilles;
-    }
-  }
-
-  addContact(){
-    if(this.contact.nom.length>0 || this.contact.prenom.length>0)
-    this.contacts.push(this.contact)
-    this.contact=new Contact()
+  signUpContact(): any {
+    this.contactsService.signupContact(this.contact).subscribe((data:Contact)=>{
+      console.log("Created Contact")
+      this.contact=new Contact()
+    }, err=>{
+      console.log(err);
+    })
   }
 
   checkValidTransporter(){
@@ -181,7 +77,7 @@ export class NewTransporterComponent implements OnInit {
       &&
       this.adresse.rue.length>0 && this.adresse.ville.length>0 && this.adresse.province.length>0
       &&
-      this.contacts.length>0
+      this.contact.nom.length>0 && this.contact.prenom.length>0
     )
     {
       return true;

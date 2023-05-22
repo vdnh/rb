@@ -3,8 +3,6 @@ import { map } from 'rxjs/operators';
 import { TransportersService } from '../../services/transporters.service';
 import { Router } from '@angular/router';
 import { PageTransporter } from 'src/model/model.pageTransporter';
-import { Transporter } from 'src/model/model.transporter';
-import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
   selector: 'app-transporters',
@@ -20,7 +18,7 @@ export class TransportersComponent implements OnInit {
 
   pages:Array<number>;
 
-  constructor(public transporterservice:TransportersService, public router:Router, public varsGlobal : VarsGlobal) { }
+  constructor(public transporterservice:TransportersService, public router:Router) { }
 
   ngOnInit() {
     this.doSearch();
@@ -45,9 +43,8 @@ export class TransportersComponent implements OnInit {
     this.router.navigate(['detail-transporter',id]);
   }
 
-  deleteTransporter(transporter: Transporter){
-    var r = confirm("Are you sure to delete this transporter : " + transporter.nom)
-    this.transporterservice.deleteTransporter(transporter.id)
+  deleteTransporter(id:number){
+    this.transporterservice.deleteTransporter(id)
     .subscribe(data=>{
       this.doSearch();
     }, err=>{

@@ -1,0 +1,674 @@
+<div *ngIf="varsGlobal.language.includes('Francais')">
+    <h3>
+        <span class="btn btn-link" (click)="onModeShowReports(); emptyListFilter()">
+            <strong *ngIf="showReport">Rapport des Suivis</strong>
+            <small *ngIf="!showReport">Rapport des Suivis</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onModeAddReports(); emptyListFilter()">
+            <strong *ngIf="!showReport">Ajouter Rapport</strong>
+            <small *ngIf="showReport">Ajouter Rapport</small>        
+        </span>
+    </h3>
+    <div>
+        <strong>
+            <span >Rapports de </span>        
+            <select type="text" [(ngModel)]="appUserToUse" (ngModelChange)="onChangeSeller()">
+                <option *ngIf="showReport" [ngValue]="null">All</option>
+                <option *ngIf="!showReport" [ngValue]="null" disabled> </option>
+                <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+            </select>
+        </strong>
+    </div>
+    
+    <div *ngIf="showReport">
+        <!-- <span>Rapport des Suivis</span> -->
+        <!-- <button *ngIf="reportsMaster.length>0" class="btn btn-link" (click)="onSaveReportsRecursive()">Enregistrer</button> -->
+        <div>
+            <!-- <strong> -->
+                <!-- <span>Filtre: </span> -->
+                <!-- <span> -->
+                <table border="1" *ngIf="reportsMaster.length>0">
+                    <tr>
+                        <th rowspan="2">Filtre par&nbsp; </th>
+                        <th>Compte</th>
+                        <th>Telephone</th>
+                        <th>Date</th>
+                        <th>Compagnie</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Adresse</th>
+                        <th rowspan="2"><button class="btn btn-primary" (click)="printReport('toprint')">Print Rapport</button></th>
+                    </tr>
+                    <tr>
+                        <!-- <td></td> -->
+                        <td>
+                            <!-- Compte -->
+                            <input type="text" [(ngModel)]="accountFilter"
+                                name="accountFilter" (change)="accountFilterChange()" list="accountList"/>
+                            <datalist id="accountList">
+                                <option *ngFor="let acc of listAccount" [ngValue]="acc" >{{acc}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="telFilter"
+                                name="telFilter" (change)="telFilterChange()" list="telList"/>
+                            <datalist id="telList">
+                                <option *ngFor="let tel of listTel" [ngValue]="tel" >{{tel}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <select type="date" [(ngModel)]="dateFilter" (ngModelChange)="dateFilterChange(dateFilter)">
+                                <option [ngValue]="null"></option>
+                                <!-- <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt.toLocaleDateString()}}</option> -->
+                                <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </td>
+                        <td>
+                            <!-- Compagnie -->
+                            <input type="text" [(ngModel)]="companyFilter"
+                                name="companyFilter" (change)="companyFilterChange()" list="companyList"/>
+                            <datalist id="companyList">
+                                <option *ngFor="let comp of listCompany" [ngValue]="comp" >{{comp}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <!-- Contact -->
+                            <input type="text" [(ngModel)]="contactFilter"
+                                name="contactFilter" (change)="contactFilterChange()" list="contactList"/>
+                            <datalist id="contactList">
+                                <option *ngFor="let cont of listContact" [ngValue]="cont" >{{cont}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="emailFilter"
+                                name="emailFilter" (change)="emailFilterChange()" list="emailList"/>
+                            <datalist id="emailList">
+                                <option *ngFor="let email of listEmail" [ngValue]="email" >{{email}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="addressFilter"
+                                name="addressFilter" (change)="addressFilterChange(addressFilter)" list="addressList"/>
+                            <datalist id="addressList">
+                                <option *ngFor="let add of listAddress" [ngValue]="add" >{{add}}</option>
+                            </datalist>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <!-- </span> -->
+            <!-- </strong> -->
+        </div>
+    </div>
+    <div *ngIf="!showReport && appUserToUse.id!=null && appUserToUse.id>0">
+        <!-- <span>Ajout Rapport</span> -->
+        <div>
+            <table>
+                <!-- <tr>
+                    <td>
+                        <button class="btn btn-link" (click)="typeEnter=false; emptyListFilter()" [disabled]="!typeEnter">Saisir Manuellement</button>
+                        <button class="btn btn-link" (click)="typeEnter=true; emptyListFilter()" [disabled]="typeEnter">Importer de fichier</button>
+                        <span *ngIf="typeEnter"><br> Pour eviter de données en double, l'application n'importe que les dates n'existent pas dans les données actuelles</span>
+                    </td>
+                    <td>
+                        <input *ngIf="typeEnter" type="file" title="Attach file text" (change)="onFileTextUpLoad($event)" accept=".txt" placeholder="fileText">
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="2">
+                        <button *ngIf="reportsMaster.length>0" class="btn btn-link" (click)="onSaveReportsRecursive()">Enregistrer</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br>
+    
+    </div>
+    
+    
+    <div>
+        <table border="1">
+            <!--  class="table-responsive" -->
+            <tr *ngIf="loadWaiting"> <th colspan="8">loading ..... </th></tr>
+            <tr *ngIf="reports.length>0 || (!showReport && appUserToUse.id!=null && appUserToUse.id>0)">
+                <th>Num</th>
+                <th (click)="sortByAccount(reports)" style="width: 18ch;">Compte <strong>&uarr;&darr; </strong></th>
+                <th style="width: 10ch;">Type</th>
+                <th (click)="sortByDate(reports)" style="width: 12ch;">Date <strong>&uarr;&darr; </strong></th>
+                <th (click)="sortByCompany(reports)">Compagnie <strong>&uarr;&darr; </strong></th>
+                <th>Address </th>
+                <th (click)="sortByContact(reports)">Contact <strong>&uarr;&darr; </strong></th>
+                <th>Telephone</th><th>Email </th>
+                <th>Km</th>
+                <!-- <th>Suivi</th> -->
+                <!-- <th>idTrans</th>
+                <th>idSeller</th>
+                <th>Seller</th> -->
+            </tr>
+            <tr *ngIf="!typeEnter && !showReport && appUserToUse.id!=null && appUserToUse.id>0">
+                <td rowspan="2">&nbsp;</td>
+                <td>
+                    <!-- <input type="text" [(ngModel)]="addReport.account"> -->
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.account" cols="18" rows="1"></textarea>
+                </td>
+                <td>
+                    <select type="text" [(ngModel)]="addReport.type">
+                        <option>VISITE</option>
+                        <option>APPEL</option>
+                        <option>COURRIEL</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="date" placeholder="DateDone" name="dateDone" max="{{today | date: 'yyyy-MM-dd'}}" class="form-control" 
+                    (change)="pickDateChange($event)" style="width: 11pc;">
+                </td>    
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.company" cols="20" rows="2"></textarea>
+                </td>
+                <td>
+                    <!-- <textarea  class="form-control" type="text" [(ngModel)]="addReport.address" cols="20" rows="2"></textarea> -->
+                    <!-- <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+	                    type="text" [(ngModel)]="addReport.address" > -->
+                        <textarea  class="form-control" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places"
+                        (onAddressChange)="handleAddressChange($event)" type="text" [(ngModel)]="addReport.address" cols="25" rows="2"></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.contact" cols="20" rows="2"></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.telephone" ></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.email" ></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.km" cols="3"></textarea>
+                </td>
+                <!-- <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.report" cols="40" rows="2"></textarea>
+                </td> -->
+                <td rowspan="2"><button class="btn btn-link" (click)="addReportSeller()" 
+                    [disabled]="(addReport.account==null || addReport.account.length==0)">Ajouter
+                </button></td>
+            </tr>
+            <tr *ngIf="!typeEnter && !showReport && appUserToUse.id!=null && appUserToUse.id>0">
+                <td colspan="9">
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.report" rows="2"></textarea>
+                </td>
+            </tr>
+            <ng-container *ngFor="let reportSeller of reports; let i = index">
+                <tr>
+                    <th rowspan="2">{{i+1}}</th>
+                    <td rowspan="2">
+                        <!-- <input type="text" [(ngModel)]="reportSeller.account"> -->
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.account" cols="18" rows="1"></textarea>
+                    </td>
+                    <td rowspan="2">{{reportSeller.type}}</td>
+                    <!-- <td *ngIf="!showReport">{{reportSeller.dateDone.toLocaleDateString()}}</td>
+                    <td *ngIf="showReport">{{stringToDateFromReport(reportSeller).toLocaleDateString()}}</td> -->
+                    <td *ngIf="!showReport" rowspan="2">{{reportSeller.dateDone  | date: 'dd-MMM-yyyy'}}</td>
+                    <td *ngIf="showReport" rowspan="2">{{stringToDateFromReport(reportSeller)  | date: 'dd-MMM-yyyy'}}</td>
+                    <!--  | date: 'yyyy-MM-dd' -->
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.company" cols="20" rows="2"></textarea>
+                    </td>
+                    <!-- <td>
+                        <textarea  class="form-control" type="text" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+                        (focus)="handleSubAddressChange($event, reportSeller)" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea>
+                    </td> -->
+                    <!-- (onAddressChange) -->
+                    <td>
+                        <textarea  class="form-control" type="text" 
+                        (focus)="handleSubAddressChange(reportSeller)" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.contact" cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.telephone"  cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.email"  cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.km" cols="3"></textarea>
+                    </td>
+                    <!-- <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea>
+                    </td> -->
+                    <!-- <td>{{reportSeller.idTransporter}}</td>
+                    <td>{{reportSeller.idSeller}}</td>
+                    <td>{{reportSeller.seller}}</td> -->
+                    <td rowspan="2">
+                        <!-- <button class="btn btn-link" (click)="">Modif</button>
+                        &nbsp;&nbsp; -->
+                        <button class="btn btn-link" (click)="onSaveReport(reportSeller)">Save</button>
+                        <br>
+                        <button class="btn btn-link" (click)="onDeleteReport(reportSeller, reports, i)">Del</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea>
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="reports.length>0 || (!showReport && appUserToUse.id!=null && appUserToUse.id>0)">
+                <th colspan="10" style="text-align: right;">
+                    Total Km : &nbsp;{{countTotalKm()}}
+                </th>
+            </tr>
+            <!-- <tr>
+                <th colspan="9" style="float: right;"> Total Km : &nbsp;{{countTotalKm()}}</th>
+            </tr> -->
+        </table>
+        <div *ngIf="showReport" id="toprint" hidden >
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="reports.length>0 && (appUserToUse!=null && appUserToUse.id!=null && appUserToUse.id>0)">
+                    <th colspan="10">Rapport de {{appUserToUse.username.toLocaleUpperCase()}}</th>
+                </tr>
+                <tr *ngIf="reports.length>0">
+                    <th style="width: 3ch;">Num</th>
+                    <th style="width: 18ch;">Compte</th>
+                    <th style="width: 10ch;">Type</th>
+                    <th style="width: 14ch;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">&nbsp;&nbsp;&nbsp;&nbsp;Compagnie&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 25ch;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adresse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">Contact</th>
+                    <th style="width: 15ch;">&nbsp;&nbsp;Telephone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">Email</th>
+                    <th style="width: 4ch;">Km</th>
+                </tr>
+                <ng-container *ngFor="let reportSeller of reports; let i = index">
+                    <tr>
+                        <th rowspan="2">{{i+1}}</th>
+                        <td rowspan="2">
+                            {{reportSeller.account}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.account" cols="18" rows="1"></textarea> -->
+                        </td>
+                        <td rowspan="2">{{reportSeller.type}}</td>
+                        <td *ngIf="!showReport" rowspan="2">{{reportSeller.dateDone  | date: 'dd-MMM-yyyy'}}</td>
+                        <td *ngIf="showReport" rowspan="2">{{stringToDateFromReport(reportSeller)  | date: 'dd-MMM-yyyy'}}</td>
+                        <td>
+                            {{reportSeller.company.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.company" cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.address.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.contact.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.contact" cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.telephone.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.telephone"  cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.email.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.email"  cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.km.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.km" cols="3"></textarea> -->
+                        </td>
+                        <td rowspan="2">
+                            {{" "}}
+                            <!-- <button class="btn btn-link" (click)="onDeleteReport(reportSeller, reports, i)">Del</button> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            {{reportSeller.report.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea> -->
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf="reports.length>0 && (appUserToUse!=null && appUserToUse.id!=null && appUserToUse.id>0)">
+                    <th colspan="10"  style="text-align: right;">Total Km : &nbsp;{{countTotalKm()}}</th>
+                </tr>
+                <!-- <tr>
+                    <th colspan="9" style="float: right;"> Total Km : &nbsp;{{countTotalKm()}}</th>
+                </tr> -->
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+    <h3>
+        <span class="btn btn-link" (click)="onModeShowReports(); emptyListFilter()">
+            <strong *ngIf="showReport">Reports</strong>
+            <small *ngIf="!showReport">Reports</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onModeAddReports(); emptyListFilter()">
+            <strong *ngIf="!showReport">Add Report</strong>
+            <small *ngIf="showReport">Add Report</small>        
+        </span>
+    </h3>
+    <div>
+        <strong>
+            <span >Report of </span>        
+            <select type="text" [(ngModel)]="appUserToUse" (ngModelChange)="onChangeSeller()">
+                <option *ngIf="showReport" [ngValue]="null">All</option>
+                <option *ngIf="!showReport" [ngValue]="null" disabled> </option>
+                <option *ngFor="let a of listAppUsers" [ngValue]="a">{{a.username}}</option>
+            </select>
+        </strong>
+    </div>
+    
+    <div *ngIf="showReport">
+        <div>
+                <table border="1" *ngIf="reportsMaster.length>0">
+                    <tr>
+                        <th rowspan="2">Filter by&nbsp; </th>
+                        <th>Account</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th rowspan="2"><button class="btn btn-primary" (click)="printReport('toprint')">Print Report</button></th>
+                    </tr>
+                    <tr>
+                        <!-- <td></td> -->
+                        <td>
+                            <!-- Compte -->
+                            <input type="text" [(ngModel)]="accountFilter"
+                                name="accountFilter" (change)="accountFilterChange()" list="accountList"/>
+                            <datalist id="accountList">
+                                <option *ngFor="let acc of listAccount" [ngValue]="acc" >{{acc}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="telFilter"
+                                name="telFilter" (change)="telFilterChange()" list="telList"/>
+                            <datalist id="telList">
+                                <option *ngFor="let tel of listTel" [ngValue]="tel" >{{tel}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <select type="date" [(ngModel)]="dateFilter" (ngModelChange)="dateFilterChange(dateFilter)">
+                                <option [ngValue]="null"></option>
+                                <!-- <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt.toLocaleDateString()}}</option> -->
+                                <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </td>
+                        <td>
+                            <!-- Compagnie -->
+                            <input type="text" [(ngModel)]="companyFilter"
+                                name="companyFilter" (change)="companyFilterChange()" list="companyList"/>
+                            <datalist id="companyList">
+                                <option *ngFor="let comp of listCompany" [ngValue]="comp" >{{comp}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <!-- Contact -->
+                            <input type="text" [(ngModel)]="contactFilter"
+                                name="contactFilter" (change)="contactFilterChange()" list="contactList"/>
+                            <datalist id="contactList">
+                                <option *ngFor="let cont of listContact" [ngValue]="cont" >{{cont}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="emailFilter"
+                                name="emailFilter" (change)="emailFilterChange()" list="emailList"/>
+                            <datalist id="emailList">
+                                <option *ngFor="let email of listEmail" [ngValue]="email" >{{email}}</option>
+                            </datalist>
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="addressFilter"
+                                name="addressFilter" (change)="addressFilterChange(addressFilter)" list="addressList"/>
+                            <datalist id="addressList">
+                                <option *ngFor="let add of listAddress" [ngValue]="add" >{{add}}</option>
+                            </datalist>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <!-- </span> -->
+            <!-- </strong> -->
+        </div>
+    </div>
+    <div *ngIf="!showReport && appUserToUse.id!=null && appUserToUse.id>0">
+        <!-- <span>Ajout Rapport</span> -->
+        <div>
+            <table>
+                <!-- <tr>
+                    <td>
+                        <button class="btn btn-link" (click)="typeEnter=false; emptyListFilter()" [disabled]="!typeEnter">Saisir Manuellement</button>
+                        <button class="btn btn-link" (click)="typeEnter=true; emptyListFilter()" [disabled]="typeEnter">Importer de fichier</button>
+                        <span *ngIf="typeEnter"><br> Pour eviter de données en double, l'application n'importe que les dates n'existent pas dans les données actuelles</span>
+                    </td>
+                    <td>
+                        <input *ngIf="typeEnter" type="file" title="Attach file text" (change)="onFileTextUpLoad($event)" accept=".txt" placeholder="fileText">
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="2">
+                        <button *ngIf="reportsMaster.length>0" class="btn btn-link" (click)="onSaveReportsRecursive()">Enregistrer</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br>
+    
+    </div>
+    
+    
+    <div>
+        <table border="1">
+            <!--  class="table-responsive" -->
+            <tr *ngIf="loadWaiting"> <th colspan="8">loading ..... </th></tr>
+            <tr *ngIf="reports.length>0 || (!showReport && appUserToUse.id!=null && appUserToUse.id>0)">
+                <th>Num</th>
+                <th (click)="sortByAccount(reports)" style="width: 18ch;">Account <strong>&uarr;&darr; </strong></th>
+                <th style="width: 10ch;">Type</th>
+                <th (click)="sortByDate(reports)" style="width: 12ch;">Date <strong>&uarr;&darr; </strong></th>
+                <th (click)="sortByCompany(reports)">Company <strong>&uarr;&darr; </strong></th>
+                <th>Address </th>
+                <th (click)="sortByContact(reports)">Contact <strong>&uarr;&darr; </strong></th>
+                <th>Phone</th><th>Email </th>
+                <th>Km</th>
+                <!-- <th>Suivi</th> -->
+                <!-- <th>idTrans</th>
+                <th>idSeller</th>
+                <th>Seller</th> -->
+            </tr>
+            <tr *ngIf="!typeEnter && !showReport && appUserToUse.id!=null && appUserToUse.id>0">
+                <td rowspan="2">&nbsp;</td>
+                <td>
+                    <!-- <input type="text" [(ngModel)]="addReport.account"> -->
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.account" cols="18" rows="1"></textarea>
+                </td>
+                <td>
+                    <select type="text" [(ngModel)]="addReport.type">
+                        <option>VISIT</option>
+                        <option>CALL</option>
+                        <option>EMAIL</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="date" placeholder="DateDone" name="dateDone" max="{{today | date: 'yyyy-MM-dd'}}" class="form-control" 
+                    (change)="pickDateChange($event)" style="width: 11pc;">
+                </td>    
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.company" cols="20" rows="2"></textarea>
+                </td>
+                <td>
+                    <!-- <textarea  class="form-control" type="text" [(ngModel)]="addReport.address" cols="20" rows="2"></textarea> -->
+                    <!-- <input style="width: 50ch;" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+	                    type="text" [(ngModel)]="addReport.address" > -->
+                        <textarea  class="form-control" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places"
+                        (onAddressChange)="handleAddressChange($event)" type="text" [(ngModel)]="addReport.address" cols="25" rows="2"></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.contact" cols="20" rows="2"></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.telephone" ></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.email" ></textarea>
+                </td>
+                <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.km" cols="3"></textarea>
+                </td>
+                <!-- <td>
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.report" cols="40" rows="2"></textarea>
+                </td> -->
+                <td rowspan="2"><button class="btn btn-link" (click)="addReportSeller()" 
+                    [disabled]="(addReport.account==null || addReport.account.length==0)">Ajouter
+                </button></td>
+            </tr>
+            <tr *ngIf="!typeEnter && !showReport && appUserToUse.id!=null && appUserToUse.id>0">
+                <td colspan="9">
+                    <textarea  class="form-control" type="text" [(ngModel)]="addReport.report" rows="2"></textarea>
+                </td>
+            </tr>
+            <ng-container *ngFor="let reportSeller of reports; let i = index">
+                <tr>
+                    <th rowspan="2">{{i+1}}</th>
+                    <td rowspan="2">
+                        <!-- <input type="text" [(ngModel)]="reportSeller.account"> -->
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.account" cols="18" rows="1"></textarea>
+                    </td>
+                    <td rowspan="2">{{reportSeller.type}}</td>
+                    <!-- <td *ngIf="!showReport">{{reportSeller.dateDone.toLocaleDateString()}}</td>
+                    <td *ngIf="showReport">{{stringToDateFromReport(reportSeller).toLocaleDateString()}}</td> -->
+                    <td *ngIf="!showReport" rowspan="2">{{reportSeller.dateDone  | date: 'dd-MMM-yyyy'}}</td>
+                    <td *ngIf="showReport" rowspan="2">{{stringToDateFromReport(reportSeller)  | date: 'dd-MMM-yyyy'}}</td>
+                    <!--  | date: 'yyyy-MM-dd' -->
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.company" cols="20" rows="2"></textarea>
+                    </td>
+                    <!-- <td>
+                        <textarea  class="form-control" type="text" ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" 
+                        (focus)="handleSubAddressChange($event, reportSeller)" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea>
+                    </td> -->
+                    <!-- (onAddressChange) -->
+                    <td>
+                        <textarea  class="form-control" type="text" 
+                        (focus)="handleSubAddressChange(reportSeller)" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.contact" cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.telephone"  cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.email"  cols="20" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.km" cols="3"></textarea>
+                    </td>
+                    <!-- <td>
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea>
+                    </td> -->
+                    <!-- <td>{{reportSeller.idTransporter}}</td>
+                    <td>{{reportSeller.idSeller}}</td>
+                    <td>{{reportSeller.seller}}</td> -->
+                    <td rowspan="2">
+                        <!-- <button class="btn btn-link" (click)="">Modif</button>
+                        &nbsp;&nbsp; -->
+                        <button class="btn btn-link" (click)="onSaveReport(reportSeller)">Save</button>
+                        <br>
+                        <button class="btn btn-link" (click)="onDeleteReport(reportSeller, reports, i)">Del</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea>
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="reports.length>0 || (!showReport && appUserToUse.id!=null && appUserToUse.id>0)">
+                <th colspan="10" style="text-align: right;">
+                    Total Km : &nbsp;{{countTotalKm()}}
+                </th>
+            </tr>
+            <!-- <tr>
+                <th colspan="9" style="float: right;"> Total Km : &nbsp;{{countTotalKm()}}</th>
+            </tr> -->
+        </table>
+        <div *ngIf="showReport" id="toprint" hidden >
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="reports.length>0 && (appUserToUse!=null && appUserToUse.id!=null && appUserToUse.id>0)">
+                    <th colspan="10">Report of {{appUserToUse.username.toLocaleUpperCase()}}</th>
+                </tr>
+                <tr *ngIf="reports.length>0">
+                    <th style="width: 3ch;">Num</th>
+                    <th style="width: 18ch;">Account</th>
+                    <th style="width: 10ch;">Type</th>
+                    <th style="width: 14ch;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">&nbsp;&nbsp;&nbsp;&nbsp;Company&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 25ch;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">Contact</th>
+                    <th style="width: 15ch;">&nbsp;&nbsp;Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="width: 20ch;">Email</th>
+                    <th style="width: 4ch;">Km</th>
+                </tr>
+                <ng-container *ngFor="let reportSeller of reports; let i = index">
+                    <tr>
+                        <th rowspan="2">{{i+1}}</th>
+                        <td rowspan="2">
+                            {{reportSeller.account}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.account" cols="18" rows="1"></textarea> -->
+                        </td>
+                        <td rowspan="2">{{reportSeller.type}}</td>
+                        <td *ngIf="!showReport" rowspan="2">{{reportSeller.dateDone  | date: 'dd-MMM-yyyy'}}</td>
+                        <td *ngIf="showReport" rowspan="2">{{stringToDateFromReport(reportSeller)  | date: 'dd-MMM-yyyy'}}</td>
+                        <td>
+                            {{reportSeller.company.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.company" cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.address.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.address" cols="25" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.contact.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.contact" cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.telephone.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.telephone"  cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.email.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.email"  cols="20" rows="2"></textarea> -->
+                        </td>
+                        <td>
+                            {{reportSeller.km.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.km" cols="3"></textarea> -->
+                        </td>
+                        <td rowspan="2">
+                            {{" "}}
+                            <!-- <button class="btn btn-link" (click)="onDeleteReport(reportSeller, reports, i)">Del</button> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            {{reportSeller.report.trim()}}
+                            <!-- <textarea  class="form-control" type="text" [(ngModel)]="reportSeller.report" cols="40" rows="2"></textarea> -->
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf="reports.length>0 && (appUserToUse!=null && appUserToUse.id!=null && appUserToUse.id>0)">
+                    <th colspan="10"  style="text-align: right;">Total Km : &nbsp;{{countTotalKm()}}</th>
+                </tr>
+                <!-- <tr>
+                    <th colspan="9" style="float: right;"> Total Km : &nbsp;{{countTotalKm()}}</th>
+                </tr> -->
+            </table>
+        </div>
+    </div>
+</div>
+
+

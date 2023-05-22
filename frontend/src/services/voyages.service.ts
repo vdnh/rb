@@ -22,7 +22,7 @@ export class VoyagesService{
     getAllVoyages()
     {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/voyages", 
+        return this.http.get(this.adServer+":8443/voyages", 
         {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -32,7 +32,7 @@ export class VoyagesService{
     getVoyages(motCle:string, page:number, size:number) 
         {    
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/chercherVoyages?mc="+motCle+"&size="+size+
+        return this.http.get(this.adServer+":8443/chercherVoyages?mc="+motCle+"&size="+size+
         "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(resp =>{
             return resp;
@@ -41,42 +41,42 @@ export class VoyagesService{
 
     voyagesDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/voyagesDeTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8443/voyagesDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
     
     matchingVoyages(typeCamion:string, optionVoyage:string){ //, dateDepart:string){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/matchingVoyages?typeCamion="+typeCamion+"&optionVoyage="+optionVoyage //+"&dateDepart="+dateDepart
+        return this.http.get(this.adServer+":8443/matchingVoyages?typeCamion="+typeCamion+"&optionVoyage="+optionVoyage //+"&dateDepart="+dateDepart
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveVoyages(voyage:Voyage){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/voyages",voyage
+        return this.http.post(this.adServer+":8443/voyages",voyage
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailVoyage(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/voyages/"+id
+        return this.http.get(this.adServer+":8443/voyages/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateVoyage(id:number, v:Voyage){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/voyages/"+id, v
+       return this.http.put(this.adServer+":8443/voyages/"+id, v
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteVoyage(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/voyages/"+id
+        return this.http.delete(this.adServer+":8443/voyages/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

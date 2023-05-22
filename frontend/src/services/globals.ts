@@ -3,15 +3,12 @@
 //
 'use strict'; // with strict mode, we cannot, for example use undeclared variables
 
-export const adServer: string="https://localhost" //"https://tgsolution.tech";//"https://cts.sosprestige.com";//"https://192.168.0.131"; // adresse de server java - spring
-export const host: string=adServer+":8080"; // adresse de server avec :8080
+export const adServer: string="https://cts.sosprestige.com";//"https://localhost";//"https://192.168.0.131"; // adresse de server java - spring
+export const host: string=adServer+":8443"; // adresse de server avec :8080
 export const hostUserInfo: string=host+"/users/"; // adresse de server avec  /users/
 export const emailPrincipal: string = "cts.solution.transport@gmail.com"; // email de cts.solution.transport
 export const telPrincipal: string = "5147283785"; // cellphone de cts.solution.transport
 export const version: string="1.0.0"; 
-export const trucks = 10;
-export const clientsPros = 10;
-export const terminals = 5;
 export const camionTypes = [
     { id: 1, name: 'TiltNLoad6Roues' },
     { id: 2, name: 'TiltNLoad16Roues' },

@@ -63,35 +63,35 @@ export class TerminalsService{
     
     terminalsDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/terminalsDeTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8443/terminalsDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveTerminals(terminal:Terminal){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/terminals",terminal
+        return this.http.post(this.adServer+":8443/terminals",terminal
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailTerminal(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/terminals/"+id
+        return this.http.get(this.adServer+":8443/terminals/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateTerminal(id:number, c:Terminal){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/terminals/"+id, c
+       return this.http.put(this.adServer+":8443/terminals/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteTerminal(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/terminals/"+id
+        return this.http.delete(this.adServer+":8443/terminals/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

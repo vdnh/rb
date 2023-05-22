@@ -40,4 +40,5 @@ public class Terminal implements Serializable {
     
     private String accepts=""; // all devices accepted
     private String tempora=""; // to write something temporary
+    private String messageInstant=""; // to write messageInstant
 }

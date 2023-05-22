@@ -21,35 +21,35 @@ export class ReperesService{
     
     reperesTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reperesTransporter/"+idTransporter
+        return this.http.get(this.adServer+":8443/reperesTransporter/"+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveReperes(repere:Repere){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/reperes",repere
+        return this.http.post(this.adServer+":8443/reperes",repere
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailRepere(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/reperes/"+id
+        return this.http.get(this.adServer+":8443/reperes/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateRepere(id:number, r:Repere){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/reperes/"+id, r
+       return this.http.put(this.adServer+":8443/reperes/"+id, r
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteRepere(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/reperes/"+id
+        return this.http.delete(this.adServer+":8443/reperes/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

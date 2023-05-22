@@ -1,0 +1,180 @@
+<div *ngIf="varsGlobal.language.includes('Francais')">
+    <h3>
+        <span class="btn btn-link" (click)="archive=false">
+            <strong *ngIf="!archive">En Fonction</strong>
+            <small *ngIf="archive">En Fonction</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="archive=true">
+            <strong *ngIf="archive">Archives</strong>
+            <small *ngIf="!archive">Archives</small>        
+        </span>
+    </h3>
+    
+    <div class="panel panel-primary">
+        <div class="panel-body" *ngIf="!archive">
+            <table border="1">
+    
+                <!-- <tr><td colspan="2"><strong>Add Chauffeur</strong></td></tr> -->
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th><th>Prenom</th><th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                    <th><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link"><strong>Print</strong></button></th>
+                </tr>
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                    <td style="width: fit-content;"><input style="width: 20ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.prenom" /></td>
+                    <td style="width: fit-content;"><input style="width: 20ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                    <!-- <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td> -->
+                    <td>
+                        <input type="tel" [(ngModel)]="addchauffeur.tel" name="telChauffeur"
+                            class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                            (focusout)="addchauffeur.tel=reformTelEvent($event)" required>
+                    </td>
+                    <td><input  style="width: 35ch;" class="form-control" type="email" [(ngModel)]="addchauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()"
+                        [disabled]="(addchauffeur.prenom==null || addchauffeur.prenom.length==0) || 
+                        (addchauffeur.nom==null || addchauffeur.nom.length==0)">
+                        Ajout
+                    </button></td>
+                </tr>
+            </table>
+            <br>
+            <table border="1">
+                <tr><td colspan="6"><strong>Chauffeurs</strong></td></tr>
+                <!-- <tr>
+                    <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                </tr> -->
+                <tr *ngFor="let chauffeur of chauffeurs; let i = index">
+                    <td>&nbsp;{{i+1}}&nbsp;</td>
+                    <td style="width: fit-content;">{{chauffeur.prenom + " " + chauffeur.nom}}</td>
+                    <td>
+                        <!-- <input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /> -->
+                        <input type="tel" [(ngModel)]="chauffeur.tel" name="telChauffeur"
+                          class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                          (focusout)="chauffeur.tel=reformTelEvent($event)" required>
+                    </td>                
+                    <td><input style="width: 35ch;" class="form-control" type="email" [(ngModel)]="chauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="onDriver(chauffeur)">Gerer</button></td>
+                    <!-- <td><button class="btn btn-link" (click)="archiveDriver(chauffeur)">Archive</button></td> -->
+                </tr>    
+            </table>
+        </div>
+        <div id="toprint" hidden *ngIf="!archive">
+            <H4 style="margin-left: 2cm;">CHAUFFEURS</H4>
+            <!-- <br> -->
+            <table border="1">
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                    <!-- <th>Prenom</th> -->
+                    <th>Nom</th>
+                    <th>CellPhone</th>
+                    <th>Courriel</th>
+                </tr>
+                <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                <ng-container *ngFor="let chauffeur of chauffeurs; let i = index">
+                    <tr>
+                        <td>&nbsp;{{i+1}}&nbsp;</td>
+                        <td style="margin: 5px;" >{{chauffeur.prenom +" "+ chauffeur.nom}}</td >
+                        <td style="margin: 5px;">{{chauffeur.tel}}</td>                
+                        <td style="margin: 5px;">{{chauffeur.email}}</td>
+                    </tr>    
+                    <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                </ng-container>            
+            </table>
+        </div>
+        <div *ngIf="archive">
+            <!-- <h2>Hi, this place for drivers archived</h2> -->
+            <!-- <H4 style="margin-left: 2cm;">LISTE DES CHAUFFEURS ARCHIVES</H4> -->
+            <!-- <br><br> -->
+            <table border="1">
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th><th>Prenom</th><th>Nom</th><th>CellPhone</th><th>Courriel</th><th>&nbsp;</th>
+                </tr>
+                <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                <ng-container *ngFor="let chauffeur of driversArchiveds; let i = index">
+                    <tr>
+                        <td>&nbsp;{{i+1}}&nbsp;</td>
+                        <td colspan="2" style="margin: 5px;" >{{chauffeur.prenom + " " + chauffeur.nom}}</td >
+                        <td style="margin: 5px;">{{chauffeur.tel}}</td>                
+                        <td style="margin: 5px;">{{chauffeur.email}}</td>
+                        <td><button class="btn btn-link" (click)="onDriver(chauffeur)">Detail</button></td>
+                        <!-- <td><span class="btn btn-link" (click)="resumeDriver(chauffeur)">Reprendre</span></td> -->
+                    </tr>    
+                    <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                </ng-container>            
+            </table>
+        </div>
+    </div>    
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <table border="1">
+    
+                <!-- <tr><td colspan="2"><strong>Add Chauffeur</strong></td></tr> -->
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th><th>Firstname</th><th>Name</th><th>CellPhone</th><th>Email</th>
+                    <th><button (click)="printBonDeRemorquage('toprint')" class="btn btn-link"><strong>Print</strong></button></th>
+                </tr>
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                    <td style="width: fit-content;"><input style="width: 20ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.prenom" /></td>
+                    <td style="width: fit-content;"><input style="width: 20ch;" class="form-control" type="text" [(ngModel)]="addchauffeur.nom" /></td>
+                    <!-- <td><input class="form-control" type="text" [(ngModel)]="addchauffeur.tel" /></td> -->
+                    <td>
+                        <input type="tel" [(ngModel)]="addchauffeur.tel" name="telChauffeur"
+                          class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                          (focusout)="addchauffeur.tel=reformTelEvent($event)" required>
+                      </td>
+                    <td><input  style="width: 35ch;" class="form-control" type="email" [(ngModel)]="addchauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="addChauffeur()" [disabled]="(addchauffeur.prenom==null || addchauffeur.prenom.length==0) || 
+                        (addchauffeur.nom==null || addchauffeur.nom.length==0)">
+                        Add</button></td>
+                </tr>
+            </table>
+            <table border="1">
+                <tr><td colspan="2"><strong>Drivers</strong></td></tr>
+                <!-- <tr>
+                    <th>Nom</th><th>CellPhone</th><th>Courriel</th>
+                </tr> -->
+                <tr *ngFor="let chauffeur of chauffeurs; let i = index">
+                    <td>&nbsp;{{i+1}}&nbsp;</td>
+                    <td style="width: fit-content;">{{chauffeur.prenom +" "+ chauffeur.nom}}</td>
+                    <td>
+                        <!-- <input class="form-control" type="text" [(ngModel)]="chauffeur.tel" /> -->
+                        <input type="tel" [(ngModel)]="chauffeur.tel" name="telChauffeur"
+                          class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"
+                          (focusout)="chauffeur.tel=reformTelEvent($event)" required>
+                    </td>                
+                    <td><input style="width: 35ch;" class="form-control" type="email" [(ngModel)]="chauffeur.email" /></td>
+                    <td><button class="btn btn-link" (click)="modifyChauffeur(chauffeur)">Modify</button></td>
+                    <td><button class="btn btn-link" (click)="deleteChauffeur(chauffeur)">Delete</button></td>
+                </tr>    
+            </table>
+        </div>
+        <div id="toprint" hidden>
+            <H4 style="margin-left: 2cm;">DRIVERS</H4>
+            <!-- <br> -->
+            <table border="1">
+                <tr>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                    <!-- <th>Firstname</th> -->
+                    <th>Name</th>
+                    <th>CellPhone</th>
+                    <th>Email</th>
+                </tr>
+                <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                <ng-container *ngFor="let chauffeur of chauffeurs; let i = index">
+                    <tr>
+                        <td>&nbsp;{{i+1}}&nbsp;</td>
+                        <td style="margin: 5px;" >{{chauffeur.prenom + " " + chauffeur.nom}}</td >
+                        <td style="margin: 5px;">{{chauffeur.tel}}</td>                
+                        <td style="margin: 5px;">{{chauffeur.email}}</td>
+                    </tr>    
+                    <!-- <tr><td colspan="3"><strong> &nbsp; </strong></td></tr> -->
+                </ng-container>            
+            </table>
+        </div>
+    </div>    
+</div>

@@ -18,4 +18,5 @@ export class Terminal{
     password:string;
     accepts:string=""; // all devices accepted    
     tempora:string=""; // to write something temporary
+    messageInstant=""; // to write messageInstant
 }

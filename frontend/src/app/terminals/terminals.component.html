@@ -1,7 +1,5 @@
 <div>
-  <br>
-  <button class="btn btn-link" (click)="addTerminal()">
-  <!-- router.navigateByUrl('/new-terminal', {skipLocationChange: true})"> -->
+  <button class="btn btn-link" (click)="router.navigateByUrl('/new-terminal', {skipLocationChange: true})">
     Add Terminal
   </button> 
 </div>
@@ -77,6 +75,14 @@
             <textarea [(ngModel)]="terminal.accepts" cols="120" rows="2"></textarea>
         </td>
     </tr>
+    <!-- <tr>
+      <th>Message Instant: </th>
+      <td colspan="5">
+        <textarea cols="100" rows="2"
+          [(ngModel)]="terminal.messageInstant"></textarea>
+        <button (click)="onModifyTerminal()">Ok</button>
+      </td>
+    </tr> -->
   </table>                      
   
   <!-- <br>                    
@@ -104,5 +110,5 @@
     </p>
 </div> -->
 
-<div #gmap style="width:100%;height:650px" ></div>
+<div #gmap style="width:100%;height:650px;"></div>
 <!-- <div [hidden]="terminal==null" #gmap style="width:100%;height:650px" ></div> -->

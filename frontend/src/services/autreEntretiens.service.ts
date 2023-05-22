@@ -21,36 +21,38 @@ export class AutreEntretiensService{
     
     autreEntretienDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/autreEntretienDeCamion?idCamion="+idCamion
+        return this.http.get(this.adServer+":8443/autreEntretienDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveAutreEntretiens(autreEntretien:AutreEntretien){
+        if(autreEntretien.dateFaitMiliseconds!=null && autreEntretien.dateFaitMiliseconds>0) 
+            autreEntretien.dateFait = new Date(autreEntretien.dateFaitMiliseconds)
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/autreEntretiens", autreEntretien
+        return this.http.post(this.adServer+":8443/autreEntretiens", autreEntretien
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailAutreEntretien(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/autreEntretiens/"+id
+        return this.http.get(this.adServer+":8443/autreEntretiens/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateAutreEntretien(id:number, c:AutreEntretien){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/autreEntretiens/"+id, c
+       return this.http.put(this.adServer+":8443/autreEntretiens/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteAutreEntretien(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/autreEntretiens/"+id
+        return this.http.delete(this.adServer+":8443/autreEntretiens/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
-}
+ }

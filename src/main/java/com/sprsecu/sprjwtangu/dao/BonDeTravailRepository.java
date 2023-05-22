@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 public interface BonDeTravailRepository extends JpaRepository<BonDeTravail, Long>{
     public List<BonDeTravail> findByIdCamion(Long idCamion);

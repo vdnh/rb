@@ -6,10 +6,6 @@ import { Shipper } from 'src/model/model.shipper';
 import { ShippersService } from 'src/services/shippers.service';
 import { TransportersService } from 'src/services/transporters.service';
 import { Transporter } from 'src/model/model.transporter';
-import { PlanPrice } from 'src/model/model.planPrice';
-import { PlanPriceService } from 'src/services/planPrice.service';
-import { PlanOrderService } from 'src/services/planOrder.service';
-import { PlanOrder } from 'src/model/model.planOrder';
 import { VarsGlobal } from 'src/services/VarsGlobal';
 
 @Component({
@@ -19,7 +15,6 @@ import { VarsGlobal } from 'src/services/VarsGlobal';
 })
 export class AppUsersComponent implements OnInit {
 
-  role = ''; // role of login, localStorage.getItem('role')
   roleTypes = [
     "ADMIN", 
     "SHIPPER", 
@@ -29,12 +24,11 @@ export class AppUsersComponent implements OnInit {
     "CHAUFFEUR",
     "TERMINAL"
   ];
-  planPrice : PlanPrice = new PlanPrice();
   appUser : AppUser = new AppUser();
   appUserToMod : AppUser = new AppUser();
   appUserToDel : AppUser = new AppUser();
   listAppUsers : Array<AppUser> = [];
-  listAppUsersAll : Array<AppUser> = []; // to compare if there is already an username
+  listAppUsersToCheck : Array<AppUser> = [];
   passwordCheck=''
   passwordCheckToMod=''
   disabledIdUser=false;
@@ -44,11 +38,8 @@ export class AppUsersComponent implements OnInit {
   listPros: any[];
   listPros2em: any[];
   //listUser: Array<AppUser>;
-  transporter : Transporter;
+  transporter:Transporter;
   
-  listPlanOrders:Array<PlanOrderTransporter>=[];
-  listPlanOrdersArchived:Array<PlanOrderTransporter>=[];
-
   roleTypesWriteInEnglish(role:string){
     if(this.varsGlobal.language.includes('English')){
       if(role.includes('TECHNICIEN')){
@@ -60,7 +51,7 @@ export class AppUsersComponent implements OnInit {
     }
     return role;
   }
-
+  
   onCreatUserTest(){
     console.log(this.appUser)
     alert('User a ete cree!!')
@@ -70,15 +61,7 @@ export class AppUsersComponent implements OnInit {
 
   async onCreatUser(){
     let exist=false; // this loginName doesn't exist yet
-    // if(this.appUser.roleSimple.includes('DISPATCH')){
-    //   let numDisp;
-    //   let numTech;
-    //   this.listAppUsers.forEach(apU=>{
-        
-    //   })
-    //   this.appUser.idUser=this.listTrans.pop().id.toString();
-    // }
-    await this.listAppUsersAll.forEach(aU=>{
+    await this.listAppUsersToCheck.forEach(aU=>{
       if(aU.username.includes(this.appUser.username)&&(aU.username.length==this.appUser.username.length))
         {
           alert("Username existe deja. Choisir un autre username, SVP!");
@@ -86,8 +69,8 @@ export class AppUsersComponent implements OnInit {
         }
     })
     if(!exist){
-      this.appUser.idTransporter=this.transporter.id
-      this.appUser.entrepriseNom=this.transporter.nom
+      this.appUser.idTransporter = this.transporter.id
+      this.appUser.entrepriseNom = this.transporter.nom
       this.authenticationService.createAppUser(this.appUser).subscribe((data:AppUser)=>{
         this.appUser = new AppUser();
         this.passwordCheck='';
@@ -99,7 +82,7 @@ export class AppUsersComponent implements OnInit {
   }
   
   typeRoleChange(type){
-    this.appUser.idUser=''; // set appUser.idUser to null each time it change the role
+    this.appUser.idUser=''; // set appUser.idUser to '' each time it change role
     this.appUser.roleSimple=type
     if(this.appUser.roleSimple.includes('ADMIN')){
       this.disabledIdUser=true;
@@ -136,16 +119,12 @@ export class AppUsersComponent implements OnInit {
   }
   constructor(public authenticationService:AuthenticationService,
     public shipperservice:ShippersService,
-    public transporterservice:TransportersService,
-    public planPriceService:PlanPriceService,
-    public planOrderService:PlanOrderService, public varsGlobal : VarsGlobal) { 
+    public transporterservice:TransportersService, public varsGlobal : VarsGlobal) { 
 
     }
 
   ngOnInit() {
-    this.role = localStorage.getItem('role')
     this.appUser.roleSimple=this.roleTypes[0];
-    
     // getShippersTransporter
     if(localStorage.getItem('idTransporter')!=null && Number(localStorage.getItem('idTransporter'))>0){
       // this.shipperservice.getAllShippers().subscribe(async (data:Array<Shipper>)=>{
@@ -156,7 +135,7 @@ export class AppUsersComponent implements OnInit {
           this.listTrans.push(data);
           // this.listTrans = data;
           this.typeRoleChange(this.roleTypes[0]);
-          this.transporter=data
+          this.transporter=data;
         }, err=>{
           console.log(err)
         })
@@ -173,50 +152,6 @@ export class AppUsersComponent implements OnInit {
             // this.listTrans.push(data);
             this.listTrans = data;
             this.typeRoleChange(this.roleTypes[0]);
-            this.planPriceService.getAllPlanPrices().subscribe((data:Array<PlanPrice>)=>{
-              if(data!=null && data.length>0){
-                this.planPrice=data[0]
-              }
-              this.planOrderService.allPlanOrders().subscribe((d:Array<PlanOrder>)=>{
-                if(d!=null && d.length>0) d.forEach((po)=>{
-                  // filter the orders didn't pay yet
-                  if(!po.payed) {
-                    let plTr = new PlanOrderTransporter()
-                    plTr.planOrder=po
-                    plTr.transporter=this.listTrans.find(x=>x.id===plTr.planOrder.idTransporter)
-                    // this.camionsGPSAndNoGPS.find(x=>x.id===a.idCamion)
-                    this.listPlanOrders.push(plTr)
-                  }
-                  // filter the orders payed
-                  else {
-                    let plTr = new PlanOrderTransporter()
-                    plTr.planOrder=po
-                    plTr.transporter=this.listTrans.find(x=>x.id===plTr.planOrder.idTransporter)
-                    this.listPlanOrdersArchived.push(plTr)
-                  }
-                })
-                if(this.listPlanOrders!=null) this.listPlanOrders.sort((b,a)=>{
-                  if(a.planOrder.id>b.planOrder.id)
-                    return 1;
-                  if(a.planOrder.id<b.planOrder.id)
-                    return 0;
-                  return 0;
-                })
-
-                if(this.listPlanOrdersArchived!=null) this.listPlanOrdersArchived.sort((b,a)=>{
-                  if(a.planOrder.id>b.planOrder.id)
-                    return 1;
-                  if(a.planOrder.id<b.planOrder.id)
-                    return 0;
-                  return 0;
-                })
-                // this.listPlanOrders=data.filter(pl=>(!pl.payed))
-                
-                // this.listPlanOrdersArchived=data.filter(pl=>(pl.payed))
-              }, err=>{
-                console.log(err)
-              })
-            }, err=>{console.log(err)})
           }, err=>{
             console.log(err)
           })
@@ -225,29 +160,25 @@ export class AppUsersComponent implements OnInit {
         })
     }
     
-    this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
-      this.listAppUsersAll=data;
-      if(localStorage.getItem('idTransporter')!=null){
-        this.roleTypes = [
-          "DISPATCH", 
-          "TECHNICIEN", 
-          // "TERMINAL"
-        ];
-        this.listAppUsers=data.filter(x=>(
-          x.idTransporter==Number(localStorage.getItem('idTransporter')) &&
-          !x.roleSimple.includes("TERMINAL") && (x.idUser==undefined || x.idUser.length==0)
-        ));
-      }
-      else this.listAppUsers=data;
-    }, err=>{console.log(err)})
     
-    /*//
     if(localStorage.getItem('idTransporter')!=null){
+      let idTransporter = Number(localStorage.getItem('idTransporter'));
       this.roleTypes = [
         "DISPATCH", 
         "TECHNICIEN", 
         // "TERMINAL"
       ];
+      this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
+        this.listAppUsersToCheck=data;
+        this.listAppUsers=data.filter(x=>(
+          x.idTransporter==idTransporter && 
+          !x.roleSimple.includes("TERMINAL") &&
+          (x.idUser==undefined || x.idUser.length==0)
+        ));
+      },
+      err=>{
+        console.log(err)
+      })
       this.authenticationService.getAllUsersByIdTransporter(Number(localStorage.getItem('idTransporter'))).subscribe((data:Array<AppUser>)=>{
         this.listAppUsers=data.filter(x=>(!x.roleSimple.includes("TERMINAL")));
       },
@@ -257,13 +188,13 @@ export class AppUsersComponent implements OnInit {
     }
     else{
       this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
-        this.listAppUsers=data;
+        this.listAppUsersToCheck=this.listAppUsers=data;
       },
       err=>{
         console.log(err)
       })
     }
-    //*/
+    
   }
   
   idUserChange(){
@@ -316,117 +247,4 @@ export class AppUsersComponent implements OnInit {
     });
   }
 
-  setPlanPrice(){
-    this.planPriceService.savePlanPrice(this.planPrice).subscribe((data:PlanPrice)=>{
-      this.planPrice=data
-      alert("Plan Price was set.")
-    }, err=>{console.log(err)})
-  }
-
-  onValidPlanOrder(pO:PlanOrderTransporter){
-    /*//
-      // in case renew plan 
-      if(!this.flagNewPlan){ 
-        today = this.planOrder.dateEnding = new Date() ;// new Date(this.transporter.endDatePlan).setHours(today.getHours()+timeLag));
-        this.planOrder.dateEnding.setTime(timeEndDatelan + (timeLag*60*60*1000))
-        today.setTime(timeEndDatelan + (timeLag*60*60*1000))
-        // let heure = today.getHours()
-        // today.setHours(heure)
-        // this.planOrder.dateEnding.setHours(heure)
-        //this.planOrder.dateEnding.setHours(today.getHours()+timeLag);
-      }
-
-    //*/
-    
-     
-    pO.planOrder.payed=true;
-    pO.planOrder.datePayed = new Date() // pay day is today
-    pO.planOrder.datePayedMillis = new Date().getTime();
-    pO.planOrder.dateEnding = new Date()
-    pO.planOrder.dateEnding.setTime(pO.planOrder.dateEndingMillis)
-    pO.planOrder.dateOrder = new Date()
-    pO.planOrder.dateOrder.setTime(pO.planOrder.dateOrderMillis)
-    if(pO.planOrder.planName.includes("Extension")){  // and then no need update date validation
-      pO.transporter.trucks = pO.transporter.trucks + pO.planOrder.trucks
-      pO.transporter.clientsPros = pO.transporter.clientsPros + pO.planOrder.clientsPros
-      pO.transporter.terminals = pO.transporter.terminals + pO.planOrder.terminals
-    }
-    else{ // 3 months, 1 year, 2 years  then update the date validation
-      let dayTemp =new Date()
-      let timeZone= new Date().getTimezoneOffset()
-      let timeEndDatePlan = new Date(pO.planOrder.dateEnding).getTime()
-      // console.log('timeZone: '+timeZone)
-      let timeLag = timeZone/60
-      // console.log("timeLag: "+ timeLag )
-      pO.transporter.planActual=pO.planOrder.planName
-      pO.transporter.trucks = pO.planOrder.trucks
-      pO.transporter.clientsPros = pO.planOrder.clientsPros
-      pO.transporter.terminals = pO.planOrder.clientsPros
-      pO.transporter.daysPlan = pO.planOrder.daysPlan
-      
-      dayTemp = new Date(pO.planOrder.dateEnding)
-      dayTemp.setTime(timeEndDatePlan + (timeLag*60*60*1000))
-      pO.transporter.endDatePlan = dayTemp
-      pO.transporter.dateEndingMillis = pO.planOrder.dateEndingMillis
-    }
-    this.planOrderService.savePlanOrder(pO.planOrder).subscribe(data=>{
-      this.transporterservice.saveTransporters(pO.transporter).subscribe((data:Transporter)=>{}, err=>{console.log()})
-    }, err=>{console.log(err)})
-    // this.reps.splice(this.reps.indexOf(r),1)
-    this.listPlanOrders.splice(this.listPlanOrders.indexOf(pO), 1)
-    if(this.listPlanOrders!=null) this.listPlanOrders.sort((b,a)=>{
-      if(a.planOrder.id>b.planOrder.id)
-        return 1;
-      if(a.planOrder.id<b.planOrder.id)
-        return 0;
-      return 0;
-    })
-
-    this.listPlanOrdersArchived.push(pO)
-    if(this.listPlanOrdersArchived!=null) this.listPlanOrdersArchived.sort((b,a)=>{
-      if(a.planOrder.id>b.planOrder.id)
-        return 1;
-      if(a.planOrder.id<b.planOrder.id)
-        return 0;
-      return 0;
-    })
-  }
-  
-  usersMode = false;
-  planSettingMode = false;
-  ordersMode = true;  // to show ordersMode for first view
-  ordersHistoricMode = false;
-  
-  onUsers(){
-    this.usersMode = true;
-    this.planSettingMode = false;
-    this.ordersMode = false;  
-    this.ordersHistoricMode = false;
-  }
-
-  onPlanSetting(){
-    this.usersMode = false;
-    this.planSettingMode = true;
-    this.ordersMode = false;  
-    this.ordersHistoricMode = false;
-  }
-
-  onOrders(){
-    this.usersMode = false;
-    this.planSettingMode = false;
-    this.ordersMode = true;  
-    this.ordersHistoricMode = false;
-  }
-
-  onOrdersHistoric(){
-    this.usersMode = false;
-    this.planSettingMode = false;
-    this.ordersMode = false;  
-    this.ordersHistoricMode = true;
-  }
-}
-
-export class PlanOrderTransporter{
-  planOrder:PlanOrder
-  transporter:Transporter
 }

@@ -20,6 +20,18 @@ export class AuthenticationService{
 
     loadTonken(){
         this.jwToken=localStorage.getItem('tonken');
+        // test find wkrole
+        let jwtData = this.jwToken.split('.')[1]
+        let decodedJwtJsonData = window.atob(jwtData)
+        let decodedJwtData = JSON.parse(decodedJwtJsonData)
+
+        let isAdmin = decodedJwtData.admin
+
+        console.log('jwtData: ' + jwtData)
+        console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
+        console.log('decodedJwtData: ' + decodedJwtData)
+        console.log('Is admin: ' + isAdmin)
+        // end test find role
     }
     
     getAllAppUsers()    //

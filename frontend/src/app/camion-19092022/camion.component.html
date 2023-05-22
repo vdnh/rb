@@ -1,0 +1,2148 @@
+<div *ngIf="varsGlobal.language.includes('Francais')">
+  <div> <!--*ngIf="mode==1"-->
+    <div> 
+      <h3> 
+        <strong>Unité : {{camion.unite}}</strong>  &nbsp;&nbsp;&nbsp; 
+        <span class="btn btn-link" (click)="gotoDetailTransporter(camion.idTransporter)">Retour à la Flotte</span>
+      </h3>
+      <!-- <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span> -->
+      <!-- <button *ngIf="(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && 
+        (camion.monitor.length!=0 && camion.monitor.length!=0) && 
+        !camion.uniteMonitor.includes('no-gps'))"
+        class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button> -->
+      <!-- <br> -->
+    </div>
+    <div *ngIf="carte==1">
+      <div class="col-md-12">
+        <div class="text-center">
+          <h3>
+            <div #gmap style="width:100%;height:500px" ></div>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="btn btn-link" (click)="onInfos()">
+        <strong *ngIf="modeInfos">Infos/Config</strong>
+        <span *ngIf="!modeInfos">Infos/Config</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onFiche()">
+        <strong *ngIf="modeFiche">Fiche Technique</strong>
+        <span *ngIf="!modeFiche">Fiche Technique</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onDefinirEnt()">
+        <strong *ngIf="modeDefinirEnt">Entretiens a Definir</strong>
+        <span *ngIf="!modeDefinirEnt">Entretiens a Definir</span> 
+      </button>
+      <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onBonDeTravail()">        
+        <strong *ngIf="modeBonDeTravail">Bon de Travail</strong>
+        <span *ngIf="!modeBonDeTravail">Bon de Travail</span> 
+      </button>
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onExpense()">        
+        <strong *ngIf="modeExpense">Depenses</strong>
+        <span *ngIf="!modeExpense">Depenses</span> 
+      </button>
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListReparation()">
+        <strong *ngIf="modeListReparation">Historique & Impression</strong>
+        <span *ngIf="!modeListReparation">Historique & Impression</span> 
+      </button>
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListGarantie()">        
+        <strong *ngIf="modeListGarantie">Garanties</strong>
+        <span *ngIf="!modeListGarantie">Garanties</span> 
+      </button>
+    </div>    
+    <!-- <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
+    <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>
+    <div *ngIf="modeDefinirEnt==1"><h3>Entretiens a definir</h3></div>
+    <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div> -->
+    <!-- <div *ngIf="modeBonDeTravail==1"><h4>BonDeTravail {{bonDeTravail.id}}</h4></div> -->
+    <!-- <div *ngIf="modeListReparation==1">
+      <h3>
+        List Reparation 
+      </h3>
+    </div>
+    <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div> -->
+    <div *ngIf="modeExpense==1">
+      <!-- <h3>You are on zone Expenses</h3>         -->
+      <div>
+          <button class="btn btn-link" (click)="onFuelExpense()">
+            <strong *ngIf="fuelExpense">Fuel</strong>
+            <small *ngIf="!fuelExpense">Fuel</small>
+          </button>
+          <button class="btn btn-link" (click)="onFixedExpense()">
+            <strong *ngIf="fixedExpense">Depense Fix</strong>
+            <small *ngIf="!fixedExpense">Depense Fix</small>
+          </button>
+          <button class="btn btn-link" (click)="onFlexibleExpense()">
+            <strong *ngIf="flexibleExpense">Depense Flexible</strong>
+            <small *ngIf="!flexibleExpense">Depense Flexible</small>
+          </button>
+          <button class="btn btn-link" (click)="onStatis()">
+            <strong *ngIf="statisExpense">Statistique</strong>
+            <small *ngIf="!statisExpense">Statistique</small>
+          </button>
+        </div>
+        <!-- <div class="row"> -->
+          <div>
+            <!-- <table border="1" *ngIf="statisExpense">
+              <tr>
+                <td>
+                  {{fuels[0].feeKm | number : '1.2'}}
+                </td> 
+                <td>
+                  {{fuels[0].price | number : '1.2'}}
+                </td>
+              </tr>
+            </table> -->
+            <table border="1" *ngIf="statisExpense">
+              <tr>
+                <th colspan="3" style="text-align: center; background-color: darkgray;">
+                  <u>Fuel</u>
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  <span *ngIf="dateLastFuel!=null"><span>Derniere Fuel, </span> {{dateLastFuel | date:'dd-MMM-yyyy'}}</span>
+                </td>
+                <td>
+                  <span *ngIf="fuels.length>0 && fuels[0].price!=null">{{fuels[0].price | number : '1.2'}} &nbsp;$/L</span>
+                </td>
+                <td>
+                  <span *ngIf="fuels.length>0 && fuels[0].feeKm!=null">{{fuels[0].feeKm | number : '1.2'}} &nbsp;$/km</span>
+                </td> 
+              </tr>
+              <tr>
+                <td>Moyenne de 30 jours</td>
+                <td>
+                  <span *ngIf="priceFuelMonthActual!=null">{{priceFuelMonthActual | number : '1.2'}} &nbsp;$/L</span>
+                </td>
+                <td>
+                  <span *ngIf="feeKmFuelMonthActual!=null">{{feeKmFuelMonthActual | number : '1.2'}} &nbsp;$/km</span>
+                </td> 
+              </tr>
+              <tr>
+                <td>Moyenne d'annee actuelle</td>                
+                <td>
+                  <span *ngIf="priceFuelYearActual!=null">{{priceFuelYearActual | number : '1.2'}} &nbsp;$/L</span>
+                </td>
+                <td>
+                  <span *ngIf="feeKmFuelYearActual!=null">{{feeKmFuelYearActual | number : '1.2'}} &nbsp;$/km</span>
+                </td> 
+              </tr>
+            </table>
+            <br>
+            <table border="1" *ngIf="statisExpense">
+              <tr><th colspan="3" style="text-align: center; background-color: darkgray;"><u>Depense</u></th></tr>
+              <tr>
+                <td colspan="2">par jour</td>
+                <td><span>{{expenseEveryDay}} $</span></td>
+              </tr>
+              <tr>
+                <td colspan="2">30 jours</td>
+                <td><span>{{(expenseFixMonthActual+expenseFlexibleMonthActual) | number : '1.2'}}$</span></td>
+              </tr>
+              <tr>
+                <td colspan="2">l'an actuel</td>
+                <td><span>{{(expenseFixYearActual+expenseFlexibleYearActual) | number : '1.2'}}$</span></td>
+              </tr>
+            </table>
+            <br>
+            <div *ngIf="statisExpense">
+              <h3><strong> &nbsp;<a href="https://www.caa.ca/gas-prices/" target="_blank">
+                Site Reference Gas Price</a></strong></h3>
+              <!-- <iframe style="width: 94%; height: 600px; margin-left: 2%; margin-bottom: 5px; margin-top: 2px; border: 2px solid black;" 
+              frameBorder="2" src="https://www.caa.ca/gas-prices/" sandbox></iframe> -->
+            </div>
+        <!-- </div>
+        <div class="col-10"> -->
+          <!-- <h3>Depense Fix : plaque - assurance - gps</h3> -->
+          <table border="1" *ngIf="fixedExpense">
+            <tr><th colspan="7" style="background-color: darkgray;"><u>Depense Fix : Plaque - Assurance - Gps ...</u></th></tr>
+            <tr>
+              <td><input type="text" [(ngModel)]="addExpenseFixed.name"></td>
+              <td><input type="number" [(ngModel)]="addExpenseFixed.perMonth"
+                [disabled]="addExpenseFixed.perYear!=null && addExpenseFixed.perYear>0">
+              </td>
+              <td><input type="number" [(ngModel)]="addExpenseFixed.perYear" 
+                [disabled]="addExpenseFixed.perMonth!=null && addExpenseFixed.perMonth>0">
+              </td>
+              <td><input type="date" [(ngModel)]="addExpenseFixed.dateSince"></td>
+              <td><input type="date" [(ngModel)]="addExpenseFixed.dateUntil"></td>
+              <td colspan="2"><span class="btn btn-link" (click)="onAddExpenseFixed()">add</span></td>
+            </tr>
+            <br>
+            <tr>
+              <th>Nom</th><th>$/mois</th><th>$/an</th><th>Depuis</th><th>Jusqu'a</th><th colspan="2">&nbsp;</th>
+            </tr>
+            <ng-container *ngIf="expenseFixeds==null || expenseFixeds.length==0">
+              <tr><td colspan="7"><span>Non expense now!</span></td></tr>
+            </ng-container>
+            <ng-container *ngIf="expenseFixeds.length>0">
+              <tr *ngFor="let exp of expenseFixeds">
+                <td>{{exp.name}}</td>
+                <td>{{exp.perMonth}}</td>
+                <td>{{exp.perYear}}</td>
+                <td>{{exp.dateSince | date:'dd-MM-yyyy'}}</td>
+                <td>{{exp.dateUntil | date:'dd-MM-yyyy'}}</td>
+                <td><button class="btn btn-link" (click)="onArchiveExpenseFix(exp)" [disabled]="exp.archived">
+                  <span *ngIf="exp.archived==null || !exp.archived">Archiver</span>
+                  <span *ngIf="exp.archived">Archivé</span>
+                </button></td>
+                <td><span class="btn btn-link" (click)="onDelExpenseFixed(exp)">del</span></td>
+              </tr>
+            </ng-container>
+
+            <!-- <tr>
+              <td><input type="text"></td>
+              <td><input type="number"></td>
+              <td><input type="number"></td>
+              <td><input type="date"></td>
+              <td><span class="btn btn-link">del</span></td>
+            </tr> -->
+          </table>
+          <!-- <br> -->
+          <!-- <h3>Depense Flexible : fuel - uree - pneus - reparations</h3> -->
+          <table border="1" *ngIf="flexibleExpense">
+            <tr><th colspan="6" style="background-color: darkgray;"><u>Depense Flexible : Uree - Pneus - Reparations ...</u></th></tr>
+            <tr>
+              <td><input type="text" [(ngModel)]="addExpenseFlexible.name"></td>
+              <!-- <td><input type="text" disabled></td> -->
+              <td><input type="number" [(ngModel)]="addExpenseFlexible.fee"></td>
+              <td><input type="date" [(ngModel)]="addExpenseFlexible.dateDone"></td>
+              <td><span class="btn btn-link" (click)="onAddExpenseFlexibe()">add</span></td>
+            </tr>
+            <tr>
+              <th>Nom</th><th>$HorsTax</th><th>DatePayee</th><th>&nbsp;</th>
+            </tr>
+            <ng-container *ngIf="expenseFlexibles.length>0">
+              <tr *ngFor="let exp of expenseFlexibles">
+                <!-- <td>{{exp.name}}</td> -->
+                <td>
+                  <span *ngIf="(exp.idWorkOrder!=null && exp.idWorkOrder>0)">
+                    <span *ngIf="varsGlobal.language.includes('English')">#WorkOrder</span>
+                    <span *ngIf="varsGlobal.language.includes('Francais')">#Bon</span>
+                    <span class="btn btn-link" (click)="onDetailOfWorkOrder(exp.idWorkOrder)">{{exp.idWorkOrder}}</span>
+                  </span>
+                  <span>{{exp.name}}</span>
+                </td>
+                <td>{{exp.fee}}</td>
+                <td>{{exp.dateDone | date:'dd-MM-yyyy'}}</td>
+                <td><button class="btn btn-link" (click)="onDelExpenseFlexible(exp)"
+                  [disabled]="(exp.idWorkOrder!=null && exp.idWorkOrder>0)">del</button></td>
+              </tr>
+            </ng-container>
+          </table>
+          <!-- <br> -->
+          <table border="1" *ngIf="fuelExpense">
+            <tr><th colspan="9" style="background-color: darkgray;"><u>Fuel</u></th></tr>
+            <tr>
+              <!-- <td><input type="text"></td> -->
+              <td style="width: 15ch;"><input style="width: 15ch;" type="date" max="{{today | date: 'yyyy-MM-dd'}}" [(ngModel)]="addFuel.dateDone"></td>
+              <td style="width: 8ch;"><input style="width: 8ch;" type="number" (change)="onChangeLiters()" [(ngModel)]="addFuel.liters"></td>
+              <td style="width: 15ch;"><input style="width: 15ch;" type="number" (change)="onChangeFee()" [(ngModel)]="addFuel.fee"></td>
+              <td style="width: 15ch;"><input style="width: 15ch;" type="number" [(ngModel)]="addFuel.odo"></td>
+              <td style="width: 25ch;"><input style="width: 25ch;" type="text" [(ngModel)]="addFuel.note"></td>
+              <td style="width: 8ch;"><input style="width: 8ch;" type="number" [(ngModel)]="addFuel.price"></td>
+              <td style="width: 15ch;"><input style="width: 15ch;" type="number" (change)="onChangeRangeKms()" [(ngModel)]="addFuel.rangeKms"></td>
+              <td style="width: 10ch;"><input style="width: 10ch;" type="number" [(ngModel)]="addFuel.feeKm"></td>
+              <td style="width: 5ch;">
+                <button class="btn btn-link" (click)="onAddFuel()" [disabled]="addFuel.dateDone==null">
+                  add
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <!-- <th>Nom</th> -->
+              <th>Date</th><th>Litre</th><th>$(HorsTaxes)</th><th>Odo</th><th>Lieu</th><th>$/Litre</th><th>KmsEstimation</th><th>$/Km</th><th>&nbsp;</th>
+            </tr>
+            <tr *ngFor="let fuel of fuels">
+              <td>{{fuel.dateDone | date: 'dd-MM-yyyy'}}</td>
+              <td>{{fuel.liters}}</td>
+              <td>{{fuel.fee}}</td>
+              <td>{{fuel.odo}}</td>
+              <td>{{fuel.note}}</td>
+              <td>{{fuel.price | number : '1.2'}}</td>
+              <td>{{fuel.rangeKms}}</td>
+              <td>{{fuel.feeKm}}</td>
+              <td><span class="btn btn-link" (click)="onDelFuel(fuel)">del</span></td>
+            </tr>
+          </table>
+        </div>
+      <!-- </div> -->
+    </div>
+    <div>
+        <table border="1" *ngIf="modeInfos==1">
+            <tr>
+              <th>#Unité</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th><th>Date Achat</th><th>Prix Achat</th>
+            </tr>
+            <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
+              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+              <td><input class="form-control" type="date" [(ngModel)]="camion.dateAchat" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.price" /></td>
+            </tr>
+            <tr>
+              <th>MiseDeFond</th><th>Paiement Mensuel</th><th>Paiement Terme</th><th>Buy Back</th><th>Prix Plaque</th><th>Essieux</th><th>Date Vente</th>
+            </tr>
+            <tr>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.payDown" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.payPerMonth" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.termPayment" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.pricePlate" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.buyBack" /></td>
+              <td><input class="form-control" type="number" [(ngModel)]="camion.numberAxles" /></td>
+              <td><input class="form-control" type="date" [(ngModel)]="camion.dateSolde" /></td>
+            </tr>
+          </table>
+          <br>
+          <table border="1" *ngIf="modeInfos==1">
+            <tr>
+                <th>Année</th><th>Type</th><th>Odometre</th><th>Mass Net</th><th>Inspection 6 Mois</th><th>Vignette SAAQ</th>
+            </tr>
+            <tr>                
+                <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.type" /></td>
+                <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="camion.massNet" /></td>
+                <td><input class="form-control" type="date" [(ngModel)]="camion.inspect6m" /></td>
+                <td><input class="form-control" type="date" [(ngModel)]="camion.vignetteSaaq" /></td>
+            </tr>
+            <tr>
+              <th>Moteur</th><th>Transmition </th><th>Engine No</th><th>Engine Family</th><th>Engine Model</th><th>CPL</th>
+            </tr>
+            <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur"/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition"/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.engineNumber"/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.engineFamily"/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.model"/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.cpl"/></td>
+            </tr>
+            <tr>
+              <th>Longueur deck haut</th><th>Longueur deck bas</th><th>Hauteur Plateforme</th><th>Hauteur Deck</th><th>Capacite de charge</th>
+            </tr>
+            <tr>
+              <td><input type="number" [(ngModel)]="camion.longueurTop">&nbsp;ft</td>
+              <td><input type="number" [(ngModel)]="camion.longueur">&nbsp;ft</td>
+              <td><input type="number" [(ngModel)]="camion.hauteur">&nbsp;po</td>
+              <td><input type="number" [(ngModel)]="camion.hauteurDeck">&nbsp;po</td>
+              <td><input type="number" [(ngModel)]="camion.poids">&nbsp;lbs</td>
+            </tr>
+          </table>  
+          <br>
+          <table border="1" *ngIf="modeInfos==1">
+            <tr><th colspan="7">Status </th></tr>
+            <tr>              
+              <td style="width: 12%;">
+                Exploitant&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
+              </td>
+              <td>  
+                Panne&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />
+              </td>
+              <td>
+                Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />
+              </td>
+              <td>
+                Trailer&nbsp;<input type="checkbox" [(ngModel)]="camion.trailer" />
+              </td>
+              <td>
+                GPS&nbsp;<input type="checkbox" [(ngModel)]="camion.gps" />
+              </td>
+              <td *ngIf="camion.gps">
+                <input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" placeholder="uniteMonitor"/>
+              </td>
+              <td *ngIf="camion.gps">
+                <input class="form-control" type="text" [(ngModel)]="camion.monitor" placeholder="Monitor"/>
+              </td>
+            </tr>  
+            <tr>
+              <td colspan="7">
+                <br>
+                L/100km &nbsp;&nbsp; <input style="width: 8ch;" type="number" [(ngModel)]="camion.l100km" (change)="l100kmToMpg()"> &nbsp;&nbsp; 
+              <!-- </td>
+              <td colspan="1"> -->
+                <!-- Milles/gallon &nbsp;&nbsp; <input style="width: 8ch;" type="number" [(ngModel)]="camion.mpg" (change)="mpgTol100km()"> -->
+              </td>
+              <!-- <td colspan="5">&nbsp;</td> -->
+            </tr> 
+            <tr>
+              <th>
+                Photo
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </th>
+              <!-- <td>
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </td> -->
+              <td colspan="6" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+                <a href="{{camion.imgUrl}}" target="_blank">
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="25%">
+                </a>
+              </td>
+            </tr>
+        </table>
+        <!-- <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">     -->
+          <div *ngIf="modeFiche==1">
+            <table border="1">
+              <tr>
+                <th>Inventaire dans le camion</th>
+                <th>Equipements du camion</th>
+                <th>Chauffeur</th>
+                <!-- <input type="text" placeholder="Chauffeur"> -->
+              </tr>
+              <tr>
+                <td><textarea class="form-control" type="text" rows="5" cols="70" [(ngModel)]="camion.inventory"></textarea></td>
+                <td><textarea class="form-control" type="text" rows="5" cols="70" [(ngModel)]="camion.equipment"></textarea></td>
+                <td>
+                  <input type="text" [(ngModel)]="camion.driverName"> <br> 
+                  <span class="btn btn-link" (click)="saveCamion()">Enregistrer</span> 
+                  <span>&nbsp;</span>
+                  <span class="btn btn-link" (click)=" printBonDeTravail('toprintRegisterTruck')">Imprimer</span> 
+                  <!-- <br> -->
+                  <!-- <button class="btn btn-link">Historique</button> -->
+                </td>
+              </tr>
+            </table>
+            <br> <span>&nbsp;</span>
+          </div>        
+          <div id="toprintRegisterTruck" hidden>
+            <table style="font-size: 11pt" style="margin-inline: 5px">
+              <tr>
+                <th>#Unite : {{camion.unite}} &nbsp;&nbsp;&nbsp;</th>
+                <th>Date : {{today | date:'dd-MMM-yyyy'}} &nbsp;&nbsp;&nbsp;</th>
+                <th>Chauffeur : {{camion.driverName}}</th>            
+              </tr>
+            </table>
+            <table border='1' style="font-size: 11pt" style="margin-inline: 5px">
+              <tr>
+                <th style="width: 70ch;">Inventaire dans le camion</th>
+                <th style="width: 70ch;">Equipements du camion</th>
+              </tr>
+              <tr>
+                <td style="width: 70ch;"><pre style="white-space: pre-wrap; word-break: keep-all;">{{camion.inventory}}</pre></td>
+                <td style="width: 70ch;"><pre style="white-space: pre-wrap; word-break: keep-all;">{{camion.equipment}}</pre></td>
+              </tr> 
+              <!-- <tr *ngIf="(camion.inventory!=null && camion.inventory.length>0) || (camion.equipment!=null && camion.equipment.length>0)"> -->
+              <tr>
+                <td colspan="2">
+                  Signature: 
+                  <br><br><br><br>
+                </td>
+              </tr>
+            </table>
+          </div>
+  
+          <table border="1" *ngIf="modeFiche==1">
+          <tr>
+            <th>Couleur1</th><th>Code Couleur1</th><th>Couleur2</th><th>Code Couleur2</th><th>Couleur3</th><th>Code Couleur3</th>
+          </tr>
+          <tr>            
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur1" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur1" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur2" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur2" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur3" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur3" /></td>
+          </tr>
+          <tr>
+            <th>Differentiel1 Type</th><th>Differentiel1 Capacite</th><th>Differentiel2 Type</th><th>Differentiel2 Capacite</th><th>Differentiel3 Type</th><th>Differentiel3 Capacite</th>
+          </tr>
+          <tr>            
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Capacite" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Capacite" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Capacite" /></td>
+          </tr>
+              <tr>
+                <th>Essieux Avant Type</th><th>Essieux Avant Capacite</th><th>Pneus Avant Modele</th><th>Pneus Avant Grandeur</th><th>Pneus Arriere Modele</th><th>Pneus Arriere Grandeur</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantCapacite" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantGrandeur" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArriereModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArrieregrandeur" /></td>
+              </tr>        
+              <tr>
+                <th>PTO Modele</th><th>PTO Serie</th><th>Pompe Hydrolique Modele</th><th>Pompe Hydrolique Serie</th><th>FiltreHuile1er Marque</th><th>FiltreHuile1er Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoSerie" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueSerie" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erPiece" /></td>
+              </tr>     
+              <tr>
+                <th>FiltreHuile2em Marque</th><th>FiltreHuile2em Piece</th><th>FiltreHuile3em Marque</th><th>FiltreHuile3em Piece</th><th>FiltreFuel1er Marque</th><th>FiltreFuel1er Piece</th><th>FiltreFuel2em Marque</th><th>FiltreFuel2em Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emPiece" /></td>
+              </tr>                
+              <tr>
+                <th>FiltreHuile3em Marque</th><th>FiltreHuile3em Piece</th><th>FiltreAir1er Marque</th><th>FiltreAir1er Piece</th><th>FiltreAir2em Marque</th><th>FiltreAir2em Piece</th><th>FiltreAir3em Marque</th><th>FiltreAir3em Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emPiece" /></td>
+              </tr>        
+              <tr>
+                <th>FiltrePrestone1er Marque</th><th>FiltrePrestone1er Piece</th><th>FiltrePrestone2em Marque</th><th>FiltrePrestone2em Piece</th><th>FiltrePolene1er Marque</th><th>FiltrePolene1er Piece</th><th>FiltrePolene2em Marque</th><th>FiltrePolene2em Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emPiece" /></td>
+              </tr>        
+              <tr>
+                <th>FiltreHuile Hydrolique1er Marque</th><th>FiltreHuile Hydrolique1er Piece</th><th>FiltreHuile Hydrolique2em Marque</th><th>FiltreHuile Hydrolique2em Piece</th><th>FiltreAUree Marque</th><th>FiltreAUree Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreeMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreePiece" /></td>
+              </tr>     
+              <tr>
+                <th>Huile Moteur</th><th>Huile Differentiel</th><th>Huile Transmition</th><th>HuileServo Direction</th><th>Huile Hydrolique</th><th>Prestone</th><th>Batterie Nombre</th><th>Batterie Amperage</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileMoteur" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileDifferentiel" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileTransmition" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileServoDirection" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileHydrolique" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.prestone" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieNombre" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieAmperage" /></td>
+              </tr>                   
+              <tr>
+                <th>Batterie Dimension</th><th>Alternateur Marque</th><th>Alternateur Piece</th><th>Demarreur Marque</th><th>Demarreur Piece</th><th>PhareAvant Marque</th><th>PhareAvant Piece</th><th>LumiaireArriere Marque</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieDimension" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArriereMarque" /></td>
+              </tr>                         
+              <tr>
+                <th>LumiaireArriere Piece</th><th>Clignotant Avant Marque</th><th>Clignotant Avant Piece</th><th>LumiaireHaut PareBrise Marque</th><th>LumiaireHaut PareBrise Piece</th><th>Essieux AvantFrein Marque</th><th>Essieux AvantFrein Piece</th><th>Essieux AvantDrum Marque</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArrierePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBriseMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBrisePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumMarque" /></td>
+              </tr>          
+              <tr>
+                <th>Essieux AvantDrum Piece</th><th>EssieuxAvant RouesType</th><th>EssieuxAvant RouesMarque</th><th>EssieuxAvant RouesPiece</th><th>EssieuxAvant BearingRouesMarque</th><th>EssieuxAvant BearingRouesPiece</th><th>EssieuxAvant BoosterMarque</th><th>EssieuxAvant BoosterPiece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterPiece" /></td>
+              </tr> 
+              <tr>
+                <th>EssieuxAvant CAMGaucheMarque</th><th>EssieuxAvant CAMGauchePiece</th><th>EssieuxAvant CAMDroiteMarque</th><th>EssieuxAvant CAMDroitePiece</th><th>EssieuxArriere FreinMarque</th><th>EssieuxArriere FreinPiece</th><th>EssieuxArriere DrumMarque</th><th>EssieuxArriere DrumPiece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGaucheMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGauchePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroiteMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroitePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumPiece" /></td>
+              </tr>                                          
+              <tr>
+                <th>EssieuxArriere RouesType</th><th>EssieuxArriere RouesMarque</th><th>EssieuxArriere RouesPiece</th><th>EssieuxArriere BearingRouesMarque</th><th>EssieuxArriere BearingRouesPiece</th><th>EssieuxArriere BoosterMarque</th><th>EssieuxArriere BoosterPiece</th><th>EssieuxArriere CAMGaucheMarque</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGaucheMarque" /></td>
+              </tr>
+              <tr>
+                  <th>EssieuxArriere CAMGauchePiece</th><th>EssieuxArriere CAMDroiteMarque</th><th>EssieuxArriere CAMDroitePiece</th>
+                </tr>
+                <tr>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGauchePiece" /></td>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroiteMarque" /></td>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroitePiece" /></td>
+                </tr>  
+        </table>
+        <table border="1" *ngIf="modeDefinirEnt==1">          
+          <!--tr><th colspan="3">A definir - Kilometrage a faire des entretiens suivants :</th><th></th><th></th><th></th></tr-->
+          <tr>
+            <th>Nom d'Entretien</th><th>Nombre Km A Faire</th><th colspan="4">Consignes</th><th>Odometre Dernier Fait</th>
+          </tr>          
+          <tr>
+            <th>Entretien 1</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent1" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message01"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo1Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 2</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent2" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message02"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo2Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 3</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent3" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message03"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo3Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 4<br>Hydrolique</th><td><input class="form-control" type="number" [(ngModel)]="camion.filHydrolique" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message04"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo4Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 5<br>Antigel-fil</th><td><input class="form-control" type="number" [(ngModel)]="camion.filAntigel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message05"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo5Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 6<br>Antigel-huile</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileAntigel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message06"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo6Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 7<br>Transmission</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileTransmission" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message07"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo7Fait" /></td>
+          </tr>
+          <tr>
+            <th>Entretien 8<br>Differentiel</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileDifferentiel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message08"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo8Fait" /></td>
+          </tr>
+            <!--tr>
+                <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
+            </tr-->
+            <tr><td colspan="2"><strong>Autres entretiens</strong></td></tr>   
+            <tr>
+              <th>Nom</th><th>Kms/Jours A Faire</th>
+              <th colspan="4">Consignes</th><th>Odo/Date Dernier Fait</th><th>Avertir avant</th>
+            </tr>
+          <tr *ngFor="let entretien of entretiens">
+            <th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th>
+            <td>
+              <input type="number" style="width: 9ch;" [(ngModel)]="entretien.kmTrage" (change)="controlKmTrage(entretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="entretien.daysTodo" (change)="controlDaysTodo(entretien)"/>jour
+            </td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
+            <td>
+              <input type="number" style="width: 10ch;" [(ngModel)]="entretien.odoFait" />&nbsp;&nbsp;
+              <input type="date" style="width: 17ch;" [ngModel]="entretien.dateFait | date:'yyyy-MM-dd'" 
+              (ngModelChange)="entretien.dateFait = $event" (change)="dateToMilliseconds(entretien)"/>
+            </td>
+            <td>
+              <input type="number" style="width: 7ch;" [(ngModel)]="entretien.kmAvertir" (change)="controlKmAvertir(entretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="entretien.daysToWarn" (change)="controlDaysToWarn(entretien)"/>jour &nbsp;
+              <input type="checkbox" style="width: 2ch;" [(ngModel)]="entretien.sendEmail"/>Email
+            </td>
+            <td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Del</button></td>
+          </tr>           
+          <tr><td colspan="2"><strong>Ajout d'entretien</strong></td></tr>   
+          <tr>
+            <th>Nom d'Entretien</th><th>Kms/Jours A Faire</th>
+            <!-- <th>Avertir avant</th> -->
+            <th colspan="4">Consignes</th><th>Odometre Dernier Fait</th><th>Avertir avant</th>
+          </tr>  
+          <tr>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
+            <td>
+              <input type="number" style="width: 9ch;" [(ngModel)]="autreEntretien.kmTrage" (change)="controlKmTrage(autreEntretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="autreEntretien.daysTodo" (change)="controlDaysTodo(autreEntretien)"/>jour
+            </td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="autreEntretien.message"></textarea></td>                
+            <td>
+              <input type="number" style="width: 10ch;" [(ngModel)]="autreEntretien.odoFait" />&nbsp;&nbsp;
+              <input type="date" style="width: 17ch;" [ngModel]="autreEntretien.dateFait | date:'yyyy-MM-dd'" 
+              (ngModelChange)="autreEntretien.dateFait = $event" (change)="dateToMilliseconds(autreEntretien)"/>
+            </td>
+            <td>
+              <input type="number" style="width: 7ch;" [(ngModel)]="autreEntretien.kmAvertir" (change)="controlKmAvertir(autreEntretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="autreEntretien.daysToWarn" (change)="controlDaysToWarn(autreEntretien)"/>jour &nbsp;
+              <input type="checkbox" style="width: 2ch;" [(ngModel)]="autreEntretien.sendEmail" />Email
+            </td>
+            <td><button class="btn btn-link" (click)="addEntretien()">Ajout</button></td>
+          </tr>           
+        </table>
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeEntretiens==1">
+            <tr><th colspan="8">Les Entretiens a faire (code couleur - <span style="color: green;">Vert : Bon-etat</span>, <span style="color:rgb(255, 196, 0);">Jaune : Attention</span>, <span style="color: red;">Rouge : Urgent</span>) </th></tr>
+            <tr>
+              <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Entretien 1 {{codeTextEnt1(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton2(camion)">Entretien 2 {{codeTextEnt2(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton3(camion)">Entretien 3 {{codeTextEnt3(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien04()" class="btn btn-sm {{couleur04}}" [disabled]="disableButton(camion.odo4Fait, camion.filHydrolique)">Entretien 4 {{codeText(camion.odo4Fait, camion.filHydrolique)}}</button></td>
+            </tr>
+            <tr>
+              <td colspan="2"><button (click)="onEntretien05()" class="btn btn-sm {{couleur05}}" [disabled]="disableButton(camion.odo5Fait, camion.filAntigel)">Entretien 5 {{codeText(camion.odo5Fait, camion.filAntigel)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien06()" class="btn btn-sm {{couleur06}}" [disabled]="disableButton(camion.odo6Fait, camion.huileAntigel)">Entretien 6 {{codeText(camion.odo6Fait, camion.huileAntigel)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien07()" class="btn btn-sm {{couleur07}}" [disabled]="disableButton(camion.odo7Fait, camion.huileTransmission)">Entretien 7 {{codeText(camion.odo7Fait, camion.huileTransmission)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien08()" class="btn btn-sm {{couleur08}}" [disabled]="disableButton(camion.odo8Fait, camion.huileDifferentiel)">Entretien 8 {{codeText(camion.odo8Fait, camion.huileDifferentiel)}}</button></td>
+            </tr>
+            <!-- <tr *ngFor="let entretien of entretiens">
+              <td><button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button></td>
+            </tr>            -->
+    
+            <tr>
+              <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection aux 6 mois {{codeTextInspect()}}</button></td>
+            </tr>
+            <tr>
+              <td colspan="8"><p>
+                <span *ngFor="let entretien of entretiens">
+                  <button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button>
+                &nbsp;&nbsp;</span>
+              </p></td>
+            </tr>
+        </table>          
+        <table border="1" *ngIf="modeBonDeTravail==1" style="max-width: 70%;">
+          <!--entretien - begin-->
+          <tr>
+            <th colspan="8">Entretiens a faire (code couleur - <span style="color: green;">Vert : Bon-etat</span>, <span style="color:rgb(255, 196, 0);">Jaune : Attention</span>, <span style="color: red;">Rouge : Urgent</span>) </th>
+            <td><strong>&nbsp;&nbsp;&nbsp; Notes </strong> <small class="btn btn-link" (click)="saveCamion()">Enregistrer</small></td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Entretien 1 {{codeTextEnt1(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton2(camion)">Entretien 2 {{codeTextEnt2(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton3(camion)">Entretien 3 {{codeTextEnt3(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien04()" class="btn btn-sm {{couleur04}}" [disabled]="disableButton(camion.odo4Fait, camion.filHydrolique)">Entretien 4 {{codeText(camion.odo4Fait, camion.filHydrolique)}}</button></td>
+            <td rowspan="5" style="vertical-align: top;">
+              <textarea cols="60" rows="10" [(ngModel)]="camion.notes"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="onEntretien05()" class="btn btn-sm {{couleur05}}" [disabled]="disableButton(camion.odo5Fait, camion.filAntigel)">Entretien 5 {{codeText(camion.odo5Fait, camion.filAntigel)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien06()" class="btn btn-sm {{couleur06}}" [disabled]="disableButton(camion.odo6Fait, camion.huileAntigel)">Entretien 6 {{codeText(camion.odo6Fait, camion.huileAntigel)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien07()" class="btn btn-sm {{couleur07}}" [disabled]="disableButton(camion.odo7Fait, camion.huileTransmission)">Entretien 7 {{codeText(camion.odo7Fait, camion.huileTransmission)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien08()" class="btn btn-sm {{couleur08}}" [disabled]="disableButton(camion.odo8Fait, camion.huileDifferentiel)">Entretien 8 {{codeText(camion.odo8Fait, camion.huileDifferentiel)}}</button></td>
+          </tr>
+          <!-- <tr *ngFor="let entretien of entretiens">
+            <td><button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button></td>
+          </tr>            -->
+  
+          <tr>
+            <td colspan="2">
+              <button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection aux 6 mois {{codeTextInspect()}}</button>
+              <small *ngIf="camion.inspect6m!=null" style="text-align: left;">
+                <br>{{camion.inspect6m | date: 'dd-MMM-yyyy'}}
+                <br><button [disabled]="camion.inspect6mLog==null || camion.inspect6mLog.length==0" class="btn btn-link" (click)="histInspec6m(camion)">
+                  Historique</button>
+            </small>
+            </td>
+            <!-- <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Vignette SAAQ {{codeTextInspect()}}</button></td> -->
+            <td colspan="2">
+              <button (click)="onVignette()" class="btn btn-sm {{couleur10}}" [disabled]="disableButtonVignette()">Vignette SAAQ {{codeTextVignette()}}</button>
+              <small *ngIf="camion.vignetteSaaq!=null" style="text-align: left;">
+                <br>{{camion.vignetteSaaq | date: 'dd-MMM-yyyy'}}
+                <br><button [disabled]="camion.vignetteLog==null || camion.vignetteLog.length==0" class="btn btn-link" (click)="histVignette(camion)">
+                  Historique</button>
+              </small>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="8"><p>
+              <span *ngFor="let entretien of entretiens">
+                <button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button>
+              &nbsp;&nbsp;</span>
+            </p></td>
+          </tr>
+          <!--entretien - end-->
+        </table>
+        <!--div id="toprint"-->
+        <br>
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <tr>
+            <th *ngIf="bonDeTravail.id!=null && bonDeTravail.id>0">#Bon {{bonDeTravail.id}} &nbsp;</th>            
+            <th colspan="2"><strong>Date (*) </strong><input type="date" [(ngModel)]="bonDeTravail.date" required pattern="\d{4}-\d{2}-\d{2}" max="{{today | date: 'yyyy-MM-dd'}}"/></th> <!--name="dateReparation" max="{{today | date: 'yyyy-MM-dd'}}"-->
+            <th colspan="2">Technicien <input type="text" [(ngModel)]="bonDeTravail.technicien"/></th>
+          </tr>
+        <!-- </table>
+        <table class="table table-striped table-sm table-responsive" *ngIf="modeBonDeTravail==1"> -->
+          <!-- <tr><br></tr> -->
+          <tr>    
+            <th>Mecanique : <input type="checkbox" [(ngModel)]="bonDeTravail.mecanique"></th>
+            <th>Carrosserie : <input type="checkbox" [(ngModel)]="bonDeTravail.carrosserie"></th>
+            <th>Piece : <input type="checkbox" [(ngModel)]="bonDeTravail.piece"></th>
+            <th>&nbsp;
+              <!-- Sablage Au Jet : <input type="checkbox" [(ngModel)]="bonDeTravail.sablageAuJet"> -->
+            </th>
+            <th>&nbsp;
+              <!-- Entreposage : <input type="checkbox" [(ngModel)]="bonDeTravail.entreposage"> -->
+            </th>
+            <th>&nbsp;
+            </th>
+            <th>&nbsp;
+            </th>
+          </tr>                              
+          <tr>
+              <th>#Unité</th><th>Marque</th><th>Modele</th><th>Plaque</th><th>N.I.V</th><th>Longueur deck haut</th><th>Longueur deck bas</th><th>Hauteur deck</th>
+          </tr>
+          <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.marque" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.modele" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" disabled/></td>
+              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" disabled/></td>
+              <td>{{camion.longueurTop}}&nbsp;ft</td>
+              <td>{{camion.longueur}}&nbsp;ft</td>
+              <td>{{camion.hauteurDeck}}&nbsp;po</td>
+          </tr>
+          <tr>
+              <th>Année</th><th>Odometre</th><th>Moteur</th><th>Transmission</th><th>Couleur</th><th>Hauteur Plateforme</th><th>Capacite de charge</th>
+          </tr>
+          <tr>                
+              <td><input class="form-control" type="text" [(ngModel)]="camion.annee" disabled/></td>              
+              <!-- <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" disabled/></td>               -->
+              <td><input class="form-control" type="number" [(ngModel)]="bonDeTravail.odometre"/></td> <!--disabled-->
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur" disabled/></td>
+              <td>{{camion.hauteur}}&nbsp;po</td>
+              <td>{{camion.poids}}&nbsp;lbs</td>
+          </tr>
+        </table>
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <br>
+          <tr>
+            <th>ReparationsAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Quantité</th><th>$/unité</th><th>Heures</th><th>$/heure</th><th>Prix &nbsp;&nbsp;&nbsp;&nbsp;</th>                        
+          </tr>
+          <!-- <tr *ngFor="let rep of reparations">
+            <td>
+                <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
+            </td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.piece"/></td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur"/></td>
+            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.quantite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prixUnite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.heures" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.taux" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="repsPrixChange()"/></td>            
+            <td *ngIf="reparations.length>1"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> 
+          </tr>   -->
+          <ng-container *ngFor="let rep of reparations">
+            <tr>
+              <td rowspan="2">
+                  <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
+              </td> 
+              <td><input type="text" class="form-control" [(ngModel)]="rep.piece"/></td>
+              <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur"/></td>
+              <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+              <td><input type="number" class="form-control" [(ngModel)]="rep.quantite" (change)="repsPrixChange()"/></td>
+              <td><input type="number" class="form-control" [(ngModel)]="rep.prixUnite" (change)="repsPrixChange()"/></td>
+              <td><input type="number" class="form-control" [(ngModel)]="rep.heures" (change)="repsPrixChange()"/></td>
+              <td><input type="number" class="form-control" [(ngModel)]="rep.taux" (change)="repsPrixChange()"/></td>
+              <td rowspan="2"><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="repsPrixChange()"/></td>            
+              <td rowspan="2" *ngIf="reparations.length>0"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
+            </tr>  
+            <tr>
+              <td colspan="7">
+                <textarea class="form-control" type="text" rows="2" [(ngModel)]="rep.description"></textarea>
+              </td>
+            </tr>
+          </ng-container>
+          <tr>
+            <th colspan="2">&nbsp;</th>
+          </tr>
+          <tr>
+            <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.reparationEffectuer"></td-->
+            <td rowspan="2">
+              <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="reparation.reparationEffectuer"></textarea>
+            </td>
+            <td><input type="text" class="form-control" [(ngModel)]="reparation.piece"></td>
+            <td><input type="text" class="form-control" [(ngModel)]="reparation.fournisseur"></td>
+            <td><input type="date" class="form-control" [(ngModel)]="reparation.garantie" min="{{today | date: 'yyyy-MM-dd'}}"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.quantite" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.prixUnite" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.heures" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.taux" (change)="prixChange()"></td>
+            <!-- <td><input type="number" class="form-control" [(ngModel)]="reparation.prix" style="width: 8pc"></td>
+            <td><button class="btn btn-link" (click)="addReparation()">Ajout</button></td> -->
+            <td rowspan="2"><input type="number" class="form-control" [(ngModel)]="reparation.prix" style="width: 8pc"></td>
+            <td rowspan="2"><button class="btn btn-link" (click)="addReparation()" [disabled]="reparation.reparationEffectuer==null || reparation.reparationEffectuer.length==0">
+              Ajouter
+            </button></td>
+          </tr>           
+          <tr>
+            <td colspan="7">
+              <textarea class="form-control" type="text" rows="2" [(ngModel)]="reparation.description"></textarea>
+            </td>
+          </tr>
+        </table>  
+        <br>
+        <table *ngIf="modeBonDeTravail==1">
+          <tr>
+            <th colspan="5">Remarques / Travaux A Prevoir</th>
+          </tr>
+          <tr>
+            <!--td colspan="4" rowspan="4"><input type="text" class="form-control" [(ngModel)]="bonDeTravail.remarque"></td-->
+            <td><textarea class="form-control" type="text" rows="4" cols="50" [(ngModel)]="bonDeTravail.remarque"></textarea></td>
+            <td colspan="2" rowspan="4">
+              <table>
+                <tr>
+                  <td><br></td><th>Sous-Total : </th><td colspan="2">{{bonDeTravail.sousTotal | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TPS : </th><td colspan="2">{{bonDeTravail.tps | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TVQ : </th><td colspan="2">{{bonDeTravail.tvq | number : '1.2'}}</td>
+                </tr>    
+                <tr>
+                  <td><br></td><th>TOTAL : </th><td colspan="2">{{bonDeTravail.total | number : '1.2'}}</td> 
+                  <td><br>&nbsp;</td>
+                  <td><button class="btn btn-link" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Enregistrer</button></td>
+                  <td><button class="btn btn-link" (click)="finiBonDeTravail()" [disabled]="bonDeTravail.id==null">Fini</button></td>
+                  <td><button class="btn btn-link" (click)="newBonDeTravail()" [disabled]="bonDeTravail.id==null">Nouveau</button></td>
+                  <!--td><button class="btn btn-primary" (click)="printBonDeTravail('toprint')">Imprimer BonDeTravail</button></td-->
+                </tr>                
+              </table>
+            </td>
+          </tr>
+        </table> 
+        <!-- <div *ngIf="modeListReparation==1 && modeBonhist==1" style="overflow-y: auto; max-height: 200px;">
+          <table border="1">
+              <tr>
+                <th>#Bon</th><th>Date</th><th>Status</th><th>Technicien</th><th>Frais(HorsTax)</th><th>Intervetions</th>
+              </tr>
+              <tr *ngFor="let b of bonDeTravails" (click)="onHistoireDetaillerOnList(b)">
+                <td>{{b.id}}</td>
+                <td>{{b.date}}</td>
+                <td>{{((b.fini)?"Fini":'Ouvert')}}</td>
+                <td>{{b.technicien}}</td>
+                <td>{{b.sousTotal}}</td>
+                <td>
+                  {{onHistoireDetaillerFindReparations(b)}}
+                </td>
+              </tr>
+          </table>
+        </div>
+        <div><br></div> -->
+        <table *ngIf="modeListReparation==1 && modeBonhist==1">
+          <!-- <td><button id="noprint" class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button></td>
+          <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td> -->
+          <th>
+            <!-- <div> -->
+              <!-- Reparations &nbsp;<select type="text" [(ngModel)]="bonDeTravailHistoire" (ngModelChange)="onHistoireDetaillerOnList(bonDeTravailHistoire)">
+                <option *ngFor="let b of bonDeTravails" [ngValue]="b">
+                  {{'#Bon: '+b.id+ ' - ' + 
+                  ((b.fini)?"Fini":'Ouvert')+ ' - ' +
+                  ((b.technicien!=null)?('Technicien: ' +b.technicien+ ' - ') :' ') +
+                  ((b.sousTotal!=null && b.sousTotal>0)?('HorsTax: ' +b.sousTotal+' - ') :' ')+
+                  ((b.date!=null)?('Date: ' +b.date) :' ')}}
+                </option>
+              </select> -->
+              <button class="btn btn-primary" (click)="onListReparation()">&lArr;</button>
+          <!-- </div> -->
+          </th>
+        </table>
+        <div id="toprint">
+        <!--Review BonDeTravail - begin-->
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th><h4>#Bon : {{bonDeTravailHistoire.id}}&nbsp;</h4></th>
+            <th>Technicien : {{bonDeTravailHistoire.technicien}} &nbsp;</th>
+            <th>Date : {{bonDeTravailHistoire.date}}</th>            
+          </tr> 
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th>TypeDeReparation: </th>    
+            <td *ngIf="bonDeTravailHistoire.mecanique">Mecanique</td>
+            <td *ngIf="bonDeTravailHistoire.carrosserie">Carrosserie</td>
+            <td *ngIf="bonDeTravailHistoire.piece">&nbsp;Piece</td>
+            <td *ngIf="bonDeTravailHistoire.sablageAuJet">&nbsp;</td> <!--SablageAuJet-->
+            <td *ngIf="bonDeTravailHistoire.entreposage">&nbsp;</td> <!--Entreposage-->
+            <!-- <td *ngIf="modeListReparation==1 && modeBonhist==1 && !bonDeTravailHistoire.fini">
+              <button class="btn btn-link" (click)="onHistoireDetailler(bonDeTravailHistoire)">
+                Reprendre ce #Bon
+              </button>
+            </td> -->
+          </tr>                              
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
+          <tr>
+            <th>#Unite</th><th>Marque</th><th>Modele</th><th>Plaque</th><th colspan="2">N.I.V</th>
+          </tr>
+          <tr>
+            <td>{{camion.unite}}</td>
+            <td>{{camion.marque}}</td>
+            <td>{{camion.modele}}</td>
+            <td>{{camion.plaque}}</td>
+            <td colspan="2">{{camion.niv}}</td>
+          </tr>
+          <tr>
+            <th>Annee</th><th>Odometre</th><th>Moteur</th><th>Transmission</th><th>Couleur</th>
+          </tr>
+          <tr>                
+            <td>{{camion.annee}}</td>              
+            <!-- <td>{{camion.odometre}}</td>               -->
+            <td>{{bonDeTravailHistoire.odometre}}</td>
+            <td>{{fiche.moteur}}</td>
+            <td>{{fiche.transmition}}</td>
+            <td>{{fiche.couleur}}</td>
+          </tr>
+        </table>
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
+          <tr>
+            <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
+            <th>ReparationAFaire</th><th>Piece</th><th>Fournisseur</th><th>Garantie</th><th>Quantite</th><th>$/unite</th><th>Heures</th><th>$/heure</th><th style="text-align: center">Prix</th>                    
+          </tr>
+          <ng-container *ngFor="let rep of reparationsHistoire">
+            <tr>
+              <td style="width: 35%;" *ngIf="rep.description==null || rep.description.length==0">
+                {{rep.reparationEffectuer}}
+              </td>
+              <td rowspan="2" style="width: 35%;" *ngIf="rep.description!=null && rep.description.length>0">
+                {{rep.reparationEffectuer}}
+              </td>
+              <td>{{rep.piece}}</td>
+              <td>{{rep.fournisseur}}</td>
+              <td>{{rep.garantie}}</td>
+              <td style="text-align: center">{{rep.quantite}}</td>
+              <td style="text-align: right">{{rep.prixUnite | number : '1.2'}}</td>
+              <td style="text-align: center">{{rep.heures}}</td>
+              <td style="text-align: right">{{rep.taux | number : '1.2'}}</td>
+              <!-- <td style="text-align: right">{{rep.prix | number : '1.2'}}</td> -->
+              <td *ngIf="rep.description==null || rep.description.length==0" style="text-align: right">
+                {{rep.prix | number : '1.2'}}
+              </td>
+              <td rowspan="2" *ngIf="rep.description!=null && rep.description.length>0" style="text-align: right">
+                {{rep.prix | number : '1.2'}}
+              </td>
+            </tr>       
+            <tr *ngIf="rep.description!=null && rep.description.length>0">
+              <td colspan="7"><pre style="white-space: pre-wrap; word-break: keep-all;">{{rep.description}}</pre></td>
+            </tr>
+          </ng-container>
+          <!--tr>
+              <th colspan="=6">Remarques / Travaux A Prevoir</th>
+            </tr-->
+          <!--/table>  
+          <table *ngIf="modeListReparation==1 && modeBonhist==1"-->
+        </table>
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th colspan="5">Remarques / Travaux A Prevoir</th>
+            <th>&nbsp;</th>
+          </tr>
+          <tr>
+              <!--td><textarea class="form-control" type="text" rows="4" cols="50" disabled>{{bonDeTravailHistoire.remarque}}</textarea></td-->
+            <td colspan="5" rowspan="4">
+                {{bonDeTravailHistoire.remarque}}
+            </td>
+            <td style="text-align: right" colspan="4" rowspan="4">
+              <table>
+                <tr>
+                  <th style="text-align: right">HorsTax : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.sousTotal | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <th style="text-align: right">TPS : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tps | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <th style="text-align: right">TVQ : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tvq | number : '1.2'}}</td>
+                </tr>    
+                <tr>
+                  <th style="text-align: right">TOTAL : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.total | number : '1.2'}}</td> 
+                </tr>                
+              </table>
+            </td>
+          </tr>
+          <tr><br></tr>
+        </table>   
+        </div> <!--End of test print-->
+        <button class="btn btn-primary" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1 && bonDeTravailHistoire.fini">
+          Imprimer ce #Bon
+        </button>
+        <button class="btn btn-primary" (click)="onHistoireDetailler(bonDeTravailHistoire)" *ngIf="modeListReparation==1 && modeBonhist==1 && !bonDeTravailHistoire.fini">
+          Reprendre ce #Bon
+        </button>
+        <!--Review BonDeTravail - end-->
+        <table  border="1" *ngIf="modeListReparation==1 && modeBonhist==0">
+          <tr>
+            <th>Numero</th>
+            <th>Technicien</th>
+            <th>Date</th>
+            <th>Prix(hors-tax)</th>
+            <th>Remarques - Travaux a prevoir</th>
+            <th>Status</th>
+            <th>Detail</th>
+          </tr>
+          <ng-container *ngFor="let bon of bonDeTravails">
+            <tr>
+              <td rowspan="2">{{bon.id}}</td>
+              <td>{{bon.technicien}}</td>
+              <td>{{bon.date | date:'dd-MMM-yyyy'}}</td>
+              <td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td>
+              <td>
+                <pre style="white-space: pre-wrap; word-break: keep-all;">{{bon.remarque}}</pre>
+                <!-- <textarea class="form-control" readonly type="text" rows="1" cols="40"
+                style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea> -->
+              </td>
+              <td rowspan="2"><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>
+              <td rowspan="2"><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detail</button></td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                  <!-- {{onHistoireDetaillerFindReparations(bon)}} -->
+                  <!-- {{testReturn(bon)}} -->
+                  <!-- {{bon.workDones}} -->
+                  <pre style="white-space: pre-wrap; word-break: keep-all;">{{bon.workDones}}</pre>
+              </td>
+            </tr>
+          </ng-container>
+          <!-- <tr *ngFor="let bon of bonDeTravails">
+            <td>{{bon.id}}</td>
+            <td>{{bon.technicien}}</td>
+            <td>{{bon.date}}</td>
+            <td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td>
+            <td>
+              <textarea class="form-control" readonly type="text" rows="1" cols="40"
+              style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea>
+            </td>
+            <td><span *ngIf="bon.fini">Fini</span><span *ngIf="!bon.fini">Ouvert</span></td>          
+            <td><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detail</button></td>
+          </tr> -->
+        </table>
+        <div class="row" *ngIf="modeListGarantie==1">
+          <div style="float: left; width: 48%">
+            <table border="1" style="border: slategray; width: 100%">
+              <tr>
+                <!-- <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td> -->
+                <th colspan="3">
+                  <input type="text"  [(ngModel)]="pieceChercher" /> 
+                  <button class="btn btn-link" (click)="onListGarantie()" >
+                    <!-- [disabled]="(pieceChercher==null || pieceChercher.length==0)" -->
+                    Chercher Piece
+                  </button>
+                </th>
+              </tr>
+              <tr>
+                <th>Piece</th><th>Fournisseur</th><th>Prix</th><th>Expiration</th>
+              </tr>
+              <tr *ngFor="let rep of reparations">
+                <td>{{rep.piece}}</td>
+                <td>{{rep.fournisseur}}</td>
+                <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
+                <td>{{rep.garantie}}</td>
+                <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
+              </tr>
+            </table>
+          </div>
+          <!-- <table style="border: slategray; float: left; width: 4%">
+            <tr></tr>
+          </table> -->
+          <div style="float: right; width: 48%; margin-left: 2pt">
+            <table border="1" style="border: slategray; margin-left: 2pt; width: 100%">
+                <tr>
+                  <td style="font-weight: bold" colspan="4">Autres Garanties</td>
+                </tr>
+              <tr>
+                <th>Garantie</th>
+                <th>Prix</th>
+                <th>Expiration</th>
+                <th>Note</th>
+              </tr>
+              <tr>
+                <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+                <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+                <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+                <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+                <td><button class="btn btn-link"  (click)="onAddGarantie()">Ajout</button></td>
+              </tr>
+              <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
+              <tr  *ngFor="let g of garanties">
+                  <td>{{g.nom}}</td>
+                  <td>{{g.prix}}</td>
+                  <td st>{{g.expiration | date: 'dd-MMM-yyyy'}}</td>
+                  <td>{{g.note}}</td>
+                  <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+    </div>  
+
+    <div  *ngIf="modeInfos==1 || modeFiche==1 || modeDefinirEnt==1">
+        <table class="table table-striped table-responsive"> 
+            <td><button class="btn btn-primary" (click)="saveCamion()">Enregistrer/Modifier</button></td>
+            <!-- <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Retour la Flotte</button></td>  -->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>                  
+        </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+  <div> <!--*ngIf="mode==1"-->
+    <div> 
+      <h3> 
+        <strong>Unit : {{camion.unite}}</strong>  &nbsp;&nbsp;&nbsp; 
+        <span class="btn btn-link" (click)="gotoDetailTransporter(camion.idTransporter)">Return to the Fleet</span>
+      </h3>
+      <!-- <span *ngIf="(camion.status && (camion.gps || (camion.idTerminal!=null && camion.idTerminal>0)))" class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</span> -->
+      <!-- <button *ngIf="(camion.status && (camion.uniteMonitor!=null && camion.monitor!=null) && 
+        (camion.monitor.length!=0 && camion.monitor.length!=0) && 
+        !camion.uniteMonitor.includes('no-gps'))"
+        class="btn btn-link" (click)="onPress(camion.id)">{{carteText}}</button> -->
+      <!-- <br> -->
+    </div>
+    <div *ngIf="carte==1">
+      <div class="col-md-12">
+        <div class="text-center">
+          <h3>
+            <div #gmap style="width:100%;height:500px" ></div>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="btn btn-link" (click)="onInfos()">
+        <strong *ngIf="modeInfos">Infos/Config</strong>
+        <span *ngIf="!modeInfos">Infos/Config</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onFiche()">
+        <strong *ngIf="modeFiche">Technical Sheet</strong>
+        <span *ngIf="!modeFiche">Technical Sheet</span> 
+      </button>&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-link" (click)="onDefinirEnt()">
+        <strong *ngIf="modeDefinirEnt">Programs Setting</strong>
+        <span *ngIf="!modeDefinirEnt">Programs Setting</span> 
+      </button>
+      <!--button class="btn btn-link" (click)="onEntretiens()">Entretiens a faire</button-->
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onBonDeTravail()">        
+        <strong *ngIf="modeBonDeTravail">WorkOrder</strong>
+        <span *ngIf="!modeBonDeTravail">WorkOrder</span> 
+      </button>
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListReparation()">
+        <strong *ngIf="modeListReparation">History & Print</strong>
+        <span *ngIf="!modeListReparation">History & Print</span> 
+      </button>
+      <button *ngIf="(id!=null && id>0)" class="btn btn-link" (click)="onListGarantie()">        
+        <strong *ngIf="modeListGarantie">Warranty</strong>
+        <span *ngIf="!modeListGarantie">Warranty</span> 
+      </button>
+    </div>    
+    <!-- <div *ngIf="modeInfos==1"><h3>Infos</h3></div>
+    <div *ngIf="modeFiche==1"><h3>Fiche de Technique</h3></div>
+    <div *ngIf="modeDefinirEnt==1"><h3>Entretiens a definir</h3></div>
+    <div *ngIf="modeEntretiens==1"><h3>Entretiens a faire</h3></div> -->
+    <!-- <div *ngIf="modeBonDeTravail==1"><h4>BonDeTravail {{bonDeTravail.id}}</h4></div> -->
+    <!-- <div *ngIf="modeListReparation==1">
+      <h3>
+        List Reparation 
+      </h3>
+    </div>
+    <div *ngIf="modeListGarantie==1"><h3>List Garantie</h3></div> -->
+
+    <div>
+      <table border="1" *ngIf="modeInfos==1">
+        <tr>
+          <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th>N.I.V</th><th>Purchase Date</th><th>Purchase Price</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="camion.unite" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="camion.marque" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="camion.modele" /></td>
+          <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" /></td>
+          <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" /></td>
+          <td><input class="form-control" type="date" [(ngModel)]="camion.dateAchat" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.price" /></td>
+        </tr>
+        <tr>
+          <th>Down Payment</th><th>Monthly Payment</th><th>Term Payment</th><th>Buy Back</th><th>Plate Price</th><th>Axles</th><th>Sale Date</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.payDown" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.payPerMonth" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.termPayment" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.pricePlate" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.buyBack" /></td>
+          <td><input class="form-control" type="number" [(ngModel)]="camion.numberAxles" /></td>
+          <td><input class="form-control" type="date" [(ngModel)]="camion.dateSolde" /></td>
+        </tr>
+      </table>
+      <br>
+      <table border="1" *ngIf="modeInfos==1">
+        <tr>
+            <th>Year</th><th>Type</th><th>Odometer</th><th>Mass Net</th><th>Inspection 6 Months</th><th>License 1 Year</th>
+        </tr>
+        <tr>                
+            <td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="camion.type" /></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="camion.massNet" /></td>
+            <td><input class="form-control" type="date" [(ngModel)]="camion.inspect6m" /></td>
+            <td><input class="form-control" type="date" [(ngModel)]="camion.vignetteSaaq" /></td>
+        </tr>
+        <tr>
+          <th>Engine</th><th>Transmition </th><th>Engine No</th><th>Engine Family</th><th>Engine Model</th><th>CPL</th>
+        </tr>
+        <tr>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur"/></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition"/></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.engineNumber"/></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.engineFamily"/></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.model"/></td>
+          <td><input class="form-control" type="text" [(ngModel)]="fiche.cpl"/></td>
+        </tr>
+        <tr>
+          <th>Length deck-above</th><th>Length deck-below</th><th>Height Platform</th><th>Height Deck</th><th>Load Capacity</th>
+        </tr>
+        <tr>
+          <td><input type="number" [(ngModel)]="camion.longueurTop">&nbsp;ft</td>
+          <td><input type="number" [(ngModel)]="camion.longueur">&nbsp;ft</td>
+          <td><input type="number" [(ngModel)]="camion.hauteur">&nbsp;inch</td>
+          <td><input type="number" [(ngModel)]="camion.hauteurDeck">&nbsp;inch</td>
+          <td><input type="number" [(ngModel)]="camion.poids">&nbsp;lbs</td>
+        </tr>
+      </table>
+        <br>
+        <table border="1" *ngIf="modeInfos==1">
+            <tr><th colspan="7">Status </th></tr>
+            <tr>              
+              <td style="width: 12%;">
+                Exploiting&nbsp;<input type="checkbox" [(ngModel)]="camion.status" />
+              </td>
+              <td>
+                OutService&nbsp;<input type="checkbox" [(ngModel)]="camion.outService" />
+              </td>
+              <td>
+                Broker&nbsp;<input type="checkbox" [(ngModel)]="camion.broker" />
+              </td>
+              <td>
+                Trailer&nbsp;<input type="checkbox" [(ngModel)]="camion.trailer" />
+              </td>
+              <td>
+                GPS&nbsp;<input type="checkbox" [(ngModel)]="camion.gps" />
+              </td>
+              <td *ngIf="camion.gps">
+                <input class="form-control" type="text" [(ngModel)]="camion.uniteMonitor" placeholder="uniteMonitor"/>
+              </td>
+              <td *ngIf="camion.gps">
+                <input class="form-control" type="text" [(ngModel)]="camion.monitor" placeholder="Monitor"/>
+              </td>
+
+            </tr>   
+            <tr>
+              <th>
+                Photo
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </th>
+              <!-- <td>
+                <input type="file" title="Joindre une image " (change)="onFileUpLoad($event)" accept="image/x-png,image/gif,image/jpeg" placeholder="">
+              </td> -->
+              <td colspan="6" *ngIf="camion.imgUrl!=null && camion.imgUrl.length>0" style="border: 2px dotted gray">
+                <a href="{{camion.imgUrl}}" target="_blank">
+                  <img [src]="camion.imgUrl" alt="piece joint" class="img-responsive" width="25%">
+                </a>
+              </td>
+            </tr>
+        </table>
+        <!-- <table class="table table-striped table-sm table-responsive" *ngIf="modeFiche==1">     -->
+        <table border="1" *ngIf="modeFiche==1">      
+          <!-- <tr>
+            <th style="text-align: right;">PurchaseDate : </th><td><input class="form-control" type="date" [(ngModel)]="fiche.dateAchat" /></td>
+            <th style="text-align: right;">Engine : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" /></td>            
+            <th style="text-align: right;">Transmition : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" /></td>
+            <th style="text-align: right;">Year : </th><td><input class="form-control" type="text" [(ngModel)]="camion.annee" /></td>
+          </tr>
+          <tr>
+            <th style="text-align: right;">Engine No : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineNumber" /></td>
+            <th style="text-align: right;">Engine Family : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.engineFamily" /></td>            
+            <th style="text-align: right;">Engine Model : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.model" /></td>
+            <th style="text-align: right;">CPL : </th><td><input class="form-control" type="text" [(ngModel)]="fiche.cpl" /></td>
+          </tr>  
+          <tr><br></tr> -->
+          <tr>
+            <th>Color1</th><th>Code Color1</th><th>Color2</th><th>Code Color2</th><th>Color3</th><th>Code Color3</th>
+          </tr>
+          <tr>            
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur1" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur1" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur2" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur2" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur3" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.codeCouleur3" /></td>
+          </tr>
+          <tr>
+            <th>Differentiel1 Type</th><th>Differentiel1 Capacity</th><th>Differentiel2 Type</th><th>Differentiel2 Capacity</th><th>Differentiel3 Type</th><th>Differentiel3 Capacity</th>
+          </tr>
+          <tr>            
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel1Capacite" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel2Capacite" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Type" /></td>
+            <td><input class="form-control" type="text" [(ngModel)]="fiche.differentiel3Capacite" /></td>
+          </tr>
+              <tr>
+                <th>Front Axles Type</th><th>Front Axles Capacity</th><th>Front Tires Model</th><th>Front Tires Size</th><th>Rear Tires Model</th><th>Rear Tires Size</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.essieuxAvantCapacite" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusAvantGrandeur" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArriereModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pneusArrieregrandeur" /></td>
+              </tr>        
+              <tr>
+                <th>PTO Model</th><th>PTO Serie</th><th>Hydraulic Pump Model</th><th>Hydraulic Pump Serie</th><th>OilFilter 1st Mark</th><th>OilFilter 1st Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.ptoSerie" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.pompeHydroliqueSerie" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile1erPiece" /></td>
+              </tr>     
+              <tr>
+                <th>OilFilter 2nd Mark</th><th>OilFilter 2nd Piece</th><th>OilFilter 3rd Mark</th><th>OilFilter 3rd Piece</th><th>FuelFilter 1st Mark</th><th>FuelFilter 1st Piece</th><th>FuelFilter 2nd Mark</th><th>FuelFilter 2nd Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreFuel2emPiece" /></td>
+              </tr>                
+              <tr>
+                <th>FuelFilter 3rd Mark</th><th>FuelFilter 3rd Piece</th><th>AirFilter 1st Mark</th><th>AirFilter 1st Piece</th><th>AirFilter 2nd Mark</th><th>AirFilter 2nd Piece</th><th>AirFilter 3rd Mark</th><th>AirFilter 3rd Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuile3emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAir3emPiece" /></td>
+              </tr>        
+              <tr>
+                <th>CoolantFilter 1st Mark</th><th>CoolantFilter 1st Piece</th><th>CoolantFilter 2nd Mark</th><th>CoolantFilter 2nd Piece</th><th>PoleneFilter 1st Mark</th><th>PoleneFilter 1st Piece</th><th>PoleneFilter 2nd Mark</th><th>PoleneFilter 2nd Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePrestone2emPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene1erPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtrePolene2emPiece" /></td>
+              </tr>        
+              <tr>
+                <th>OilFilter Hydraulic 1st Mark</th><th>OilFilter Hydraulic 1er Piece</th><th>OilFilter Hydraulic 2nd Mark</th><th>OilFilter Hydraulic 2nd Piece</th><th>UreaFilter Mark</th><th>UreaFilter Piece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique1erModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreHuileHydrolique2emModele" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreeMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="fiche.filtreAUreePiece" /></td>
+              </tr>     
+              <tr>
+                <th>Engine Oil</th><th>Differentiel Oil</th><th>Transmition Oil</th><th>OilServo Direction</th><th>Hydraulic Oil</th><th>Prestone</th><th>Number Battery</th><th>Amperage Battery</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileMoteur" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileDifferentiel" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileTransmition" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileServoDirection" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.huileHydrolique" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.prestone" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieNombre" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieAmperage" /></td>
+              </tr>                   
+              <tr>
+                <th>Battery Size</th><th>Alternator Mark</th><th>Alternator Piece</th><th>Starter Mark</th><th>Starter Piece</th><th>Headlight Mark</th><th>Headlight Piece</th><th>Rearlight Mark</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.batterieDimension" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.alternateurPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.demarreurPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.phareAvantPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArriereMarque" /></td>
+              </tr>                         
+              <tr>
+                <th>Rearlight Piece</th><th>FrontTurnSignal Marque</th><th>FrontTurnSignal Piece</th><th>Uplight Windshield Mark</th><th>Uplight Windshield Piece</th><th>Axles FrontBrake Mark</th><th>Axles FrontBrake Piece</th><th>Axles FrontDrum Mark</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireArrierePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.clignotantAvantPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBriseMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.lumiaireHautPareBrisePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantFreinPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumMarque" /></td>
+              </tr>          
+              <tr>
+                <th>Axles FrontDrum Piece</th><th>FrontAxles WheelsType</th><th>FrontAxles WheelsMark</th><th>FrontAxles WheelsPiece</th><th>FrontAxles BearingWheelsMark</th><th>FrontAxles BearingWheelsPiece</th><th>FrontAxles BoosterMark</th><th>FrontAxles BoosterPiece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantDrumPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBearingRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantBoosterPiece" /></td>
+              </tr> 
+              <tr>
+                <th>FrontAxles CAMLeftMark</th><th>FrontAxles CAMLeftPiece</th><th>FrontAxles CAMRightMark</th><th>FrontAxles CAMRightPiece</th><th>RearAxles BrakeMark</th><th>RearAxles BrakePiece</th><th>RearAxles DrumMark</th><th>RearAxles DrumPiece</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGaucheMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMGauchePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroiteMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxAvantCAMDroitePiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereFreinPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereDrumPiece" /></td>
+              </tr>                                          
+              <tr>
+                <th>RearAxles WheelsType</th><th>RearAxles WheelsMark</th><th>RearAxles WheelsPiece</th><th>RearAxles BearingWheelsMark</th><th>RearAxles BearingWheelsPiece</th><th>RearAxles BoosterMark</th><th>RearAxles BoosterPiece</th><th>RearAxles CAMLeftMark</th>
+              </tr>
+              <tr>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesType" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBearingRouesPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterMarque" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereBoosterPiece" /></td>
+                <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGaucheMarque" /></td>
+              </tr>
+              <tr>
+                  <th>RearAxles CAMLeftPiece</th><th>RearAxles CAMRightMark</th><th>RearAxles CAMrightPiece</th>
+                </tr>
+                <tr>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMGauchePiece" /></td>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroiteMarque" /></td>
+                  <td><input class="form-control" type="text" [(ngModel)]="ficheCont.essieuxArriereCAMDroitePiece" /></td>
+                </tr>  
+        </table>
+        <table border="1" *ngIf="modeDefinirEnt==1">          
+          <!--tr><th colspan="3">A definir - Kilometrage a faire des entretiens suivants :</th><th></th><th></th><th></th></tr-->
+          <tr>
+            <th>Program</th><th>Nunber Km to Do</th><th colspan="4">Instructions</th><th>LastMade Odometer</th>
+          </tr>          
+          <tr>
+            <th>Program 1</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent1" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message01"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo1Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 2</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent2" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message02"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo2Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 3</th><td><input class="form-control" type="number" [(ngModel)]="camion.ent3" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message03"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo3Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 4<br>Hydraulic</th><td><input class="form-control" type="number" [(ngModel)]="camion.filHydrolique" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message04"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo4Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 5<br>AntiFreeze-Filter</th><td><input class="form-control" type="number" [(ngModel)]="camion.filAntigel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message05"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo5Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 6<br>AntiFreeze-Oil</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileAntigel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message06"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo6Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 7<br>Transmission</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileTransmission" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message07"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo7Fait" /></td>
+          </tr>
+          <tr>
+            <th>Program 8<br>Differentiel</th><td><input class="form-control" type="number" [(ngModel)]="camion.huileDifferentiel" /></td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="camion.message08"></textarea></td>
+            <td><input class="form-control" type="number" [(ngModel)]="camion.odo8Fait" /></td>
+          </tr>
+            <!--tr>
+                <th>Entretiens</th><th>Kilometretrage a faire</th><th>Consignes</th>
+            </tr-->
+            <tr *ngFor="let entretien of entretiens">
+              <th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th>
+              <td>
+                <input type="number" style="width: 9ch;" [(ngModel)]="entretien.kmTrage" (change)="controlKmTrage(entretien)"/>km &nbsp;
+                <input type="number" style="width: 6ch;" [(ngModel)]="entretien.daysTodo" (change)="controlDaysTodo(entretien)"/>day
+              </td>
+              <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="50" [(ngModel)]="entretien.message"></textarea></td>
+              <td>
+                <input type="number" style="width: 10ch;" [(ngModel)]="entretien.odoFait" />&nbsp;&nbsp;
+                <input type="date" style="width: 17ch;" [ngModel]="entretien.dateFait | date:'yyyy-MM-dd'" 
+                (ngModelChange)="entretien.dateFait = $event" (change)="dateToMilliseconds(entretien)"/>
+              </td>
+              <td>
+                <input type="number" style="width: 7ch;" [(ngModel)]="entretien.kmAvertir" (change)="controlKmAvertir(entretien)"/>km &nbsp;
+                <input type="number" style="width: 6ch;" [(ngModel)]="entretien.daysToWarn" (change)="controlDaysToWarn(entretien)"/>day &nbsp;
+                <input type="checkbox" style="width: 2ch;" [(ngModel)]="entretien.sendEmail"/>Email
+              </td>
+              <td><button class="btn btn-link" (click)="deleteEntretien(entretien.id)">Del</button></td>
+            </tr>           
+          <tr><td colspan="2"><strong>Add Program</strong></td></tr>   
+          <tr>
+            <th>Program</th><th>Kms to Do</th><th colspan="4">Instructions</th><th>LastMade Odometer</th><th>Warn before</th>
+          </tr>  
+          <tr>
+            <td><input class="form-control" type="text" [(ngModel)]="autreEntretien.nom" /></td>
+            <td>
+              <input type="number" style="width: 9ch;" [(ngModel)]="autreEntretien.kmTrage" (change)="controlKmTrage(autreEntretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="autreEntretien.daysTodo" (change)="controlDaysTodo(autreEntretien)"/>day
+            </td>
+            <td colspan="4"><textarea class="form-control" type="text" rows="2" cols="40" [(ngModel)]="autreEntretien.message"></textarea></td>                
+            <td>
+              <input type="number" style="width: 10ch;" [(ngModel)]="autreEntretien.odoFait" />&nbsp;&nbsp;
+              <input type="date" style="width: 17ch;" [ngModel]="autreEntretien.dateFait | date:'yyyy-MM-dd'" 
+              (ngModelChange)="autreEntretien.dateFait = $event" (change)="dateToMilliseconds(autreEntretien)"/>
+            </td>
+            <td>
+              <input type="number" style="width: 7ch;" [(ngModel)]="autreEntretien.kmAvertir" (change)="controlKmAvertir(autreEntretien)"/>km &nbsp;
+              <input type="number" style="width: 6ch;" [(ngModel)]="autreEntretien.daysToWarn" (change)="controlDaysToWarn(autreEntretien)"/>day &nbsp;
+              <input type="checkbox" style="width: 2ch;" [(ngModel)]="autreEntretien.sendEmail" />Email
+            </td>
+            <td><button class="btn btn-link" (click)="addEntretien()">Add</button></td>
+          </tr>           
+        </table>
+        <table border="1" *ngIf="modeEntretiens==1">
+            <tr><th colspan="8">Programs to Do (color code - <span style="color: green;">Green : Good</span>, <span style="color:rgb(255, 196, 0);">Yellow : Attention</span>, <span style="color: red;">Red : Urgent</span>) </th></tr>
+            <tr>
+              <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Program 1 {{codeTextEnt1(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton2(camion)">Program 2 {{codeTextEnt2(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton3(camion)">Program 3 {{codeTextEnt3(camion)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien04()" class="btn btn-sm {{couleur04}}" [disabled]="disableButton(camion.odo4Fait, camion.filHydrolique)">Program 4 {{codeText(camion.odo4Fait, camion.filHydrolique)}}</button></td>
+            </tr>
+            <tr>
+              <td colspan="2"><button (click)="onEntretien05()" class="btn btn-sm {{couleur05}}" [disabled]="disableButton(camion.odo5Fait, camion.filAntigel)">Program 5 {{codeText(camion.odo5Fait, camion.filAntigel)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien06()" class="btn btn-sm {{couleur06}}" [disabled]="disableButton(camion.odo6Fait, camion.huileAntigel)">Program 6 {{codeText(camion.odo6Fait, camion.huileAntigel)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien07()" class="btn btn-sm {{couleur07}}" [disabled]="disableButton(camion.odo7Fait, camion.huileTransmission)">Program 7 {{codeText(camion.odo7Fait, camion.huileTransmission)}}</button></td>
+              <td colspan="2"><button (click)="onEntretien08()" class="btn btn-sm {{couleur08}}" [disabled]="disableButton(camion.odo8Fait, camion.huileDifferentiel)">Program 8 {{codeText(camion.odo8Fait, camion.huileDifferentiel)}}</button></td>
+            </tr>
+            <tr *ngFor="let entretien of entretiens">
+              <!--th><input class="form-control" type="text" [(ngModel)]="entretien.nom" /></th-->
+              <!--td><button>{{entretien.nom}}</button></td-->
+              <td><button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button></td>
+            </tr>           
+    
+            <tr>
+              <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection 6 Months {{codeTextInspect()}}</button></td>
+            </tr>
+        </table>     
+     
+        <table border="1" *ngIf="modeBonDeTravail==1" style="max-width: 70%;">
+          <!--entretien - begin-->
+          <tr>
+            <th colspan="8">Programs to Do (color code - <span style="color: green;">Green : Good</span>, <span style="color:rgb(255, 196, 0);">Yellow : Attention</span>, <span style="color: red;">Red : Urgent</span>) </th>
+            <td><strong>&nbsp;&nbsp;&nbsp; Notes </strong> <small class="btn btn-link" (click)="saveCamion()">Save</small></td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="onEntretien01()" class="btn btn-sm {{couleur01}}" [disabled]="disableButton1(camion)">Program 1 {{codeTextEnt1(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien02()" class="btn btn-sm {{couleur02}}" [disabled]="disableButton2(camion)">Program 2 {{codeTextEnt2(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien03()" class="btn btn-sm {{couleur03}}" [disabled]="disableButton3(camion)">Program 3 {{codeTextEnt3(camion)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien04()" class="btn btn-sm {{couleur04}}" [disabled]="disableButton(camion.odo4Fait, camion.filHydrolique)">Program 4 {{codeText(camion.odo4Fait, camion.filHydrolique)}}</button></td>
+            <td rowspan="5" style="vertical-align: top;">
+              <textarea cols="60" rows="10" [(ngModel)]="camion.notes"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2"><button (click)="onEntretien05()" class="btn btn-sm {{couleur05}}" [disabled]="disableButton(camion.odo5Fait, camion.filAntigel)">Program 5 {{codeText(camion.odo5Fait, camion.filAntigel)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien06()" class="btn btn-sm {{couleur06}}" [disabled]="disableButton(camion.odo6Fait, camion.huileAntigel)">Program 6 {{codeText(camion.odo6Fait, camion.huileAntigel)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien07()" class="btn btn-sm {{couleur07}}" [disabled]="disableButton(camion.odo7Fait, camion.huileTransmission)">Program 7 {{codeText(camion.odo7Fait, camion.huileTransmission)}}</button></td>
+            <td colspan="2"><button (click)="onEntretien08()" class="btn btn-sm {{couleur08}}" [disabled]="disableButton(camion.odo8Fait, camion.huileDifferentiel)">Program 8 {{codeText(camion.odo8Fait, camion.huileDifferentiel)}}</button></td>
+          </tr>
+          <!-- <tr *ngFor="let entretien of entretiens">
+            <td><button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button></td>
+          </tr>            -->
+  
+          <tr>
+            <td colspan="2">
+              <button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Inspection 6 Months {{codeTextInspect()}}</button>
+              <small *ngIf="camion.inspect6m!=null" style="text-align: left;">
+                <br>{{camion.inspect6m | date: 'dd-MMM-yyyy'}}
+                <br><button [disabled]="camion.inspect6mLog==null || camion.inspect6mLog.length==0" class="btn btn-link" (click)="histInspec6m(camion)">
+                  Historic</button>
+            </small>
+            </td>
+            <!-- <td colspan="2"><button (click)="onInspect6()" class="btn btn-sm {{couleur09}}" [disabled]="disableButtonInspect()">Vignette SAAQ {{codeTextInspect()}}</button></td> -->
+            <td colspan="2">
+              <button (click)="onVignette()" class="btn btn-sm {{couleur10}}" [disabled]="disableButtonVignette()">License 1 Year {{codeTextVignette()}}</button>
+              <small *ngIf="camion.vignetteSaaq!=null" style="text-align: left;">
+                <br>{{camion.vignetteSaaq | date: 'dd-MMM-yyyy'}}
+                <br><button [disabled]="camion.vignetteLog==null || camion.vignetteLog.length==0" class="btn btn-link" (click)="histVignette(camion)">
+                  Historic</button>
+              </small>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="8"><p>
+              <span *ngFor="let entretien of entretiens">
+                <button (click)="onAutreEntretien(entretien)" class="btn btn-sm {{couleurAutreEntretien(entretien)}}" [disabled]="disableButtonAutreEntretien(entretien)">{{entretien.nom}}</button>
+              &nbsp;&nbsp;</span>
+            </p></td>
+          </tr>
+          <!--entretien - end-->
+        </table>
+        <!--div id="toprint"-->
+        <!-- <br> -->
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <tr>
+            <th *ngIf="bonDeTravail.id!=null && bonDeTravail.id>0">#Num {{bonDeTravail.id}} &nbsp;</th>            
+            <th colspan="2"><strong> Date (*) </strong><input type="date" [(ngModel)]="bonDeTravail.date" required pattern="\d{4}-\d{2}-\d{2}" max="{{today | date: 'yyyy-MM-dd'}}"/></th> <!--name="dateReparation" max="{{today | date: 'yyyy-MM-dd'}}"-->
+            <th colspan="2">Technician <input type="text" [(ngModel)]="bonDeTravail.technicien"/></th>
+          </tr>
+        </table>
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <tr><br></tr>
+          <tr>    
+            <th>Mecanical : <input type="checkbox" [(ngModel)]="bonDeTravail.mecanique"></th>
+            <th>Body : <input type="checkbox" [(ngModel)]="bonDeTravail.carrosserie"></th>
+            <th>Piece : <input type="checkbox" [(ngModel)]="bonDeTravail.piece"></th>
+            <th>&nbsp;
+              <!-- Sandblasting : <input type="checkbox" [(ngModel)]="bonDeTravail.sablageAuJet"> -->
+            </th>
+            <th>&nbsp;
+              <!-- Storage : <input type="checkbox" [(ngModel)]="bonDeTravail.entreposage"> -->
+            </th>
+            <th>&nbsp;
+            </th>
+            <th>&nbsp;
+            </th>
+          </tr>                              
+          <tr>
+              <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th>N.I.V</th><th>Length deck-above</th><th>Length deck-below</th><th>Height deck</th>
+          </tr>
+          <tr>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.unite" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.marque" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.modele" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="camion.plaque" disabled/></td>
+              <td><input style="width: 25ch;" class="form-control" type="text" [(ngModel)]="camion.niv" disabled/></td>
+              <td>{{camion.longueurTop}}&nbsp;ft</td>
+              <td>{{camion.longueur}}&nbsp;ft</td>
+              <td>{{camion.hauteurDeck}}&nbsp;inch</td>
+          </tr>
+          <tr>
+              <th>Year</th><th>Odometer</th><th>Engine</th><th>Transmission</th><th>Color</th><th>Height Platform</th><th>Load Capacity</th>
+          </tr>
+          <tr>                
+              <td><input class="form-control" type="text" [(ngModel)]="camion.annee" disabled/></td>              
+              <!-- <td><input class="form-control" type="number" [(ngModel)]="camion.odometre" disabled/></td>               -->
+              <td><input class="form-control" type="number" [(ngModel)]="bonDeTravail.odometre"/></td> <!--disabled-->
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.moteur" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.transmition" disabled/></td>
+              <td><input class="form-control" type="text" [(ngModel)]="fiche.couleur" disabled/></td>
+              <td>{{camion.hauteur}}&nbsp;inch</td>
+              <td>{{camion.poids}}&nbsp;lbs</td>
+          </tr>
+        </table>
+        <table border="1" *ngIf="modeBonDeTravail==1">
+          <br>
+          <tr>
+            <th>TaskToDo</th><th>Piece</th><th>Supplier</th><th>Warranty</th><th>Quantity</th><th>$/unit</th><th>Hours</th><th>$/hour</th><th>Price &nbsp;&nbsp;&nbsp;&nbsp;</th>                        
+          </tr>
+          <tr *ngFor="let rep of reparations">
+            <!--let reparation of reparations - add line reparation-->
+            <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="rep.reparationEffectuer"></td-->
+            <!--td>
+              <textarea class="form-control" type="text" rows="1" cols="30" [(ngModel)]="rep.reparationEffectuer" [disabled]="rep.saved"></textarea>
+            </td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.piece" [disabled]="rep.saved"/></td>
+            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur" [disabled]="rep.saved"/></td>
+            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.quantite" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prixUnite" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.heures" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.taux" [disabled]="rep.saved"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="" (change)="prixChange()" [disabled]="rep.saved"/></td>
+            <td><button class="btn btn-link" (click)="deleteReparation(rep)" [disabled]="rep.saved">Delete</button></td-->
+            <td>
+                <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="rep.reparationEffectuer"></textarea>
+            </td> <!-- disabled-->
+            <!--td>{{rep.piece}}</td-->
+            <td><input type="text" class="form-control" [(ngModel)]="rep.piece"/></td>
+            <!--td>{{rep.fournisseur}}</td-->
+            <td><input type="text" class="form-control" [(ngModel)]="rep.fournisseur"/></td>
+            <!--td>{{rep.garantie}}</td>
+            <td>{{rep.quantite | number : '1.2'}}</td>
+            <td>{{rep.prixUnite | number : '1.2'}}</td>
+            <td>{{rep.heures | number : '1.2'}}</td>
+            <td>{{rep.taux | number : '1.2'}}</td>
+            <td>{{rep.prix | number : '1.2'}}</td-->
+            <td><input type="date" class="form-control" [(ngModel)]="rep.garantie" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.quantite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prixUnite" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.heures" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.taux" (change)="repsPrixChange()"/></td>
+            <td><input type="number" class="form-control" [(ngModel)]="rep.prix" (change)="repsPrixChange()"/></td>            
+            <td *ngIf="reparations.length>1"><button class="btn btn-link" (click)="deleteReparation(rep)">Delete</button></td> <!-- [disabled]="rep.saved" -->
+          </tr>  
+          <tr>
+            <th colspan="2">&nbsp;</th>
+          </tr>
+          <tr>
+            <!--td colspan="2"><input type="text" class="form-control" [(ngModel)]="reparation.reparationEffectuer"></td-->
+            <td>
+              <textarea class="form-control" type="text" rows="2" cols="30" [(ngModel)]="reparation.reparationEffectuer"></textarea>
+            </td>
+            <td><input type="text" class="form-control" [(ngModel)]="reparation.piece"></td>
+            <td><input type="text" class="form-control" [(ngModel)]="reparation.fournisseur"></td>
+            <td><input type="date" class="form-control" [(ngModel)]="reparation.garantie" min="{{today | date: 'yyyy-MM-dd'}}"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.quantite" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.prixUnite" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.heures" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.taux" (change)="prixChange()"></td>
+            <td><input type="number" class="form-control" [(ngModel)]="reparation.prix" style="width: 8pc"></td>
+            <td><button class="btn btn-link" (click)="addReparation()">Add</button></td>
+          </tr>           
+          <!--tr>
+            <th colspan="=6">Remarques / Travaux A Prevoir</th>
+          </tr-->
+
+        </table>  
+        <table *ngIf="modeBonDeTravail==1">
+          <tr>
+            <th colspan="5">Remarks / Works to be scheduled</th>
+          </tr>
+          <tr>
+            <!--td colspan="4" rowspan="4"><input type="text" class="form-control" [(ngModel)]="bonDeTravail.remarque"></td-->
+            <td><textarea class="form-control" type="text" rows="4" cols="50" [(ngModel)]="bonDeTravail.remarque"></textarea></td>
+            <td colspan="2" rowspan="4">
+              <table>
+                <tr>
+                  <td><br></td><th>SubTotal : </th><td colspan="2">{{bonDeTravail.sousTotal | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TPS : </th><td colspan="2">{{bonDeTravail.tps | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <td><br></td><th>TVQ : </th><td colspan="2">{{bonDeTravail.tvq | number : '1.2'}}</td>
+                </tr>    
+                <tr>
+                  <td><br></td><th>TOTAL : </th><td colspan="2">{{bonDeTravail.total | number : '1.2'}}</td> 
+                  <td><br>&nbsp;</td>
+                  <td><button class="btn btn-link" (click)="validBonDeTravail()" [disabled]="reparations.length==0">Save</button></td>
+                  <td><button class="btn btn-link" (click)="finiBonDeTravail()" [disabled]="bonDeTravail.id==null">Finish</button></td>
+                  <td><button class="btn btn-link" (click)="newBonDeTravail()" [disabled]="bonDeTravail.id==null">New</button></td>
+                  <!--td><button class="btn btn-primary" (click)="printBonDeTravail('toprint')">Imprimer BonDeTravail</button></td-->
+                </tr>                
+              </table>
+            </td>
+          </tr>
+        </table> 
+        <!--/div-->  <!--test div toprint-->
+        <table *ngIf="modeListReparation==1 && modeBonhist==1">
+          <!-- <td><button id="noprint" class="btn btn-link" (click)="modeBonhist=0" *ngIf="modeBonhist==1">Retour</button></td>
+          <td><button id="noprint" class="btn btn-link" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1">Imprimer</button></td> -->
+          <th>
+            <!-- <div> -->
+              <!-- WorkOrders &nbsp;<select type="text" [(ngModel)]="bonDeTravailHistoire" (ngModelChange)="onHistoireDetaillerOnList(bonDeTravailHistoire)">
+                <option *ngFor="let b of bonDeTravails" [ngValue]="b">
+                  {{'#Num: '+b.id+ ' - ' + 
+                  ((b.fini)?"Finished":'Open')+ ' - ' +
+                  ((b.technicien!=null)?('Technician: ' +b.technicien+ ' - ') :' ') +
+                  ((b.sousTotal!=null && b.sousTotal>0)?('SubTotal: ' +b.sousTotal+' - ') :' ')+
+                  ((b.date!=null)?('Date: ' +b.date) :' ')}}
+                </option>
+              </select> -->
+          <!-- </div> -->
+          <button class="btn btn-primary" (click)="onListReparation()">&lArr;</button>
+          </th>
+        </table>
+        <div id="toprint">
+        <!--Review BonDeTravail - begin-->
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th><h4>#Num : {{bonDeTravailHistoire.id}}&nbsp;</h4></th>
+            <th>Technician : {{bonDeTravailHistoire.technicien}} &nbsp;</th>
+            <th>Date : {{bonDeTravailHistoire.date}}</th>            
+          </tr> 
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th>WorkType: </th>    
+            <td *ngIf="bonDeTravailHistoire.mecanique">Mecanical</td>
+            <td *ngIf="bonDeTravailHistoire.carrosserie">Body</td>
+            <td *ngIf="bonDeTravailHistoire.piece">&nbsp;Piece</td>
+            <td *ngIf="bonDeTravailHistoire.sablageAuJet">&nbsp;</td><!--Sandblasting-->
+            <td *ngIf="bonDeTravailHistoire.entreposage">&nbsp;</td><!--Storage-->
+            <!-- <td *ngIf="modeListReparation==1 && modeBonhist==1 && !bonDeTravailHistoire.fini">
+              <button class="btn btn-link" (click)="onHistoireDetailler(bonDeTravailHistoire)">
+                Reprendre ce #Bon
+              </button>
+            </td> -->
+          </tr>                              
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1" style="font-size: 11pt" style="margin-inline: 5px">          
+          <tr>
+            <th>#Unit</th><th>Mark</th><th>Model</th><th>Plate</th><th colspan="2">N.I.V</th>
+          </tr>
+          <tr>
+            <td>{{camion.unite}}</td>
+            <td>{{camion.marque}}</td>
+            <td>{{camion.modele}}</td>
+            <td>{{camion.plaque}}</td>
+            <td colspan="2">{{camion.niv}}</td>
+          </tr>
+          <tr>
+            <th>Year</th><th>Odometer</th><th>Engine</th><th>Transmission</th><th>Color</th>
+          </tr>
+          <tr>                
+            <td>{{camion.annee}}</td>              
+            <!-- <td>{{camion.odometre}}</td>        -->
+            <td>{{bonDeTravailHistoire.odometre}}</td>         
+            <td>{{fiche.moteur}}</td>
+            <td>{{fiche.transmition}}</td>
+            <td>{{fiche.couleur}}</td>
+          </tr>
+        </table>
+        <table border='1' *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 9pt" style="margin-inline: 5px">
+          <tr>
+            <!--th>Reparation A Effectuer</th><th colspan="2">Piece</th><th>Prix</th-->    
+            <th>TaskToDo</th><th>Piece</th><th>Supplier</th><th>Warranty</th><th>Quantity</th><th>$/unit</th><th>Hours</th><th>$/hour</th><th style="text-align: center">Price</th>                    
+          </tr>
+          <ng-container *ngFor="let rep of reparationsHistoire">
+            <tr>
+              <td style="width: 35%;" *ngIf="rep.description==null || rep.description.length==0">
+                {{rep.reparationEffectuer}}
+              </td>
+              <td rowspan="2" style="width: 35%;" *ngIf="rep.description!=null && rep.description.length>0">
+                {{rep.reparationEffectuer}}
+              </td>
+              <td>{{rep.piece}}</td>
+              <td>{{rep.fournisseur}}</td>
+              <td>{{rep.garantie}}</td>
+              <td style="text-align: center">{{rep.quantite}}</td>
+              <td style="text-align: right">{{rep.prixUnite | number : '1.2'}}</td>
+              <td style="text-align: center">{{rep.heures}}</td>
+              <td style="text-align: right">{{rep.taux | number : '1.2'}}</td>
+              <!-- <td style="text-align: right">{{rep.prix | number : '1.2'}}</td> -->
+              <td *ngIf="rep.description==null || rep.description.length==0" style="text-align: right">
+                {{rep.prix | number : '1.2'}}
+              </td>
+              <td rowspan="2" *ngIf="rep.description!=null && rep.description.length>0" style="text-align: right">
+                {{rep.prix | number : '1.2'}}
+              </td>
+            </tr>
+            <tr *ngIf="rep.description!=null && rep.description.length>0">
+              <td colspan="7"><pre style="white-space: pre-wrap; word-break: keep-all;">{{rep.description}}</pre></td>
+            </tr>             
+          </ng-container>
+            <!--tr>
+              <th colspan="=6">Remarques / Travaux A Prevoir</th>
+            </tr-->
+          <!--/table>  
+          <table *ngIf="modeListReparation==1 && modeBonhist==1"-->
+        </table>
+        <table border='1' class="table table-striped table-sm table-responsive" *ngIf="modeListReparation==1 && modeBonhist==1"  style="font-size: 11pt" style="margin-inline: 5px">
+          <tr>
+            <th colspan="5">Remarks / Works to be scheduled</th>
+            <th>&nbsp;</th>
+          </tr>
+          <tr>
+              <!--td><textarea class="form-control" type="text" rows="4" cols="50" disabled>{{bonDeTravailHistoire.remarque}}</textarea></td-->
+            <td colspan="5" rowspan="4">
+                {{bonDeTravailHistoire.remarque}}
+            </td>
+            <td style="text-align: right" colspan="4" rowspan="4">
+              <table>
+                <tr>
+                  <th style="text-align: right">SubTotal : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.sousTotal | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <th style="text-align: right">TPS : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tps | number : '1.2'}}</td>
+                </tr>
+                <tr>
+                  <th style="text-align: right">TVQ : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.tvq | number : '1.2'}}</td>
+                </tr>    
+                <tr>
+                  <th style="text-align: right">TOTAL : </th><td colspan="2" style="text-align: right">{{bonDeTravailHistoire.total | number : '1.2'}}</td> 
+                </tr>                
+              </table>
+            </td>
+          </tr>
+          <tr><br></tr>
+        </table>   
+        </div> <!--End of test print-->
+        <button class="btn btn-primary" (click)="printBonDeTravail('toprint')" *ngIf="modeListReparation==1 && modeBonhist==1 && bonDeTravailHistoire.fini">
+          Print
+        </button>
+        <button class="btn btn-primary" (click)="onHistoireDetailler(bonDeTravailHistoire)" *ngIf="modeListReparation==1 && modeBonhist==1 && !bonDeTravailHistoire.fini">
+          Resume
+        </button>
+        <!--Review BonDeTravail - end-->
+        <table  border="1" *ngIf="modeListReparation==1 && modeBonhist==0">
+          <tr>
+            <th>Number</th>
+            <th>Technician</th>
+            <th>Date</th>
+            <th>Price(subtax)</th>
+            <th>Remarks / Works to be scheduled</th>
+            <th>Status</th>
+            <th>Detail</th>
+          </tr>
+          <ng-container *ngFor="let bon of bonDeTravails">
+            <tr>
+              <td rowspan="2">{{bon.id}}</td>
+              <td>{{bon.technicien}}</td>
+              <td>{{bon.date | date:'dd-MMM-yyyy'}}</td>
+              <td style="text-align: right">{{bon.sousTotal | number : '1.2'}}</td>
+              <td>
+                <pre style="white-space: pre-wrap; word-break: keep-all;">{{bon.remarque}}</pre>
+                <!-- <textarea class="form-control" readonly type="text" rows="1" cols="40"
+                style="border: none; border-width: 0; box-shadow:none;  background-color: transparent;">{{bon.remarque}}</textarea> -->
+              </td>
+              <td rowspan="2"><span *ngIf="bon.fini">Finished</span><span *ngIf="!bon.fini">Unfinished</span></td>
+              <td rowspan="2"><button class="btn btn-link" (click)="onHistoireDetaillerOnList(bon)">Detail</button></td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                  <!-- {{onHistoireDetaillerFindReparations(bon)}} -->
+                  <!-- {{testReturn(bon)}} -->
+                  <!-- {{bon.workDones}} -->
+                  <pre style="white-space: pre-wrap; word-break: keep-all;">{{bon.workDones}}</pre>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+        <div class="row" *ngIf="modeListGarantie==1">
+          <div style="float: left; width: 48%">
+            <table border="1" style="border: slategray; width: 100%">
+              <tr>
+                <td><input type="text"  class="form-control" [(ngModel)]="pieceChercher" /></td>
+                <td colspan="2"><button class="btn btn-link" (click)="onListGarantie()">Search Piece</button></td>
+              </tr>
+              <tr>
+                <th>Piece</th><th>Supplier</th><th>Price</th><th>Expiration</th>
+              </tr>
+              <tr *ngFor="let rep of reparations">
+                <td>{{rep.piece}}</td>
+                <td>{{rep.fournisseur}}</td>
+                <td style="text-align: right">{{rep.prix | number : '1.2'}}</td>
+                <td>{{rep.garantie}}</td>
+                <td><button class="btn btn-link" (click)="onGarantieDetailler(rep.idBon)">Detail</button></td>
+              </tr>
+            </table>
+          </div>
+          <!-- <table border="1" style="border: slategray; float: left; width: 4%">
+            <tr></tr>
+          </table> -->
+          <div style="float: right; width: 48%; margin-left: 2pt">
+            <table border="1" style="border: slategray; width: 100%; margin-left: 2pt;">
+                <tr>
+                  <td style="font-weight: bold" colspan="4">Another Warranty</td>
+                </tr>
+              <tr>
+                <th>Warranty</th>
+                <th>Price</th>
+                <th>Expiration</th>
+                <th>Note</th>
+              </tr>
+              <tr>
+                <td style="width: 8pc"><input type="text" class="form-control" [(ngModel)]="addGarantie.nom"/></td>
+                <td style="width: 5pc"><input type="number" class="form-control" [(ngModel)]="addGarantie.prix"/></td>
+                <td style="width: 10pc"><input type="date" class="form-control" [(ngModel)]="addGarantie.expiration" min="{{today | date: 'yyyy-MM-dd'}}"/></td>
+                <td style="width: 12pc"><textarea class="form-control" type="text" cols="30" [(ngModel)]="addGarantie.note"></textarea></td>
+                <td><button class="btn btn-link"  (click)="onAddGarantie()">Add</button></td>
+              </tr>
+              <tr style="font-size: 14pt; font-weight: bold" *ngIf="garanties.length>0">List</tr>
+              <tr  *ngFor="let g of garanties">
+                  <td>{{g.nom}}</td>
+                  <td>{{g.prix}}</td>
+                  <td>{{g.expiration | date: 'dd-MMM-yyyy'}}</td>
+                  <td>{{g.note}}</td>
+                  <td><button class="btn btn-link" (click)="onDeleteGarantie(g)">Delete</button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+    </div>  
+
+    <div  *ngIf="modeInfos==1 || modeFiche==1 || modeDefinirEnt==1">
+        <table class="table table-striped table-responsive"> 
+            <td><button class="btn btn-primary" (click)="saveCamion()">Save/Modify</button></td>
+            <!-- <td><button class="btn btn-primary" (click)="gotoDetailTransporter(camion.idTransporter)">Return the Fleet</button></td>  -->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>                  
+        </table>
+    </div>
+  </div>
+</div>
+  

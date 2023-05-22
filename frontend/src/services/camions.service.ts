@@ -21,45 +21,33 @@ export class CamionsService{
     
     camionsDeTransporter(idTransporter:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/camionsDeTransporter?idTransporter="+idTransporter
+        return this.http.get(this.adServer+":8443/camionsDeTransporter?idTransporter="+idTransporter
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     camionsDeTransporterPaged(idTransporter:number, page:number, size:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/camionsDeTransporterPaged?idTransporter="+idTransporter+"&size="+size+
-        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(res => {return res}));
+        return this.http.get(this.adServer+":8443/camionsDeTransporterPaged?idTransporter="+idTransporter+"&size="+size+
+        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})}).pipe(map(res=>{return res}));
     }
-/*//
-getEvaluationsTransportTransporterPaged(idTransporter:number, page:number, size:number)
-    {    
-        this.loadTonken();
-        return this.http.get(this.adServer+":8080/evaluationsTransportTransporterPaged?idTransporter="+idTransporter+"&size="+size+
-        "&page="+page, {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        .pipe(map(resp =>{
-            return resp;
-        }))
-    }
-//*/
     saveCamions(camion:Camion){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/camions",camion
+        return this.http.post(this.adServer+":8443/camions",camion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailCamion(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/camions/"+id
+        return this.http.get(this.adServer+":8443/camions/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateCamion(id:number, c:Camion){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/camions/"+id, c
+       return this.http.put(this.adServer+":8443/camions/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
@@ -78,8 +66,8 @@ getEvaluationsTransportTransporterPaged(idTransporter:number, page:number, size:
     {
         this.loadTonken();
         // ?mc="+motCle+"&size="+size+"&page="+page
-        // return this.http.patch(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, {headers:new HttpHeaders({'Authorization':this.jwToken})})
-        return this.http.post(this.adServer+":8080/camionUpdateFromTerminal",camionForRoute, 
+        // return this.http.patch(this.adServer+":8443/camionUpdateFromTerminal",camionForRoute, {headers:new HttpHeaders({'Authorization':this.jwToken})})
+        return this.http.post(this.adServer+":8443/camionUpdateFromTerminal",camionForRoute, 
         {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(
             map(res => {return res})
@@ -88,7 +76,7 @@ getEvaluationsTransportTransporterPaged(idTransporter:number, page:number, size:
 
     deleteCamion(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/camions/"+id
+        return this.http.delete(this.adServer+":8443/camions/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

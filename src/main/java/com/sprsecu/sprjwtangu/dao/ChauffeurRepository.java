@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 public interface ChauffeurRepository extends JpaRepository<Chauffeur, Long>{
     @Query("select c from Chauffeur c where c.nom like :x")

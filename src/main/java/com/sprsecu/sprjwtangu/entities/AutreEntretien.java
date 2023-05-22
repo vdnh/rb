@@ -28,5 +28,10 @@ public class AutreEntretien implements Serializable{
     private Long odoFait;
     @Temporal(TemporalType.DATE)
     private Date dateFait;
+    private Long dateFaitMiliseconds;
     private String message="";
+    
+    private Boolean sendEmail=false; // need send email or not, by default no need -  false
+    private Integer daysTodo; // number of days to do this task
+    private Integer daysToWarn; // number of days to begin warn this task
 }

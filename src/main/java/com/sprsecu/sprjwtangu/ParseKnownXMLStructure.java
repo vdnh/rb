@@ -3,17 +3,24 @@ package com.sprsecu.sprjwtangu;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 //import java.io.File;
 import com.sprsecu.sprjwtangu.entities.UniteInfos;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import static org.springframework.http.HttpHeaders.USER_AGENT;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,10 +30,12 @@ import org.xml.sax.InputSource;
 
 public class ParseKnownXMLStructure {
     
-    /*public static void main(String[] args) throws Exception {
-        List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("http://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
+    //*
+    public static void main(String[] args) throws Exception {
+//        List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("http://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421");
+        List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
         System.out.println(listUnite.toString());
-        //Get Docuemnt Builder
+        /*/Get Docuemnt Builder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         //* 
@@ -62,15 +71,72 @@ public class ParseKnownXMLStructure {
                 System.out.println("odometer : "   + eElement.getElementsByTagName("odometer").item(0).getTextContent());
                 System.out.println("Latitude : "  + eElement.getElementsByTagName("latitude").item(0).getTextContent());
                 System.out.println("Longtitude : "    + eElement.getElementsByTagName("longitude").item(0).getTextContent());
+                System.out.println("Address : "    + eElement.getElementsByTagName("address").item(0).getTextContent());
+                System.out.println("Name : "    + eElement.getElementsByTagName("name").item(0).getTextContent());
                 ui.setUnite(eElement.getElementsByTagName("id").item(0).getTextContent());
                 ui.setOdometer(eElement.getElementsByTagName("odometer").item(0).getTextContent());
                 ui.setLatitude(eElement.getElementsByTagName("latitude").item(0).getTextContent());
                 ui.setLongitude(eElement.getElementsByTagName("longitude").item(0).getTextContent());
+                ui.setLocation(eElement.getElementsByTagName("address").item(0).getTextContent());
+                ui.setForeignName(eElement.getElementsByTagName("name").item(0).getTextContent());
                 System.out.println("ui data : "+ ui.toString());
             }
-        }	///	 		
+        }	//*/	 		
     }   
     //*/
+//    private static final String POST_PARAMS = "userName=ct596sosprestige";
+//    private static final String POST_PARAMS = "grant_type=password"+"username=ct596sosprestige"+"password=nMnljTukKFaF"+"scope=IsaacApi";
+    private static final String POST_PARAMS = "grant_type=password&username=ct596sosprestige&password=nMnljTukKFaF&scope=IsaacApi";
+    private static void sendPOST(String urlString) throws IOException {
+        /*
+        URL myURL = new URL(serviceURL);
+        HttpURLConnection myURLConnection = (HttpURLConnection)myURL.openConnection();
+
+        String userCredentials = "username:password";
+        String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()));
+
+        myURLConnection.setRequestProperty ("Authorization", basicAuth);
+        myURLConnection.setRequestMethod("POST");
+        myURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        myURLConnection.setRequestProperty("Content-Length", "" + postData.getBytes().length);
+        myURLConnection.setRequestProperty("Content-Language", "en-US");
+        myURLConnection.setUseCaches(false);
+        myURLConnection.setDoInput(true);
+        myURLConnection.setDoOutput(true);
+        */
+        urlString="https://auth.isaachosting.ca/IdentityServer/identity/connect/token";
+        URL obj = new URL(urlString);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+
+        // For POST only - START
+        con.setDoOutput(true);
+        OutputStream os = con.getOutputStream();
+        os.write(POST_PARAMS.getBytes());
+        os.flush();
+        os.close();
+        // For POST only - END
+
+        int responseCode = con.getResponseCode();
+        System.out.println("POST Response Code :: " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                }
+                in.close();
+
+                // print result
+                System.out.println(response.toString());
+        } else {
+                System.out.println("POST request did not work.");
+        }
+    }
     public static List<UniteInfos> listUniteInfos(String urlString) throws Exception{
                 //Get Docuemnt Builder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -106,10 +172,15 @@ public class ParseKnownXMLStructure {
                 //Print each employee's detail
                 UniteInfos ui = new UniteInfos();
                 Element eElement = (Element) node;
+                
 //                System.out.println("Unite id : "    + eElement.getElementsByTagName("id").item(0).getTextContent());		    
 //                System.out.println("odometer : "   + eElement.getElementsByTagName("odometer").item(0).getTextContent());
 //                System.out.println("Latitude : "  + eElement.getElementsByTagName("latitude").item(0).getTextContent());
 //                System.out.println("Longtitude : "    + eElement.getElementsByTagName("longitude").item(0).getTextContent());
+//                System.out.println("Address : "    + eElement.getElementsByTagName("address").item(0).getTextContent());
+//                System.out.println("Name : "    + eElement.getElementsByTagName("name").item(0).getTextContent());
+//                System.out.println("Speed : "    + eElement.getElementsByTagName("speed").item(0).getTextContent());
+                
                 ui.setUnite(eElement.getElementsByTagName("id").item(0).getTextContent());
                 ui.setForeignName(eElement.getElementsByTagName("name").item(0).getTextContent());  // get name at GPS Supplier
                 ui.setOdometer(eElement.getElementsByTagName("odometer").item(0).getTextContent());

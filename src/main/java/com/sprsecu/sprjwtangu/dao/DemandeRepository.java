@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 public interface DemandeRepository extends JpaRepository<Demande, Long>{
     @Query("select d from Demande d where d.idDemander = :x and d.roleDemander like 'TRANSPORTER'")

@@ -49,7 +49,11 @@ public class SprjwtanguApplication implements CommandLineRunner{
     static Properties mailServerProperties;
     static Session getMailSession;
     static MimeMessage generateMailMessage;
-        
+    
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     AccountService  accountService;
     
@@ -195,6 +199,30 @@ public class SprjwtanguApplication implements CommandLineRunner{
                 }
             } 
         }); 
+        // begin check and send mail to technicien every 4 hours
+        Thread envoiMsgTechnicalThread = new Thread(() -> {
+            while (true) {
+                try {
+                    this.transporters=transporterRepository.findAll();                    
+                    this.transporters.forEach(transporter->{
+//                        if(EmailValidator.getInstance().isValid(transporter.getEmail()))
+//                            transporterEntretien(transporter);
+                        if(transporter.getEmailTechnic()!=null && EmailValidator.getInstance().isValid(transporter.getEmailTechnic())){
+                            System.out.println("Transporter: " + transporter.getNom());
+                            transporterEntretienSpecial(transporter);
+                        }
+                        else{
+                            System.out.println("Transporter: " + transporter.getNom() + "- no email technic.");
+                        }
+                            
+                    });//*/
+                    Thread.sleep(14400000); //1000*60*60*4 = 14400000 - 4 hours  - test avec 5 minute 300000
+                } catch (Exception e) {
+                    System.err.println("Error occurred:" + e);
+                }
+            } 
+        }); 
+        // end check and send mail to technicien every 4 hours
         
         // Thread update odometre pour SOS Prestige
         Thread updateOdoSOSPrestigeThread = new Thread(() -> {
@@ -249,8 +277,10 @@ public class SprjwtanguApplication implements CommandLineRunner{
 //                        truckTersTemp = truckTers;
 //                    }
                     //System.out.println("Mettre a jour odometre des unites de SOS Prestige");
-                    List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
+//                    List<UniteInfos> listUnite = ParseKnownXMLStructure.listUniteInfos("https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1");
                     //https://client2.avltrack.com/webservice/monitoring.cfm?key=B2B533CA360E2D7208D2509B64265421&location=1
+                    IsaacSosprestige isaacSosprestige = new IsaacSosprestige();
+                    List<UniteInfos> listUnite = isaacSosprestige.execPostGet();
                     if(!listUnite.isEmpty()) {
                         //System.out.println("listUnite : " + listUnite.toString());
                         //System.out.println("Sure! listUnite isn't empty!!");
@@ -261,7 +291,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                             if(!camion.isGps() && camion.getIdTerminal()!=null && camion.getIdTerminal()>0){
                                 truckTers.add(camion);
                             }//*/
-                            listUnite.forEach(unite->{
+                            if(camion.isGps()) listUnite.forEach(unite->{
                                 if(unite.getUnite().equalsIgnoreCase(camion.getUniteMonitor())){
                                     camion.setLocation(unite.getLocation());
                                     camion.setLocalName(unite.getLocalName());
@@ -307,6 +337,12 @@ public class SprjwtanguApplication implements CommandLineRunner{
                                     //System.out.println("save camion unite monitor : "+camion.getUniteMonitor()+" unite : "+camion.getUnite()+" : "+unite.getOdometer());
                                 }
                             });
+                            else{
+                                if(camion.getForeignName()!=null && camion.getForeignName().length()>0){
+                                    camion.setForeignName("");
+                                    camionRepository.save(camion);
+                                }
+                            }
                         });
                     }
                     Thread.sleep(120150);  // 1000*60*5 = 300000 ms - 5 minutes -- 120000 ms - 2 minutes  - here we exces 150ns for sure every time
@@ -316,8 +352,9 @@ public class SprjwtanguApplication implements CommandLineRunner{
             } 
         });
         
+        envoiMsgTechnicalThread.start();
         //envoiMsgThread.start();
-        //updateOdoSOSPrestigeThread.start(); 
+        updateOdoSOSPrestigeThread.start(); 
         
         // Thread check terminals and trucks with terminal in system
         Thread checkTerminalThread = new Thread(() -> {
@@ -441,19 +478,99 @@ public class SprjwtanguApplication implements CommandLineRunner{
 //        }
             //System.out.println("email check : "+emailChecked.toString());
 	generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("vdnh@yahoo.com"));
+//        generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("vdnh@yahoo.com"));
         //generateMailMessage.setSubject("Greetings from vdnh..");
-        generateMailMessage.setSubject(uniteCamion +" - Entretiens à faire,");
+        generateMailMessage.setSubject(uniteCamion +" - Message Maintenance,");
 	//String emailBody = "Test email by vdnh JavaMail API example. " + "<br><br> Regards, <br>vdnh Admin";
-        emailBody = emailBody + "<br> Regards, <br>Application CTS.COM";
+        emailBody = emailBody + "<br> Regards, <br>Application CTS";
 	generateMailMessage.setContent(emailBody, "text/html");
 	//System.out.println(emailBody); // imprimer a la place de  email
         //*
         Transport transport = getMailSession.getTransport("smtp");
-	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+//	transport.connect("smtp.gmail.com", "cts.solution.transport@gmail.com", "Dlink$$$9");
+        transport.connect("smtp.gmail.com", "automate.cts@gmail.com", "jfglprtpuhlqffwz");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 	transport.close();//*/
     }
+    
+    //* functions to check and send mail for entretien special
+    public String transporterEntretienSpecial(Transporter transporter){
+        List<Camion> camions = new ArrayList<>();
+        camions = camionRepository.camionsDeTransporter(transporter.getId());
+        System.out.println("Transporter: " + transporter.getNom() + " got trucks");
+        camions.forEach(camion->{
+            System.out.println("Truck: " + camion.getUnite());
+            String textFix = "#"+camion.getUnite()+"<br>";
+            StringBuilder sb = new StringBuilder("");
+            if(camion.getOdometre()!=null){ 
+		List<AutreEntretien> autreEnts = autreEntretienRepository.findByIdCamion(camion.getId());
+                System.out.println("AutreEntretien: "  + " got AutreEntretiens");
+                if (autreEnts!=null){
+                    autreEnts.forEach(autreEnt->{
+                        System.out.println("autreEnt: " + autreEnt.getNom() );
+                        System.out.println("Odo of this truck: " + camion.getOdometre());
+                        sb.append(codeTextEntretienSpecial(autreEnt, camion.getOdometre()));
+                    });
+                }
+                if(!sb.toString().isEmpty()){
+                    //System.out.println("sb is : " + sb.toString());
+                    try {
+                        //System.out.println(""+textFix+sb.toString());
+                        generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic(), "#"+camion.getUnite());
+                    } catch (Exception ex) {
+                        //return;
+                    }
+                }
+            }
+        });
+        return "";
+        //return sb.toString();
+    }
+
+    public String codeTextEntretienSpecial(AutreEntretien autreEnt, Long odometre){
+        System.out.println("enter in codeTextEntretienSpecial: " + autreEnt.getNom() );
+        String res = "";
+        if(autreEnt==null) 
+            return "";
+        if(autreEnt.getSendEmail()!=null && autreEnt.getSendEmail() && 
+                (autreEnt.getKmTrage()!=null || (autreEnt.getDaysTodo()!=null))){
+            System.out.println("sendmail + kmtrage or getdaystodo");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            Date date =Date.from(Instant.now());  
+            
+           if(autreEnt.getDaysTodo()==null)
+                res="";
+            else{
+                System.out.println("getdaystodo not null");
+                if(((date.getTime()-autreEnt.getDateFait().getTime())/24/60/60/1000)<autreEnt.getDaysTodo() && 
+                     ((date.getTime()-autreEnt.getDateFait().getTime())/24/60/60/1000)>=autreEnt.getDaysToWarn())
+                    return  "Attention : " +"<br>"+ "* Entretien "+autreEnt.getNom()+" - "+autreEnt.getMessage()+"<br>";
+                if(((date.getTime()-autreEnt.getDateFait().getTime())/24/60/60/1000)>=autreEnt.getDaysTodo())
+                    return  "Urgent : " +"<br>"+ "* Entretien "+autreEnt.getNom()+" - "+autreEnt.getMessage()+"<br>";
+            }
+            if(res.length()==0 && autreEnt.getKmTrage()!=null){
+                System.out.println("getKmTrage not null");  
+                if(autreEnt.getOdoFait()==null) res="";
+                else{
+                System.out.println("getOdoFait not null");    
+                    if((odometre-autreEnt.getOdoFait())>(autreEnt.getKmTrage()- autreEnt.getKmAvertir())){
+                        if((odometre-autreEnt.getOdoFait())<autreEnt.getKmTrage()){
+                            return  "Attention : " +"<br>"+ "* Entretien "+autreEnt.getNom()+" - "+autreEnt.getMessage()+"<br>";
+                        }
+                        else{
+                            return  "Urgent : " +"<br>"+ "* Entretien "+autreEnt.getNom()+" - "+autreEnt.getMessage()+"<br>";
+                        }
+                    }
+                }
+            }
+            
+        }
+        return res;
+      }
+
+
+    //*/
+        
     public String transporterEntretien(Transporter transporter){
         //System.out.println("Transporter : " + transporter.getNom());
         List<Camion> camions = new ArrayList<>();
@@ -464,7 +581,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
             //this.camions.forEach(camion->{System.out.println("Je suis un camion."+camion.getInspect6m());});
         camions.forEach(camion->{
             //System.out.println("Camion : "+ camion.getUnite());  // to see all camion
-            String textFix = "Camion Unite "+camion.getUnite()+"<br>";
+            String textFix = "#"+camion.getUnite()+"<br>";
             StringBuilder sb = new StringBuilder("");
             if(camion.getOdometre()!=null){ 
                 //System.out.println("camion.getOdometre()!=null - Camion : "+ camion.getUnite());  // to see all camion
@@ -533,7 +650,7 @@ public class SprjwtanguApplication implements CommandLineRunner{
                     //System.out.println("sb is : " + sb.toString());
                     try {
                         //System.out.println(""+textFix+sb.toString());
-                        generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic(), "Camion Unite "+camion.getUnite());
+                        generateAndSendEmail(textFix+sb.toString(), transporter.getEmailTechnic(), "#"+camion.getUnite());
                     } catch (Exception ex) {
                         //return;
                     }

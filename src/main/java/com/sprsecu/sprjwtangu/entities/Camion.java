@@ -56,6 +56,17 @@ public class Camion implements Serializable{
     private String message06="";
     private String message07="";
     private String message08="";
+    @Temporal(TemporalType.DATE)
+    private Date dateAchat; //(add in Camion, delete in fiche)
+    private Double price; // price buy truck
+    private Double payDown; // sum paydown
+    private Double payPerMonth; // pay per month
+    private Long termPayment; // number of month to pay
+    private Double pricePlate;
+    private Double buyBack;
+    private Long numberAxles;
+    @Temporal(TemporalType.DATE)
+    private Date dateSolde;
     
     private Double longtitude;
     private Double latitude;
@@ -108,6 +119,7 @@ public class Camion implements Serializable{
     private boolean rampe; // Rampe
     private boolean loadLeveler; // Load Leveler
     private boolean backTilt; // Inclinaison du derriere
+    private Float hauteurDeck; // par defaul est Hauteur de la deck - en pouce
     
     // Camions' Photo 
     private String imgUrl="";
@@ -124,6 +136,17 @@ public class Camion implements Serializable{
     private boolean outService=false; // out of service for some reason, , false by default
     private boolean trailer=false; // Truck or trailer
     private boolean gps=false; // gps or no, by default is no
+    
+    private Float l100km; // liters per 100km
+    private Float mpg; // miles per km
+    
+    private String inspect6mLog; // save all date inspect6m
+    private String vignetteLog; // save all date vignette
+    
+    private String equipment; // List equipment
+    private String inventory; // stuff in the truck
+    
+    private String notes; 
     
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

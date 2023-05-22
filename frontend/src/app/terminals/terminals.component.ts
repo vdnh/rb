@@ -77,7 +77,7 @@ export class TerminalsComponent implements OnInit {
       
       this.terminalsService.terminalsDeTransporter(this.transporter.id).subscribe((data:Array<Terminal>)=>{
         this.terminals=data //.filter(x=>(x.status))
-        if(data!=null) this.showMapInit();
+        if(data!=null) this.showMapInit()
         this.authenticationService.getAllAppUsers().subscribe((data:Array<AppUser>)=>{
           //this.listAppUsers=data;
           data.forEach(aU=>{
@@ -98,15 +98,9 @@ export class TerminalsComponent implements OnInit {
     },err=>{
       console.log(err)
     }) 
-  }
 
-  addTerminal(){
-    if(this.terminals.length>=this.transporter.terminals){
-      alert('Your must extend your plan, please !')
-    }
-    else{
-      this.router.navigateByUrl('/new-terminal', {skipLocationChange: true})
-    }
+    
+
   }
 
   calculateDistance(p1:google.maps.LatLng, p2:google.maps.LatLng ){ //lat1, lng1, lat2, lng2) {
@@ -147,42 +141,41 @@ export class TerminalsComponent implements OnInit {
   }
 
   showMapInit(){    
-          let mapProp = {
-            center: new google.maps.LatLng(45.568806, -73.918333),
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
-          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-          let index = 0;
-          this.terminals.forEach(ter=>{
-              let location1 = new google.maps.LatLng(ter.latitude, ter.longitude);          
-              let marker = new google.maps.Marker({
-                position: location1,
-                map: this.map,
-                icon: {
-                  //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
-                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                  scale:3,
-                  rotation:ter.direction,
-                  fillOpacity: 1,
-                  fillColor: "#008088",
-                  strokeWeight: 3,
-                  strokeColor: "red",
-                },
-                // title: ter.name
-                title: ter.name + this.calculateStopTime(ter.timeStop)
-              });  
-              if(index==0) this.map.setCenter(new google.maps.LatLng(ter.latitude, ter.longitude)); // setcenter map follow first terminal
-              ++ index 
-          })
-          this.map.setZoom(8)
+    let mapProp = {
+      center: new google.maps.LatLng(45.568806, -73.918333),
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    let index = 0;
+    this.terminals.forEach(ter=>{
+        let location1 = new google.maps.LatLng(ter.latitude, ter.longitude);          
+        let marker = new google.maps.Marker({
+          position: location1,
+          map: this.map,
+          icon: {
+            //url:"http://maps.google.com/mapfiles/kml/shapes/truck.png",
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale:3,
+            rotation:ter.direction,
+            fillOpacity: 1,
+            fillColor: "#008088",
+            strokeWeight: 3,
+            strokeColor: "#008088", //"#FFFFFF",//"red",
+          },
+          // title: ter.name
+          title: ter.name + this.calculateStopTime(ter.timeStop)
+        });  
+        if(index==0) this.map.setCenter(new google.maps.LatLng(ter.latitude, ter.longitude)); // setcenter map follow first terminal
+        ++ index 
+    })
+    this.map.setZoom(8)
   }
 
   marker : google.maps.Marker
   showMap() {
     this.terminalsService.getDetailTerminal(this.terminal.id).subscribe((data:Terminal)=>{
       this.terminal=data;
-      /*
       if(this.terminal.idTruck!=null && this.terminal.idTruck>0)
         this.camionsService.getDetailCamion(this.terminal.idTruck).subscribe((data:Camion)=>{
           this.truckHooked=data
@@ -216,11 +209,8 @@ export class TerminalsComponent implements OnInit {
         },
         title: this.terminal.name + this.calculateStopTime(this.terminal.timeStop)
       });
-      //*/
-
       // centrer la carte
       this.map.setCenter(new google.maps.LatLng(this.terminal.latitude, this.terminal.longitude));
-      this.map.setZoom(15)
     },err=>{console.log(err)})
 
     // const intervalCSM = interval(30000); //intervel 30 seconds for update data terminal on the map
@@ -387,7 +377,7 @@ export class TerminalsComponent implements OnInit {
       let duration = new Date().getTime() - timeStop
       //console.log('This terminal is stopping: ' + Math.round(duration/1000/60) + " minutes")
       // return ' stopped: ' + Math.round(duration/1000/60) + " minutes"
-      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60)) + " (or network phone off)"
+      return ' stopped: ' + this.showStopDuration(Math.round(duration/1000/60))
     }
     else 
       return ''

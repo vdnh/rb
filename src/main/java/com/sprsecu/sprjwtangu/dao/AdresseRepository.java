@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * © Nhat Hung VO DINH
  */
 public interface AdresseRepository  extends JpaRepository<Adresse, Long>{
     @Query("select a from Adresse a where a.code_postal like :x")

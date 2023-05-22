@@ -20,35 +20,35 @@ export class BonDeTravailsService{
     
     bonDeTravailDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/bonDeTravailsDeCamion?idCamion="+idCamion
+        return this.http.get(this.adServer+":8443/bonDeTravailsDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveBonDeTravail(bonDeTravail:BonDeTravail){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/bonDeTravails", bonDeTravail
+        return this.http.post(this.adServer+":8443/bonDeTravails", bonDeTravail
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailBonDeTravail(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/bonDeTravails/"+id
+        return this.http.get(this.adServer+":8443/bonDeTravails/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateBonDeTravail(id:number, b:BonDeTravail){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/bonDeTravails/"+id, b
+       return this.http.put(this.adServer+":8443/bonDeTravails/"+id, b
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteBonDeTravail(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/bonDeTravails/"+id
+        return this.http.delete(this.adServer+":8443/bonDeTravails/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

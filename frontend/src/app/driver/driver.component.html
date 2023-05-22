@@ -1,0 +1,877 @@
+<div *ngIf="varsGlobal.language.includes('Francais')">
+    <button class="btn btn-primary" (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
+        <strong>&larr;</strong>
+    </button>
+    
+    <h3><br>
+        <table border="1">
+            <tr>
+                <th><label class="control-label">Prenom </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.prenom"> &nbsp;</th>
+                <th><label class="control-label">Nom </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.nom"> &nbsp;</th>
+                <th><label class="control-label">Tel </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.tel"> &nbsp;</th>
+                <th><label class="control-label">Email </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 30ch;" [(ngModel)]="driver.email"> &nbsp;</th>
+                <th><label class="control-label">DateEntree </label><input [disabled]="driver.archive" class="form-control" type="date" 
+                    (change)="onEntryDateChange($event)" style="width: 20ch;" [ngModel]="driver.entryDate | date: 'yyyy-MM-dd'">
+                </th>
+                <th><label class="control-label">DateDeparte </label><input [disabled]="driver.archive" class="form-control" type="date" 
+                    (change)="onLastDateChange($event)" style="width: 20ch;" [ngModel]="driver.lastDate | date: 'yyyy-MM-dd'">
+                </th>
+                <td><button class="btn btn-link" [disabled]="driver.archive" (click)="onModifyDriver()">Enregistrer</button></td>
+            </tr>
+            <tr *ngIf="!driver.archive"><th colspan="7">
+                <button class="btn btn-link" (click)=" archiveDriver(driver)" [disabled]="driver.lastDate==null"
+                 *ngIf="driver.lastDate!=null">
+                    Archive (Le dossier archive dans 3 ans)
+                </button>
+            </th></tr>
+            <tr *ngIf="driver.archive"><th colspan="7">
+                <button class="btn btn-link" (click)=" resumeDriver(driver)">
+                    Reprendre (Le chauffeur reprend son poste)
+                </button>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                <button class="btn btn-link" (click)=" onDeleteChauffeur()">
+                    Delete
+                </button>
+            </th></tr>
+        </table>
+    </h3>
+    <h3>
+        <span class="btn btn-link" (click)="showReport=3">
+            <strong *ngIf="showReport==3">Evenement</strong>
+            <small *ngIf="showReport!=3">Evenement</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onLicense()">
+            <strong *ngIf="showReport==1">Permis de conduire</strong>
+            <small *ngIf="showReport!=1">Permis de conduire</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onValidity()">
+            <strong *ngIf="showReport==2">La Validite de Permis</strong>
+            <small *ngIf="showReport!=2">La Validite de Permis</small>        
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="showReport=4">
+            <strong *ngIf="showReport==4">Memo</strong>
+            <small *ngIf="showReport!=4">Memo</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onLogBooks()">
+            <strong *ngIf="showReport==5">LogBooks</strong>
+            <small *ngIf="showReport!=5">LogBooks</small>        
+        </span>
+    </h3>
+    
+    <div *ngIf="showReport==1" id="toprint">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <table border="1">
+                    <tr *ngIf="!driver.archive">
+                        <th>&nbsp;</th>
+                        <td>
+                            <input type="date" (change)="onDateExpirationChange($event)" [ngModel]="addDriverLicense.dateExpiration | date: 'yyyy-MM-dd'">
+                        </td>
+                        <td><span> &nbsp;</span></td>
+                        <td>
+                            <input *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgFront==null || addDriverLicense.imgFront.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" [src]="addDriverLicense.imgFront" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <td>
+                            <input *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgBack==null || addDriverLicense.imgBack.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" [src]="addDriverLicense.imgBack" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <td rowspan="2">
+                            <button class="btn btn-link" (click)="onAddDriverLicense()" 
+                            [disabled]="addDriverLicense.imgFront.length==0 || addDriverLicense.imgBack.length==0">
+                                Ajouter
+                            </button>
+                        </td>                    
+                    </tr>
+                    <tr *ngIf="addDriverLicense.imgFront.length>0 && addDriverLicense.imgBack.length>0">
+                        <td colspan="5">
+                            <strong><u>Note:</u>&nbsp;</strong><textarea [(ngModel)]="addDriverLicense.remark" class="form-control" type="text" rows="2" cols="30"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <br>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Date Expiration</th>
+                        <th>Statut</th> 
+                        <th>Recto</th>
+                        <th>Verso</th>
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                    <ng-container *ngFor="let driverLicense of driverLicenses; let i = index">
+                        <tr>
+                            <th rowspan="2">&nbsp;{{i+1}}.&nbsp;</th>
+                            <td><span>{{driverLicense.dateExpiration | date:'dd-MMM-yyyy'}}</span></td>
+                            <td><button class="btn btn-sm {{codeCouleurStatut(driverLicense)}}">{{onStatut(driverLicense)}}</button></td>
+                            <td>
+                                <img [src]="driverLicense.imgFront" alt="piece joint" (click)="onShowImg(driverLicense.imgFront)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <td>
+                                <img [src]="driverLicense.imgBack" alt="piece joint" (click)="onShowImg(driverLicense.imgBack)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <td rowspan="2">
+                                <button class="btn btn-link" (click)="onDelDriverLicense(driverLicense, i)" [disabled]="driver.archive">
+                                    Del</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <span><u>Note:</u>&nbsp; {{driverLicense.remark}}</span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                   
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6" *ngIf="showImgUrl.length>0">
+                <span style="float: right;"><span  class="btn btn-link" (click)="showImgUrl=''">x Close</span><br></span>
+                <img [src]="showImgUrl" class="img-responsive" style="max-width: 85%">
+            </div>
+        </div>
+        
+    </div>
+    
+    <div *ngIf="showReport==2" id="toprint">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <table border="1">
+                    <tr *ngIf="!driver.archive">
+                        <th>&nbsp;</th>
+                        <td>
+                            <input type="date" (change)="onDatedateIssuedChange($event)" [ngModel]="addDriverLicense.datedateIssued | date: 'yyyy-MM-dd'">
+                        </td>
+                        <!-- <td><span> &nbsp;</span></td> -->
+                        <td>
+                            <input *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgFront==null || addDriverLicense.imgFront.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" [src]="addDriverLicense.imgFront" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <!-- <td>
+                            <input *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgBack==null || addDriverLicense.imgBack.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" [src]="addDriverLicense.imgBack" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td> -->
+                        <td rowspan="2">
+                            <button class="btn btn-link" (click)="onAddLicenseValidity()" 
+                            [disabled]="addDriverLicense.imgFront.length==0">
+                                Ajouter
+                            </button>
+                        </td>                    
+                    </tr>
+                    <tr *ngIf="addDriverLicense.imgFront.length>0">
+                        <td colspan="5">
+                            <strong><u>Note:</u>&nbsp;</strong><textarea [(ngModel)]="addDriverLicense.remark" class="form-control" type="text" rows="2" cols="30"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <br>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Date Delivrance</th>
+                        <!-- <th>Statut</th>  -->
+                        <th>Photo</th>
+                        <!-- <th>Verso</th> -->
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                    <ng-container *ngFor="let validityLicense of validityLicenses; let i = index">
+                        <tr>
+                            <th rowspan="2">&nbsp;{{i+1}}.&nbsp;</th>
+                            <td><span>{{validityLicense.datedateIssued | date:'dd-MMM-yyyy'}}</span></td>
+                            <!-- <td><button class="btn btn-sm {{codeCouleurStatut(driverLicense)}}">{{onStatut(driverLicense)}}</button></td> -->
+                            <td>
+                                <img [src]="validityLicense.imgFront" alt="piece joint" (click)="onShowImg(validityLicense.imgFront)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <!-- <td>
+                                <img [src]="driverLicense.imgBack" alt="piece joint" (click)="onShowImg(driverLicense.imgBack)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td> -->
+                            <td rowspan="2">
+                                <button class="btn btn-link" (click)="onDelValidityLicense(validityLicense, i)" [disabled]="driver.archive">
+                                    Del</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <span><u>Note:</u>&nbsp; {{validityLicense.remark}}</span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                   
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6" *ngIf="showImgUrl.length>0">
+                <span style="float: right;"><span  class="btn btn-link" (click)="showImgUrl=''">x Close</span><br></span>
+                <img [src]="showImgUrl" class="img-responsive" style="max-width: 85%">
+            </div>
+        </div>
+        
+    </div>
+
+    <div *ngIf="showReport==3">
+        <Strong><u>Evenement</u></Strong>
+        <div *ngIf="showReport" id="toprint">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="!driver.archive">
+                    <th>&nbsp;</th>
+                    <td style="width: 22ch;">
+                        <input type="date" style="width: 20ch;" (change)="onDateDoneChange($event)" [ngModel]="addHistory.dateDone | date: 'yyyy-MM-dd'" max="{{today | date: 'yyyy-MM-dd'}}">
+                    </td>
+                    <td style="width: 72ch;">
+                        <textarea [(ngModel)]="addHistory.note" class="form-control" type="text" rows="2" cols="70"></textarea>
+                    </td>                
+                    <td><button class="btn btn-link" (click)="onAddHistory()" [disabled]="addHistory.note.length==0 || addHistory.dateDone==null">Ajouter</button></td>
+                </tr>
+                <tr><br></tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Date</th>
+                    <th>
+                        <span>Evenement &nbsp;</span>  
+                        <span>- Filtre par date &nbsp;
+                            <select type="date" [(ngModel)]="dateFilter" (ngModelChange)="dateFilterChange(dateFilter)">
+                                <option [ngValue]="null"></option>
+                                <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </span>
+                    </th>
+                    <th>&nbsp;&nbsp;</th>
+                </tr>
+                <tr *ngFor="let history of histories; let i = index">
+                    <th>&nbsp;{{i+1}}.&nbsp;</th>
+                    <td style="width: 22ch;">{{history.dateDone | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="width: 72ch;">
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{history.note}}</pre>
+                    </td>
+                    <td>
+                        <button class="btn btn-link" (click)="onSendingHistory(history)" [disabled]="driver.archive">
+                            <span *ngIf="!history.sent">Email</span>
+                            <span *ngIf="history.sent">Re-Email</span>
+                        </button>
+                        <button style="float: right;" class="btn btn-link" (click)="onDelHistory(history, i)" [disabled]="driver.archive">
+                        Del</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="showReport==4">
+        <Strong><u>Memo</u></Strong>
+        <div *ngIf="showReport" id="toprint">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="!driver.archive">
+                    <th>&nbsp;</th>
+                    <td style="width: 22ch;">
+                        <input type="date" style="width: 20ch;" (change)="onMemoDateDoneChange($event)" [ngModel]="addMemo.dateDone | date: 'yyyy-MM-dd'" max="{{today | date: 'yyyy-MM-dd'}}">
+                    </td>
+                    <td style="width: 72ch;">
+                        <textarea [(ngModel)]="addMemo.note" class="form-control" type="text" rows="2" cols="70"></textarea>
+                    </td>                
+                    <td><button class="btn btn-link" (click)="onAddMemo()" [disabled]="addMemo.note.length==0 || addMemo.dateDone==null">Ajouter</button></td>
+                </tr>
+                <tr><br></tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Date</th>
+                    <th>
+                        <span>Memo &nbsp;</span>  
+                        <span>- Filtre par date &nbsp;
+                            <select type="date" [(ngModel)]="memoDateFilter" (ngModelChange)="dateMemoFilterChange(memoDateFilter)">
+                                <option [ngValue]="null"></option>
+                                <option *ngFor="let dt of listDateMemo" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </span>
+                    </th>
+                    <th>&nbsp;&nbsp;</th>
+                </tr>
+                <tr *ngFor="let memo of memos; let i = index">
+                    <th>&nbsp;{{i+1}}.&nbsp;</th>
+                    <td style="width: 22ch;">{{memo.dateDone | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="width: 72ch;">
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{memo.note}}</pre>
+                    </td>
+                    <td>
+                        <button class="btn btn-link" (click)="onSendingMemo(memo)" [disabled]="driver.archive">
+                            <span *ngIf="!memo.sent">Email</span>
+                            <span *ngIf="memo.sent">Re-Email</span>
+                        </button>
+                        <button style="float: right;" class="btn btn-link" (click)="onDelMemo(memo, i)" [disabled]="driver.archive">
+                        Del</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="showReport==5">
+        <Strong><u>LogBooks</u></Strong>
+        <div *ngIf="showReport">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <!-- <tr>
+                    <td><input type="date" [(ngModel)]="logBook.dateLog"></td>
+                    <td><input type="time" [(ngModel)]="logBook.startTime"></td>
+                    <td><input type="time" [(ngModel)]="logBook.endTime"></td>
+                    <td><input type="file" [(ngModel)]="logBook.urlData"></td>
+                    <td>
+                        <textarea type="text" rows="2" cols="50" [(ngModel)]="logBook.note"></textarea>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onAddLogBook()">ajouter</span></td>
+                </tr> -->
+                <tr><td colspan="8" style="text-align: center;"><strong>Filtre par Date <input type="date" max="{{today | date: 'yyyy-MM-dd'}}" [(ngModel)]="dateFindLog"
+                    (change)="dateLogBookFind($event)"></strong></td></tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="date" max="{{today | date: 'yyyy-MM-dd'}}" [(ngModel)]="logBook.dateLog"
+                      (change)="dateLogBookChange($event)">
+                    </td>
+                    <td><input type="time" [(ngModel)]="logBook.startTime"></td> <!--(focusout)="validTimeOut()"-->
+                    <td>
+                        <span>Next day <input type="checkbox" [(ngModel)]="logBook.nextDay"><br></span> <!--(change)="validTimeOut()"-->
+                        <input type="time" [(ngModel)]="logBook.endTime"> <!--(focusout)="validTimeOut()"-->
+                    </td>
+                    <td>
+                        <!-- <input type="time" [(ngModel)]="logBook.timeInService" disabled> -->
+                        <select type="text" [(ngModel)]="logBook.timeInService">
+                            <option [ngValue]="null" selected> </option>
+                            <option [ngValue]="'driving'">Driving</option>
+                            <option [ngValue]="'sleeping'">Sleeping</option>
+                            <option [ngValue]="'onDuty'">On Duty</option>
+                            <option [ngValue]="'offDuty'">Off Duty</option>
+                            <!-- <option> </option>
+                            <option>Driving</option>
+                            <option>Sleeping</option>
+                            <option>On Duty</option>
+                            <option>Off Duty</option> -->
+                        </select>
+                    </td>
+                    
+                    <!-- <td><input type="file" [(ngModel)]="logBook.urlData"></td> -->
+                    <td>
+                      <span *ngIf="logBook.urlData==null">&nbsp;&nbsp;</span>
+                      <!-- <form id="logBookFormUpload" action="" *ngIf="logBook.dateLog!=null">
+                        <input id="logBookAttachment" class="form-control" type="file" (change)="onFileLogBook($event)" 
+                        [disabled]="logBook.dateLog==null" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                      </form> -->
+                      <form id="logBookFormUpload" action="" *ngIf="logBook.dateLog!=null">
+                        <input id="logBookAttachment" multiple="" class="form-control" type="file" (change)="onFilesChange($event)" 
+                        [disabled]="logBook.dateLog==null" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                    </form>
+                    </td>
+                    <td>
+                        <textarea type="text" rows="2" cols="50" [(ngModel)]="logBook.note"></textarea>
+                    </td>
+                    <!-- <td><button class="btn btn-link" (click)="onAddLogBook()" 
+                      [disabled]="logBook.dateLog==null || (logBook.urlData.length==0 && logBook.notelength==0) || 
+                      logBook.startTime.length==0 || logBook.endTime.length==0
+                      ">ajouter</button></td> -->
+                    <td><button class="btn btn-link" (click)="onSaveListLogBook()" 
+                    [disabled]="logBook.dateLog==null || (logBook.urlData.length==0 && logBook.notelength==0) || 
+                    logBook.startTime.length==0 || logBook.endTime.length==0
+                    ">ajouter</button></td>                      
+                </tr>
+                <!-- <tr>
+                    <td colspan="2">Test Select Multiple File </td>
+                    <td colspan="5">
+                        <form id="logBookFormUpload" action="">
+                            <input multiple="" class="form-control" type="file" (change)="onFilesChange($event)" 
+                            accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                        </form>
+                    </td>
+                    <td><button (click)="onSaveListLogBook()">Test Save List LogBook</button></td>
+                </tr> -->
+                <tr>
+                    <td>Num</td>
+                    <th>Date</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Activity</th>
+                    <th>File</th>
+                    <th>Note</th>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                </tr>
+                <!-- <tr *ngFor="let lb of logBooks">                    
+                    <td>{{lb.dateLog}}</td>
+                    <td>{{lb.startTime}}</td>
+                    <td>{{lb.endTime}}</td>
+                    <td>Download file</td>
+                    <td>
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{lb.note}}</pre>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onDelLogBook()">del</span></td>
+                </tr> -->
+                <tr *ngFor="let lb of pageLogBooks.content; let i = index">             
+                    <!-- logBooks -->
+                    <td>&nbsp;{{(currentPage*20)+i+1}}</td>
+                    <td>{{lb.dateLog | date:'yyyy-MM-dd'}}</td>
+                    <td>{{lb.startTime}}</td>
+                    <td>
+                        {{lb.endTime}} <span *ngIf="lb.nextDay"> Next day</span>                        
+                    </td>
+                    <td>{{lb.timeInService}}</td>
+                    <td>
+                      <button class="btn btn-link" (click)="downloadAttachment(lb)" *ngIf="lb.urlData.length!=0">
+                        Download File
+                      </button>
+                    </td>
+                    <td>
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{lb.note}}</pre>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onDelLogBook(lb)">del</span></td>
+                </tr>
+                <tr *ngIf="findingLogBook"><th colspan="8">loading...</th></tr>
+                <!-- <tr><th colspan="7">Total ServiceTime: {{calculateServiceTimeAll(pageLogBooks.content)}}</th></tr> -->
+            </table>
+            <div>
+                <strong>page: </strong><span *ngFor="let p of pages; let i=index">
+                    <button class="btn btn-link" (click)="gotoPage(i)"> 
+                        <small *ngIf="currentPage!=i">{{i + "  "}}</small>
+                        <strong *ngIf="currentPage==i">{{i + "  "}}</strong> 
+                    </button>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="varsGlobal.language.includes('English')">
+    <button class="btn btn-primary" (click)="router.navigateByUrl('/chauffeurs', {skipLocationChange: true})">
+        <strong>&larr;</strong>
+    </button>
+    
+    <h3><br>
+        <table border="1">
+            <tr>
+                <th><label class="control-label">Firstname </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.prenom"> &nbsp;</th>
+                <th><label class="control-label">Lastname </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.nom"> &nbsp;</th>
+                <th><label class="control-label">Phone </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 18ch;" [(ngModel)]="driver.tel"> &nbsp;</th>
+                <th><label class="control-label">Email </label><input [disabled]="driver.archive" class="form-control" type="text" style="width: 30ch;" [(ngModel)]="driver.email"> &nbsp;</th>
+                <th><label class="control-label">DateEntry </label><input [disabled]="driver.archive" class="form-control" type="date" 
+                    (change)="onEntryDateChange($event)" style="width: 20ch;" [ngModel]="driver.entryDate | date: 'yyyy-MM-dd'">
+                </th>
+                <th><label class="control-label">DateDeparture </label><input [disabled]="driver.archive" class="form-control" type="date" 
+                    (change)="onLastDateChange($event)" style="width: 20ch;" [ngModel]="driver.lastDate | date: 'yyyy-MM-dd'">
+                </th>
+                <td><button class="btn btn-link" [disabled]="driver.archive" (click)="onModifyDriver()">Save</button></td>
+            </tr>
+            <tr *ngIf="!driver.archive"><th colspan="7">
+                <button class="btn btn-link" (click)=" archiveDriver(driver)" [disabled]="driver.lastDate==null">
+                    Archive (Documents archive for 3 years)
+                </button>
+            </th></tr>
+            <tr *ngIf="driver.archive"><th colspan="7">
+                <button class="btn btn-link" (click)=" resumeDriver(driver)">
+                    Resume (The driver resumes his work)
+                </button>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                <button class="btn btn-link" (click)=" onDeleteChauffeur()">
+                    Delete
+                </button>
+            </th></tr>
+        </table>
+    </h3>
+    <h3>
+        <!-- <span class="btn btn-link" (click)="showReport=true">
+            <strong *ngIf="showReport">Event</strong>
+            <small *ngIf="!showReport">Event</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="showReport=false">
+            <strong *ngIf="!showReport">Driver's license</strong>
+            <small *ngIf="showReport">Driver's license</small>        
+        </span> -->
+        <span class="btn btn-link" (click)="showReport=3">
+            <strong *ngIf="showReport==3">Event</strong>
+            <small *ngIf="showReport!=3">Event</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onLicense()">
+            <strong *ngIf="showReport==1">Driver's License</strong>
+            <small *ngIf="showReport!=1">Driver's License</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onValidity()">
+            <strong *ngIf="showReport==2">Validity of Licence</strong>
+            <small *ngIf="showReport!=2">Validity of Licence</small>        
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="showReport=4">
+            <strong *ngIf="showReport==4">Memo</strong>
+            <small *ngIf="showReport!=4">Memo</small>        
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="btn btn-link" (click)="onLogBooks()">
+            <strong *ngIf="showReport==5">LogBooks</strong>
+            <small *ngIf="showReport!=5">LogBooks</small>        
+        </span>
+    </h3>
+    
+    <div *ngIf="showReport==1" id="toprint">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <table border="1">
+                    <tr *ngIf="!driver.archive">
+                        <th>&nbsp;</th>
+                        <td>
+                            <input type="date" (change)="onDateExpirationChange($event)" [ngModel]="addDriverLicense.dateExpiration | date: 'yyyy-MM-dd'">
+                        </td>
+                        <td><span> &nbsp;</span></td>
+                        <td>
+                            <input *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgFront==null || addDriverLicense.imgFront.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" [src]="addDriverLicense.imgFront" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <td>
+                            <input *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgBack==null || addDriverLicense.imgBack.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" [src]="addDriverLicense.imgBack" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <td rowspan="2">
+                            <button class="btn btn-link" (click)="onAddDriverLicense()" 
+                            [disabled]="addDriverLicense.imgFront.length==0 || addDriverLicense.imgBack.length==0">
+                                Add
+                            </button>
+                        </td>                    
+                    </tr>
+                    <tr *ngIf="addDriverLicense.imgFront.length>0 && addDriverLicense.imgBack.length>0">
+                        <td colspan="5">
+                            <strong><u>Note:</u>&nbsp;</strong><textarea [(ngModel)]="addDriverLicense.remark" class="form-control" type="text" rows="2" cols="30"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <br>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Expiration Date</th>
+                        <th>Status</th> 
+                        <th>Front</th>
+                        <th>Back</th>
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                    <ng-container *ngFor="let driverLicense of driverLicenses; let i = index">
+                        <tr>
+                            <th rowspan="2">&nbsp;{{i+1}}.&nbsp;</th>
+                            <td><span>{{driverLicense.dateExpiration | date:'dd-MMM-yyyy'}}</span></td>
+                            <td><button class="btn btn-sm {{codeCouleurStatut(driverLicense)}}">{{onStatut(driverLicense)}}</button></td>
+                            <td>
+                                <img [src]="driverLicense.imgFront" alt="piece joint" (click)="onShowImg(driverLicense.imgFront)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <td>
+                                <img [src]="driverLicense.imgBack" alt="piece joint" (click)="onShowImg(driverLicense.imgBack)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <td rowspan="2">
+                                <button class="btn btn-link" (click)="onDelDriverLicense(driverLicense, i)" [disabled]="driver.archive">
+                                    Del</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <span><u>Note:</u>&nbsp; {{driverLicense.remark}}</span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                   
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6" *ngIf="showImgUrl.length>0">
+                <span style="float: right;"><span  class="btn btn-link" (click)="showImgUrl=''">x Close</span><br></span>
+                <img [src]="showImgUrl" class="img-responsive" style="max-width: 85%">
+            </div>
+        </div>
+        
+    </div>
+    
+    <div *ngIf="showReport==2" id="toprint">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <table border="1">
+                    <tr *ngIf="!driver.archive">
+                        <th>&nbsp;</th>
+                        <td>
+                            <input type="date" (change)="onDatedateIssuedChange($event)" [ngModel]="addDriverLicense.datedateIssued | date: 'yyyy-MM-dd'">
+                        </td>
+                        <!-- <td><span> &nbsp;</span></td> -->
+                        <td>
+                            <input *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgFront==null || addDriverLicense.imgFront.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadFront($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgFront!=null && addDriverLicense.imgFront.length>0" [src]="addDriverLicense.imgFront" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td>
+                        <!-- <td>
+                            <input *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <input *ngIf="addDriverLicense.imgBack==null || addDriverLicense.imgBack.length==0" type="file" title="Joindre une image " (change)="onFileUpLoadBack($event, addDriverLicense)" accept="image/x-png,image/gif,image/jpeg">
+                            <img *ngIf="addDriverLicense.imgBack!=null && addDriverLicense.imgBack.length>0" [src]="addDriverLicense.imgBack" class="img-responsive" style="width: 150px; height: 100px;">
+                        </td> -->
+                        <td rowspan="2">
+                            <button class="btn btn-link" (click)="onAddLicenseValidity()" 
+                            [disabled]="addDriverLicense.imgFront.length==0">
+                                Add
+                            </button>
+                        </td>                    
+                    </tr>
+                    <tr *ngIf="addDriverLicense.imgFront.length>0">
+                        <td colspan="5">
+                            <strong><u>Note:</u>&nbsp;</strong><textarea [(ngModel)]="addDriverLicense.remark" class="form-control" type="text" rows="2" cols="30"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <br>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Date of Issue</th>
+                        <!-- <th>Statut</th>  -->
+                        <th>Photo</th>
+                        <!-- <th>Verso</th> -->
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                    <ng-container *ngFor="let validityLicense of validityLicenses; let i = index">
+                        <tr>
+                            <th rowspan="2">&nbsp;{{i+1}}.&nbsp;</th>
+                            <td><span>{{validityLicense.datedateIssued | date:'dd-MMM-yyyy'}}</span></td>
+                            <!-- <td><button class="btn btn-sm {{codeCouleurStatut(driverLicense)}}">{{onStatut(driverLicense)}}</button></td> -->
+                            <td>
+                                <img [src]="validityLicense.imgFront" alt="piece joint" (click)="onShowImg(validityLicense.imgFront)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td>
+                            <!-- <td>
+                                <img [src]="driverLicense.imgBack" alt="piece joint" (click)="onShowImg(driverLicense.imgBack)" class="img-responsive" style="width: 150px; height: 100px;">
+                            </td> -->
+                            <td rowspan="2">
+                                <button class="btn btn-link" (click)="onDelValidityLicense(validityLicense, i)" [disabled]="driver.archive">
+                                    Del</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <span><u>Note:</u>&nbsp; {{validityLicense.remark}}</span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                   
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6" *ngIf="showImgUrl.length>0">
+                <span style="float: right;"><span  class="btn btn-link" (click)="showImgUrl=''">x Close</span><br></span>
+                <img [src]="showImgUrl" class="img-responsive" style="max-width: 85%">
+            </div>
+        </div>
+        
+    </div>
+
+    <div *ngIf="showReport==3">
+        <Strong><u>Event</u></Strong>
+        <div *ngIf="showReport" id="toprint">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="!driver.archive">
+                    <th>&nbsp;</th>
+                    <td style="width: 22ch;">
+                        <input type="date" style="width: 20ch;" (change)="onDateDoneChange($event)" [ngModel]="addHistory.dateDone | date: 'yyyy-MM-dd'" max="{{today | date: 'yyyy-MM-dd'}}">
+                    </td>
+                    <td style="width: 72ch;">
+                        <textarea [(ngModel)]="addHistory.note" class="form-control" type="text" rows="2" cols="70"></textarea>
+                    </td>                
+                    <td><button class="btn btn-link" (click)="onAddHistory()" [disabled]="addHistory.note.length==0 || addHistory.dateDone==null">Ajouter</button></td>
+                </tr>
+                <tr><br></tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Date</th>
+                    <th>
+                        <span>Event &nbsp;</span>  
+                        <span>- Filter by date &nbsp;
+                            <select type="date" [(ngModel)]="dateFilter" (ngModelChange)="dateFilterChange(dateFilter)">
+                                <option [ngValue]="null"></option>
+                                <option *ngFor="let dt of listDate" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </span>
+                    </th>
+                    <th>&nbsp;&nbsp;</th>
+                </tr>
+                <tr *ngFor="let history of histories; let i = index">
+                    <th>&nbsp;{{i+1}}.&nbsp;</th>
+                    <td style="width: 22ch;">{{history.dateDone | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="width: 72ch;">
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{history.note}}</pre>
+                    </td>
+                    <td>
+                        <button class="btn btn-link" (click)="onSendingHistory(history)" [disabled]="driver.archive">
+                            <span *ngIf="!history.sent">Email</span>
+                            <span *ngIf="history.sent">Re-Email</span>
+                        </button>
+                        <button style="float: right;" class="btn btn-link" (click)="onDelHistory(history, i)" [disabled]="driver.archive">
+                        Del</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="showReport==4">
+        <Strong><u>Memo</u></Strong>
+        <div *ngIf="showReport" id="toprint">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <tr *ngIf="!driver.archive">
+                    <th>&nbsp;</th>
+                    <td style="width: 22ch;">
+                        <input type="date" style="width: 20ch;" (change)="onMemoDateDoneChange($event)" [ngModel]="addMemo.dateDone | date: 'yyyy-MM-dd'" max="{{today | date: 'yyyy-MM-dd'}}">
+                    </td>
+                    <td style="width: 72ch;">
+                        <textarea [(ngModel)]="addMemo.note" class="form-control" type="text" rows="2" cols="70"></textarea>
+                    </td>                
+                    <td><button class="btn btn-link" (click)="onAddMemo()" [disabled]="addMemo.note.length==0 || addMemo.dateDone==null">Add</button></td>
+                </tr>
+                <tr><br></tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Date</th>
+                    <th>
+                        <span>Memo &nbsp;</span>  
+                        <span>- Filter by date &nbsp;
+                            <select type="date" [(ngModel)]="memoDateFilter" (ngModelChange)="dateMemoFilterChange(memoDateFilter)">
+                                <option [ngValue]="null"></option>
+                                <option *ngFor="let dt of listDateMemo" [ngValue]="dt">{{dt | date: 'dd-MMM-yyyy'}}</option>                            
+                            </select>
+                        </span>
+                    </th>
+                    <th>&nbsp;&nbsp;</th>
+                </tr>
+                <tr *ngFor="let memo of memos; let i = index">
+                    <th>&nbsp;{{i+1}}.&nbsp;</th>
+                    <td style="width: 22ch;">{{memo.dateDone | date: 'dd-MMM-yyyy'}}</td>
+                    <td style="width: 72ch;">
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{memo.note}}</pre>
+                    </td>
+                    <td>
+                        <button class="btn btn-link" (click)="onSendingMemo(memo)" [disabled]="driver.archive">
+                            <span *ngIf="!memo.sent">Email</span>
+                            <span *ngIf="memo.sent">Re-Email</span>
+                        </button>
+                        <button style="float: right;" class="btn btn-link" (click)="onDelMemo(memo, i)" [disabled]="driver.archive">
+                        Del</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="showReport==5">
+        <Strong><u>LogBooks</u></Strong>
+        <div *ngIf="showReport">
+            <table border="1" style="font-size: 10pt" style="margin-inline: 5px">
+                <!-- <tr>
+                    <td><input type="date" [(ngModel)]="logBook.dateLog"></td>
+                    <td><input type="time" [(ngModel)]="logBook.startTime"></td>
+                    <td><input type="time" [(ngModel)]="logBook.endTime"></td>
+                    <td><input type="file" [(ngModel)]="logBook.urlData"></td>
+                    <td>
+                        <textarea type="text" rows="2" cols="50" [(ngModel)]="logBook.note"></textarea>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onAddLogBook()">ajouter</span></td>
+                </tr> -->
+                <tr><td colspan="8" style="text-align: center;"><strong>Filter by Date <input type="date" max="{{today | date: 'yyyy-MM-dd'}}" [(ngModel)]="dateFindLog"
+                    (change)="dateLogBookFind($event)"></strong></td></tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="date" max="{{today | date: 'yyyy-MM-dd'}}" [(ngModel)]="logBook.dateLog"
+                      (change)="dateLogBookChange($event)">
+                    </td>
+                    <td><input type="time" [(ngModel)]="logBook.startTime"></td> <!--(focusout)="validTimeOut()"-->
+                    <td>
+                        <span>Next day <input type="checkbox" [(ngModel)]="logBook.nextDay"><br></span> <!--(change)="validTimeOut()"-->
+                        <input type="time" [(ngModel)]="logBook.endTime"> <!--(focusout)="validTimeOut()"-->
+                    </td>
+                    <td>
+                        <!-- <input type="time" [(ngModel)]="logBook.timeInService" disabled> -->
+                        <select type="text" [(ngModel)]="logBook.timeInService">
+                            <option [ngValue]="null" selected> </option>
+                            <option [ngValue]="'driving'">Driving</option>
+                            <option [ngValue]="'sleeping'">Sleeping</option>
+                            <option [ngValue]="'onDuty'">On Duty</option>
+                            <option [ngValue]="'offDuty'">Off Duty</option>
+                            <!-- <option> </option>
+                            <option>Driving</option>
+                            <option>Sleeping</option>
+                            <option>On Duty</option>
+                            <option>Off Duty</option> -->
+                        </select>
+                    </td>
+                    
+                    <!-- <td><input type="file" [(ngModel)]="logBook.urlData"></td> -->
+                    <td>
+                      <span *ngIf="logBook.urlData==null">&nbsp;&nbsp;</span>
+                      <!-- <form id="logBookFormUpload" action="" *ngIf="logBook.dateLog!=null">
+                        <input id="logBookAttachment" class="form-control" type="file" (change)="onFileLogBook($event)" 
+                        [disabled]="logBook.dateLog==null" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                      </form> -->
+                      <form id="logBookFormUpload" action="" *ngIf="logBook.dateLog!=null">
+                        <input id="logBookAttachment" multiple="" class="form-control" type="file" (change)="onFilesChange($event)" 
+                        [disabled]="logBook.dateLog==null" accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                    </form>
+                    </td>
+                    <td>
+                        <textarea type="text" rows="2" cols="50" [(ngModel)]="logBook.note"></textarea>
+                    </td>
+                    <!-- <td><button class="btn btn-link" (click)="onAddLogBook()" 
+                      [disabled]="logBook.dateLog==null || (logBook.urlData.length==0 && logBook.notelength==0) || 
+                      logBook.startTime.length==0 || logBook.endTime.length==0
+                      ">ajouter</button></td> -->
+                    <td><button class="btn btn-link" (click)="onSaveListLogBook()" 
+                    [disabled]="logBook.dateLog==null || (logBook.urlData.length==0 && logBook.notelength==0) || 
+                    logBook.startTime.length==0 || logBook.endTime.length==0
+                    ">add</button></td>                      
+                </tr>
+                <!-- <tr>
+                    <td colspan="2">Test Select Multiple File </td>
+                    <td colspan="5">
+                        <form id="logBookFormUpload" action="">
+                            <input multiple="" class="form-control" type="file" (change)="onFilesChange($event)" 
+                            accept="image/x-png,image/gif,image/jpeg,.pdf" placeholder="">
+                        </form>
+                    </td>
+                    <td><button (click)="onSaveListLogBook()">Test Save List LogBook</button></td>
+                </tr> -->
+                <tr>
+                    <td>Num</td>
+                    <th>Date</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Activity</th>
+                    <th>File</th>
+                    <th>Note</th>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                </tr>
+                <!-- <tr *ngFor="let lb of logBooks">                    
+                    <td>{{lb.dateLog}}</td>
+                    <td>{{lb.startTime}}</td>
+                    <td>{{lb.endTime}}</td>
+                    <td>Download file</td>
+                    <td>
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{lb.note}}</pre>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onDelLogBook()">del</span></td>
+                </tr> -->
+                <tr *ngFor="let lb of pageLogBooks.content; let i = index">             
+                    <!-- logBooks -->
+                    <td>&nbsp;{{(currentPage*20)+i+1}}</td>
+                    <td>{{lb.dateLog | date:'yyyy-MM-dd'}}</td>
+                    <td>{{lb.startTime}}</td>
+                    <td>
+                        {{lb.endTime}} <span *ngIf="lb.nextDay"> Next day</span>                        
+                    </td>
+                    <td>{{lb.timeInService}}</td>
+                    <td>
+                      <button class="btn btn-link" (click)="downloadAttachment(lb)" *ngIf="lb.urlData.length!=0">
+                        Download File
+                      </button>
+                    </td>
+                    <td>
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{lb.note}}</pre>
+                    </td>
+                    <td><span class="btn btn-link" (click)="onDelLogBook(lb)">del</span></td>
+                </tr>
+                <tr *ngIf="findingLogBook"><th colspan="8">loading...</th></tr>
+                <!-- <tr><th colspan="7">Total ServiceTime: {{calculateServiceTimeAll(pageLogBooks.content)}}</th></tr> -->
+            </table>
+            <div>
+                <strong>page: </strong><span *ngFor="let p of pages; let i=index">
+                    <button class="btn btn-link" (click)="gotoPage(i)"> 
+                        <small *ngIf="currentPage!=i">{{i + "  "}}</small>
+                        <strong *ngIf="currentPage==i">{{i + "  "}}</strong> 
+                    </button>
+                    </span>
+            </div>
+        </div>
+    </div>    
+</div>

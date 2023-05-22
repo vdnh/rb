@@ -19,35 +19,35 @@ export class LoadDetailsService{
     
     loadDetailsDeTransport(idTransport:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadDetailsDeTransport?idTransport="+idTransport
+        return this.http.get(this.adServer+":8443/loadDetailsDeTransport?idTransport="+idTransport
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveLoadDetail(loadDetail:LoadDetail){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/loadDetails", loadDetail
+        return this.http.post(this.adServer+":8443/loadDetails", loadDetail
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailLoadDetail(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/loadDetails/"+id
+        return this.http.get(this.adServer+":8443/loadDetails/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateLoadDetail(id:number, l:LoadDetail){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/loadDetails/"+id, l
+       return this.http.put(this.adServer+":8443/loadDetails/"+id, l
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteLoadDetail(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/loadDetails/"+id
+        return this.http.delete(this.adServer+":8443/loadDetails/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

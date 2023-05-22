@@ -12,4 +12,6 @@ export class Reparation{
     prix:number=0.00;
     // status
     saved=false;
+    odometre:number;
+    description='';
 }

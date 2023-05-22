@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 @Configuration
 public class Beans {

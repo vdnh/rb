@@ -15,4 +15,8 @@ export class BonDeTravail{
     total:number=0.00;
     // status
     fini=false;
+    odometre:number;
+    
+    // use only on Angular to content infos of reparations done
+    workDones='';
 }

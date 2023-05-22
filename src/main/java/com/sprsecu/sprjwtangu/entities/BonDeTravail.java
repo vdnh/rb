@@ -40,6 +40,7 @@ public class BonDeTravail implements Serializable{
     private Float total;
     // status
     private Boolean fini=false;
+    private Long odometre;
     
     public void setDate(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 

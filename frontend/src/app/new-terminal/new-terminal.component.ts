@@ -6,7 +6,7 @@ import { Terminal } from 'src/model/model.terminal';
 // import { ContactsService } from '../../services/contacts.service';
 // import { Contact } from 'src/model/model.contact';
 // import { Adresse } from 'src/model/model.adresse';
-// import { AdressesService } from '../../services/adresses.service';
+import { AdressesService } from '../../services/adresses.service';
 import { AuthenticationService } from 'src/services/authentication.service';
 import { AppUser } from 'src/model/model.appUser';
 import { Router } from '@angular/router';
@@ -16,7 +16,6 @@ import { TerminalsService } from 'src/services/terminals.service';
 import { CamionsService } from 'src/services/camions.service';
 import { Camion } from 'src/model/model.camion';
 import { GeolocationService } from 'src/services/geolocation.service';
-import { GeocodingService } from 'src/services/geocoding.service';
 
 @Component({
   selector: 'app-new-terminal',
@@ -74,12 +73,13 @@ export class NewTerminalComponent implements OnInit {
       this.trucksGps=this.trucks.filter(x=>(x.gps))
       this.trucksNoGps=this.trucks.filter(x=>(!x.gps))
     }, err=>{console.log(err)})
-    
+
     // get local coordinates
     this.geolocation.getCurrentPosition().subscribe((data)=>{
       this.terminal.latitude=data.coords.latitude,
       this.terminal.longitude=data.coords.longitude
-    },err=>{console.log(err)})
+    }, err=>{console.log(err)})
+
   }
 
   onSelectTruck(){

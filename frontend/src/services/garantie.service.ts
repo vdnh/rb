@@ -20,35 +20,35 @@ export class GarantiesService{
     
     garantieDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/garantiesDeCamion?idCamion="+idCamion
+        return this.http.get(this.adServer+":8443/garantiesDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveGarantie(garantie:Garantie){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/garanties", garantie
+        return this.http.post(this.adServer+":8443/garanties", garantie
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailGarantie(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/garanties/"+id
+        return this.http.get(this.adServer+":8443/garanties/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateGarantie(id:number, g:Garantie){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/garanties/"+id, g
+       return this.http.put(this.adServer+":8443/garanties/"+id, g
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteGarantie(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/garanties/"+id
+        return this.http.delete(this.adServer+":8443/garanties/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }

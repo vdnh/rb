@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  * @author vdnh
+ * * © Nhat Hung VO DINH
  */
 public interface BankClientRepository extends JpaRepository<BankClient, Long>{
 //    @Query("select c from BankClient c where c.nom like :x")

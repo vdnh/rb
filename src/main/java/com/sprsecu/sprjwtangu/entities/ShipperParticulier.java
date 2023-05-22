@@ -83,6 +83,9 @@ public class ShipperParticulier {
     private Float changementPneu2=85.00f;
     private Float changementPneu3=85.00f;
     
+    private String createdBy; // name of dispatch or person who created
+    private String account; // compte (phone numnber without space)
+    
     public void setDepuis(LocalDate date) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
         if(date == null)

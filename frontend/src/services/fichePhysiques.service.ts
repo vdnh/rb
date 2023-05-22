@@ -21,35 +21,35 @@ export class FichePhysiquesService{
     
     fichePhysiqueEntretienDeCamion(idCamion:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/fichePhysiqueEntretienDeCamion?idCamion="+idCamion
+        return this.http.get(this.adServer+":8443/fichePhysiqueEntretienDeCamion?idCamion="+idCamion
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     saveFichePhysiqueEntretiens(fichePhysiqueEntretien:FichePhysiqueEntretien){
         this.loadTonken();
-        return this.http.post(this.adServer+":8080/fichePhysiqueEntretiens", fichePhysiqueEntretien
+        return this.http.post(this.adServer+":8443/fichePhysiqueEntretiens", fichePhysiqueEntretien
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     getDetailFichePhysiqueEntretien(id:number){
         this.loadTonken();
-        return this.http.get(this.adServer+":8080/fichePhysiqueEntretiens/"+id
+        return this.http.get(this.adServer+":8443/fichePhysiqueEntretiens/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
 
     updateFichePhysiqueEntretien(id:number, c:FichePhysiqueEntretien){
         this.loadTonken();
-       return this.http.put(this.adServer+":8080/fichePhysiqueEntretiens/"+id, c
+       return this.http.put(this.adServer+":8443/fichePhysiqueEntretiens/"+id, c
        , {headers:new HttpHeaders({'Authorization':this.jwToken})})
        .pipe(map(res => {return res}));
     }
 
     deleteFichePhysiqueEntretien(id:number){
         this.loadTonken();
-        return this.http.delete(this.adServer+":8080/fichePhysiqueEntretiens/"+id
+        return this.http.delete(this.adServer+":8443/fichePhysiqueEntretiens/"+id
         , {headers:new HttpHeaders({'Authorization':this.jwToken})})
         .pipe(map(res => {return res}));
     }
